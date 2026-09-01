@@ -556,9 +556,18 @@ git commit -m "feat(data): supabase pgvector schema for rag"
 
 ---
 
-### Task 6: מדיניות העסק — policy.md
+### Task 6: מדיניות העסק — חומרי הקורס
 
-**Files:**
+**בוצע אחרת (2026-09-02):** הקורס מספק 12 קבצי מדיניות ב-`docs/course/policies/` וקטלוג ב-`docs/course/products/products.csv`. הם מקור האמת. `docs/policy.md` שנכתב כאן נמחק. אימות:
+
+```bash
+ls docs/course/policies | wc -l          # 12
+python3 -c "import csv;print(len(list(csv.DictReader(open('docs/course/products/products.csv')))))"   # 34
+```
+
+הטקסט המקורי של המשימה נשמר למטה להיסטוריה בלבד — **לא לבצע**.
+
+**Files (היסטורי):**
 - Create: `docs/policy.md`
 
 **Interfaces:**

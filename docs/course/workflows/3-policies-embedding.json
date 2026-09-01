@@ -1,0 +1,130 @@
+{
+  "name": "3 - Policies Embedding",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "1ef8d6f9-ee68-4edc-b53c-4a7334e0057a",
+      "name": "Embeddings",
+      "position": [
+        896,
+        464
+      ],
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "credentials": {
+        "openAiApi": {
+          "id": "VRZfZHjkqfq2tlyY",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "id": "3ed3173d-6462-4d4b-a5da-c68ab9b831d6",
+      "name": "Load Documents",
+      "position": [
+        1312,
+        464
+      ],
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "formTitle": "Upload Policies",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "File",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        784,
+        288
+      ],
+      "id": "8902d626-9a97-49a0-b4f4-38739aa9b667",
+      "name": "On form submission",
+      "webhookId": "33b7dec0-ddbd-4d1a-a738-1f162d8301f4"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "mypolicies",
+          "mode": "list",
+          "cachedResultName": "mypolicies"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        1008,
+        288
+      ],
+      "id": "b92bc88d-a551-4c98-8c13-887938c699e5",
+      "name": "Simple Vector Store"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Load Documents": {
+      "ai_document": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "43d5dd75-340d-44e3-8215-bc5629e63d8f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd8329e78b6e09d6a2ab07ed1e55ff263fde7292aa0503e159a621580d088164"
+  },
+  "nodeGroups": [],
+  "id": "TisOD3Gv1f5HY8Rz",
+  "tags": []
+}

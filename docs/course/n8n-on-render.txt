@@ -1,0 +1,119 @@
+﻿אירוח n8n על שרת מרוחק - הכי מתאים לשימוש אמיתי עם לקוחות גדולים. זול יותר. 
+
+
+אבל עדיין, בשביל שקט תעשייתי, עדיף n8n בענן - ללקוחות הראשונים 
+
+
+נכנסים ל-
+https://render.com 
+ופותחים חשבון חינמי. לאחר מכן ליצור Web Service חדש. 
+
+
+  
+
+
+
+לוחצים על DNew Web Service, בוחרים ב Existing Image וממלאים: http://docker.n8n.io/n8nio/n8n
+  
+
+
+
+לאחר מכן בוחרים ב Free
+
+
+  
+
+
+
+לאחר מכן יהיה לכם קישור חי: 
+
+
+  
+
+
+
+הגדרת Environment
+Environment Variables. בגלל זה n8n עולה אבל לא באמת יודע איך להיפתח, ולכן את מקבלת Not Found.
+בואי נוסיף אותם. תלחצי על + Add variable ותוסיפי אחד־אחד בדיוק ככה:
+  
+ 
+1
+Name:
+N8N_HOST
+Value:
+(שימי את הדומיין שלך בלי https - שימו לב זו הדוגמא של אפרת! תחליפו בדומיין שלכם)
+n8n-1-zuld.onrender.com
+2
+Name:
+N8N_PROTOCOL
+Value:
+https
+3
+
+Name:
+WEBHOOK_URL
+Value:
+https://n8n-1-zuld.onrender.com
+4
+
+Name:
+N8N_PORT
+Value:
+5678
+5
+
+Name:
+N8N_EDITOR_BASE_URL
+Value:
+https://n8n-1-zuld.onrender.com
+   
+לבסוף ללחוץ על Save &  Deploy
+ 
+  
+
+רשימה של שרתים בתשלום מומלצים:
+
+
+Solution
+	Price
+	Difficulty
+	Reliability
+	Best For
+	Oracle Cloud Free Tier
+	Free
+	Hard
+	Medium
+	Learning/testing
+	Hetzner Cloud
+	~€4–8/mo
+	Medium
+	Very high
+	Best overall
+	Contabo VPS
+	~$5–7/mo
+	Medium
+	Medium
+	Cheapest powerful VPS
+	Railway
+	~$5/mo
+	Very easy
+	Good
+	Beginners
+	Render
+	Free / $7+
+	Very easy
+	Weak on free tier
+	Small experiments
+	Hostinger VPS
+	~$6–8/mo
+	Medium
+	Good
+	Easy VPS
+	DigitalOcean
+	$6+/mo
+	Medium
+	Very high
+	Stable production
+	
+
+Cloudways.com - הכי טוב לאתרי וורדרפס - חד משמעית
