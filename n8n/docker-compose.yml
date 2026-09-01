@@ -23,6 +23,8 @@ services:
 
   gotenberg:
     image: gotenberg/gotenberg:8
+    # ponytail: chromium cold start on Docker Desktop for Mac can exceed the 20s default
+    command: ["gotenberg", "--chromium-start-timeout=90s"]
     ports:
       - "3001:3000"
     restart: unless-stopped

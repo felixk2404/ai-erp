@@ -10,4 +10,5 @@ echo "airtable:          $(curl -s -H "Authorization: Bearer $AIRTABLE_PAT" http
 echo "openai:            $(curl -s -H "Authorization: Bearer $OPENAI_API_KEY" https://api.openai.com/v1/models | jq -r '.data[0].object // "FAIL"')"
 echo "supabase rest:     $(curl -s -o /dev/null -w '%{http_code}' -H "apikey: $SUPABASE_SERVICE_KEY" "$SUPABASE_URL/rest/v1/")"
 echo "ngrok domain:      $([ -n "${NGROK_DOMAIN:-}" ] && echo "$NGROK_DOMAIN" || echo MISSING)"
+echo "ngrok authtoken:   $([ ${#NGROK_AUTHTOKEN} -gt 20 ] && echo set || echo MISSING)"
 echo "n8n keys:          $([ ${#N8N_ENCRYPTION_KEY} -ge 32 ] && [ ${#N8N_WEBHOOK_SECRET} -ge 32 ] && echo ok || echo 'run: openssl rand -hex 16')"
