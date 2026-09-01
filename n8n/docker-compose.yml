@@ -1,0 +1,31 @@
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_HOST=${NGROK_DOMAIN}
+      - N8N_PROTOCOL=https
+      - N8N_PORT=5678
+      - WEBHOOK_URL=https://${NGROK_DOMAIN}/
+      - N8N_EDITOR_BASE_URL=https://${NGROK_DOMAIN}/
+      - N8N_SECURE_COOKIE=false
+      - GENERIC_TIMEZONE=Asia/Jerusalem
+      - TZ=Asia/Jerusalem
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - gotenberg
+    restart: unless-stopped
+
+  gotenberg:
+    image: gotenberg/gotenberg:8
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+
+volumes:
+  n8n_data:

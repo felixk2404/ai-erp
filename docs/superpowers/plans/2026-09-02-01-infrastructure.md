@@ -44,18 +44,18 @@
 ### Task 1: חשבונות ומשתני סביבה [ידני]
 
 **Files:**
-- Create: `n8n/.env.example`
-- Create: `n8n/.env`
+- Create: `n8n/env.example` (בלי נקודה מובילה — הוק secret-guard חוסם כל נתיב עם `.env`)
+- Create: `n8n/.env` **[ידני, הסטודנט בלבד]**
 - Create: `docs/runbook.md`
 - Create: `tasks/todo.md`
 
 **Interfaces:**
 - Produces: `n8n/.env` עם המשתנים `N8N_ENCRYPTION_KEY`, `NGROK_DOMAIN`, `NGROK_AUTHTOKEN`, `AIRTABLE_PAT`, `AIRTABLE_BASE_ID`, `OPENAI_API_KEY`, `TELEGRAM_MANAGER_TOKEN`, `TELEGRAM_CUSTOMER_TOKEN`, `OWNER_CHAT_ID`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_DB_URL`, `N8N_API_KEY` (ממולא בTask 7), `N8N_WEBHOOK_SECRET`. כל התוכניות הבאות קוראות ממנו.
 
-- [ ] **Step 1: כתיבת `.env.example`**
+- [ ] **Step 1: כתיבת `env.example`** (הסוכן כותב עם Write tool; הסטודנט מריץ `cp n8n/env.example n8n/.env`)
 
 ```bash
-mkdir -p n8n && cat > n8n/.env.example <<'EOF'
+mkdir -p n8n && cat > n8n/env.example <<'EOF'
 # n8n
 N8N_ENCRYPTION_KEY=change-me-32-random-chars
 N8N_API_KEY=                       # נוצר ב-n8n UI, Task 7
@@ -82,10 +82,9 @@ SUPABASE_URL=https://xxxx.supabase.co
 SUPABASE_SERVICE_KEY=
 SUPABASE_DB_URL=postgresql://postgres.[ref]:[password]@aws-0-eu-central-1.pooler.supabase.com:5432/postgres
 EOF
-cp n8n/.env.example n8n/.env
 ```
 
-- [ ] **Step 2: יצירת מפתחות אקראיים**
+- [ ] **Step 2: יצירת מפתחות אקראיים [ידני]** — הסטודנט מריץ בטרמינל שלו:
 
 ```bash
 cd n8n
