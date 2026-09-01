@@ -29,4 +29,4 @@
 | Customers | Email | Email | |
 | Customers | Phone | Phone number | |
 
-יצירה: `airtable/create-tables.sh` (על בסיס ריק, פעם אחת). אימות: `airtable/verify-schema.sh`. רשומות ראשונות לבדיקה: `airtable/seed.sh`.
+יצירה: `airtable/create-tables.sh` (בטוח להרצה חוזרת). שדות `Created` (Created time) אינם נתמכים ב-Metadata API ומתווספים ידנית ב-UI ב-Invoices וב-Leads. אימות: `airtable/verify-schema.sh`. רשומות ראשונות לבדיקה: `airtable/seed.sh`.
