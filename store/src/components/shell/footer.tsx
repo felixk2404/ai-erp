@@ -1,22 +1,22 @@
 import Link from 'next/link';
 import { Wordmark } from '@/components/shell/wordmark';
+import { LEGAL_LINKS } from '@/content/policies';
 import { EYEBROW } from '@/lib/ui';
 
 const LINKS = [
   { href: '/products', label: 'מוצרים' },
   { href: '/track', label: 'מעקב הזמנה' },
-  { href: '/policies', label: 'מדיניות' },
   { href: '/about', label: 'אודות' },
 ] as const;
 
 /**
- * סגירה שקטה: אותה שפה של קווי rule, שלוש עמודות בדסקטופ ומחסנית במובייל.
+ * סגירה שקטה: אותה שפה של קווי rule, ארבע עמודות בדסקטופ ומחסנית במובייל.
  * שום beam כאן — האקסנט שמור לפעולות, והכותרת התחתונה היא מטא (glow-3).
  */
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-rule">
-      <div className="container-x grid gap-10 py-12 md:grid-cols-3">
+      <div className="container-x grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-4">
         <div>
           <Wordmark />
           <p className="mt-3 max-w-[38ch] text-sm text-glow-2">מוצרים מקוריים, אחריות יבואן, ומשלוח עד הבית.</p>
@@ -28,6 +28,25 @@ export function Footer() {
           </h2>
           <ul className="mt-3 flex flex-col gap-1">
             {LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  transitionTypes={['nav-forward']}
+                  className="flex h-10 items-center rounded-md text-sm text-glow-2 transition-colors hover:text-glow"
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footer-legal">
+          <h2 id="footer-legal" className={EYEBROW}>
+            מידע ותנאי שירות
+          </h2>
+          <ul className="mt-3 flex flex-col gap-1">
+            {LEGAL_LINKS.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}

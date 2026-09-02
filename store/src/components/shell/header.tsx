@@ -12,7 +12,6 @@ import { useCart } from '@/components/cart/cart-provider';
 const NAV = [
   { href: '/products', label: 'מוצרים' },
   { href: '/track', label: 'מעקב הזמנה' },
-  { href: '/policies', label: 'מדיניות' },
 ] as const;
 
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.3 };
