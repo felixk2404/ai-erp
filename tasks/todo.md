@@ -26,3 +26,14 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - rtl-qa: header wrap בנייד, ניווט נייד scrollIntoView+fade, עמודות משניות מוסתרות בנייד, יעדי לחיצה 44px במגע, גרש בחודשים, "פריט אחד".
 - משוב "חשוך מדי": משטחים/טקסט/קווים הוארו, תוויות מטא 12px.
 - ידוע/לא שלנו: אזהרת hydration `caret-color` בשדה סיסמה בלוגין (Base UI, dev בלבד, קיימת מלפני).
+
+## תוכנית 5 — בקאנד הזמנות (2026-09-02)
+- [x] טבלת Orders + שדות Stock/Highlights ב-Products
+- [x] seed-stock
+- [x] WF10 — הזמנה מהחנות
+- [x] WF13 action:"order" + action:"order_status"
+- [x] כלי check_stock לסוכן
+- [x] הזמנות בעמוד המנהל
+- [x] תיקון לולאה ב-WF1 (Loop Over Items)
+- [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי לפני ההגשה
+- [ ] STORE_DOMAIN ב-config.json → הכתובת האמיתית של החנות אחרי הפריסה (ואז import מחדש של WF10)

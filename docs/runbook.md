@@ -39,7 +39,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 מלאי התחלתי: `airtable/seed-stock.sh` (דטרמיניסטי, בטוח להרצה חוזרת; משאיר לפחות שני מוצרים ב-Stock=0 להדגמת "אזל מהמלאי" — כרגע `TY-CB-HD21` ו-`TY-MN-34U`).
 
 ## 7. workflows (n8n)
-מקור: `n8n/workflows/*.json` (תבניות עם placeholders). ייבוא/עדכון: `n8n/scripts/import-workflow.sh n8n/workflows/<file> --activate`. ייצוא מהשרת: `n8n/scripts/export-workflows.sh` → `n8n/workflows/exported/`. הרצות: `n8n/scripts/executions.sh "<שם>" [n]`.
+מקור: `n8n/workflows/*.json` (תבניות עם placeholders). ייבוא/עדכון: `n8n/scripts/import-workflow.sh n8n/workflows/<file> --activate`. ייצוא מהשרת: `n8n/scripts/export-workflows.sh` → `n8n/workflows/exported/`. הרצות: `n8n/scripts/executions.sh "<שם>" [n]` — צריך את השם המלא של ה-workflow (למשל `"WF5-core — סוכן שירות לקוחות"`), לא רק את המספר.
 
 | workflow | טריגר | איך בודקים |
 |---|---|---|
@@ -102,3 +102,4 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - Airtable Metadata API לא יוצר שדה Created time — מוסיפים ידנית, הסקריפט משנה שם ל-`Created`.
 - Gotenberg: Chromium איטי בהפעלה ראשונה — timeout 90s ב-compose.
 - WF1 נשבר כששתי חשבוניות נוצרות באותה דגימה של ה-Airtable Trigger: הצומת `Compute` משתמש ב-`$('Airtable Trigger').item` ואחרי `Aggregate` השיוך מעורפל → `Multiple matches found`. חשבונית תקועה ב-`new` לא תיקרא שוב על ידי הטריגר. בדמו — להזמין הזמנה אחת בכל דקה.
+- Aggregate/Summarize אחרי טריגר מרובה-פריטים שובר את השיוך של `$('Trigger').item` → עוטפים את הגוף ב-Loop Over Items (תיקון WF1, 2026-09-02).
