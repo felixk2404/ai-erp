@@ -7,7 +7,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const mocks = vi.hoisted(() => ({ erpCall: vi.fn(), ip: 'ip-0' }));
 
 vi.mock('next/headers', () => ({ headers: async () => new Headers({ 'x-forwarded-for': mocks.ip }) }));
-vi.mock('@/lib/n8n', () => ({ erpCall: (...args: unknown[]) => mocks.erpCall(...args), ErpError: class extends Error {} }));
+vi.mock('@/lib/n8n', () => ({
+  erpCall: (...args: unknown[]) => mocks.erpCall(...args),
+  ErpError: class extends Error {},
+  ErpShapeError: class extends Error {},
+}));
 
 import { lookupOrder } from './actions';
 
@@ -26,7 +30,7 @@ describe('lookupOrder', () => {
     const res = await lookupOrder('  ord-0001 ', ' Buyer@Example.COM ');
 
     expect(res.ok).toBe(true);
-    expect(mocks.erpCall.mock.calls[0][0]).toMatchObject({
+    expect(mocks.erpCall.mock.calls[0][1]).toMatchObject({
       action: 'order_status',
       orderNumber: 'ORD-0001',
       email: 'buyer@example.com',

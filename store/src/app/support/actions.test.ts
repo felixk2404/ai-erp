@@ -7,7 +7,11 @@ vi.mock('next/headers', () => ({
   headers: async () => new Headers({ 'x-forwarded-for': mocks.ip }),
   cookies: async () => ({ get: () => (mocks.cookie ? { value: mocks.cookie } : undefined), set: (_k: string, v: string) => (mocks.cookie = v) }),
 }));
-vi.mock('@/lib/n8n', () => ({ erpCall: (...args: unknown[]) => mocks.erpCall(...args), ErpError: class extends Error {} }));
+vi.mock('@/lib/n8n', () => ({
+  erpCall: (...args: unknown[]) => mocks.erpCall(...args),
+  ErpError: class extends Error {},
+  ErpShapeError: class extends Error {},
+}));
 vi.mock('@/lib/catalog', () => ({
   getProducts: () => mocks.getProducts(),
   isService: (p: { fields: { Category?: string } }) => p.fields.Category === 'שירותים',
@@ -52,7 +56,7 @@ describe('sendSupport', () => {
 
     await sendSupport('x'.repeat(600), { sku: 'TY-HP-200', page: '/products/TY-HP-200' });
 
-    const body = mocks.erpCall.mock.calls[0][0] as { message: string; sessionId: string };
+    const body = mocks.erpCall.mock.calls[0][1] as { message: string; sessionId: string };
     expect(body.message.startsWith('x'.repeat(500))).toBe(true);
     expect(body.message).toContain('מק"ט TY-HP-200');
     expect(body.sessionId).toBe('session-1');

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { MAX_LINES, MAX_QTY } from './cart';
-import type { OrderItem } from './types';
+import { ORDER_STATUSES, type OrderItem, type TrackedOrder } from './types';
 
 /** שדות הטופס שיכולים לקבל שגיאה. הסדר כאן הוא סדר המיקוד בטופס. */
 export const CHECKOUT_FIELDS = ['name', 'email', 'phone', 'address', 'city', 'note', 'items'] as const;
@@ -65,6 +65,9 @@ export type OrderPayload = {
   note?: string;
 };
 
+/** פריט כפי ש-WF13 מחזיר אותו (runbook §7.1) — המחיר מגיע מהקטלוג בצד השרת. */
+const orderItemSchema = z.object({ sku: z.string(), name: z.string(), qty: z.number(), price: z.number() });
+
 /** תשובת WF13 ל-`action: 'order'` — HTTP 200 בשני המקרים, ההבדל הוא ב-`ok`. */
 export type OrderResult =
   | {
@@ -78,6 +81,25 @@ export type OrderResult =
       items: OrderItem[];
     }
   | { ok: false; error: string; outOfStock?: { sku: string; name: string; available: number }[] };
+
+/** אותו חוזה, בזמן ריצה. `ZodType<OrderResult>` הוא מה שמונע סחיפה בין השניים. */
+export const orderResultSchema: z.ZodType<OrderResult> = z.discriminatedUnion('ok', [
+  z.object({
+    ok: z.literal(true),
+    orderNumber: z.string(),
+    invoiceNumber: z.string(),
+    total: z.number(),
+    subtotal: z.number(),
+    shipping: z.number(),
+    vat: z.number(),
+    items: z.array(orderItemSchema),
+  }),
+  z.object({
+    ok: z.literal(false),
+    error: z.string(),
+    outOfStock: z.array(z.object({ sku: z.string(), name: z.string(), available: z.number() })).optional(),
+  }),
+]);
 
 /** FormData → נתוני קופה מאומתים, או שגיאה אחת לכל שדה (הראשונה שנמצאה). */
 export function parseCheckout(fd: FormData): CheckoutParse {
@@ -113,3 +135,37 @@ export function toOrderPayload(d: CheckoutData): OrderPayload {
     ...(d.note ? { note: d.note } : {}),
   };
 }
+
+/**
+ * חוזה WF13 (runbook §7.1) בזמן ריצה. סובלני רק בשדות שהמסך לא קורא (`created`)
+ * ובשדות ש-WF13 עצמו כותב `|| null` — שאר החוזה נאכף, כי `items` שחוזר `null`
+ * הפיל את העמוד במקום להציג "השירות לא זמין".
+ */
+const nullableString = z
+  .string()
+  .nullish()
+  .transform((v) => v ?? null);
+
+const trackedOrderSchema: z.ZodType<TrackedOrder> = z.object({
+  orderNumber: z.string(),
+  status: z.enum(ORDER_STATUSES),
+  items: z.array(z.object({ sku: z.string(), name: z.string(), qty: z.number(), price: z.number() })),
+  subtotal: z.number(),
+  shipping: z.number(),
+  total: z.number(),
+  created: z
+    .string()
+    .nullish()
+    .transform((v) => v ?? ''),
+  invoiceNumber: nullableString,
+  pdfUrl: nullableString,
+  invoiceStatus: nullableString,
+});
+
+/** תשובת WF13 ל-`action: 'order_status'`. */
+export type LookupResult = { ok: true; order: TrackedOrder } | { ok: false; error: string };
+
+export const lookupResultSchema: z.ZodType<LookupResult> = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), order: trackedOrderSchema }),
+  z.object({ ok: z.literal(false), error: z.string() }),
+]);

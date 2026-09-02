@@ -1,7 +1,7 @@
 'use server';
 
 import { headers } from 'next/headers';
-import { erpCall, ErpError } from '@/lib/n8n';
+import { erpCall, ErpError, ErpShapeError } from '@/lib/n8n';
 import { getProducts, isService } from '@/lib/catalog';
 import { createRateLimiter } from '@/lib/rate-limit';
 import {
@@ -11,7 +11,7 @@ import {
   toOrderPayload,
   type CheckoutErrors,
   type CheckoutData,
-  type OrderResult,
+  orderResultSchema,
 } from '@/lib/order';
 
 /** 5 הזמנות לדקה לכל IP. נספרות רק בקשות שמגיעות עד ל-n8n — טופס שנפסל בוולידציה
@@ -79,7 +79,7 @@ export async function placeOrder(_prev: PlaceOrderState, fd: FormData): Promise<
   if (!orderLimiter.allow(ip)) return { error: 'יותר מדי ניסיונות. נסו שוב בעוד דקה.', values };
 
   try {
-    const res = await erpCall<OrderResult>({ action: 'order', order: toOrderPayload(parsed.data) }, ORDER_TIMEOUT_MS);
+    const res = await erpCall(orderResultSchema, { action: 'order', order: toOrderPayload(parsed.data) }, ORDER_TIMEOUT_MS);
     // HTTP 200 גם לכישלון עסקי — ההבחנה היא ב-ok, לא בסטטוס.
     if (!res.ok) {
       // WF13 מדווח "אולי נשמרה" גם בגוף תקין; הטופס חייב להתייחס אליו כמו
@@ -89,9 +89,11 @@ export async function placeOrder(_prev: PlaceOrderState, fd: FormData): Promise<
     }
     return { ok: true, orderNumber: res.orderNumber, email: parsed.data.email };
   } catch (e) {
-    // timeout או 5xx: ייתכן ש-WF10 כבר כתב את ההזמנה. כל שאר התקלות — ניסיון חוזר בטוח.
+    // timeout, 5xx או תשובה שלא תואמת את החוזה: ייתכן ש-WF10 כבר כתב את ההזמנה.
+    // כל שאר התקלות — ניסיון חוזר בטוח.
     const maybeSaved =
       (e instanceof Error && (e.name === 'TimeoutError' || e.name === 'AbortError')) ||
+      e instanceof ErpShapeError ||
       (e instanceof ErpError && /^n8n 5\d\d$/.test(e.message));
     return maybeSaved ? { error: MAYBE_SAVED, maybeSaved: true, values } : { error: OFFLINE, values };
   }

@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { erpCall } from '@/lib/n8n';
 import { createRateLimiter } from '@/lib/rate-limit';
 import { normalizeEmail, normalizeOrderNumber } from '@/lib/order-status';
-import type { TrackedOrder } from '@/lib/types';
+import { lookupResultSchema, type LookupResult } from '@/lib/order';
 
 /** 20 בירורי הזמנה לדקה לכל IP — עמוד ציבורי בלי אימות. */
 const lookupLimiter = createRateLimiter({ limit: 20, windowMs: 60_000 });
@@ -22,7 +22,7 @@ const lookupSchema = z.object({
 /** קלט פסול מקבל בדיוק את התשובה של "לא נמצאה" — בלי אורקל שמלמד מה תקין. */
 const NOT_FOUND = 'ההזמנה לא נמצאה';
 
-export type LookupResult = { ok: true; order: TrackedOrder } | { ok: false; error: string };
+export type { LookupResult };
 
 export async function lookupOrder(orderNumber: string, email: string): Promise<LookupResult> {
   // הוולידציה לפני המונה: טעות הקלדה של לקוח אמיתי לא אמורה לשרוף לו את המכסה.
@@ -36,9 +36,9 @@ export async function lookupOrder(orderNumber: string, email: string): Promise<L
   if (!lookupLimiter.allow(ip)) return { ok: false, error: 'יותר מדי בקשות. נסו שוב בעוד דקה.' };
 
   try {
-    return await erpCall<LookupResult>({ action: 'order_status', ...parsed.data }, 30_000);
+    return await erpCall(lookupResultSchema, { action: 'order_status', ...parsed.data }, 30_000);
   } catch {
-    // רשת/timeout/סטטוס לא תקין מ-n8n — כולם אותה תקלה מנקודת המבט של הלקוח.
+    // רשת/timeout/סטטוס לא תקין/תשובה לא תואמת חוזה — הכל אותה תקלה מנקודת המבט של הלקוח.
     return { ok: false, error: 'השירות לא זמין כרגע, נסו שוב בעוד רגע' };
   }
 }

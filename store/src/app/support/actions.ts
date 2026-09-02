@@ -1,6 +1,7 @@
 'use server';
 
 import { cookies, headers } from 'next/headers';
+import { z } from 'zod';
 import { erpCall } from '@/lib/n8n';
 import { getProducts, isService, inStock } from '@/lib/catalog';
 import { matchProducts } from '@/lib/product-match';
@@ -21,6 +22,9 @@ export type SupportProduct = {
 };
 
 export type SupportResult = { reply?: string; products?: SupportProduct[]; error?: string };
+
+/** חוזה WF13 ל-`support` (runbook §7.1). `reply`/`error` אופציונליים — הקורא בודק אותם. */
+const supportReplySchema = z.object({ ok: z.boolean(), reply: z.string().optional(), error: z.string().optional() });
 
 /** מזהה שיחה יציב לכל דפדפן. WF13 מוסיף לו קידומת `web-` ומנהל את הזיכרון בצד השרת. */
 async function sessionId(): Promise<string> {
@@ -51,7 +55,8 @@ export async function sendSupport(
 
   try {
     const [res, products] = await Promise.all([
-      erpCall<{ ok: boolean; reply?: string; error?: string }>(
+      erpCall(
+        supportReplySchema,
         { action: 'support', message: where ? `${text}\n[הקשר: ${where}]` : text, sessionId: await sessionId() },
         60_000,
       ),

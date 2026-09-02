@@ -12,6 +12,7 @@ vi.mock('next/headers', () => ({ headers: async () => new Headers({ 'x-forwarded
 vi.mock('@/lib/n8n', () => ({
   erpCall: (...args: unknown[]) => mocks.erpCall(...args),
   ErpError: class ErpError extends Error {},
+  ErpShapeError: class ErpShapeError extends Error {},
 }));
 vi.mock('@/lib/catalog', () => ({
   getProducts: () => mocks.getProducts(),
@@ -69,7 +70,7 @@ describe('placeOrder — מה חוזר ללקוח', () => {
     const res = await placeOrder({}, form());
 
     expect(res).toMatchObject({ ok: true, orderNumber: 'ORD-0009', email: 'buyer@example.com' });
-    const [body] = mocks.erpCall.mock.calls[0] as [{ order: { items: unknown[] } }];
+    const [, body] = mocks.erpCall.mock.calls[0] as [unknown, { order: { items: unknown[] } }];
     expect(body.order.items).toEqual([{ sku: 'TY-HP-200', qty: 2 }]);
     expect(JSON.stringify(body)).not.toMatch(/price/i);
   });
