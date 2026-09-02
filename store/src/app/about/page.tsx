@@ -5,9 +5,9 @@ import { Reveal } from "@/components/motion/reveal";
 export const metadata: Metadata = { title: "אודות" };
 
 const STEPS = [
-  { label: "הזמנה", desc: "הלקוח מזמין באתר או מדבר עם הבוט בטלגרם." },
-  { label: "n8n", desc: "אוטומציה קולטת את האירוע, מפעילה את סוכני ה-AI ומעדכנת את Airtable." },
-  { label: "חשבונית · מייל · טלגרם", desc: "המסמך והעדכון יוצאים ללקוח בכל הערוצים כמעט בו-זמנית." },
+  { label: "הזמנה", mono: false, desc: "הלקוח מזמין באתר או מדבר עם הבוט בטלגרם." },
+  { label: "n8n", mono: true, desc: "אוטומציה קולטת את האירוע, מפעילה את סוכני ה-AI ומעדכנת את Airtable." },
+  { label: "חשבונית · מייל · טלגרם", mono: false, desc: "המסמך והעדכון יוצאים ללקוח בכל הערוצים כמעט בו-זמנית." },
 ] as const;
 
 const STACK = ["Next.js 16", "n8n", "Airtable", "Supabase pgvector", "OpenAI"] as const;
@@ -17,7 +17,7 @@ const STACK = ["Next.js 16", "n8n", "Airtable", "Supabase pgvector", "OpenAI"] a
  * Hierarchy: h1 → שני פסקאות סיפור המותג/הפרויקט → "איך זה עובד" (שלוש תחנות) → "טכנולוגיות".
  * Palette: void/glow בלבד; שום beam — אין כאן כפתור פעולה שדורש אקסנט.
  * Depth: פאנלים בגבול rule על panel-1, בלי הילה — זה עמוד הסבר, לא ויטרינת מוצר.
- * Typography: h1 44/64px, h2 22px, גוף 16/1.5, תוויות מונו 11px.
+ * Typography: h1 44/64px, h2 22px, גוף 16/1.5, eyebrow עברי ב-Heebo 11px; מונו רק ל-0N ול-n8n.
  * Spacing: פער 64px בין הסקשנים, רוחב טקסט מקסימלי 68ch לפסקאות.
  */
 export default function AboutPage() {
@@ -44,7 +44,7 @@ export default function AboutPage() {
 
       <Reveal className="mt-16">
         <section>
-          <p className="font-mono text-[11px] tracking-[0.08em] text-glow-3">איך זה עובד</p>
+          <p className="font-sans text-[11px] tracking-[0.08em] text-glow-3">איך זה עובד</p>
           <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.02em] text-balance">
             מהזמנה למסמך, בלי מגע יד אדם
           </h2>
@@ -53,8 +53,8 @@ export default function AboutPage() {
             {STEPS.map((step, i) => (
               <Fragment key={step.label}>
                 <div className="flex-1 rounded-lg border border-rule bg-panel-1 p-4">
-                  <p className="font-mono text-[11px] tracking-[0.08em] text-glow-3">{`0${i + 1}`}</p>
-                  <p className="mt-1 font-mono text-sm text-glow">{step.label}</p>
+                  <p className="num text-[11px] tracking-[0.08em] text-glow-3">{`0${i + 1}`}</p>
+                  <p className={`mt-1 text-sm text-glow ${step.mono ? "font-mono" : "font-sans font-medium"}`}>{step.label}</p>
                   <p className="mt-2 text-sm text-glow-2">{step.desc}</p>
                 </div>
                 {i < STEPS.length - 1 && (
@@ -71,7 +71,7 @@ export default function AboutPage() {
 
       <Reveal delay={0.05} className="mt-16">
         <section>
-          <p className="font-mono text-[11px] tracking-[0.08em] text-glow-3">טכנולוגיות</p>
+          <p className="font-sans text-[11px] tracking-[0.08em] text-glow-3">טכנולוגיות</p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {STACK.map((tech) => (
               <li key={tech} className="rounded-full border border-rule px-3 py-1.5 font-mono text-sm text-glow-2">

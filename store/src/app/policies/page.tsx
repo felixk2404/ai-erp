@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
-import { AskBotButton } from "@/components/content/ask-bot-button";
+import { PolicyNav } from "@/components/content/policy-nav";
+import { AskBot } from "@/components/home/ask-bot";
+import { buttonVariants } from "@/components/ui/button";
 import { POLICIES } from "@/content/policies";
 
 export const metadata: Metadata = { title: "מדיניות" };
@@ -10,7 +12,7 @@ export const metadata: Metadata = { title: "מדיניות" };
  * Hierarchy: h1 → כותרת חלק (מונו, meta) → h2 → תקציר → תבליטים → הערה חופשית.
  * Palette: void/glow בלבד, beam ל-10 נקודות התבליט ולכפתור הסיום.
  * Depth: קו rule יחיד מפריד את הניווט הצדדי מהתוכן; בלי כרטיסים, בלי הילות.
- * Typography: h1 44px/800, h2 22px/800, גוף 16/1.5, eyebrow מונו 11px.
+ * Typography: h1 44px/800, h2 22px/800, גוף 16/1.5, eyebrow עברי ב-Heebo 11px (המספר הסידורי בלבד ב-.num).
  * Spacing: רשת 8px; פער של 64px בין סקשנים; רוחב טקסט מקסימלי 68ch.
  */
 export default function PoliciesPage() {
@@ -23,26 +25,15 @@ export default function PoliciesPage() {
 
       <div className="mt-16 grid gap-12 lg:grid-cols-[200px_1fr] lg:gap-x-16">
         <nav aria-label="ניווט במדיניות" className="hidden lg:block">
-          <ul className="sticky top-24 flex flex-col gap-1 border-s border-rule ps-4">
-            {POLICIES.map((policy) => (
-              <li key={policy.id}>
-                <a
-                  href={`#${policy.id}`}
-                  className="flex h-9 items-center text-sm text-glow-2 transition-colors hover:text-glow focus-visible:text-glow"
-                >
-                  {policy.title}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <PolicyNav items={POLICIES.map((policy) => ({ id: policy.id, title: policy.title }))} />
         </nav>
 
         <div className="flex flex-col gap-16">
           {POLICIES.map((policy, i) => (
             <Reveal key={policy.id} delay={i * 0.05}>
               <section id={policy.id} className="max-w-[68ch] scroll-mt-24">
-                <p className="font-mono text-[11px] tracking-[0.08em] text-glow-3">
-                  {String(i + 1).padStart(2, "0")} / מדיניות
+                <p className="font-sans text-[11px] tracking-[0.08em] text-glow-3">
+                  <span className="num">{String(i + 1).padStart(2, "0")}</span> / מדיניות
                 </p>
                 <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.02em] text-balance">{policy.title}</h2>
                 <p className="mt-2 text-glow-2">{policy.summary}</p>
@@ -64,7 +55,7 @@ export default function PoliciesPage() {
       </div>
 
       <div className="mt-20 flex justify-center border-t border-rule pt-12">
-        <AskBotButton />
+        <AskBot className={buttonVariants({ size: "lg" })}>לא מצאתם תשובה? שאלו את הבוט</AskBot>
       </div>
     </div>
   );
