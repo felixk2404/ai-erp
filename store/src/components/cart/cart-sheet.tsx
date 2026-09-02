@@ -36,12 +36,12 @@ export function CartSheet() {
       <SheetContent
         side="left"
         showCloseButton={false}
-        aria-label="הסל שלך"
+        aria-label="הסל שלכם"
         className="flex flex-col gap-0 border-rule-strong bg-panel-1 p-0 data-[side=left]:w-full data-[side=left]:sm:max-w-[420px]"
       >
         <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-rule px-4">
           <div className="flex items-baseline gap-2">
-            <SheetTitle className="text-xl font-medium text-glow">הסל שלך</SheetTitle>
+            <SheetTitle className="text-xl font-medium text-glow">הסל שלכם</SheetTitle>
             {/* בלי aria-live: מונה העגלה בכותרת כבר מכריז את אותו שינוי, ושני אזורים
                 חיים על אותו נתון מקריאים אותו פעמיים. ריק כשהעגלה ריקה. */}
             <span className="num text-sm text-glow-3">

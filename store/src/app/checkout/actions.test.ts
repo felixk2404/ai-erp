@@ -120,7 +120,7 @@ describe('placeOrder — הדגל service נגזר מהקטלוג', () => {
       form({ address: '', city: '', items: JSON.stringify([{ sku: 'TY-MN-27Q', qty: 1, service: true }]) }),
     );
 
-    expect(res.errors).toEqual({ address: 'נדרש למשלוח', city: 'נדרש למשלוח' });
+    expect(res.errors).toEqual({ address: 'חובה למשלוח', city: 'חובה למשלוח' });
     expect(mocks.erpCall).not.toHaveBeenCalled();
   });
 

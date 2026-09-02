@@ -51,7 +51,7 @@ export async function sendSupport(
   if (!supportLimiter.allow(ip)) return { error: 'יותר מדי הודעות. נסו שוב בעוד דקה.' };
 
   // ההקשר נוסע כחלק מההודעה — חוזה WF13 מכיר רק message/sessionId.
-  const where = [context?.sku && `מק"ט ${context.sku}`, context?.page && `עמוד ${context.page}`].filter(Boolean).join(', ');
+  const where = [context?.sku && `מק״ט ${context.sku}`, context?.page && `עמוד ${context.page}`].filter(Boolean).join(', ');
 
   try {
     const [res, products] = await Promise.all([

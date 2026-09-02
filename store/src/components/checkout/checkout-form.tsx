@@ -297,7 +297,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
                   transitionTypes={['nav-forward']}
                   className="mt-3 inline-block text-sm text-beam underline-offset-4 hover:underline"
                 >
-                  לעמוד מעקב ההזמנות
+                  לעמוד מעקב הזמנה
                 </Link>
               )}
             </motion.div>
@@ -352,10 +352,6 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
           <span aria-live="polite" className="sr-only">
             {pending ? 'שומרים את ההזמנה…' : ''}
           </span>
-
-          <p className="relative text-center text-meta text-glow-3">
-            ההזמנה נכנסת למערכת באמת. בלי תשלום ובלי פרטי אשראי.
-          </p>
         </div>
       </div>
 

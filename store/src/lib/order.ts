@@ -20,7 +20,7 @@ const lineSchema = z.object({
  */
 export function shippingErrors(v: { address?: string; city?: string }, physical: boolean): CheckoutErrors {
   if (!physical) return {};
-  return { ...(v.address ? {} : { address: 'נדרש למשלוח' }), ...(v.city ? {} : { city: 'נדרש למשלוח' }) };
+  return { ...(v.address ? {} : { address: 'חובה למשלוח' }), ...(v.city ? {} : { city: 'חובה למשלוח' }) };
 }
 
 const schema = z
@@ -46,7 +46,7 @@ const schema = z
           return z.NEVER;
         }
       })
-      .pipe(z.array(lineSchema).min(1, 'הסל ריק').max(MAX_LINES, `עד ${MAX_LINES} מוצרים שונים בהזמנה`)),
+      .pipe(z.array(lineSchema).min(1, 'הסל ריק').max(MAX_LINES, `אפשר עד ${MAX_LINES} מוצרים שונים בהזמנה`)),
   })
   .superRefine((v, ctx) => {
     // הדגל `service` מהדפדפן הוא רק רמז לטופס; השרת גוזר אותו מהקטלוג ובודק שוב.

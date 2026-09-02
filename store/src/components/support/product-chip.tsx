@@ -47,7 +47,7 @@ export function ProductChip({ product }: { product: SupportProduct }) {
         }}
         className="h-10 shrink-0 rounded-md border border-rule-strong bg-panel-3 px-3 text-sm font-medium text-glow transition-colors hover:border-beam/50 hover:text-beam disabled:pointer-events-none disabled:text-glow-4"
       >
-        הוסף לסל
+        הוספה לסל
       </button>
     </div>
   );

@@ -66,7 +66,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           onClick={() => put({ sku, name, price, qty, service, imageUrl })}
           className="h-11 flex-1 gap-1.5 rounded-sm px-4 text-body"
         >
-          הוסף לסל —<span className="num">{ils(price * qty)}</span>
+          הוספה לסל · <span className="num">{ils(price * qty)}</span>
         </Button>
       </div>
 
@@ -78,7 +78,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           onClick={() => put({ sku: install.sku, name: install.name, price: install.price, qty: 1, service: true })}
           className="h-11 w-full justify-between rounded-sm px-4 text-body text-glow-2 hover:text-glow"
         >
-          הוסיפו התקנה
+          הוספת התקנה
           <span className="num text-glow-3">{ils(install.price)}</span>
         </Button>
       )}

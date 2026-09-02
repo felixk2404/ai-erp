@@ -29,7 +29,7 @@ export function CheckoutView() {
     <div className="mx-auto max-w-[980px] py-4 lg:py-8">
       <header className="mb-10">
         <h1 className="text-3xl leading-tight font-extrabold tracking-[-0.02em]">קופה</h1>
-        <p className="mt-2 text-glow-3">עוד פרט אחד וסיימנו.</p>
+        <p className="mt-2 text-glow-3">כמה פרטים וסיימנו.</p>
       </header>
 
       {!ready ? (

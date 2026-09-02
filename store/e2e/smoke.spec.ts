@@ -65,10 +65,10 @@ test('עמוד מוצר: מחיר, מלאי, הוספה לסל ופתיחת המ
   await expect(buyBox.getByText('₪').first()).toBeVisible();
   await expect(buyBox.getByText('במלאי')).toBeVisible();
 
-  await buyBox.getByRole('button', { name: /הוסף לסל/ }).click();
+  await buyBox.getByRole('button', { name: /הוספה לסל/ }).click();
 
   await expect(page.getByRole('button', { name: 'פתיחת הסל. בסל מוצר אחד' })).toBeVisible();
-  const drawer = page.getByRole('dialog', { name: 'הסל שלך' });
+  const drawer = page.getByRole('dialog', { name: 'הסל שלכם' });
   await expect(drawer).toBeVisible();
   await expect(drawer.getByText(ITEM.name)).toBeVisible();
   await expect(drawer.getByRole('link', { name: /לקופה/ })).toBeVisible();
@@ -109,7 +109,7 @@ test('מוצר שאזל: תג "אזל" והפניה לבוט במקום הבטח
   const buyBox = page.locator('aside').first();
   await expect(buyBox.getByText('אזל')).toBeVisible();
   await expect(buyBox.getByRole('button', { name: /התראות חזרה למלאי/ })).toBeVisible();
-  await expect(buyBox.getByRole('button', { name: /הוסף לסל/ })).toHaveCount(0);
+  await expect(buyBox.getByRole('button', { name: /הוספה לסל/ })).toHaveCount(0);
 });
 
 test('עמוד המדיניות מציג את כל הסעיפים', async ({ page }) => {

@@ -67,10 +67,10 @@ export function PriceButton({
       className={`${emphasis === 'beam' ? BEAM : REST} ${compact ? 'h-8 rounded-md px-3 text-body' : 'h-10 min-w-0 flex-1 rounded-md px-4 text-body'}`}
     >
       {compact ? (
-        'הוסף לסל'
+        'הוספה לסל'
       ) : (
         <>
-          הוסף לסל —<span className="num">{ils(price)}</span>
+          הוספה לסל · <span className="num">{ils(price)}</span>
         </>
       )}
     </Button>

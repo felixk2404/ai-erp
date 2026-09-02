@@ -22,5 +22,5 @@ export const ADD_REFUSALS = {
   added: '',
   merged: '',
   'max-lines': `הסל מלא. אפשר עד ${MAX_LINES} מוצרים שונים.`,
-  'max-qty': `אי אפשר יותר מ־${MAX_QTY} יחידות מאותו מוצר.`,
+  'max-qty': `אפשר עד ${MAX_QTY} יחידות מאותו מוצר.`,
 } as const;

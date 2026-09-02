@@ -58,7 +58,7 @@ describe('sendSupport', () => {
 
     const body = mocks.erpCall.mock.calls[0][1] as { message: string; sessionId: string };
     expect(body.message.startsWith('x'.repeat(500))).toBe(true);
-    expect(body.message).toContain('מק"ט TY-HP-200');
+    expect(body.message).toContain('מק״ט TY-HP-200');
     expect(body.sessionId).toBe('session-1');
   });
 
