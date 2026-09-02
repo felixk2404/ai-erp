@@ -1,20 +1,24 @@
-import * as motion from 'motion/react-client';
-
 /**
- * "נדלק" בגלילה: המוצר נכנס מלמטה ומקבל צבע (grayscale→color) —
- * כמו תאורת חדר תצוגה שנדלקת על הפריט הבא. פעם אחת בלבד, בלי לולאה.
- * Server-safe (motion/react-client); MotionConfig reducedMotion="user" מבטל את ה-y.
+ * "נדלק" בכניסה: הפריט עולה 16px ומקבל צבע (grayscale→color) — כמו תאורת חדר
+ * תצוגה שנדלקת על הפריט הבא. פעם אחת בלבד, בלי לולאה.
+ *
+ * CSS ולא `motion`: ל-`initial={{ opacity: 0 }}` יש מחיר שרת — motion כותב אותו
+ * כ-`style="opacity:0"` כבר ב-HTML, ולכן כל הרשת מגיעה ללקוח שקופה ותלויה ב-JS
+ * כדי להיראות. כאן השרת מרנדר גלוי, והדפדפן מריץ את הכניסה מה-`from` של ה-keyframe
+ * (`globals.css`), כולל כיבוי נטיבי ב-`prefers-reduced-motion`.
  */
-export function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
+export function Reveal({
+  children,
+  delay = 0,
+  className,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16, filter: 'grayscale(1)' }}
-      whileInView={{ opacity: 1, y: 0, filter: 'grayscale(0)' }}
-      viewport={{ once: true, margin: '-10%' }}
-      transition={{ type: 'spring', bounce: 0.2, visualDuration: 0.35, delay }}
-      className={className}
-    >
+    <div data-reveal style={delay ? { animationDelay: `${delay}s` } : undefined} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }

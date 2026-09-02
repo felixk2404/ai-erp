@@ -42,8 +42,9 @@ export function CartSheet() {
         <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-rule px-4">
           <div className="flex items-baseline gap-2">
             <SheetTitle className="text-[18px] font-medium text-glow">העגלה שלך</SheetTitle>
-            {/* אזור חי קבוע (לא מותנה) כדי שקוראי מסך יקבלו עדכון; ריק כשהעגלה ריקה — "0" לצד הכותרת הוא רעש. */}
-            <span aria-live="polite" className="num text-sm text-glow-3">
+            {/* בלי aria-live: מונה העגלה בכותרת כבר מכריז את אותו שינוי, ושני אזורים
+                חיים על אותו נתון מקריאים אותו פעמיים. ריק כשהעגלה ריקה. */}
+            <span className="num text-sm text-glow-3">
               {totals.count > 0 ? totals.count : ''}
             </span>
           </div>

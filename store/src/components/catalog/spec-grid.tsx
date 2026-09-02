@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'motion/react';
 import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
 import { ils } from '@/lib/format';
@@ -10,12 +9,8 @@ import type { ProductCardData } from '@/lib/catalog-filter';
 
 const HEAD = `px-4 py-3 ${EYEBROW}`;
 const CELL = 'px-4 py-3 align-middle';
-const ROW_MOTION = {
-  initial: { opacity: 0, y: 8 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-5%' },
-} as const;
-const springAt = (i: number) => ({ type: 'spring' as const, bounce: 0.15, visualDuration: 0.3, delay: Math.min(i * 0.04, 0.4) });
+/** אותה חשיפה של `Reveal`, כאן ישירות על השורה — CSS, כדי שהטבלה תגיע גלויה מהשרת. */
+const revealAt = (i: number) => ({ animationDelay: `${Math.min(i * 0.04, 0.4)}s` });
 
 /**
  * החתימה של החנות: כל פריט — גם שירות — הוא שורה באותה רשת מפרט.
@@ -30,7 +25,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
         {products.map((p, i) => {
           const sku = p.sku;
           return (
-            <motion.li key={sku} {...ROW_MOTION} transition={springAt(i)} className="border-b border-rule py-3">
+            <li key={sku} data-reveal style={revealAt(i)} className="border-b border-rule py-3">
               <div className="flex items-baseline gap-2">
                 <span dir="ltr" className="num shrink-0 text-[14px] text-glow-3">
                   {sku}
@@ -54,7 +49,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                   <PriceButton product={p} compact />
                 </span>
               </div>
-            </motion.li>
+            </li>
           );
         })}
       </ul>
@@ -96,10 +91,10 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
             {products.map((p, i) => {
               const sku = p.sku;
               return (
-                <motion.tr
+                <tr
                   key={sku}
-                  {...ROW_MOTION}
-                  transition={springAt(i)}
+                  data-reveal
+                  style={revealAt(i)}
                   className="border-t border-rule transition-colors first:border-t-0 hover:bg-panel-1"
                 >
                   <td className={CELL}>
@@ -126,7 +121,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                   <td className={`${CELL} text-end`}>
                     <PriceButton product={p} compact />
                   </td>
-                </motion.tr>
+                </tr>
               );
             })}
           </tbody>

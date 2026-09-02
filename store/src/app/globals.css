@@ -217,6 +217,26 @@ h3 {
   animation-delay: 280ms;
 }
 
+/* חשיפת פריט ברשת (`components/motion/reveal.tsx`). אותו נימוק כמו ב-data-enter:
+   `initial={{opacity:0}}` של motion נכתב כ-style inline כבר בשרת, ולכן הרשת
+   מגיעה ללקוח שקופה. כאן ה-HTML גלוי וה-keyframe מספק את הנקודה ההתחלתית. */
+@keyframes aie-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+    filter: grayscale(1);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: grayscale(0);
+  }
+}
+
+[data-reveal] {
+  animation: aie-reveal 480ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
 /* הפריט מרחף בתוך האור — הלולאה היחידה בעמוד חוץ מפעימת הבוט. */
 @keyframes aie-hero-float {
   0%,
@@ -352,6 +372,11 @@ h3 {
   }
   [data-hero-float] {
     animation: none;
+  }
+  [data-reveal] {
+    animation-name: aie-word-reveal-calm;
+    animation-duration: 250ms;
+    animation-timing-function: ease-out;
   }
 
   /* המגירה נפתחת בדהייה בלבד. כלל אחד כאן במקום `motion-safe:` על שמונה

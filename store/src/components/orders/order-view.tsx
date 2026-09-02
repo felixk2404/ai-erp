@@ -3,7 +3,7 @@
 import { Fragment, useCallback, useEffect, useReducer, useRef } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { CheckIcon, CircleXIcon, DownloadIcon, LoaderIcon, MessageCircleIcon } from 'lucide-react';
+import { CheckIcon, CircleXIcon, DownloadIcon, LoaderIcon, MessageCircleIcon, RefreshCwIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { LookupForm, type LookupValues } from '@/components/orders/lookup-form';
@@ -32,12 +32,15 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   // useState setter called from inside an effect body (even transitively, via a
   // useCallback it invokes), but not a reducer dispatch — see cart-provider.tsx.
   const [phase, setPhase] = useReducer((_: Phase, next: Phase) => next, { kind: 'loading' } as Phase);
+  // מונה הפולינג הוא state ולא ref: המסך *מציג* את הסוף שלו ("רעננו בעוד דקה"),
+  // ולכן הוא חייב לגרום לרינדור מחדש.
+  const [polls, setPolls] = useReducer((_: number, next: number) => next, 0);
   const emailRef = useRef('');
-  const pollsRef = useRef(0);
 
   const runLookup = useCallback(
     async (email: string) => {
       emailRef.current = email;
+      setPolls(0);
       setPhase({ kind: 'loading' });
       const res = await lookupOrder(orderNumber, email);
       if (res.ok) {
@@ -61,22 +64,19 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
     else setPhase({ kind: 'form' });
   }, [runLookup]);
 
-  // פולינג עדין לחשבונית: WF8 מפיק PDF עד כ-2 דקות אחרי ההזמנה (§7.1). נבדוק כל 20s, עד 6 פעמים.
+  // פולינג עדין לחשבונית: WF8 מפיק PDF עד כ-2 דקות אחרי ההזמנה (§7.1). נבדוק כל 20s,
+  // עד 6 פעמים — ואז נעצור ונאמר את זה, במקום ספינר שמסתובב לנצח.
   useEffect(() => {
     if (phase.kind !== 'success') return;
-    if (phase.order.invoiceStatus === 'generated') {
-      pollsRef.current = 0;
-      return;
-    }
-    if (pollsRef.current >= POLL_MAX) return;
+    if (phase.order.invoiceStatus === 'generated' || polls >= POLL_MAX) return;
     const timer = setTimeout(() => {
-      pollsRef.current += 1;
+      setPolls(polls + 1);
       void lookupOrder(orderNumber, emailRef.current).then((res) => {
         if (res.ok) setPhase({ kind: 'success', order: res.order });
       });
     }, POLL_MS);
     return () => clearTimeout(timer);
-  }, [phase, orderNumber]);
+  }, [phase, polls, orderNumber]);
 
   const handleSubmit = useCallback(
     ({ email }: LookupValues) => {
@@ -91,7 +91,11 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   );
 
   return (
-    <div aria-live="polite" aria-busy={phase.kind === 'loading'} className="mx-auto flex max-w-2xl flex-col gap-8 py-4">
+    <div aria-busy={phase.kind === 'loading'} className="mx-auto flex max-w-2xl flex-col gap-8 py-4">
+      {/* שורת מצב אחת, קבועה — במקום להכריז מחדש על כל העמוד בכל שינוי סטטוס. */}
+      <span aria-live="polite" className="sr-only">
+        {phase.kind === 'success' ? 'ההזמנה נטענה' : ''}
+      </span>
       {phase.kind === 'loading' && <OrderSkeleton />}
 
       {(phase.kind === 'form' || phase.kind === 'error') && (
@@ -111,12 +115,22 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
         </div>
       )}
 
-      {phase.kind === 'success' && <SuccessView order={phase.order} />}
+      {phase.kind === 'success' && (
+        <SuccessView order={phase.order} invoiceStalled={polls >= POLL_MAX} onRefresh={() => void runLookup(emailRef.current)} />
+      )}
     </div>
   );
 }
 
-function SuccessView({ order }: { order: TrackedOrder }) {
+function SuccessView({
+  order,
+  invoiceStalled,
+  onRefresh,
+}: {
+  order: TrackedOrder;
+  invoiceStalled: boolean;
+  onRefresh: () => void;
+}) {
   return (
     <>
       <OrderNumberDisplay value={order.orderNumber} />
@@ -126,7 +140,7 @@ function SuccessView({ order }: { order: TrackedOrder }) {
         <ItemsTable items={order.items} />
       </section>
       <Totals order={order} />
-      <InvoiceBlock order={order} />
+      <InvoiceBlock order={order} stalled={invoiceStalled} onRefresh={onRefresh} />
       <div className="flex flex-wrap gap-3 border-t border-rule pt-6">
         <Button nativeButton={false} render={<Link href="/products" transitionTypes={['nav-forward']} />}>
           המשך קנייה
@@ -225,7 +239,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
               />
             </div>
           )}
-          <span className={`row-start-2 ${DOT_COL[i]} text-center text-[11px] font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
+          <span className={`row-start-2 ${DOT_COL[i]} text-center text-[11px] font-medium ${i <= current ? 'text-glow-2' : 'text-glow-3'}`}>
             {STATUS_LABELS[step]}
           </span>
         </Fragment>
@@ -307,9 +321,10 @@ function Totals({ order }: { order: TrackedOrder }) {
   );
 }
 
-function InvoiceBlock({ order }: { order: TrackedOrder }) {
+/** אחרי POLL_MAX ניסיונות הספינר הופך לשקר; אז אומרים מה קרה ונותנים כפתור. */
+function InvoiceBlock({ order, stalled, onRefresh }: { order: TrackedOrder; stalled: boolean; onRefresh: () => void }) {
   return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-rule bg-panel-1 px-4 py-3">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-rule bg-panel-1 px-4 py-3">
       {order.pdfUrl ? (
         <a
           href={order.pdfUrl}
@@ -320,39 +335,52 @@ function InvoiceBlock({ order }: { order: TrackedOrder }) {
           <DownloadIcon size={16} aria-hidden />
           הורדת חשבונית PDF
         </a>
+      ) : stalled ? (
+        <span className="text-sm text-glow-2">החשבונית עדיין מופקת — רעננו בעוד דקה</span>
       ) : (
         <span className="inline-flex items-center gap-2 text-sm text-glow-3">
           <LoaderIcon size={16} aria-hidden className="animate-spin" />
           החשבונית מופקת…
         </span>
       )}
-      {order.invoiceNumber && (
-        <span dir="ltr" className="num text-[11px] text-glow-4">
-          {order.invoiceNumber}
-        </span>
-      )}
+      <div className="flex items-center gap-3">
+        {!order.pdfUrl && stalled && (
+          <Button variant="outline" onClick={onRefresh} className="h-9 gap-1.5 rounded-md px-3 text-[14px]">
+            <RefreshCwIcon size={14} aria-hidden />
+            רענון
+          </Button>
+        )}
+        {order.invoiceNumber && (
+          <span dir="ltr" className="num text-[11px] text-glow-3">
+            {order.invoiceNumber}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
 
 function OrderSkeleton() {
   return (
-    <div className="flex flex-col gap-8" aria-hidden>
-      <div className="flex flex-col items-center gap-3 py-6">
-        <Skeleton className="h-3 w-24" />
-        <Skeleton className="h-12 w-56 sm:h-16" />
+    <>
+      <div className="flex flex-col gap-8" aria-hidden>
+        <div className="flex flex-col items-center gap-3 py-6">
+          <Skeleton className="h-3 w-24" />
+          <Skeleton className="h-12 w-56 sm:h-16" />
+        </div>
+        <div className="flex items-center gap-2">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="flex flex-1 flex-col items-center gap-2">
+              <Skeleton className="size-8 rounded-full" />
+              <Skeleton className="h-3 w-12" />
+            </div>
+          ))}
+        </div>
+        <Skeleton className="h-40 w-full rounded-lg" />
+        <Skeleton className="h-16 w-full rounded-lg" />
       </div>
-      <div className="flex items-center gap-2">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="flex flex-1 flex-col items-center gap-2">
-            <Skeleton className="size-8 rounded-full" />
-            <Skeleton className="h-3 w-12" />
-          </div>
-        ))}
-      </div>
-      <Skeleton className="h-40 w-full rounded-lg" />
-      <Skeleton className="h-16 w-full rounded-lg" />
+      {/* מחוץ ל-aria-hidden, אחרת אין מי שיקרא אותו. */}
       <span className="sr-only">טוען את פרטי ההזמנה…</span>
-    </div>
+    </>
   );
 }
