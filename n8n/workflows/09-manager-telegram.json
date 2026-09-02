@@ -132,7 +132,9 @@
         "options": {
           "waitForSubWorkflow": true
         }
-      }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "ענף השגיאה חוזר ל-Send Reply, ששולח את הנוסח החלופי במקום שתיקה."
     },
     {
       "name": "Send Reply",
@@ -143,7 +145,7 @@
         -100
       ],
       "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
         "text": "={{ ($json.reply || 'לא התקבלה תשובה').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -155,7 +157,10 @@
           "id": "__CRED_TELEGRAM_MANAGER__",
           "name": "Telegram Manager"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Deny",
@@ -224,6 +229,13 @@
     },
     "Manager Core": {
       "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Send Reply",

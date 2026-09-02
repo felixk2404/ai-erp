@@ -405,7 +405,9 @@
         "options": {
           "waitForSubWorkflow": true
         }
-      }
+      },
+      "onError": "continueErrorOutput",
+      "notes": "נפילה של הסוכן חייבת להגיע ל-Send Reply — אחרת הלקוח לא מקבל כלום, וההתנצלות שכתובה שם אף פעם לא רצה."
     },
     {
       "name": "Send Reply",
@@ -428,7 +430,10 @@
           "id": "__CRED_TELEGRAM_CUSTOMER__",
           "name": "Telegram Customer"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Lead Exists?",
@@ -1297,6 +1302,13 @@
     },
     "Support Core": {
       "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Send Reply",
