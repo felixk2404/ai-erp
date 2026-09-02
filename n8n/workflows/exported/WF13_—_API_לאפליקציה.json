@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "5d96ac48-369d-4ec3-a11d-e20c0f7a971a"
+      "webhookId": "f573bbfe-7ee0-49c8-8b32-22f42f5533bb"
     },
     {
       "name": "Route",
@@ -132,6 +132,54 @@
               },
               "renameOutput": true,
               "outputKey": "support"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c5",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "order",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "order"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c6",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "order_status",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "order_status"
             }
           ]
         },
@@ -438,6 +486,174 @@
       "id": "00000000-0000-4000-8000-000000000012"
     },
     {
+      "name": "Order Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        700
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "o",
+              "name": "order",
+              "value": "={{ $json.body.order }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000013"
+    },
+    {
+      "name": "Place Order",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        700
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "9l2sTtJMunb5UTFE"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order": "={{ $json.order }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "order",
+              "displayName": "order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object"
+            }
+          ]
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000014"
+    },
+    {
+      "name": "Respond Order",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        700
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000015"
+    },
+    {
+      "name": "Find Order",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        880
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblCzS6PiW046xyYj",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/'/g, \"\\\\'\") }}')"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000016"
+    },
+    {
+      "name": "Find Invoice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        880
+      ],
+      "alwaysOutputData": true,
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblOaitAMK0JHqvwk",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "={InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}'"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000017"
+    },
+    {
+      "name": "Respond Status",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        880
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ (() => { const o = $('Find Order').first().json.records?.[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}",
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000018"
+    },
+    {
       "name": "Respond Bad Request",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -452,7 +668,7 @@
           "responseCode": 400
         }
       },
-      "id": "00000000-0000-4000-8000-000000000013"
+      "id": "00000000-0000-4000-8000-000000000019"
     }
   ],
   "connections": {
@@ -499,7 +715,65 @@
         ],
         [
           {
+            "node": "Order Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Find Order",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "Respond Bad Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order Input": {
+      "main": [
+        [
+          {
+            "node": "Place Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place Order": {
+      "main": [
+        [
+          {
+            "node": "Respond Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Order": {
+      "main": [
+        [
+          {
+            "node": "Find Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Invoice": {
+      "main": [
+        [
+          {
+            "node": "Respond Status",
             "type": "main",
             "index": 0
           }

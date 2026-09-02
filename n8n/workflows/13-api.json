@@ -10,7 +10,9 @@
         { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c1", "leftValue": "={{ $json.body.action }}", "rightValue": "create", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "create" },
         { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c2", "leftValue": "={{ $json.body.action }}", "rightValue": "chat", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "chat" },
         { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c3", "leftValue": "={{ $json.body.action }}", "rightValue": "update", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "update" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c4", "leftValue": "={{ $json.body.action }}", "rightValue": "support", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "support" }
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c4", "leftValue": "={{ $json.body.action }}", "rightValue": "support", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "support" },
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c5", "leftValue": "={{ $json.body.action }}", "rightValue": "order", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "order" },
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c6", "leftValue": "={{ $json.body.action }}", "rightValue": "order_status", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "order_status" }
       ] }, "looseTypeValidation": true, "options": { "fallbackOutput": "extra" } } },
     { "name": "Support Input", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, 520],
       "parameters": { "assignments": { "assignments": [
@@ -53,6 +55,37 @@
         "options": { "waitForSubWorkflow": true } } },
     { "name": "Respond Chat", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 0],
       "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}", "options": {} } },
+    { "name": "Order Input", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, 700],
+      "parameters": { "assignments": { "assignments": [
+        { "id": "o", "name": "order", "value": "={{ $json.body.order }}", "type": "object" }
+      ] }, "options": {} } },
+    { "name": "Place Order", "type": "n8n-nodes-base.executeWorkflow", "typeVersion": 1.2, "position": [780, 700],
+      "parameters": { "workflowId": { "__rl": true, "mode": "id", "value": "__WF_ORDER_ID__" },
+        "workflowInputs": { "mappingMode": "defineBelow", "value": { "order": "={{ $json.order }}" }, "matchingColumns": [],
+          "schema": [ { "id": "order", "displayName": "order", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "object" } ] },
+        "options": { "waitForSubWorkflow": true } } },
+    { "name": "Respond Order", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 700],
+      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify($json) }}", "options": {} } },
+    { "name": "Find Order", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 880],
+      "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_ORDERS__",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true, "queryParameters": { "parameters": [
+          { "name": "filterByFormula", "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/'/g, \"\\\\'\") }}')" },
+          { "name": "maxRecords", "value": "1" }
+        ] },
+        "options": { "timeout": 20000 } },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
+    { "name": "Find Invoice", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [780, 880], "alwaysOutputData": true,
+      "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_INVOICES__",
+        "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true, "queryParameters": { "parameters": [
+          { "name": "filterByFormula", "value": "={InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}'" },
+          { "name": "maxRecords", "value": "1" }
+        ] },
+        "options": { "timeout": 20000 } },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
+    { "name": "Respond Status", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 880],
+      "parameters": { "respondWith": "json", "responseBody": "={{ (() => { const o = $('Find Order').first().json.records?.[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}", "options": {} } },
     { "name": "Respond Bad Request", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [520, 180],
       "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'unknown action: ' + ($json.body.action || '') }) }}", "options": { "responseCode": 400 } } }
   ],
@@ -63,8 +96,14 @@
       [{ "node": "Chat Input", "type": "main", "index": 0 }],
       [{ "node": "Update Record", "type": "main", "index": 0 }],
       [{ "node": "Support Input", "type": "main", "index": 0 }],
+      [{ "node": "Order Input", "type": "main", "index": 0 }],
+      [{ "node": "Find Order", "type": "main", "index": 0 }],
       [{ "node": "Respond Bad Request", "type": "main", "index": 0 }]
     ] },
+    "Order Input": { "main": [[{ "node": "Place Order", "type": "main", "index": 0 }]] },
+    "Place Order": { "main": [[{ "node": "Respond Order", "type": "main", "index": 0 }]] },
+    "Find Order": { "main": [[{ "node": "Find Invoice", "type": "main", "index": 0 }]] },
+    "Find Invoice": { "main": [[{ "node": "Respond Status", "type": "main", "index": 0 }]] },
     "Support Input": { "main": [[{ "node": "Support Core", "type": "main", "index": 0 }]] },
     "Support Core": { "main": [[{ "node": "Respond Support", "type": "main", "index": 0 }]] },
     "Update Record": { "main": [[{ "node": "Respond Updated", "type": "main", "index": 0 }]] },

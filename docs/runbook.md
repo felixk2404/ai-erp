@@ -35,6 +35,9 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 ## 5. בוטים
 מנהל: @aielc_manager_bot (Chat ID של הבעלים: 43590648) · לקוחות: @aielec_support_bot
 
+### 5.1 חנות — מלאי התחלתי
+מלאי התחלתי: `airtable/seed-stock.sh` (דטרמיניסטי, בטוח להרצה חוזרת; משאיר לפחות שני מוצרים ב-Stock=0 להדגמת "אזל מהמלאי" — כרגע `TY-CB-HD21` ו-`TY-MN-34U`).
+
 ## 7. workflows (n8n)
 מקור: `n8n/workflows/*.json` (תבניות עם placeholders). ייבוא/עדכון: `n8n/scripts/import-workflow.sh n8n/workflows/<file> --activate`. ייצוא מהשרת: `n8n/scripts/export-workflows.sh` → `n8n/workflows/exported/`. הרצות: `n8n/scripts/executions.sh "<שם>" [n]`.
 
@@ -51,7 +54,14 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF8 PDF | כל דקה, Invoices.Status=validated | PdfUrl בדרייב, Status generated |
 | WF9 מנהל (טלגרם) | Telegram @aielc_manager_bot, רק Chat ID של הבעלים | "מה ההכנסות?" |
 | WF9-core | Execute Workflow (מ-WF9 ו-WF13) | דרך WF13 chat |
+| WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N` |
 | WF13 API | `POST /webhook/erp` + header `x-erp-secret` | `n8n/scripts/api-test.sh '{"action":"chat","message":"..."}'` |
+
+פעולות WF13: `create` · `chat` · `update` · `support` · `order` (מריץ את WF10) · `order_status` (`{orderNumber,email}` → סטטוס ההזמנה + PdfUrl של החשבונית).
+
+אם המייל נכשל (OAuth של Gmail פג) — ההזמנה כבר נשמרה ב-Airtable; ההתראה מגיעה בטלגרם למנהל. Reconnect ל-Gmail credential, ולסמן את ההזמנה `confirmed` ידנית ב-Orders.
+
+מלכודת n8n: ב-httpRequest, שני פרמטרים ב-Query Parameters עם אותו שם (למשל `fields[]`) נדרסים — רק האחרון נשלח. לרשימת `fields[]` יש לשרשר אותם ל-URL עצמו (כמו ב-WF10 `Last Order`) או לוותר עליהם.
 
 ייבוא מחדש מאפס (סדר חשוב): `00-error`, `09b-manager-core`, ואז השאר. אחרי שינוי מדיניות (`docs/course/policies`) — `webhook.sh reindex-policies`. אחרי שינוי מוצרים — `webhook.sh reindex-products`.
 הנחיות הסוכנים: `n8n/prompts/*.md` — אחרי שינוי מייבאים מחדש את ה-workflow הרלוונטי.

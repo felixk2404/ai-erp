@@ -22,7 +22,7 @@
       ],
       "parameters": {
         "chatId": "43590648",
-        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution.lastNodeExecuted }}\nשגיאה: {{ ($json.execution.error.message || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution.url }}",
+        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution?.lastNodeExecuted || ($json.trigger ? 'טריגר (polling)' : '—') }}\nשגיאה: {{ (($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || JSON.stringify($json.trigger?.error || {}).slice(0, 300)) + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution?.url || '' }}",
         "additionalFields": {
           "appendAttribution": false,
           "parse_mode": "HTML"
@@ -35,7 +35,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000001",
-      "webhookId": "c95f4444-c118-4390-8e40-e0f855471cd8"
+      "webhookId": "db11ef4a-5331-44a2-9e94-b62c405d7597"
     }
   ],
   "connections": {
