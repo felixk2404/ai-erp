@@ -10,15 +10,26 @@ import { Input } from '@/components/ui/input';
 import { SubmitButton } from '@/components/forms/submit-button';
 import { FieldError } from '@/components/forms/field-error';
 
-/** תג מקור: לאוטומציה יש קישור למסך היעד, למשימה ידנית רק תווית. */
+/** תג מקור: לאוטומציה יש קישור למסך היעד, למשימה ידנית רק תווית. המזהה לטיני ולכן LTR בנפרד מהתווית. */
 function TaskSourceTag({ source, refId }: { source?: string; refId?: string }) {
   const m = taskSourceMeta(source);
-  const text = refId ? `${m.label} · ${refId}` : m.label;
   const cls = 'shrink-0 text-[12px] text-ink-3 whitespace-nowrap';
-  if (!m.href) return <span className={cls}>{text}</span>;
+  const content = (
+    <>
+      {m.label}
+      {refId && (
+        <>
+          {' · '}
+          <span dir="ltr" className="num">{refId}</span>
+        </>
+      )}
+    </>
+  );
+  if (!m.href) return <span className={cls}>{content}</span>;
+  const label = [m.label, refId].filter(Boolean).join(' ');
   return (
-    <Link href={m.href} className={`${cls} underline-offset-4 hover:underline hover:text-ink`} aria-label={`${m.label} ${refId ?? ''} — פתח`}>
-      <span dir="ltr">{text}</span>
+    <Link href={m.href} className={`${cls} underline-offset-4 hover:underline hover:text-ink`} aria-label={`${label} — פתח`}>
+      {content}
     </Link>
   );
 }
