@@ -70,7 +70,7 @@ function Field({
           {...shared}
           {...props}
           defaultValue={key}
-          className={`min-h-20 rounded-sm bg-panel-1 text-[16px] ${props.className ?? ''}`}
+          className={`min-h-20 resize-none rounded-sm bg-panel-1 text-[16px] ${props.className ?? ''}`}
         />
       ) : (
         <Input

@@ -1,4 +1,3 @@
-import { FLAGSHIP_PREFERENCE } from './home';
 import type { Product } from './types';
 
 /**
@@ -7,6 +6,12 @@ import type { Product } from './types';
  * שני שערים.
  */
 export const SERVICE = 'שירותים';
+
+/**
+ * מוצר הדגל נבחר בעין ולא רק במחיר: הצילום של המסך הוא מהגב, ופריט בזרקור חייב פנים.
+ * הרשימה היא סדר עדיפויות, ומשותפת לדף הבית (`home.ts`) ולמוביל של הקטלוג.
+ */
+export const FLAGSHIP_PREFERENCE = ['TY-HP-200', 'TY-GH-700', 'TY-MN-27Q'] as const;
 
 export const isService = (p: Product) => p.fields.Category === SERVICE;
 

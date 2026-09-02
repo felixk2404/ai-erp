@@ -8,6 +8,7 @@ import { XIcon } from 'lucide-react';
 import { Quantity } from '@/components/cart/quantity';
 import type { CartLine as Line } from '@/lib/cart';
 import { ils } from '@/lib/format';
+import { EYEBROW } from '@/lib/ui';
 
 /**
  * שורת עגלה. היררכיה: התמונה עוגן, השם הוא מה שקוראים, הסכום של השורה הוא
@@ -41,7 +42,7 @@ export function CartLine({
     >
       <div className="relative grid size-14 shrink-0 place-items-center overflow-hidden rounded-sm border border-rule bg-panel-2">
         {line.service ? (
-          <span className="text-[11px] tracking-wide text-glow-3">שירות</span>
+          <span className={EYEBROW}>שירות</span>
         ) : line.imageUrl ? (
           <Image src={line.imageUrl} alt={line.name} fill sizes="56px" className="object-cover" />
         ) : (

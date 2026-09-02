@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Catalog } from '@/components/catalog/catalog';
+import { EYEBROW } from '@/lib/ui';
 import { categories, getProducts } from '@/lib/catalog';
 import { parseCatalogParams } from '@/lib/catalog-filter';
 
@@ -22,7 +23,7 @@ export default async function ProductsPage({
   return (
     <>
       <div className="pb-6">
-        <p className="text-[11px] leading-none tracking-[0.08em] text-glow-3">קטלוג</p>
+        <p className={EYEBROW}>קטלוג</p>
         <h1 className="mt-2 text-[28px] leading-[1.05] font-extrabold tracking-[-0.02em] sm:text-[44px]">מוצרים</h1>
         <p className="mt-2 max-w-md text-[14px] text-glow-3">
           כל מה שבחנות. מק״ט, מפרט, מלאי ומחיר — באותה שורה.

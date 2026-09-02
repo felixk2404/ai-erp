@@ -14,9 +14,15 @@ const heebo = Heebo({ subsets: ['hebrew', 'latin'], weight: ['400', '500', '800'
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains', display: 'swap' });
 
 // metadataBase נדרש כדי ש-opengraph-image וכל URL יחסי אחר ייצאו מוחלטים.
-// ברירת מחדל מקומית כדי ש-build ללא סביבה לא ייפול.
+// ברירת מחדל מקומית כדי ש-build ללא סביבה לא ייפול — אבל בפרודקשן זו כתובת שגויה
+// בכל תגית שיתוף, ולכן היא צועקת בלוג הבנייה במקום להישלח בשקט.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+if (!siteUrl && process.env.NODE_ENV === 'production') {
+  console.warn('[store] NEXT_PUBLIC_SITE_URL חסר — metadataBase נופל ל-localhost:3200 וכל og:image יצא שבור.');
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3200'),
+  metadataBase: new URL(siteUrl ?? 'http://localhost:3200'),
   title: { default: 'איי.איי אלקטרוניקה', template: '%s · איי.איי אלקטרוניקה' },
   description: 'חנות אלקטרוניקה — מוצרים מקוריים, אחריות יבואן, שירות AI.',
 };

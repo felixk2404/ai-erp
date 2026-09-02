@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { MessageCircleIcon, XIcon } from 'lucide-react';
 import { useCart } from '@/components/cart/cart-provider';
@@ -16,7 +16,9 @@ export const SUPPORT_EVENT = 'aie:support';
  * Hierarchy: עיגול panel-2 עם קו rule יחיד; ה-beam הוא רק האייקון והפעימה — לא מילוי.
  */
 export function SupportWidget() {
-  const [open, setOpen] = useState(false);
+  // useReducer ולא useState: כלל ה-lint של הפרויקט פוסל קריאה ל-setter של useState
+  // מתוך גוף effect (ראו cart-provider.tsx), ו-dispatch עובר.
+  const [open, setOpen] = useReducer((_: boolean, next: boolean) => next, false);
   const [prefill, setPrefill] = useState<{ text: string; at: number } | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
@@ -40,6 +42,11 @@ export function SupportWidget() {
     return () => window.removeEventListener(SUPPORT_EVENT, onSupport);
   }, []);
 
+  // מגירת העגלה והפאנל חולקים פינה; כשהעגלה נפתחת השיחה נסגרת ולא נשארת מתחתיה.
+  useEffect(() => {
+    if (cartOpen) setOpen(false);
+  }, [cartOpen]);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -60,7 +67,7 @@ export function SupportWidget() {
           aria-expanded={open}
           whileTap={{ scale: 0.94 }}
           transition={{ type: 'spring', bounce: 0.3, visualDuration: 0.25 }}
-          className="fixed bottom-5 start-5 z-[var(--z-widget)] grid size-14 place-items-center rounded-full border border-rule bg-panel-2 text-beam transition-colors hover:border-rule-strong hover:bg-panel-3"
+          className="fixed bottom-5 end-5 z-[var(--z-widget)] grid size-14 place-items-center rounded-full border border-rule bg-panel-2 text-beam transition-colors hover:border-rule-strong hover:bg-panel-3"
         >
           <span
             aria-hidden

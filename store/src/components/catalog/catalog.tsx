@@ -240,8 +240,9 @@ export function Catalog({
         </div>
       )}
 
+      {/* הכפתור יושב מתחת לרשת: כשהיא צרה (פחות מ-4 תוצאות) הוא נצמד לקצה ההתחלה איתה. */}
       {filtered && results.length > 0 && (
-        <div className="flex justify-center pt-10">
+        <div className={`flex pt-10 ${plan.lead ? 'justify-center' : 'justify-center sm:justify-start'}`}>
           <Button variant="ghost" onClick={clear} className="h-10 rounded-md px-4 text-[14px] text-glow-3">
             נקה סינון
           </Button>

@@ -1,4 +1,4 @@
-import { inStock, isService, SERVICE } from './catalog-filter';
+import { FLAGSHIP_PREFERENCE, inStock, isService, SERVICE } from './catalog-filter';
 import type { Product } from './types';
 
 /**
@@ -6,11 +6,8 @@ import type { Product } from './types';
  * דרך `airtable.ts` — הפרדיקטים מיובאים מ-`catalog-filter` כדי שהקובץ יהיה נבדק.
  */
 
-/**
- * מוצר הדגל נבחר בעין ולא רק במחיר: הצילום של המסך הוא מהגב, ופריט בזרקור חייב פנים.
- * הרשימה היא סדר עדיפויות; אם אף אחד מהם לא זמין עם תמונה — חוזרים לכלל המחיר.
- */
-export const FLAGSHIP_PREFERENCE = ['TY-HP-200', 'TY-GH-700', 'TY-MN-27Q'] as const;
+/** הרשימה חיה ב-`catalog-filter` (המוביל של הקטלוג משתמש בה גם הוא); כאן רק שער. */
+export { FLAGSHIP_PREFERENCE };
 
 const price = (p: Product) => p.fields.Price ?? 0;
 const skuOf = (p: Product) => p.fields.Sku ?? p.id;

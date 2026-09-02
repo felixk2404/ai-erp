@@ -1,6 +1,6 @@
 import { StockBadge } from '@/components/catalog/stock-badge';
 import { AddToCart, AskBotLink, type InstallOffer } from '@/components/product/add-to-cart';
-import { SECTION_LABEL } from '@/components/product/sheet-section';
+import { EYEBROW } from '@/lib/ui';
 import { inStock, isService } from '@/lib/catalog-filter';
 import { ils } from '@/lib/format';
 import type { Product } from '@/lib/types';
@@ -33,7 +33,7 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
 
   return (
     <aside className={`rounded-lg border bg-panel-1 p-6 lg:sticky lg:top-24 ${ok ? 'border-rule' : 'border-bad/30'}`}>
-      {f.Category && <p className={SECTION_LABEL}>{f.Category}</p>}
+      {f.Category && <p className={EYEBROW}>{f.Category}</p>}
       <h1 className="mt-4 text-[28px] leading-[1.15] font-extrabold tracking-[-0.02em]">{f.Name}</h1>
 
       <div className="mt-4 flex items-baseline gap-2">

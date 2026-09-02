@@ -354,6 +354,12 @@ h3 {
     animation: none;
   }
 
+  /* המגירה נפתחת בדהייה בלבד. כלל אחד כאן במקום `motion-safe:` על שמונה
+     מחלקות translate בשני צדדים ובשני מצבים. */
+  [data-slot='sheet-content'] {
+    transform: none !important;
+  }
+
   /* הכרטיס נשאר שטוח והברק כבוי — אותו DOM, בלי הסתעפות ב-JS. */
   [data-tilt] {
     transform: none;

@@ -104,9 +104,9 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97, y: 8, transition: { duration: 0.15 } }}
       transition={SPRING}
-      /* RTL: פינת ה-start היא הימנית — הפאנל "יוצא" מהכפתור שמתחתיו. */
-      /* במובייל הגובה נגזר מהתוכן בין 60 ל-85dvh: גובה קבוע השאיר תהום ריקה מתחת למצב הריק. */
-      className="fixed z-[var(--z-widget)] flex origin-[bottom_right] flex-col overflow-hidden border border-rule bg-panel-1 max-sm:inset-x-0 max-sm:bottom-0 max-sm:max-h-[85dvh] max-sm:min-h-[60dvh] max-sm:rounded-t-lg sm:bottom-22 sm:start-5 sm:h-[560px] sm:w-[380px] sm:rounded-lg"
+        /* במובייל הגובה נגזר מהתוכן בין 60 ל-85dvh: גובה קבוע השאיר תהום ריקה מתחת למצב הריק.
+         origin פיזי: תחת dir=rtl פינת ה-end היא השמאלית, ומשם הפאנל "יוצא" מהכפתור שמתחתיו. */
+      className="fixed z-[var(--z-widget)] flex origin-[bottom_left] flex-col overflow-hidden border border-rule bg-panel-1 max-sm:inset-x-0 max-sm:bottom-0 max-sm:max-h-[85dvh] max-sm:min-h-[60dvh] max-sm:rounded-t-lg sm:bottom-22 sm:end-5 sm:h-[560px] sm:w-[380px] sm:rounded-lg"
     >
       <div
         aria-hidden

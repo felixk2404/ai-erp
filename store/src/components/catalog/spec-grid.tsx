@@ -6,9 +6,10 @@ import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
 import { highlights, inStock } from '@/lib/catalog-filter';
 import { ils } from '@/lib/format';
+import { EYEBROW } from '@/lib/ui';
 import type { Product } from '@/lib/types';
 
-const HEAD = 'px-4 py-3 text-[11px] leading-none font-medium tracking-[0.12em] text-glow-3';
+const HEAD = `px-4 py-3 ${EYEBROW}`;
 const CELL = 'px-4 py-3 align-middle';
 const ROW_MOTION = {
   initial: { opacity: 0, y: 8 },

@@ -7,7 +7,7 @@ import { Stage } from '@/components/product/stage';
 import { BuyBox } from '@/components/product/buy-box';
 import { Highlights } from '@/components/product/highlights';
 import { SpecSheet } from '@/components/product/spec-sheet';
-import { SECTION_LABEL } from '@/components/product/sheet-section';
+import { EYEBROW } from '@/lib/ui';
 import { Related } from '@/components/product/related';
 import { Faq } from '@/components/product/faq';
 import { getProduct, getProducts, highlights, related } from '@/lib/catalog';
@@ -90,7 +90,7 @@ export default async function ProductPage({ params }: Props) {
 
           {f.Description && (
             <section>
-              <h2 className={SECTION_LABEL}>תיאור</h2>
+              <h2 className={EYEBROW}>תיאור</h2>
               <div className="mt-4 max-w-[68ch] text-[16px] leading-[1.7] text-glow-2">
                 {f.Description.split('\n')
                   .map((line) => line.trim())

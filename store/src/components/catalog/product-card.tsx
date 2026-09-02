@@ -6,6 +6,7 @@ import { Shared } from '@/components/motion/page-transition';
 import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
 import { highlights, inStock } from '@/lib/catalog-filter';
+import { EYEBROW } from '@/lib/ui';
 import type { Product } from '@/lib/types';
 
 const SIZES = '(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw';
@@ -33,7 +34,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
   return (
     <Tilt className="h-full">
       <article
-        className={`group relative flex h-full flex-col overflow-hidden rounded-lg border border-rule bg-panel-1 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-rule-strong focus-within:border-rule-strong ${lead ? 'lg:flex-row' : ''}`}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-lg border border-rule bg-panel-1 transition-[border-color,translate] duration-200 motion-safe:hover:-translate-y-0.5 hover:border-rule-strong focus-within:border-rule-strong ${lead ? 'lg:flex-row' : ''}`}
       >
         <div
           className={`relative shrink-0 overflow-hidden bg-panel-2 ${lead ? 'aspect-3/2 lg:aspect-auto lg:w-1/2' : 'aspect-3/2 sm:aspect-4/3'}`}
@@ -64,7 +65,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
 
         <div className={`flex flex-1 flex-col p-4 ${lead ? 'lg:justify-center' : ''}`}>
           {f.Category && (
-            <p className="text-[11px] leading-none tracking-[0.08em] text-glow-3">{f.Category}</p>
+            <p className={EYEBROW}>{f.Category}</p>
           )}
           <h3
             className={`mt-2 line-clamp-2 font-medium text-glow ${lead ? 'text-[22px] leading-[1.3]' : 'text-[18px] leading-[1.375]'}`}

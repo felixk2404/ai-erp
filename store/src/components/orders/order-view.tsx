@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { LookupForm, type LookupValues } from '@/components/orders/lookup-form';
 import { lookupOrder } from '@/app/orders/actions';
 import { ils } from '@/lib/format';
+import { EYEBROW } from '@/lib/ui';
 import { STATUS_LABELS, STATUS_STEPS, stepIndex, withRetryHint } from '@/lib/order-status';
 import type { OrderStatus, TrackedOrder } from '@/lib/types';
 
@@ -152,7 +153,7 @@ function OrderNumberDisplay({ value }: { value: string }) {
         aria-hidden
         className="absolute inset-0 mx-auto h-32 w-64 -translate-y-2 bg-[radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
       />
-      <span className="relative text-xs font-medium tracking-wide text-glow-3">ההזמנה התקבלה</span>
+      <span className={`relative ${EYEBROW}`}>ההזמנה התקבלה</span>
       <span dir="ltr" className="num relative flex text-[44px] leading-none font-extrabold text-glow sm:text-[64px]">
         {[...value].map((ch, i) => (
           <motion.span
@@ -199,7 +200,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
         <Fragment key={step}>
           <span
             className={
-              `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-xs font-medium ` +
+              `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-[11px] font-medium ` +
               (i < current
                 ? 'border-beam bg-beam text-void'
                 : i === current
@@ -224,7 +225,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
               />
             </div>
           )}
-          <span className={`row-start-2 ${DOT_COL[i]} text-center text-xs font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
+          <span className={`row-start-2 ${DOT_COL[i]} text-center text-[11px] font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
             {STATUS_LABELS[step]}
           </span>
         </Fragment>
@@ -242,11 +243,11 @@ function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
           <li key={item.sku} className="flex flex-col gap-1 px-4 py-3">
             <div className="flex items-baseline justify-between gap-3">
               <span className="text-glow">{item.name}</span>
-              <span dir="ltr" className="num shrink-0 text-xs text-glow-3">
+              <span dir="ltr" className="num shrink-0 text-[11px] text-glow-3">
                 {item.sku}
               </span>
             </div>
-            <div className="num text-xs text-glow-2">
+            <div className="num text-[11px] text-glow-2">
               {item.qty} × {ils(item.price)} = <span className="text-glow">{ils(item.qty * item.price)}</span>
             </div>
           </li>
@@ -326,7 +327,7 @@ function InvoiceBlock({ order }: { order: TrackedOrder }) {
         </span>
       )}
       {order.invoiceNumber && (
-        <span dir="ltr" className="num text-xs text-glow-4">
+        <span dir="ltr" className="num text-[11px] text-glow-4">
           {order.invoiceNumber}
         </span>
       )}

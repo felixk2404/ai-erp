@@ -52,7 +52,9 @@ export function CartSheet() {
               <button
                 type="button"
                 aria-label="סגירת העגלה"
-                className="-me-2.5 grid size-11 shrink-0 place-items-center rounded-sm text-glow-3 transition-colors hover:bg-panel-2 hover:text-glow"
+                /* סגירת המגירה היא פעולת מסגרת: 44px עם טבעת rule. ה-X שמסיר שורה
+                   קטן ובלי מסגרת, כדי ששני ה-X-ים לא ייקראו כאותו משקל. */
+                className="grid size-11 shrink-0 place-items-center rounded-md border border-rule text-glow-3 transition-colors hover:border-rule-strong hover:bg-panel-2 hover:text-glow"
               />
             }
           >
