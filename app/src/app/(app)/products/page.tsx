@@ -131,7 +131,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
             <TableBody>
               {products.map((p) => (
                 <TableRow key={p.id}>
-                  <TableCell className="font-medium">{p.fields.Name}</TableCell>
+                  <TableCell className="font-medium whitespace-normal">{p.fields.Name}</TableCell>
                   <TableCell className="text-ink-2">{p.fields.Category ?? '—'}</TableCell>
                   <TableCell>
                     <Money value={p.fields.Price ?? 0} />
@@ -150,7 +150,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                       {p.fields.InStock ? 'במלאי' : 'אין במלאי'}
                     </ActionButton>
                   </TableCell>
-                  <TableCell className="text-ink-2 text-sm max-w-[420px]">
+                  <TableCell className="text-ink-2 text-sm whitespace-normal">
                     <span className="line-clamp-2 break-words" title={p.fields.Description}>
                       {p.fields.Description ?? '—'}
                     </span>
