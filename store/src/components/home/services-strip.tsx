@@ -14,7 +14,7 @@ import type { Product } from '@/lib/types';
  */
 export function ServicesStrip({ services }: { services: Product[] }) {
   return (
-    <section aria-labelledby="services-title" className="rounded-[16px] border border-rule bg-panel-1 p-6 md:p-8">
+    <section aria-labelledby="services-title" className="rounded-lg border border-rule bg-panel-1 p-6 md:p-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-[11px] font-medium tracking-[0.08em] text-glow-3">שירותים</p>

@@ -167,7 +167,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
               </motion.div>
             </div>
 
-            <span className="absolute bottom-[2%] start-0 z-10 block w-[192px] sm:w-[208px] lg:start-[-5%] rounded-[12px] border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
+            <span className="absolute bottom-[2%] start-0 z-10 block w-[192px] sm:w-[208px] lg:start-[-5%] rounded-md border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
               <span dir="ltr" className="num block text-[11px] tracking-[0.06em] text-glow-3">
                 {sku}
               </span>

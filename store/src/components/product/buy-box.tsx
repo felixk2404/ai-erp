@@ -38,7 +38,7 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
 
       <div className="mt-4 flex items-baseline gap-2">
         <span className="num text-[28px] leading-none font-medium text-glow">{ils(f.Price ?? 0)}</span>
-        <span className="text-[12px] text-glow-3">כולל מע״מ</span>
+        <span className="text-[11px] text-glow-3">כולל מע״מ</span>
       </div>
 
       {!service && <StockBadge ok={ok} className="mt-4" />}
@@ -55,7 +55,7 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
         />
       </div>
 
-      <ul className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12px] leading-5 text-glow-3">
+      <ul className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-5 text-glow-3">
         {trust.map(([label, value, unit], i) => (
           <li key={label} className="flex items-center gap-2">
             {i > 0 && <span aria-hidden>·</span>}

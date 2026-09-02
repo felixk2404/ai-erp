@@ -70,7 +70,7 @@ function Field({
           {...shared}
           {...props}
           defaultValue={key}
-          className={`min-h-20 rounded-sm bg-panel-1 text-[15px] ${props.className ?? ''}`}
+          className={`min-h-20 rounded-sm bg-panel-1 text-[16px] ${props.className ?? ''}`}
         />
       ) : (
         <Input
@@ -78,16 +78,16 @@ function Field({
           {...shared}
           {...props}
           defaultValue={key}
-          className={`h-11 rounded-sm bg-panel-1 text-[15px] ${props.className ?? ''}`}
+          className={`h-11 rounded-sm bg-panel-1 text-[16px] ${props.className ?? ''}`}
         />
       )}
       {error && (
-        <p id={errorId} className="text-[12px] text-bad">
+        <p id={errorId} className="text-[11px] text-bad">
           {error}
         </p>
       )}
       {hint && (
-        <p id={hintId} className="text-[12px] text-glow-3">
+        <p id={hintId} className="text-[11px] text-glow-3">
           {hint}
         </p>
       )}
@@ -294,7 +294,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="relative flex h-12 w-full items-center justify-center rounded-md bg-beam text-[15px] font-medium text-void transition-colors hover:bg-beam/85"
+              className="relative flex h-12 w-full items-center justify-center rounded-md bg-beam text-[16px] font-medium text-void transition-colors hover:bg-beam/85"
             >
               חזרה לעגלה
             </button>
@@ -306,8 +306,8 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             onClick={guardPending}
             className={
               blocked
-                ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-[15px] font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-4'
-                : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-[15px] font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/60'
+                ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-[16px] font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-4'
+                : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-[16px] font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/60'
             }
           >
             {pending ? (
@@ -326,7 +326,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             )}
           </button>
 
-          <p className="relative text-center text-[12px] text-glow-3">
+          <p className="relative text-center text-[11px] text-glow-3">
             השליחה יוצרת הזמנה אמיתית במערכת. אין תשלום ואין מסירת פרטי אשראי.
           </p>
         </div>
