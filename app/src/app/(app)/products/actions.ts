@@ -31,7 +31,7 @@ export async function toggleStock(id: string, inStock: boolean): Promise<ActionR
     return { error: msg(e, 'עדכון המלאי נכשל') };
   }
   revalidatePath('/products');
-  return { ok: true, message: inStock ? 'סומן במלאי' : 'סומן לא במלאי' };
+  return { ok: true, message: inStock ? 'המוצר סומן במלאי' : 'המוצר סומן כאזל' };
 }
 
 export async function reindexProducts(): Promise<ActionResult> {
@@ -42,7 +42,7 @@ export async function reindexProducts(): Promise<ActionResult> {
       logError('products.reindex shape', r);
       return { error: 'הרענון רץ אבל לא דיווח כמה מוצרים נטענו. בדקו את ההרצה ב-n8n.' };
     }
-    return { ok: true, message: `${r.products} מוצרים נטענו למאגר הידע של סוכן השירות` };
+    return { ok: true, message: `${r.products === 1 ? 'מוצר אחד נטען' : `${r.products} מוצרים נטענו`} למאגר הידע של סוכן השירות` };
   } catch (e) {
     logError('products.reindex', e);
     return { error: msg(e, 'רענון מאגר הידע נכשל') };

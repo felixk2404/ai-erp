@@ -110,7 +110,7 @@ export function attentionItems({ invoices, leads, now = new Date() }: { invoices
     if (Number.isNaN(age)) {
       items.push({ kind: 'stale-lead', severity: 'amber', title: `אין תאריך לליד ${name}`, hint: 'בלי תאריך אי אפשר לדעת כמה זמן הוא ממתין', href: '/leads?status=Contacted' });
     } else if (age >= STALE_LEAD_DAYS) {
-      items.push({ kind: 'stale-lead', severity: 'amber', title: `${name} לא ענה ${age} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
+      items.push({ kind: 'stale-lead', severity: 'amber', title: `${name} — ללא מענה ${age} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
     }
   }
   const rank = { red: 0, amber: 1 };

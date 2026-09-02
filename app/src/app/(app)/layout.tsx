@@ -1,4 +1,5 @@
 import { list } from '@/lib/airtable';
+import { ils } from '@/lib/format';
 import type { CustomerFields, InvoiceFields, LeadFields, ProductFields, TaskFields } from '@/lib/types';
 import { MobileNav, Sidebar } from '@/components/shell/sidebar';
 import { CommandMenu, type CommandItem } from '@/components/command-menu';
@@ -23,7 +24,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     ...invoices
       .filter((i) => i.fields.InvoiceNumber)
       .slice(0, 100)
-      .map((i) => ({ label: `${i.fields.InvoiceNumber} · ${i.fields.CustomerId}`, hint: i.fields.Total ? `₪${i.fields.Total}` : undefined, href: `/invoices/${i.id}`, group: 'חשבוניות' as const })),
+      .map((i) => ({ label: `${i.fields.InvoiceNumber} · ${i.fields.CustomerId}`, hint: i.fields.Total ? ils(i.fields.Total) : undefined, href: `/invoices/${i.id}`, group: 'חשבוניות' as const })),
     ...products.map((p) => ({ label: p.fields.Name, hint: p.fields.Sku, href: `/products?q=${encodeURIComponent(p.fields.Sku ?? p.fields.Name)}`, group: 'מוצרים' as const })),
   ];
 

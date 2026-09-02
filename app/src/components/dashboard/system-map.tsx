@@ -16,7 +16,7 @@ const RX = 140;
 const RY = 112;
 
 const ago = (iso?: string) => {
-  if (!iso) return 'לא רץ ב-24h';
+  if (!iso) return 'לא רץ ביממה האחרונה';
   const m = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
   return m < 1 ? 'עכשיו' : m < 60 ? `לפני ${m} דק׳` : `לפני ${Math.round(m / 60)} שע׳`;
 };

@@ -133,7 +133,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
       </div>
       {leads.length > 0 && (
         <p className="text-xs text-ink-3 mt-3">
-          סוכן המכירות שולח מייל לליד אחד בסטטוס &quot;חדש&quot; כל 3 שעות. תשובות מזוהות אוטומטית ומעבירות ל&quot;ענה — מתאים&quot;.
+          סוכן המכירות שולח מייל לליד אחד בסטטוס &quot;חדש&quot; כל 3 שעות. כשהליד עונה, המערכת מזהה את התשובה ומעבירה אותו ל&quot;ענה&quot;.
         </p>
       )}
     </>

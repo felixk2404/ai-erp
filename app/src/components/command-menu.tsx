@@ -155,7 +155,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
                   <Command.Item value={`ask ${q}`} onSelect={() => ask(q)} className="flex items-center gap-3 rounded-md px-2 h-10 text-sm cursor-pointer data-[selected=true]:bg-signal-soft data-[selected=true]:text-signal">
                     <Sparkles className="size-4 text-signal shrink-0" aria-hidden />
                     <span className="truncate">
-                      שאל את המנהל: <span className="text-readout">«{q.trim()}»</span>
+                      שאל את המנהל: <span className="text-readout">&quot;{q.trim()}&quot;</span>
                     </span>
                     <CornerDownLeft className="size-3.5 text-readout-3 ms-auto shrink-0" aria-hidden />
                   </Command.Item>

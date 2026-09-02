@@ -11,7 +11,7 @@ export function ErrorPanel({ reset }: { reset: () => void }) {
     <div className="max-w-md mx-auto mt-24 panel p-8 ring-1 ring-led-red/30">
       <h1 className="text-[22px] font-bold">משהו השתבש</h1>
       <p className="text-ink-2 mt-2 text-sm">לא הצלחנו לטעון את הנתונים. נסו שוב.</p>
-      <p className="text-ink-3 mt-1 text-xs">אם זה חוזר — בדקו שה-Docker רץ ושהטאנל של n8n פתוח.</p>
+      <p className="text-ink-3 mt-1 text-xs">אם זה חוזר — בדוק ש-Docker רץ ושמנהרת ה-ngrok של n8n פתוחה.</p>
       <Button onClick={reset} className="mt-6">
         נסו שוב
       </Button>

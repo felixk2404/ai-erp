@@ -24,7 +24,7 @@ async function sessionId(): Promise<string> {
 
 export async function sendSupport(message: string): Promise<SupportResult> {
   const text = message.trim();
-  if (!text) return { error: 'כתוב שאלה' };
+  if (!text) return { error: 'כתבו שאלה' };
   if (text.length > 500) return { error: 'ההודעה ארוכה מדי. קצרו אותה ונסו שוב.' };
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() || 'local';
   if (!supportLimiter.allow(ip)) return { error: 'יותר מדי הודעות. נסו שוב בעוד דקה.' };

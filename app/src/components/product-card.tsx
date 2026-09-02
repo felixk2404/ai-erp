@@ -38,7 +38,7 @@ export function ProductCard({ product, action }: { product: Product; action?: Re
             {action ?? (
               <span className="inline-flex items-center gap-1.5 text-xs text-readout-2">
                 <span aria-hidden className={`size-2 rounded-full ${f.InStock ? 'bg-led-green shadow-[0_0_8px_var(--led-green)]' : 'bg-readout-3/50'}`} />
-                {f.InStock ? 'במלאי' : 'אין במלאי'}
+                {f.InStock ? 'במלאי' : 'אזל'}
               </span>
             )}
           </div>

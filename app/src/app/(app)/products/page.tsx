@@ -24,10 +24,10 @@ function StockToggle({ p }: { p: Product }) {
       action={toggleStock.bind(null, p.id, !p.fields.InStock)}
       variant="ghost"
       className="gap-2 text-ink-2 -ms-2"
-      aria-label={p.fields.InStock ? 'סמן לא במלאי' : 'סמן במלאי'}
+      aria-label={p.fields.InStock ? 'סימון כאזל' : 'סימון כזמין במלאי'}
     >
       <span aria-hidden className={`size-2 rounded-full ${p.fields.InStock ? 'bg-led-green shadow-[0_0_6px_var(--led-green)]' : 'bg-ink-3/40'}`} />
-      {p.fields.InStock ? 'במלאי' : 'אין במלאי'}
+      {p.fields.InStock ? 'במלאי' : 'אזל'}
     </ActionButton>
   );
 }
@@ -64,7 +64,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
             <EntityDialog
               trigger="מוצר חדש"
               title="מוצר חדש"
-              description="אחרי הוספה לחצו על &quot;רענון מאגר ידע&quot; כדי שסוכן השירות יכיר את המוצר."
+              description="אחרי ההוספה לחץ על &quot;רענון מאגר ידע&quot; כדי שסוכן השירות יכיר את המוצר."
               action={createProduct}
               successMessage="המוצר נוסף"
               submitLabel="הוספה"

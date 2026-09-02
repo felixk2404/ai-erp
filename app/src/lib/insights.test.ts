@@ -88,6 +88,17 @@ describe('attentionItems', () => {
     expect(items[0].severity).toBe('red');
     expect(items[2].href).toBe('/leads?status=Contacted');
   });
+  // M-9: `${Name} לא ענה` מניח לקוח זכר — שם נשי ייצר "רונית לא ענה".
+  it('phrases a stale lead without assuming the lead is male', () => {
+    const [item] = attentionItems({
+      invoices: [],
+      leads: [lead({ id: 'stale', Name: 'רונית', Status: 'Contacted', Created: '2026-08-10T00:00:00Z' })],
+      tasks: [],
+      now,
+    });
+    expect(item.title).toBe('רונית — ללא מענה 23 ימים');
+  });
+
   it('returns an empty list when everything is fine', () => {
     expect(attentionItems({ invoices: [inv({ Status: 'paid' })], leads: [], tasks: [], now })).toEqual([]);
   });

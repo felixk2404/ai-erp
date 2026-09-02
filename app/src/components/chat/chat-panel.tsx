@@ -81,7 +81,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
                         <div className="text-xs font-medium leading-snug line-clamp-2">{p.name}</div>
                         <div className="flex items-center justify-between gap-2 mt-0.5">
                           {p.price !== undefined && <span className="num text-xs text-ink">{ils(p.price)}</span>}
-                          <span className={`text-[12px] ${p.inStock ? 'text-led-green' : 'text-ink-3'}`}>{p.inStock ? 'במלאי' : 'אין במלאי'}</span>
+                          <span className={`text-[12px] ${p.inStock ? 'text-led-green' : 'text-ink-3'}`}>{p.inStock ? 'במלאי' : 'אזל'}</span>
                         </div>
                       </div>
                     </div>
@@ -127,7 +127,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
           className="flex-1 resize-none rounded-md border border-input bg-well px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-signal focus-visible:ring-3 focus-visible:ring-signal/25"
         />
         <Button type="submit" disabled={pending || !input.trim()}>
-          שלח
+          שליחה
         </Button>
       </form>
     </div>

@@ -66,7 +66,7 @@ export function NewInvoiceDialog({
       <DialogContent dir="rtl" className="sm:max-w-2xl">
         <DialogHeader className="text-start pe-8">
           <DialogTitle>חשבונית חדשה</DialogTitle>
-          <DialogDescription>בוחרים מוצרים מהקטלוג. הסכום, המע״מ (18%) והמספר הרץ מחושבים אוטומטית.</DialogDescription>
+          <DialogDescription>בחר מוצרים מהקטלוג. הסכום, המע״מ (18%) והמספר הרץ מחושבים אוטומטית.</DialogDescription>
         </DialogHeader>
         <form action={action} className="space-y-5">
           <div className="space-y-2">

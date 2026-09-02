@@ -6,6 +6,6 @@ import type { PulseReason } from '@/lib/n8n-health';
  */
 export function reasonHint(reason?: PulseReason): string | null {
   if (reason === 'unauthorized') return 'n8n דחה את מפתח ה-API. הפיקו מפתח חדש ב-n8n ועדכנו אותו בהגדרות הסביבה.';
-  if (reason === 'unreachable') return 'n8n לא עונה. בדקו שה-Docker רץ ושהטאנל פתוח.';
+  if (reason === 'unreachable') return 'n8n לא עונה. בדוק ש-Docker רץ ושמנהרת ה-ngrok פתוחה.';
   return null;
 }
