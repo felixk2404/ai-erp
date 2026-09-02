@@ -30,7 +30,9 @@
     "SALES_COLD_EMAIL": "M7WjpE8Wd20EyOHZ",
     "SALES_REPLIES": "5cQhVanCfhxM16ru",
     "INVOICE_PDF": "wNxCRwm0N2F6Z8TS",
-    "SUPPORT_CORE": "BEuvek30KqE2zEM7"
+    "SUPPORT_CORE": "BEuvek30KqE2zEM7",
+    "ORDER": "9l2sTtJMunb5UTFE"
   },
-  "TBL_ORDERS": "tblCzS6PiW046xyYj"
+  "TBL_ORDERS": "tblCzS6PiW046xyYj",
+  "STORE_DOMAIN": "ai-electronics.vercel.app"
 }
