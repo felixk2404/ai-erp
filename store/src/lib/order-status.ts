@@ -29,7 +29,11 @@ export function stepIndex(status: OrderStatus): number {
   return (STATUS_STEPS as readonly string[]).indexOf(status);
 }
 
-/** מוסיף הנחיה לניסיון חוזר כשה-ERP לא מצא את ההזמנה — `includes` ולא שוויון מדויק, כדי לא להישבר על ניסוח קצת שונה. */
+/**
+ * מוסיף הנחיה לניסיון חוזר כשה-ERP לא מצא את ההזמנה — `includes` ולא שוויון מדויק, כדי לא להישבר על ניסוח קצת שונה.
+ * הנקודה נסגרת כאן ולא במקור השגיאה: גם ניסוח שמגיע מה-ERP צריך לצאת כשני משפטים.
+ */
 export function withRetryHint(error: string): string {
-  return error.includes('לא נמצאה') ? `${error} — בדקו את המספר והאימייל` : error;
+  if (!error.includes('לא נמצאה')) return error;
+  return `${error}${error.endsWith('.') ? '' : '.'} בדקו את המספר והאימייל.`;
 }

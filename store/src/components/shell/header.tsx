@@ -16,8 +16,9 @@ const NAV = [
 
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.3 };
 
-/** עברית סופרת אחרת מאנגלית: אין "1 פריטים". */
-const cartLabel = (count: number) => (count === 0 ? 'הסל ריק' : count === 1 ? 'בסל פריט אחד' : `בסל ${count} פריטים`);
+/** עברית סופרת אחרת מאנגלית: אין "1 מוצרים". */
+const cartLabel = (count: number) =>
+  count === 0 ? 'פתיחת הסל, ריק' : count === 1 ? 'פתיחת הסל, מוצר אחד' : `פתיחת הסל, ${count} מוצרים`;
 
 function NavLink({ href, label, active, mobile = false, onClick }: { href: string; label: string; active: boolean; mobile?: boolean; onClick?: () => void }) {
   return (

@@ -41,7 +41,9 @@ export function CategoryGrid({ stats }: { stats: CategoryStat[] }) {
             <span aria-hidden className="text-glow-4">
               ·
             </span>
-            החל מ־<span className="num">{ils(from)}</span>
+            <span className="whitespace-nowrap">
+              החל מ־<span className="num">{ils(from)}</span>
+            </span>
           </p>
         )}
       </div>
@@ -53,7 +55,7 @@ export function CategoryGrid({ stats }: { stats: CategoryStat[] }) {
         >
           <span>קטגוריה</span>
           <span className="text-end">מוצרים</span>
-          <span className="text-end">החל מ־</span>
+          <span className="text-end">מחיר</span>
           <span />
         </div>
         {stats.map((s) => (

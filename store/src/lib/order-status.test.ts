@@ -29,7 +29,8 @@ describe('stepIndex', () => {
 
 describe('withRetryHint', () => {
   it('adds a retry hint when the ERP says the order was not found', () => {
-    expect(withRetryHint('ההזמנה לא נמצאה')).toBe('ההזמנה לא נמצאה — בדקו את המספר והאימייל');
+    expect(withRetryHint('ההזמנה לא נמצאה')).toBe('ההזמנה לא נמצאה. בדקו את המספר והאימייל.');
+    expect(withRetryHint('ההזמנה לא נמצאה.')).toBe('ההזמנה לא נמצאה. בדקו את המספר והאימייל.');
   });
 
   it('leaves other errors untouched', () => {

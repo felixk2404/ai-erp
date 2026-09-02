@@ -32,7 +32,7 @@ export function Featured({ products }: { products: Product[] }) {
         <div>
           <p className={EYEBROW}>המומלצים</p>
           <h2 id="featured-title" className="mt-2 text-3xl leading-[1.15] font-extrabold tracking-[-0.02em]">
-            אלה שכדאי לראות
+            שווה מבט
           </h2>
         </div>
         <Link

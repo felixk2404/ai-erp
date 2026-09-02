@@ -54,7 +54,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
           </h1>
 
           <p data-enter="3" className="mt-5 max-w-[42ch] text-xl leading-[1.5] text-glow-2">
-            מוצרים מקוריים עם אחריות יבואן רשמי, עד הדלת.
+            מוצרים מקוריים בלבד, עם משלוח עד הדלת.
           </p>
 
           <div data-enter="4" className="mt-8 flex flex-wrap items-center gap-3">

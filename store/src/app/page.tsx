@@ -9,7 +9,7 @@ import { CategoryGrid } from '@/components/home/category-grid';
 import { ServicesStrip } from '@/components/home/services-strip';
 import { TrustStrip } from '@/components/home/trust-strip';
 
-export const metadata: Metadata = { title: { absolute: 'איי.איי אלקטרוניקה — חדר תצוגה' } };
+export const metadata: Metadata = { title: { absolute: 'איי.איי אלקטרוניקה · מוצרים מקוריים עם אחריות יבואן' } };
 
 /**
  * Intent: חדר תצוגה — פריט אחד באור, ואחריו הדרך פנימה: המומלצים, הרשת, השירותים, האמון.
@@ -34,7 +34,7 @@ export default async function Home() {
       ) : (
         /* אין חפץ פיזי במלאי: אומרים את זה במשפט אחד ומציעים את הדרך היחידה שנשארה. */
         <section className="py-16 text-center">
-          <p className="text-2xl font-medium text-glow-2">הכול אזל כרגע. השירותים עדיין פתוחים להזמנה.</p>
+          <p className="text-2xl font-medium text-glow-2">הכול אזל כרגע. את השירותים עדיין אפשר להזמין.</p>
           <Link
             href="/products"
             transitionTypes={['nav-forward']}

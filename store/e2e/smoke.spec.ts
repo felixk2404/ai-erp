@@ -37,7 +37,7 @@ test('דף הבית נטען RTL עם הכותרת הראשית וסל ריק', 
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('html')).toHaveAttribute('lang', 'he');
   await expect(page.getByRole('heading', { level: 1, name: 'טכנולוגיה שרואים.' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'הסל ריק' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'פתיחת הסל, ריק' })).toBeVisible();
 });
 
 test('קטלוג: סינון לפי קטגוריה, חיפוש HDMI ותצוגת טבלה', async ({ page }) => {
@@ -67,7 +67,7 @@ test('עמוד מוצר: מחיר, מלאי, הוספה לסל ופתיחת המ
 
   await buyBox.getByRole('button', { name: /הוסף לסל/ }).click();
 
-  await expect(page.getByRole('button', { name: 'בסל פריט אחד' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'פתיחת הסל, מוצר אחד' })).toBeVisible();
   const drawer = page.getByRole('dialog', { name: 'הסל שלך' });
   await expect(drawer).toBeVisible();
   await expect(drawer.getByText(ITEM.name)).toBeVisible();

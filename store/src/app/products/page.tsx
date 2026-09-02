@@ -6,7 +6,7 @@ import { parseCatalogParams, toCard } from '@/lib/catalog-filter';
 
 export const metadata: Metadata = {
   title: 'מוצרים',
-  description: 'מוצרים מקוריים עם אחריות יבואן רשמי. מחיר כולל מע״מ, משלוח מ־29 ₪ וחינם מעל 300 ₪.',
+  description: 'מוצרים מקוריים עם אחריות יבואן רשמי. מחיר כולל מע״מ, משלוח 29 ₪ וחינם מעל 300 ₪.',
 };
 
 /**

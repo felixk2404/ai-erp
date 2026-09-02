@@ -21,7 +21,7 @@ export default function PoliciesPage() {
     <div className="py-8 lg:py-12">
       <header className="max-w-[68ch]">
         <h1 className="text-display leading-[1.05] font-extrabold tracking-[-0.02em] text-balance">מדיניות החנות</h1>
-        <p className="mt-3 text-xl text-glow-2">משלוחים, החזרות, אחריות, תשלומים, פרטיות ונגישות — בקצרה ובלי אותיות קטנות.</p>
+        <p className="mt-3 text-xl text-glow-2">כל התנאים של החנות, בקצרה ובלי אותיות קטנות.</p>
       </header>
 
       <div className="mt-16 grid gap-12 lg:grid-cols-[200px_1fr] lg:gap-x-16">

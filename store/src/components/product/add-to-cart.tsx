@@ -52,7 +52,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           onClick={() => window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))}
           className="h-auto justify-center px-0 text-center text-meta leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
         >
-          בהדגמה אין התראות חזרה למלאי. שאלו את הבוט מתי חוזר
+          שאלו את הבוט מתי חוזר. בהדגמה אין התראות חזרה למלאי.
         </Button>
       </div>
     );

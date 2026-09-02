@@ -68,7 +68,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
           <thead>
             <tr className="border-b border-rule-strong">
               <th scope="col" className={`${HEAD} text-start`}>
-                מק&quot;ט
+                מק״ט
               </th>
               <th scope="col" className={`${HEAD} text-start`}>
                 מוצר

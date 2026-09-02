@@ -24,7 +24,7 @@ if (!siteUrl && process.env.NODE_ENV === 'production') {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl ?? 'http://localhost:3200'),
   title: { default: 'איי.איי אלקטרוניקה', template: '%s · איי.איי אלקטרוניקה' },
-  description: 'חנות אלקטרוניקה — מוצרים מקוריים, אחריות יבואן, שירות AI.',
+  description: 'מוצרים מקוריים עם אחריות יבואן רשמי. משלוח 29 ₪, חינם מעל 300 ₪.',
 };
 
 // מגירת העגלה (משימה 8) והבוט (משימה 11) נתלים בתוך CartProvider.
