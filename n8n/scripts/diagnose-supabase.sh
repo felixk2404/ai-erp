@@ -10,7 +10,10 @@ u="${SUPABASE_DB_URL:-}"
 echo "DB URL: length ${#u}, starts '${u:0:13}', ends '${u: -22}'$([[ "$u" == *"[YOUR-PASSWORD]"* ]] && echo ', עדיין מכיל [YOUR-PASSWORD]')$([[ "$u" == *"’"* || "$u" == *"‘"* ]] && echo ', מכיל גרשיים חכמים ’ — צריך גרש ישר')"
 if [ -n "${SUPABASE_DB_URL:-}" ] && [[ "$SUPABASE_DB_URL" != *"[ref]"* ]]; then
   PSQL=$(command -v psql || echo /opt/homebrew/opt/libpq/bin/psql)
-  echo "DB: $("$PSQL" "$SUPABASE_DB_URL" -Atc 'select version()' 2>&1 | head -1 | cut -c1-60)"
+  pw="${u#*://}"; pw="${pw#*:}"; pw="${pw%%@*}"
+  host="${u##*@}"; host="${host%%:*}"; user="${u#*://}"; user="${user%%:*}"
+  echo "DB user: $user  host: $host  password length: ${#pw}"
+  echo "DB: $("$PSQL" "$SUPABASE_DB_URL" -Atc 'select version()' 2>&1 | head -1 | sed "s|$pw|***|g" | cut -c1-120)"
 else
   echo "DB: SUPABASE_DB_URL MISSING"
 fi

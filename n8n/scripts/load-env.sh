@@ -11,3 +11,14 @@ while IFS= read -r name; do
 done < <(grep -oE '^[A-Z_][A-Z0-9_]*=' .env | tr -d '=')
 export SUPABASE_URL="${SUPABASE_URL%%/rest/v1*}"
 export SUPABASE_URL="${SUPABASE_URL%/}"
+# מקודד את הסיסמה בתוך SUPABASE_DB_URL (תווים כמו # @ / ? חייבים percent-encoding)
+if [[ "${SUPABASE_DB_URL:-}" == postgres*://*:*@* ]]; then
+  export SUPABASE_DB_URL=$(printf '%s' "$SUPABASE_DB_URL" | python3 -c '
+import sys, urllib.parse
+u = sys.stdin.read()
+scheme, rest = u.split("://", 1)
+userinfo, hostpart = rest.rsplit("@", 1)
+user, pw = userinfo.split(":", 1)
+pw = urllib.parse.quote(urllib.parse.unquote(pw), safe="")
+print(scheme + "://" + user + ":" + pw + "@" + hostpart, end="")')
+fi
