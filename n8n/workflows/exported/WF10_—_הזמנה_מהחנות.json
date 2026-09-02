@@ -493,7 +493,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000017",
-      "webhookId": "09fdef7b-e6e8-4d30-b553-f3ce5cf0b0cc"
+      "webhookId": "23a92ddb-784f-4723-8945-3ac6c5a62d4a"
     },
     {
       "name": "Notify Manager",
@@ -518,7 +518,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000018",
-      "webhookId": "d781369f-f2e2-4ba5-bd2c-c8d862ca6151"
+      "webhookId": "5aab7763-5498-415d-9a28-07bf5a005e46"
     },
     {
       "name": "Confirm Order",
@@ -598,8 +598,9 @@
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// Build Tasks — פריט אחד תמיד. records ריק = אין מה ליצור.\nconst c = $('Compute').first().json;\nconst existing = new Set((($input.first().json || {}).records || []).map((r) => r.fields && r.fields.RefId));\nconst records = [];\nif (c.shipTask) records.push({ fields: c.shipTask });\nfor (const p of c.lowStock || []) {\n  if (existing.has(p.sku)) continue;\n  records.push({ fields: { Title: `להזמין מלאי: ${p.name}, נשארו ${p.left}`, Status: 'open', Source: 'stock', RefId: p.sku } });\n}\nreturn [{ json: { records } }];"
+        "jsCode": "// Build Tasks — פריט אחד תמיד. records ריק = אין מה ליצור. אם Open Stock Tasks נכשל אין records ולכן אין מניעת כפילות באותה ריצה — מעדיפים תזכורת כפולה על פני תזכורת אבודה.\nconst c = $('Compute').first().json;\nconst existing = new Set((($input.first().json || {}).records || []).map((r) => r.fields && r.fields.RefId));\nconst records = [];\nif (c.shipTask) records.push({ fields: c.shipTask });\nfor (const p of c.lowStock || []) {\n  if (existing.has(p.sku)) continue;\n  records.push({ fields: { Title: `להזמין מלאי: ${p.name}, נשארו ${p.left}`, Status: 'open', Source: 'stock', RefId: p.sku } });\n}\nreturn [{ json: { records } }];"
       },
+      "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000021"
     },
     {
@@ -620,7 +621,7 @@
           },
           "conditions": [
             {
-              "id": "t1",
+              "id": "c5",
               "leftValue": "={{ ($json.records || []).length }}",
               "rightValue": 0,
               "operator": {

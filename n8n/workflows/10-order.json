@@ -579,8 +579,9 @@
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// Build Tasks — פריט אחד תמיד. records ריק = אין מה ליצור.\nconst c = $('Compute').first().json;\nconst existing = new Set((($input.first().json || {}).records || []).map((r) => r.fields && r.fields.RefId));\nconst records = [];\nif (c.shipTask) records.push({ fields: c.shipTask });\nfor (const p of c.lowStock || []) {\n  if (existing.has(p.sku)) continue;\n  records.push({ fields: { Title: `להזמין מלאי: ${p.name}, נשארו ${p.left}`, Status: 'open', Source: 'stock', RefId: p.sku } });\n}\nreturn [{ json: { records } }];"
-      }
+        "jsCode": "// Build Tasks — פריט אחד תמיד. records ריק = אין מה ליצור. אם Open Stock Tasks נכשל אין records ולכן אין מניעת כפילות באותה ריצה — מעדיפים תזכורת כפולה על פני תזכורת אבודה.\nconst c = $('Compute').first().json;\nconst existing = new Set((($input.first().json || {}).records || []).map((r) => r.fields && r.fields.RefId));\nconst records = [];\nif (c.shipTask) records.push({ fields: c.shipTask });\nfor (const p of c.lowStock || []) {\n  if (existing.has(p.sku)) continue;\n  records.push({ fields: { Title: `להזמין מלאי: ${p.name}, נשארו ${p.left}`, Status: 'open', Source: 'stock', RefId: p.sku } });\n}\nreturn [{ json: { records } }];"
+      },
+      "onError": "continueRegularOutput"
     },
     {
       "name": "Has Tasks?",
@@ -600,7 +601,7 @@
           },
           "conditions": [
             {
-              "id": "t1",
+              "id": "c5",
               "leftValue": "={{ ($json.records || []).length }}",
               "rightValue": 0,
               "operator": {
