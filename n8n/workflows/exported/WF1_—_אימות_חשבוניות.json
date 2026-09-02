@@ -231,19 +231,19 @@
             {
               "id": "c",
               "name": "VatRate",
-              "value": "={{ new Date($('Airtable Trigger').item.json.fields.Created) >= new Date('2025-01-01') ? 0.18 : 0.17 }}",
+              "value": "={{ 0.18 }}",
               "type": "number"
             },
             {
               "id": "d",
               "name": "VatAmount",
-              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * (new Date($('Airtable Trigger').item.json.fields.Created) >= new Date('2025-01-01') ? 0.18 : 0.17) * 100) / 100 }}",
+              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * 0.18 * 100) / 100 }}",
               "type": "number"
             },
             {
               "id": "e",
               "name": "Total",
-              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * (1 + (new Date($('Airtable Trigger').item.json.fields.Created) >= new Date('2025-01-01') ? 0.18 : 0.17)) * 100) / 100 }}",
+              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * 1.18 * 100) / 100 }}",
               "type": "number"
             }
           ]
