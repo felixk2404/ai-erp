@@ -54,6 +54,14 @@ test('callback_data stays within 64 bytes for long category names', () => {
   assert.equal(renderMenu(data, [long]).keyboard.rows[0].row.buttons[0].additionalFields.callback_data, 'p:X-1');
 });
 
+test('empty catalog (or Airtable error item) shows the error screen with a home button', () => {
+  for (const products of [[], [{ error: 'boom' }]]) {
+    const m = renderMenu('home', products);
+    assert.equal(m.text, 'משהו השתבש, נסו שוב.');
+    assert.deepEqual(buttons(m.keyboard), [[['תפריט ראשי', 'home']]]);
+  }
+});
+
 test('categories sharing a 30-char prefix get distinct, resolvable keys', () => {
   const items = [
     { Name: 'מוצר X', Sku: 'X-1', Category: 'א'.repeat(30) + 'X', Price: 10, Stock: 1 },

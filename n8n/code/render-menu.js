@@ -16,6 +16,7 @@ function renderMenu(data, products) {
       stock: Number(p.Stock) || 0, service: p.Category === SERVICE,
       highlights: String(p.Highlights || '').split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 3),
     }));
+  if (!items.length) return { action: 'menu', text: 'משהו השתבש, נסו שוב.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };
   const cats = [...new Set(items.map((i) => i.category))].sort((a, b) => a.localeCompare(b, 'he'));
   // ponytail: 30-char truncation collides on shared prefixes; disambiguate with a #index suffix, kept unique per render.
   const catKeys = new Map();

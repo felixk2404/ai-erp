@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "ef34d0e9-1f22-4311-a893-012d3528e00d"
+      "webhookId": "7df6286b-2490-4898-ae07-8875577736b9"
     },
     {
       "name": "Classify",
@@ -178,7 +178,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000003",
-      "webhookId": "b81bc7a1-75d3-4b3d-8032-ac6c94e43975"
+      "webhookId": "0e5cefb2-9554-4f07-88ae-a8985d42d79a"
     },
     {
       "name": "Products",
@@ -225,7 +225,7 @@
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// render-menu.js — גוף צומת Code ב-WF5 (מוזרק לצומת דרך placeholder CODE_RENDER_MENU). קלט: callback_data + כל המוצרים.\n// פלט: { action: 'menu' | 'lead', text (HTML), keyboard (צורת inlineKeyboard של צומת הטלגרם), product? }.\nconst SERVICE = 'שירותים';\nconst MAX_CAT = 30; // callback_data ≤ 64 בתים; עברית = 2 בתים לתו, 'cat:' = 4\nconst MAX_LIST = 10;\nconst esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst price = (n) => Number(n || 0).toLocaleString('he-IL') + ' ₪';\nconst btn = (text, data) => ({ text, additionalFields: { callback_data: data } });\nconst keyboard = (...lines) => ({ rows: lines.map((buttons) => ({ row: { buttons } })) });\n\nfunction renderMenu(data, products) {\n  const items = products\n    .filter((p) => p && p.Sku)\n    .map((p) => ({\n      name: p.Name, sku: p.Sku, category: p.Category || 'אחר', price: p.Price,\n      stock: Number(p.Stock) || 0, service: p.Category === SERVICE,\n      highlights: String(p.Highlights || '').split('\\n').map((s) => s.trim()).filter(Boolean).slice(0, 3),\n    }));\n  const cats = [...new Set(items.map((i) => i.category))].sort((a, b) => a.localeCompare(b, 'he'));\n  // ponytail: 30-char truncation collides on shared prefixes; disambiguate with a #index suffix, kept unique per render.\n  const catKeys = new Map();\n  const usedKeys = new Set();\n  cats.forEach((c, index) => {\n    let key = 'cat:' + String(c).slice(0, MAX_CAT);\n    if (usedKeys.has(key)) key = 'cat:' + String(c).slice(0, MAX_CAT - 3) + '#' + index;\n    usedKeys.add(key);\n    catKeys.set(c, key);\n  });\n  const home = (text) => ({ action: 'menu', text: text || 'במה תרצו להתעניין?', keyboard: keyboard(...cats.map((c) => [btn(c, catKeys.get(c))]), [btn('שאלה חופשית', 'ask')]) });\n  const d = String(data || 'home');\n  if (d === 'home') return home();\n  if (d === 'ask') return { action: 'menu', text: 'כתבו כאן כל שאלה ונענה מיד.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };\n  if (d.startsWith('cat:')) {\n    const cat = cats.find((c) => catKeys.get(c) === d);\n    if (!cat) return home('הקטגוריה כבר לא זמינה.');\n    const list = items.filter((i) => i.category === cat).slice(0, MAX_LIST);\n    const label = (i) => `${i.name} · ${price(i.price)}${!i.service && i.stock <= 0 ? ' (אזל)' : ''}`;\n    return { action: 'menu', text: `<b>${esc(cat)}</b>`, keyboard: keyboard(...list.map((i) => [btn(label(i), 'p:' + i.sku)]), [btn('חזרה', 'home')]) };\n  }\n  const sku = d.startsWith('p:') ? d.slice(2) : d.startsWith('lead:') ? d.slice(5) : null;\n  const item = sku ? items.find((i) => i.sku === sku) : null;\n  if (!item) return home('המוצר כבר לא זמין.');\n  const product = { name: item.name, sku: item.sku };\n  if (d.startsWith('lead:')) return { action: 'lead', text: `מעולה, רשמנו שאתם מתעניינים ב${esc(item.name)}.`, keyboard: keyboard([btn('תפריט ראשי', 'home')]), product };\n  const stock = item.service ? 'שירות — זמין תמיד' : item.stock > 0 ? 'במלאי' : 'אזל מהמלאי';\n  const text = [`<b>${esc(item.name)}</b>`, `${esc(item.sku)} · ${price(item.price)}`, ...item.highlights.map((h) => `• ${esc(h)}`), stock].join('\\n');\n  return { action: 'menu', text, keyboard: keyboard([btn('מעוניין', 'lead:' + item.sku)], [btn('חזרה לקטגוריה', catKeys.get(item.category)), btn('תפריט ראשי', 'home')]), product };\n}\nif (typeof $input !== 'undefined') return [{ json: renderMenu($('Classify').first().json.data, $input.all().map((i) => (i.json && i.json.fields) || i.json)) }];\nmodule.exports = { renderMenu };"
+        "jsCode": "// render-menu.js — גוף צומת Code ב-WF5 (מוזרק לצומת דרך placeholder CODE_RENDER_MENU). קלט: callback_data + כל המוצרים.\n// פלט: { action: 'menu' | 'lead', text (HTML), keyboard (צורת inlineKeyboard של צומת הטלגרם), product? }.\nconst SERVICE = 'שירותים';\nconst MAX_CAT = 30; // callback_data ≤ 64 בתים; עברית = 2 בתים לתו, 'cat:' = 4\nconst MAX_LIST = 10;\nconst esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst price = (n) => Number(n || 0).toLocaleString('he-IL') + ' ₪';\nconst btn = (text, data) => ({ text, additionalFields: { callback_data: data } });\nconst keyboard = (...lines) => ({ rows: lines.map((buttons) => ({ row: { buttons } })) });\n\nfunction renderMenu(data, products) {\n  const items = products\n    .filter((p) => p && p.Sku)\n    .map((p) => ({\n      name: p.Name, sku: p.Sku, category: p.Category || 'אחר', price: p.Price,\n      stock: Number(p.Stock) || 0, service: p.Category === SERVICE,\n      highlights: String(p.Highlights || '').split('\\n').map((s) => s.trim()).filter(Boolean).slice(0, 3),\n    }));\n  if (!items.length) return { action: 'menu', text: 'משהו השתבש, נסו שוב.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };\n  const cats = [...new Set(items.map((i) => i.category))].sort((a, b) => a.localeCompare(b, 'he'));\n  // ponytail: 30-char truncation collides on shared prefixes; disambiguate with a #index suffix, kept unique per render.\n  const catKeys = new Map();\n  const usedKeys = new Set();\n  cats.forEach((c, index) => {\n    let key = 'cat:' + String(c).slice(0, MAX_CAT);\n    if (usedKeys.has(key)) key = 'cat:' + String(c).slice(0, MAX_CAT - 3) + '#' + index;\n    usedKeys.add(key);\n    catKeys.set(c, key);\n  });\n  const home = (text) => ({ action: 'menu', text: text || 'במה תרצו להתעניין?', keyboard: keyboard(...cats.map((c) => [btn(c, catKeys.get(c))]), [btn('שאלה חופשית', 'ask')]) });\n  const d = String(data || 'home');\n  if (d === 'home') return home();\n  if (d === 'ask') return { action: 'menu', text: 'כתבו כאן כל שאלה ונענה מיד.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };\n  if (d.startsWith('cat:')) {\n    const cat = cats.find((c) => catKeys.get(c) === d);\n    if (!cat) return home('הקטגוריה כבר לא זמינה.');\n    const list = items.filter((i) => i.category === cat).slice(0, MAX_LIST);\n    const label = (i) => `${i.name} · ${price(i.price)}${!i.service && i.stock <= 0 ? ' (אזל)' : ''}`;\n    return { action: 'menu', text: `<b>${esc(cat)}</b>`, keyboard: keyboard(...list.map((i) => [btn(label(i), 'p:' + i.sku)]), [btn('חזרה', 'home')]) };\n  }\n  const sku = d.startsWith('p:') ? d.slice(2) : d.startsWith('lead:') ? d.slice(5) : null;\n  const item = sku ? items.find((i) => i.sku === sku) : null;\n  if (!item) return home('המוצר כבר לא זמין.');\n  const product = { name: item.name, sku: item.sku };\n  if (d.startsWith('lead:')) return { action: 'lead', text: `מעולה, רשמנו שאתם מתעניינים ב${esc(item.name)}.`, keyboard: keyboard([btn('תפריט ראשי', 'home')]), product };\n  const stock = item.service ? 'שירות — זמין תמיד' : item.stock > 0 ? 'במלאי' : 'אזל מהמלאי';\n  const text = [`<b>${esc(item.name)}</b>`, `${esc(item.sku)} · ${price(item.price)}`, ...item.highlights.map((h) => `• ${esc(h)}`), stock].join('\\n');\n  return { action: 'menu', text, keyboard: keyboard([btn('מעוניין', 'lead:' + item.sku)], [btn('חזרה לקטגוריה', catKeys.get(item.category)), btn('תפריט ראשי', 'home')]), product };\n}\nif (typeof $input !== 'undefined') return [{ json: renderMenu($('Classify').first().json.data, $input.all().map((i) => (i.json && i.json.fields) || i.json)) }];\nmodule.exports = { renderMenu };"
       },
       "id": "00000000-0000-4000-8000-000000000005"
     },
@@ -440,7 +440,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000012",
-      "webhookId": "aaf068e6-4244-4f97-84e1-7e1eac37e4b6"
+      "webhookId": "55a604e0-d37f-4e6c-997e-a8d89fee8d97"
     },
     {
       "name": "Lead Exists?",
@@ -472,6 +472,7 @@
           "timeout": 20000
         }
       },
+      "notes": "אם החיפוש נכשל אין records ולכן נוצר ליד גם אם קיים — מעדיפים ליד כפול על פני ליד אבוד.",
       "credentials": {
         "airtableTokenApi": {
           "id": "Qjg3M9Ztcfuye68g",
@@ -609,7 +610,6 @@
           "name": "Airtable ERP"
         }
       },
-      "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000015"
     },
     {
@@ -721,7 +721,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000017",
-      "webhookId": "cd4ce6a5-b8ca-424c-9886-60e45c0399dc"
+      "webhookId": "bb869a74-a28d-424a-bf42-ac3d51831da7"
     },
     {
       "name": "Confirm Lead",
@@ -800,7 +800,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000019",
-      "webhookId": "7e436eaf-dce2-4f3f-91f1-b59db5b65f36"
+      "webhookId": "de5985d3-8778-4316-962a-b2a3d677c085"
     },
     {
       "name": "Find Lead",
@@ -972,7 +972,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000023",
-      "webhookId": "d3afa752-2680-47b5-9b1a-bd11f1b5692e"
+      "webhookId": "5df22350-93ab-493d-b237-1df4f6cdb7fa"
     },
     {
       "name": "Thanks",
@@ -1003,7 +1003,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000024",
-      "webhookId": "86ab667e-ef88-4b9c-a0a6-a16dd1652a04"
+      "webhookId": "8b1ae6de-07ed-46bb-8384-ef33f41e7611"
     },
     {
       "name": "Skip Ack",
@@ -1034,7 +1034,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000025",
-      "webhookId": "96229901-564a-4a38-a57f-bedcbe698a90"
+      "webhookId": "d80514af-98fb-430a-99ea-7cc4fea355c3"
     }
   ],
   "connections": {
@@ -1245,7 +1245,7 @@
         ],
         [
           {
-            "node": "Thanks",
+            "node": "Notify Owner Phone",
             "type": "main",
             "index": 0
           }
