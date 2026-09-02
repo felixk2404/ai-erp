@@ -51,7 +51,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF5 שירות לקוחות | Telegram @aielec_support_bot | תפריט קטלוג בכפתורים (/menu), "מעוניין" יוצר ליד + משימה + הודעה לבעלים; טקסט חופשי → סוכן; שאלה על מדיניות/מוצר → תשובה מ-RAG |
 | WF6 מדיניות → RAG | `webhook.sh reindex-policies` | `rag-count.sh` → policy: ~79 |
 | WF7 מוצרים → RAG | `webhook.sh reindex-products` | `rag-count.sh` → product: 34 |
-| WF8 PDF | כל דקה, Invoices.Status=validated | PdfUrl בדרייב, Status generated |
+| WF8 PDF | כל 5 דקות, Invoices.Status=validated ולא תפוסה | PdfUrl בדרייב, Status generated |
 | WF9 מנהל (טלגרם) | Telegram @aielc_manager_bot, רק Chat ID של הבעלים | "מה ההכנסות?" |
 | WF9-core | Execute Workflow (מ-WF9 ו-WF13) | דרך WF13 chat |
 | WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N`; הזמנה פיזית → משימת "לשלוח ORD-…", מלאי נמוך → משימת "להזמין מלאי" |
@@ -103,7 +103,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
   "subtotal": 439, "shipping": 0, "total": 439, "created": "2026-09-02T14:37:30.000Z",
   "invoiceNumber": "INV-0003", "pdfUrl": "https://drive.google.com/...", "invoiceStatus": "generated" } }
 ```
-לא נמצא: `{ "ok": false, "error": "ההזמנה לא נמצאה" }`. `pdfUrl`/`invoiceStatus` הם `null` עד ש-WF8 מייצר את ה-PDF (עד כ-2 דקות אחרי ההזמנה).
+לא נמצא: `{ "ok": false, "error": "ההזמנה לא נמצאה" }`. `pdfUrl`/`invoiceStatus` הם `null` עד ש-WF8 מייצר את ה-PDF (עד כ-7 דקות אחרי ההזמנה — פולינג של 5 דקות ועוד כדקה-שתיים של הפקה).
 
 **`support`** — צ'אט שירות לקוחות. הזיכרון בצד השרת לפי `sessionId` (WF13 מוסיף קידומת `web-`), ולכן **אין** לשלוח היסטוריית שיחה מהדפדפן:
 ```json
@@ -170,6 +170,8 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - Gotenberg: Chromium איטי בהפעלה ראשונה — timeout 90s ב-compose.
 - WF1 נשבר בעבר כששתי חשבוניות נוצרו באותה דגימה של ה-Airtable Trigger: הצומת `Compute` השתמש ב-`$('Airtable Trigger').item`, ואחרי `Aggregate` השיוך היה מעורפל → `Multiple matches found`, והחשבונית נתקעה ב-`new` בלי שהטריגר יקרא אותה שוב. **תוקן 2026-09-02**: הגוף עטוף ב-`Loop Over Items` (batchSize 1) והביטויים משתמשים ב-`$('Loop Over Items').first()`. אין יותר צורך להגביל להזמנה אחת בדקה.
 - Aggregate/Summarize אחרי טריגר מרובה-פריטים שובר את השיוך של `$('Trigger').item` → עוטפים את הגוף ב-Loop Over Items (תיקון WF1, 2026-09-02).
-- מספור רץ (ORD/INV) מחושב מהמקסימום הקיים ולא מנעילה. **מגבלה ידועה: שתי הזמנות באותה שנייה עלולות לקבל אותו ORD/INV; מקובל לפרויקט.** זיהוי: `airtable/show-records.sh Invoices` וחיפוש כפילויות ב-InvoiceNumber; תיקון ידני של המספר.
+- מספור רץ (ORD/INV) מחושב מהמקסימום הקיים ולא מנעילה. WF10 `Compute` מזהה שליחה חוזרת (אותו אימייל, אותה עגלה, פחות מ-5 דקות) ומחזיר את ההזמנה הקיימת בלי לכתוב — זה מכסה לחיצה כפולה וניסיון חוזר של הדפדפן. **מגבלה ידועה שנשארה: שתי הזמנות שונות באותה שנייה עלולות עדיין לקבל אותו ORD/INV; מקובל לפרויקט.** זיהוי: `airtable/show-records.sh Invoices` וחיפוש כפילויות ב-InvoiceNumber; תיקון ידני של המספר.
 - WF10: כשל של `Email Customer` או `Notify Manager` כבר לא מפיל את ההזמנה (`onError: continueRegularOutput`) — ההזמנה מסומנת `confirmed` והחנות מקבלת תשובה תקינה. במצב הזה **ה-Error Workflow לא נורה**, ולכן מייל שנכשל נראה רק ברשימת ההרצות של WF10: `n8n/scripts/executions.sh "WF10 — הזמנה מהחנות"` → פותחים את ההרצה ובודקים את הצומת `Email Customer`.
+- **חשבונית תקועה ב-`validated` ולא מקבלת PDF:** WF8 תופס חשבונית בשדה `Invoices.PdfLockedAt` לפני ההפקה, כדי ששתי הרצות לא ייצרו שתי חשבוניות מס לאותה שורה. אם הרצה נפלה באמצע, התפיסה פגה לבד אחרי 15 דקות והחשבונית נבחרת שוב; לזירוז — מוחקים את הערך ב-`PdfLockedAt`. ההרצה הכושלת עצמה מופיעה ב-`n8n/scripts/executions.sh` ומפעילה את WF-Error.
+- **קובצי ה-PDF של החשבוניות משותפים כ"כל מי שיש לו את הקישור" (WF8 `Share Public`) — החלטה מודעת:** עמוד ההזמנה של הלקוח מקשר ישירות לחשבונית שלו ואין בפרויקט התחברות לקוחות, והנתונים הם דמו סינתטי. עם נתוני לקוחות אמיתיים זה היה חייב signed URL קצר-מועד (למשל bucket פרטי ב-Supabase Storage) במקום קישור נצחי ובלתי הפיך.
 - **התפריט בטלגרם לא מגיב לכפתורים**: `TELEGRAM_CUSTOMER_TOKEN` חסר בסביבת הקונטיינר (docker-compose מעביר אותו מקובץ ה-env). `n8n/scripts/verify-env.sh` בודק; אחרי הוספה — `docker compose up -d` בתיקיית n8n.

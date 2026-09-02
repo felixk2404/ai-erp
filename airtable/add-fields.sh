@@ -13,6 +13,7 @@ add() { # table name json
 add Products Sku '{"name":"Sku","type":"singleLineText"}'
 add Products ImageUrl '{"name":"ImageUrl","type":"url"}'
 add Invoices Items '{"name":"Items","type":"multilineText","description":"JSON: [{sku,name,qty,price}]"}'
+add Invoices PdfLockedAt '{"name":"PdfLockedAt","type":"dateTime","options":{"timeZone":"Asia/Jerusalem","dateFormat":{"name":"iso"},"timeFormat":{"name":"24hour"}},"description":"WF8 תופס חשבונית לפני הפקת PDF. שחרור אוטומטי אחרי 15 דקות."}'
 add Products Stock '{"name":"Stock","type":"number","options":{"precision":0},"description":"כמות במלאי. ריק לשירותים."}'
 add Products Highlights '{"name":"Highlights","type":"multilineText","description":"3 נקודות מפרט, שורה לכל נקודה"}'
 add Tasks Source '{"name":"Source","type":"singleLineText","description":"order / stock / lead / invoice / manual"}'

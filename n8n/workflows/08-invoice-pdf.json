@@ -46,7 +46,7 @@
           "mode": "id",
           "value": "__TBL_INVOICES__"
         },
-        "filterByFormula": "{Status}='validated'",
+        "filterByFormula": "AND({Status}='validated', OR({PdfLockedAt} = BLANK(), DATETIME_DIFF(NOW(), {PdfLockedAt}, 'minutes') > 15))",
         "returnAll": false,
         "limit": 1,
         "options": {}
@@ -59,7 +59,8 @@
       },
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "notes": "חשבונית שנתפסה על ידי הרצה אחרת לא נבחרת שוב, עד שהתפיסה פגה אחרי 15 דקות."
     },
     {
       "name": "Claim Invoice",
@@ -72,7 +73,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "notes": "תופס את החשבונית לפני העבודה: הרצה מקבילה כבר לא תבחר אותה ולא ייווצר PDF כפול. ponytail: אם ההפקה נכשלת החשבונית נתקעת ב-generating — ההרצה נכשלת ו-WF-Error מתריע, שחרור ידני ב-Airtable.",
+      "notes": "תופס את החשבונית לפני העבודה, כך שהרצה מקבילה לא תבחר אותה ולא ייווצר PDF כפול. השדה נבחר במקום Status=generating כדי לא להכניס סטטוס חדש לממשק; התפיסה פגה לבד אחרי 15 דקות, כך שהרצה שנפלה לא תוקעת את החשבונית.",
       "parameters": {
         "authentication": "airtableTokenApi",
         "operation": "update",
@@ -90,7 +91,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "id": "={{ $json.id }}",
-            "Status": "generating"
+            "PdfLockedAt": "={{ $now.toISO() }}"
           },
           "matchingColumns": [
             "id"
@@ -107,13 +108,13 @@
               "removed": false
             },
             {
-              "id": "Status",
-              "displayName": "Status",
+              "id": "PdfLockedAt",
+              "displayName": "PdfLockedAt",
               "required": false,
               "defaultMatch": false,
               "canBeUsedToMatch": true,
               "display": true,
-              "type": "string",
+              "type": "dateTime",
               "readOnly": false,
               "removed": false
             }
