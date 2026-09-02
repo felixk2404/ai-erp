@@ -20,7 +20,8 @@ export const metadata: Metadata = { title: { absolute: 'איי.איי אלקטר
 export default async function Home() {
   const all = await getProducts();
   const flagship = flagshipOf(all);
-  const featured = featuredOf(all, flagship);
+  // שבעה: עם המוביל שתופס שתי מסילות זו רשת של 8 תאים — שתי שורות מלאות ב-lg.
+  const featured = featuredOf(all, flagship, 7);
   const services = all.filter(isService).sort((a, b) => (a.fields.Price ?? 0) - (b.fields.Price ?? 0));
 
   return (

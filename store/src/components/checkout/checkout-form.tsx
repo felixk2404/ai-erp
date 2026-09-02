@@ -12,13 +12,22 @@ import { useCart } from '@/components/cart/cart-provider';
 import { OrderSummary } from '@/components/checkout/order-summary';
 import { placeOrder, type PlaceOrderState } from '@/app/checkout/actions';
 import { CHECKOUT_FIELDS } from '@/lib/order';
+import { EYEBROW } from '@/lib/ui';
 import { ils } from '@/lib/format';
 
 const EMAIL_KEY = 'aie-order-email';
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.28 };
 
-/** כותרת קבוצה — Heebo 500 עם ריווח, לא מונוספייס: עברית לא נקראת טוב במונו. */
-const EYEBROW = 'text-[11px] font-medium tracking-[0.08em] text-glow-3';
+/**
+ * מה שקורה אחרי הלחיצה, בשלוש שורות. יושב מתחת לסיכום בעמודה הדביקה: בלעדיו
+ * הטור נגמר באמצע המסך ומשאיר תהום, ועם זה הוא גם עונה על השאלה היחידה
+ * שנשארה פתוחה בקופה — "ואז מה". שקט בכוונה: אין beam, אין מסגרת, רק קו.
+ */
+const AFTER_ORDER = [
+  ['01', 'אישור במייל'],
+  ['02', 'חשבונית PDF'],
+  ['03', 'מעקב בעמוד ההזמנה'],
+] as const;
 
 /** שדה טקסט של הקופה: תווית, שדה, ושגיאה שיושבת מתחת ומחוברת ב-aria. */
 function Field({
@@ -342,9 +351,23 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
       </div>
 
       <aside className="hidden lg:block lg:self-stretch">
-        <div className="sticky top-24 flex flex-col gap-3">
-          <h2 className={EYEBROW}>סיכום הזמנה</h2>
-          <OrderSummary lines={lines} totals={totals} outOfStock={state.outOfStock} />
+        <div className="sticky top-24 flex flex-col gap-8">
+          <div className="flex flex-col gap-3">
+            <h2 className={EYEBROW}>סיכום הזמנה</h2>
+            <OrderSummary lines={lines} totals={totals} outOfStock={state.outOfStock} />
+          </div>
+
+          <section className="flex flex-col gap-3">
+            <h2 className={EYEBROW}>מה קורה אחרי ההזמנה</h2>
+            <ol className="flex flex-col gap-3 border-t border-rule pt-4">
+              {AFTER_ORDER.map(([step, label]) => (
+                <li key={step} className="flex items-baseline gap-3 text-[14px] leading-5 text-glow-2">
+                  <span className="num shrink-0 text-[11px] text-glow-3">{step}</span>
+                  {label}
+                </li>
+              ))}
+            </ol>
+          </section>
         </div>
       </aside>
     </form>

@@ -91,7 +91,7 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   );
 
   return (
-    <div aria-busy={phase.kind === 'loading'} className="mx-auto flex max-w-2xl flex-col gap-8 py-4">
+    <div aria-busy={phase.kind === 'loading'} className="mx-auto flex max-w-4xl flex-col gap-8 py-4">
       {/* שורת מצב אחת, קבועה — במקום להכריז מחדש על כל העמוד בכל שינוי סטטוס. */}
       <span aria-live="polite" className="sr-only">
         {phase.kind === 'success' ? 'ההזמנה נטענה' : ''}
@@ -135,12 +135,18 @@ function SuccessView({
     <>
       <OrderNumberDisplay value={order.orderNumber} />
       <OrderTimeline status={order.status} />
-      <section className="flex flex-col gap-3">
-        <h2 className="text-sm font-medium text-glow-3">פריטים</h2>
-        <ItemsTable items={order.items} />
-      </section>
-      <Totals order={order} />
-      <InvoiceBlock order={order} stalled={invoiceStalled} onRefresh={onRefresh} />
+      {/* ב-lg הסכומים והחשבונית יורדים לטור צדדי משלהם, ממוסגרים כמו טבלת הפריטים —
+          קודם הם ריחפו בין שני פאנלים כשורה בודדת בלי בית. */}
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <section className="flex min-w-0 flex-col gap-3">
+          <h2 className="text-sm font-medium text-glow-3">פריטים</h2>
+          <ItemsTable items={order.items} />
+        </section>
+        <div className="flex flex-col gap-4 lg:mt-8">
+          <Totals order={order} />
+          <InvoiceBlock order={order} stalled={invoiceStalled} onRefresh={onRefresh} />
+        </div>
+      </div>
       <div className="flex flex-wrap gap-3 border-t border-rule pt-6">
         <Button nativeButton={false} render={<Link href="/products" transitionTypes={['nav-forward']} />}>
           המשך קנייה
@@ -302,7 +308,7 @@ function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
 
 function Totals({ order }: { order: TrackedOrder }) {
   return (
-    <dl className="flex flex-col gap-1.5 text-sm">
+    <dl className="flex flex-col gap-1.5 rounded-lg border border-rule bg-panel-1 px-4 py-3 text-sm">
       <div className="flex justify-between">
         <dt className="text-glow-3">ביניים</dt>
         <dd className="num text-glow-2">{ils(order.subtotal)}</dd>
