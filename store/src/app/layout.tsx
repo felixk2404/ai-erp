@@ -3,6 +3,8 @@ import { Heebo, JetBrains_Mono } from 'next/font/google';
 import { MotionConfig } from 'motion/react';
 import { Toaster } from '@/components/ui/sonner';
 import { CartProvider } from '@/components/cart/cart-provider';
+import { CartSheet } from '@/components/cart/cart-sheet';
+import { FlyToCart } from '@/components/cart/fly-to-cart';
 import { Header } from '@/components/shell/header';
 import { Footer } from '@/components/shell/footer';
 import './globals.css';
@@ -25,6 +27,8 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             <Header />
             <main className="container-x min-h-[70dvh] py-8">{children}</main>
             <Footer />
+            <CartSheet />
+            <FlyToCart />
           </CartProvider>
         </MotionConfig>
         <Toaster position="bottom-center" theme="dark" />
