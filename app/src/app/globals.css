@@ -1,0 +1,151 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+  עולם: פנקס חשבוניות עם נייר העתקה, על שולחן העבודה של חנות אלקטרוניקה.
+  משטח נייר חם, טקסט אנתרציט, מבטא יחיד — דיו כחול של ההעתק. LED רק לסטטוסים.
+  מצב בהיר בלבד (כלי עבודה של משתמש יחיד).
+*/
+:root {
+  --paper: #f7f3ea;
+  --paper-2: #fdfbf6;
+  --paper-3: #efe9dc;
+  --ink: #1f2326;
+  --ink-2: #4b5157;
+  --ink-3: #7a8087;
+  --rule: rgba(31, 35, 38, 0.1);
+  --rule-strong: rgba(31, 35, 38, 0.22);
+  --inkblue: #2b4c7e;
+  --inkblue-hover: #23406b;
+  --inkblue-soft: rgba(43, 76, 126, 0.1);
+  --led-green: #2f9e5b;
+  --led-amber: #d08a1d;
+  --led-red: #c4453a;
+  --copper: #b87333;
+
+  /* shadcn semantic tokens → העולם שלנו */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper-2);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-2);
+  --popover-foreground: var(--ink);
+  --primary: var(--inkblue);
+  --primary-foreground: #ffffff;
+  --secondary: var(--paper-3);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-3);
+  --muted-foreground: var(--ink-2);
+  --accent: var(--inkblue-soft);
+  --accent-foreground: var(--inkblue);
+  --destructive: var(--led-red);
+  --border: var(--rule);
+  --input: var(--rule-strong);
+  --ring: var(--inkblue);
+  --chart-1: var(--inkblue);
+  --chart-2: var(--copper);
+  --chart-3: var(--led-green);
+  --chart-4: var(--led-amber);
+  --chart-5: var(--ink-3);
+  --radius: 0.5rem;
+  --sidebar: var(--paper);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--inkblue);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--inkblue-soft);
+  --sidebar-accent-foreground: var(--inkblue);
+  --sidebar-border: var(--rule);
+  --sidebar-ring: var(--inkblue);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-plex), system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-heading: var(--font-frank), serif;
+  --font-display: var(--font-frank), serif;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.5);
+  --radius-4xl: calc(var(--radius) * 3);
+
+  /* טוקני העולם — לשימוש ישיר בקומפוננטות: bg-paper text-ink border-rule bg-inkblue ... */
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-inkblue: var(--inkblue);
+  --color-inkblue-hover: var(--inkblue-hover);
+  --color-inkblue-soft: var(--inkblue-soft);
+  --color-led-green: var(--led-green);
+  --color-led-amber: var(--led-amber);
+  --color-led-red: var(--led-red);
+  --color-copper: var(--copper);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  h1,
+  h2 {
+    font-family: var(--font-frank), serif;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p,
+  td {
+    text-wrap: pretty;
+  }
+}
+
+@utility num {
+  font-variant-numeric: tabular-nums;
+}
