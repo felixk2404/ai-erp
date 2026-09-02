@@ -2,6 +2,7 @@
 
 import { cookies, headers } from 'next/headers';
 import { erpSupport, ErpError } from '@/lib/n8n';
+import { logError } from '@/lib/log';
 import { list } from '@/lib/airtable';
 import { matchProducts } from '@/lib/product-match';
 import { supportLimiter } from '@/lib/rate-limit';
@@ -22,13 +23,19 @@ async function sessionId(): Promise<string> {
 }
 
 export async function sendSupport(message: string): Promise<SupportResult> {
-  const text = message.trim().slice(0, 500);
+  const text = message.trim();
   if (!text) return { error: 'כתוב שאלה' };
+  if (text.length > 500) return { error: 'ההודעה ארוכה מדי. קצרו אותה ונסו שוב.' };
   const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() || 'local';
   if (!supportLimiter.allow(ip)) return { error: 'יותר מדי הודעות. נסו שוב בעוד דקה.' };
+  // כרטיסי המוצרים הם העשרה בלבד — תקלה בקטלוג לא תמחק תשובה תקינה של הסוכן
+  const catalog = list<ProductFields>('Products').catch((e) => {
+    logError('support.catalog', e);
+    return [];
+  });
   try {
-    const [reply, products] = await Promise.all([erpSupport(text, await sessionId()), list<ProductFields>('Products')]);
-    const matched = matchProducts(reply, products).map((p) => ({
+    const reply = await erpSupport(text, await sessionId());
+    const matched = matchProducts(reply, await catalog).map((p) => ({
       id: p.id,
       name: p.fields.Name,
       sku: p.fields.Sku,
@@ -38,6 +45,7 @@ export async function sendSupport(message: string): Promise<SupportResult> {
     }));
     return { reply, products: matched };
   } catch (e) {
+    logError('support.reply', e);
     return { error: e instanceof ErpError ? e.message : 'השירות לא זמין כרגע. אפשר לפנות בטלגרם @aielec_support_bot.' };
   }
 }

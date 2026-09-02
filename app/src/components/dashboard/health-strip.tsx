@@ -1,4 +1,5 @@
-import type { Health } from '@/lib/n8n-health';
+import type { Health, PulseReason } from '@/lib/n8n-health';
+import { reasonHint } from './pulse-reason';
 
 const LED: Record<Health['led'], string> = {
   green: 'bg-led-green led-live',
@@ -13,7 +14,7 @@ const ago = (iso: string) => {
 };
 
 /** בריאות האוטומציה: הרצות n8n ב-24 השעות האחרונות. */
-export function HealthStrip({ health }: { health: Health | null }) {
+export function HealthStrip({ health, reason }: { health: Health | null; reason?: PulseReason }) {
   const ok = health && health.total > 0 ? Math.round((health.success / health.total) * 100) : null;
   return (
     <section className="panel p-5 h-full flex flex-col">
@@ -33,7 +34,11 @@ export function HealthStrip({ health }: { health: Health | null }) {
             ))}
           </dl>
           <p className="mt-auto pt-4 text-[12px] text-readout-3 leading-relaxed">
-            <span className="mono text-readout-2">N8N_API_URL</span> + <span className="mono text-readout-2">N8N_API_KEY</span> מדליקים את הבריאות, הפיד ומפת המערכת.
+            {reasonHint(reason) ?? (
+              <>
+                <span className="mono text-readout-2">N8N_API_URL</span> + <span className="mono text-readout-2">N8N_API_KEY</span> מדליקים את הבריאות, הפיד ומפת המערכת.
+              </>
+            )}
           </p>
         </>
       ) : (

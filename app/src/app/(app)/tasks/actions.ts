@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { erpCreate, erpUpdate, ErpError } from '@/lib/n8n';
+import { logError } from '@/lib/log';
 import type { TaskFields } from '@/lib/types';
 import type { ActionResult } from '@/components/forms/action-button';
 
@@ -15,6 +16,7 @@ export async function addTask(_prev: AddTaskState, fd: FormData): Promise<AddTas
   try {
     await erpCreate<TaskFields>('Tasks', { Title, Status: 'open', Source: 'manual' });
   } catch (e) {
+    logError('tasks.add', e);
     return { error: msg(e, 'הוספת המשימה נכשלה') };
   }
   revalidatePath('/tasks');
@@ -26,6 +28,7 @@ export async function toggleTask(id: string, done: boolean): Promise<ActionResul
   try {
     await erpUpdate<TaskFields>('Tasks', id, { Status: done ? 'done' : 'open' });
   } catch (e) {
+    logError('tasks.toggle', e);
     return { error: msg(e, 'עדכון המשימה נכשל') };
   }
   revalidatePath('/tasks');

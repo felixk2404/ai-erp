@@ -99,7 +99,7 @@ export default async function Dashboard() {
           <AttentionList items={attention} />
         </Reveal>
         <Reveal index={3} className="col-span-12 md:col-span-5 lg:col-span-3">
-          <HealthStrip health={pulse.health} />
+          <HealthStrip health={pulse.health} reason={pulse.reason} />
         </Reveal>
 
         <Reveal index={4} className="col-span-12 lg:col-span-7">
@@ -163,7 +163,7 @@ export default async function Dashboard() {
             )}
           </Panel>
         </Reveal>
-        <Reveal index={8} className="col-span-12 lg:col-span-5">
+        <Reveal index={9} className="col-span-12 lg:col-span-5">
           <Panel title="לקוחות מובילים" sub="לפי הכנסות" href="/customers" linkLabel="כל הלקוחות" className="h-full">
             {(() => {
               const top = topCustomers(invoices, customers, 5);

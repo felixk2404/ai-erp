@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import type { Pulse, PulseEvent } from '@/lib/n8n-health';
+import { reasonHint } from './pulse-reason';
 
 const LED: Record<PulseEvent['status'], string> = {
   success: 'bg-led-green',
@@ -78,7 +79,11 @@ export function PulseFeed({ initial, interval = 10_000 }: { initial: Pulse; inte
             ))}
           </ol>
           <div className="mt-auto rounded-md border border-rule bg-well/70 p-3 text-[12px] text-readout-3 leading-relaxed">
-            כדי להדליק את הפיד: <span className="mono text-readout-2">N8N_API_URL</span> + <span className="mono text-readout-2">N8N_API_KEY</span> ב-env. כל הרצה של סוכן תופיע כאן תוך 10 שניות.
+            {reasonHint(pulse.reason) ?? (
+              <>
+                כדי להדליק את הפיד: <span className="mono text-readout-2">N8N_API_URL</span> + <span className="mono text-readout-2">N8N_API_KEY</span> ב-env. כל הרצה של סוכן תופיע כאן תוך 10 שניות.
+              </>
+            )}
           </div>
         </div>
       ) : events.length === 0 ? (

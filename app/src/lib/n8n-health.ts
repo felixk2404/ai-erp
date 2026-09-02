@@ -1,3 +1,4 @@
+import { logError } from './log';
 import { WORKFLOWS, workflowById, type WorkflowMeta } from './workflows';
 
 export type Execution = { id: string; status: string; startedAt: string | null; stoppedAt?: string | null; workflowId: string };
@@ -50,7 +51,9 @@ export type NodeStatus = WorkflowMeta & {
   lastRunAt?: string;
   led: Health['led'];
 };
-export type Pulse = { connected: boolean; at: string; health: Health | null; events: PulseEvent[]; nodes: NodeStatus[] };
+/** למה אין חיבור. שלוש סיבות שונות שמובילות לשלוש פעולות שונות — ולכן לא מקובצות ל-null אחד. */
+export type PulseReason = 'unconfigured' | 'unauthorized' | 'unreachable';
+export type Pulse = { connected: boolean; at: string; reason?: PulseReason; health: Health | null; events: PulseEvent[]; nodes: NodeStatus[] };
 
 export type WorkflowInfo = { id: string; name: string; active?: boolean };
 
@@ -91,41 +94,48 @@ const api = () => {
   return { base, headers: { 'X-N8N-API-KEY': key } };
 };
 
-async function fetchRaw(): Promise<{ execs: Execution[]; workflows: WorkflowInfo[] } | null> {
+type Raw = { execs: Execution[]; workflows: WorkflowInfo[] } | { reason: PulseReason };
+
+async function fetchRaw(): Promise<Raw> {
   const a = api();
-  if (!a) return null;
+  if (!a) return { reason: 'unconfigured' };
   try {
     const [execRes, wfRes] = await Promise.all([
       fetch(`${a.base}/executions?limit=100`, { headers: a.headers, cache: 'no-store', signal: AbortSignal.timeout(4000) }),
       fetch(`${a.base}/workflows?limit=100`, { headers: a.headers, cache: 'no-store', signal: AbortSignal.timeout(4000) }),
     ]);
-    if (!execRes.ok) return null;
+    if (!execRes.ok) {
+      logError('n8n api', `${execRes.status} on executions`);
+      return { reason: execRes.status === 401 || execRes.status === 403 ? 'unauthorized' : 'unreachable' };
+    }
     const execs = ((await execRes.json()) as { data: Execution[] }).data;
     const workflows = wfRes.ok ? ((await wfRes.json()) as { data: WorkflowInfo[] }).data : [];
     return { execs, workflows };
-  } catch {
-    return null;
+  } catch (e) {
+    logError('n8n api unreachable', e);
+    return { reason: 'unreachable' };
   }
 }
 
 /** קורא מ-n8n Public API (בשרת בלבד). מחזיר null אם env חסר או שהשרת לא זמין. */
 export async function fetchHealth(): Promise<Health | null> {
   const raw = await fetchRaw();
-  if (!raw) return null;
+  if ('reason' in raw) return null;
   const names: Record<string, string> = {};
   for (const w of raw.workflows) names[w.id] = workflowById(w.id)?.name ?? w.name;
   return summarizeExecutions(raw.execs, names);
 }
 
-/** פיד + מפה. כשאין חיבור: המניפסט בלבד עם connected=false (המפה עדיין מוצגת). */
+/** פיד + מפה. כשאין חיבור: המניפסט בלבד עם connected=false ו-reason שאומר מה לתקן (המפה עדיין מוצגת). */
 export async function fetchPulse(): Promise<Pulse> {
   const at = new Date().toISOString();
-  const offline: Pulse = { connected: false, at, health: null, events: [], nodes: WORKFLOWS.map((w) => ({ ...w, runs24h: 0, errors24h: 0, led: 'off' })) };
+  const offline = (reason: PulseReason): Pulse => ({ connected: false, at, reason, health: null, events: [], nodes: WORKFLOWS.map((w) => ({ ...w, runs24h: 0, errors24h: 0, led: 'off' })) });
   try {
     const raw = await fetchRaw();
-    if (!raw) return offline;
+    if ('reason' in raw) return offline(raw.reason);
     return { connected: true, at, ...summarizePulse(raw.execs, raw.workflows) };
-  } catch {
-    return offline; // צורת נתונים לא צפויה מ-n8n לא מפילה את הדשבורד
+  } catch (e) {
+    logError('n8n pulse', e); // צורת נתונים לא צפויה מ-n8n לא מפילה את הדשבורד
+    return offline('unreachable');
   }
 }

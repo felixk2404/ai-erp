@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { summarizeExecutions } from './n8n-health';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fetchPulse, summarizeExecutions } from './n8n-health';
 
 const now = new Date('2026-09-02T12:00:00.000Z');
 
@@ -62,5 +62,37 @@ describe('summarizePulse', () => {
     expect(byKey.ERROR).toMatchObject({ led: 'off', runs24h: 0 });
     expect(p.nodes).toHaveLength(13);
     expect(p.health?.led).toBe('amber');
+  });
+});
+
+describe('fetchPulse', () => {
+  beforeEach(() => vi.restoreAllMocks());
+  const configure = () => {
+    vi.stubEnv('N8N_API_URL', 'https://n8n.test/api/v1');
+    vi.stubEnv('N8N_API_KEY', 'key');
+  };
+
+  it('tells apart env not set, a rejected key and an unreachable server', async () => {
+    vi.stubEnv('N8N_API_URL', '');
+    vi.stubEnv('N8N_API_KEY', '');
+    expect((await fetchPulse()).reason).toBe('unconfigured');
+
+    configure();
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response('unauthorized', { status: 401 }));
+    expect((await fetchPulse()).reason).toBe('unauthorized');
+
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('fetch failed'));
+    const p = await fetchPulse();
+    expect(p.reason).toBe('unreachable');
+    expect(p.connected).toBe(false);
+    expect(p.nodes).toHaveLength(13); // המפה עדיין מוצגת
+  });
+
+  it('carries no reason when n8n answers', async () => {
+    configure();
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ data: [] }), { headers: { 'content-type': 'application/json' } }));
+    const p = await fetchPulse();
+    expect(p.connected).toBe(true);
+    expect(p.reason).toBeUndefined();
   });
 });
