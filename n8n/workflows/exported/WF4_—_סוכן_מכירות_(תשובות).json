@@ -191,6 +191,92 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "name": "Create Call Task",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        -100
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tbl02ryhflQHnoD9J"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "=להתקשר ל{{ $('Contacted Lead').first().json.records[0].fields.Name }} ({{ $('Contacted Lead').first().json.records[0].fields.Company || 'ללא חברה' }})",
+            "Status": "open",
+            "Source": "lead",
+            "RefId": "={{ $('Contacted Lead').first().json.records[0].id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "RefId",
+              "displayName": "RefId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "id": "00000000-0000-4000-8000-000000000005"
     }
   ],
   "connections": {
@@ -237,6 +323,17 @@
           }
         ],
         []
+      ]
+    },
+    "Mark Qualified": {
+      "main": [
+        [
+          {
+            "node": "Create Call Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },

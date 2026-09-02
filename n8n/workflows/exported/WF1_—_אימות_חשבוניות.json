@@ -433,6 +433,92 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000009"
+    },
+    {
+      "name": "Create Fix Task",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1560,
+        120
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tbl02ryhflQHnoD9J"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "=לתקן {{ $('Loop Over Items').first().json.fields.InvoiceNumber || 'חשבונית ללא מספר' }}: {{ (($('Loop Over Items').first().json.fields.Amount || 0) > 0) ? 'לקוח ' + ($('Loop Over Items').first().json.fields.CustomerId || '?') + ' לא נמצא' : 'סכום חסר' }}",
+            "Status": "open",
+            "Source": "invoice",
+            "RefId": "={{ $('Loop Over Items').first().json.fields.InvoiceNumber || $('Loop Over Items').first().json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "RefId",
+              "displayName": "RefId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "id": "00000000-0000-4000-8000-000000000010"
     }
   ],
   "connections": {
@@ -545,6 +631,17 @@
       ]
     },
     "Mark Error": {
+      "main": [
+        [
+          {
+            "node": "Create Fix Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Fix Task": {
       "main": [
         [
           {

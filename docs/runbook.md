@@ -44,18 +44,20 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | workflow | טריגר | איך בודקים |
 |---|---|---|
 | WF-Error | Error Trigger (מוגדר בכל workflow) | שגיאה בכל workflow → טלגרם למנהל |
-| WF1 אימות חשבוניות | Airtable Trigger, Invoices.Created, כל דקה | `api-test.sh` create Invoice → validated + INV-000N + מע"מ, או error |
+| WF1 אימות חשבוניות | Airtable Trigger, Invoices.Created, כל דקה | `api-test.sh` create Invoice → validated + INV-000N + מע"מ, או error; חשבונית שגויה → משימת "לתקן INV-…" |
 | WF2 לידים | Airtable Trigger, Leads.Created | ליד → New; מייל קיים → Duplicate |
 | WF3 מכירות (מייל קר) | כל 3 שעות + `webhook.sh run-sales` | ליד New → מייל נשלח → Contacted |
-| WF4 מכירות (תשובות) | Gmail Trigger כל 30 דק' | תשובה מהליד → Qualified |
+| WF4 מכירות (תשובות) | Gmail Trigger כל 30 דק' | תשובה מהליד → Qualified + משימת "להתקשר ל…" |
 | WF5 שירות לקוחות | Telegram @aielec_support_bot | שאלה על מדיניות/מוצר → תשובה מ-RAG |
 | WF6 מדיניות → RAG | `webhook.sh reindex-policies` | `rag-count.sh` → policy: ~79 |
 | WF7 מוצרים → RAG | `webhook.sh reindex-products` | `rag-count.sh` → product: 34 |
 | WF8 PDF | כל דקה, Invoices.Status=validated | PdfUrl בדרייב, Status generated |
 | WF9 מנהל (טלגרם) | Telegram @aielc_manager_bot, רק Chat ID של הבעלים | "מה ההכנסות?" |
 | WF9-core | Execute Workflow (מ-WF9 ו-WF13) | דרך WF13 chat |
-| WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N` |
+| WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N`; הזמנה פיזית → משימת "לשלוח ORD-…", מלאי נמוך → משימת "להזמין מלאי" |
 | WF13 API | `POST /webhook/erp` + header `x-erp-secret` | `n8n/scripts/api-test.sh '{"action":"chat","message":"..."}'` |
+
+- **משימות (Tasks)**: תור פעולות אנושיות. WF10 יוצר "לשלוח ORD-…" לכל הזמנה פיזית ו"להזמין מלאי" כשמלאי יורד מתחת ל-3 (בלי כפילות לאותו מק"ט). WF4 יוצר "להתקשר ל…" לליד שענה. WF1 יוצר "לתקן INV-…" לחשבונית שגויה. `Source` + `RefId` מקשרים למסך היעד באפליקציה. סוכן המנהל מקבל `open_tasks`.
 
 פעולות WF13: `create` · `chat` · `update` · `support` · `order` (מריץ את WF10) · `order_status` (`{orderNumber,email}` → סטטוס ההזמנה + PdfUrl של החשבונית).
 
