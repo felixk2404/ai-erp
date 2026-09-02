@@ -5,17 +5,27 @@ import type { OrderItem } from './types';
 /** שדות הטופס שיכולים לקבל שגיאה. הסדר כאן הוא סדר המיקוד בטופס. */
 export const CHECKOUT_FIELDS = ['name', 'email', 'phone', 'address', 'city', 'note', 'items'] as const;
 export type CheckoutField = (typeof CHECKOUT_FIELDS)[number];
+export type CheckoutErrors = Partial<Record<CheckoutField, string>>;
 
 /** שורה כפי שהדפדפן שולח אותה — בלי מחיר. המחיר תמיד נלקח מהקטלוג בצד השרת. */
 const lineSchema = z.object({
-  sku: z.string().trim().min(1),
+  sku: z.string().trim().min(1).max(32),
   qty: z.number().int().min(1).max(MAX_QTY),
   service: z.boolean(),
 });
 
+/**
+ * כתובת ועיר נדרשות רק כשיש פריט פיזי. מספיק שהשדה מלא — אימות הכתובת עצמה
+ * הוא לא תפקידו של הדפדפן. `physical` נגזר בשרת מהקטלוג, לא מהדפדפן.
+ */
+export function shippingErrors(v: { address?: string; city?: string }, physical: boolean): CheckoutErrors {
+  if (!physical) return {};
+  return { ...(v.address ? {} : { address: 'נדרש למשלוח' }), ...(v.city ? {} : { city: 'נדרש למשלוח' }) };
+}
+
 const schema = z
   .object({
-    name: z.string().trim().min(2, 'יש להזין שם מלא'),
+    name: z.string().trim().min(2, 'יש להזין שם מלא').max(60, 'שם ארוך מדי'),
     // trim+lowercase לפני הבדיקה: אימייל שהודבק עם רווח או באותיות גדולות הוא תקין.
     email: z.string().trim().toLowerCase().pipe(z.email('אימייל לא תקין')),
     // רווחים מוסרים, מקף נשאר — "050 123 4567" ו-"050-1234567" הם אותו מספר.
@@ -23,8 +33,8 @@ const schema = z
       .string()
       .transform((s) => s.replace(/\s+/g, ''))
       .refine((v) => /^0\d{1,2}-?\d{7}$/.test(v), 'טלפון לא תקין'),
-    address: z.string().trim().optional(),
-    city: z.string().trim().optional(),
+    address: z.string().trim().max(120, 'כתובת ארוכה מדי').optional(),
+    city: z.string().trim().max(120, 'שם עיר ארוך מדי').optional(),
     note: z.string().trim().max(500, 'ההערה ארוכה מדי').optional(),
     items: z
       .string()
@@ -39,15 +49,13 @@ const schema = z
       .pipe(z.array(lineSchema).min(1, 'העגלה ריקה').max(MAX_LINES, `עד ${MAX_LINES} פריטים שונים בהזמנה`)),
   })
   .superRefine((v, ctx) => {
-    // כתובת נדרשת רק כשיש מה לשלוח — הזמנת שירות בלבד לא צריכה אותה.
-    // מספיק שהשדה מלא: אימות הכתובת עצמה הוא לא תפקידו של הדפדפן.
-    if (!v.items.some((l) => !l.service)) return;
-    if (!v.address) ctx.addIssue({ code: 'custom', path: ['address'], message: 'נדרש למשלוח' });
-    if (!v.city) ctx.addIssue({ code: 'custom', path: ['city'], message: 'נדרש למשלוח' });
+    // הדגל `service` מהדפדפן הוא רק רמז לטופס; השרת גוזר אותו מהקטלוג ובודק שוב.
+    for (const [field, message] of Object.entries(shippingErrors(v, v.items.some((l) => !l.service)))) {
+      ctx.addIssue({ code: 'custom', path: [field], message: message! });
+    }
   });
 
 export type CheckoutData = z.infer<typeof schema>;
-export type CheckoutErrors = Partial<Record<CheckoutField, string>>;
 export type CheckoutParse = { ok: true; data: CheckoutData } | { ok: false; errors: CheckoutErrors };
 
 /** גוף ה-`order` של WF13 (runbook §7.1) — לקוח + מק"ט/כמות בלבד. */
@@ -73,7 +81,13 @@ export type OrderResult =
 
 /** FormData → נתוני קופה מאומתים, או שגיאה אחת לכל שדה (הראשונה שנמצאה). */
 export function parseCheckout(fd: FormData): CheckoutParse {
-  const raw = Object.fromEntries(CHECKOUT_FIELDS.map((f) => [f, String(fd.get(f) ?? '')]));
+  // ערך שאינו מחרוזת (File) לא מומר ל-"[object File]" — הוא פשוט לא נשלח.
+  const raw = Object.fromEntries(
+    CHECKOUT_FIELDS.map((f) => {
+      const v = fd.get(f);
+      return [f, typeof v === 'string' ? v : ''];
+    }),
+  );
   const res = schema.safeParse(raw);
   if (res.success) return { ok: true, data: res.data };
 

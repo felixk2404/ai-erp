@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/cart-provider';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,6 +17,9 @@ export function CheckoutView() {
   const router = useRouter();
   const [placed, setPlaced] = useState(false);
   const empty = ready && cart.lines.length === 0 && !placed;
+
+  // זהות יציבה: הטופס מחזיק אותה ב-deps של אפקט ההצלחה.
+  const handlePlaced = useCallback(() => setPlaced(true), []);
 
   useEffect(() => {
     if (empty) router.replace('/products');
@@ -44,7 +47,7 @@ export function CheckoutView() {
       ) : empty ? (
         <p className="text-glow-2">העגלה ריקה — מעבירים אתכם לקטלוג.</p>
       ) : (
-        <CheckoutForm onPlaced={() => setPlaced(true)} />
+        <CheckoutForm onPlaced={handlePlaced} />
       )}
     </div>
   );

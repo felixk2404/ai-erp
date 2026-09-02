@@ -45,7 +45,7 @@ export function OrderSummary({
             >
               <div className="relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-sm border border-rule bg-panel-2">
                 {line.service ? (
-                  <span className="num text-[10px] text-glow-3">שירות</span>
+                  <span className="text-[10px] text-glow-3">שירות</span>
                 ) : line.imageUrl ? (
                   <Image src={line.imageUrl} alt={line.name} fill sizes="40px" className="object-cover" />
                 ) : (
