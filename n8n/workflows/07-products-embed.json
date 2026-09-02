@@ -32,7 +32,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        260,
+        780,
         0
       ],
       "parameters": {
@@ -56,14 +56,19 @@
           "id": "__CRED_SUPABASE__",
           "name": "Supabase ERP"
         }
-      }
+      },
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "רץ רק אחרי שהקריאה מ-Airtable הצליחה — אחרת קטלוג ריק בסוכן."
     },
     {
       "name": "Search Products",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        520,
+        260,
         0
       ],
       "parameters": {
@@ -88,14 +93,17 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Product Text",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        780,
+        1300,
         0
       ],
       "parameters": {
@@ -104,7 +112,7 @@
             {
               "id": "t",
               "name": "text",
-              "value": "=מוצר: {{ $json.fields.Name }}\nקטגוריה: {{ $json.fields.Category }}\nמחיר: {{ $json.fields.Price }} ₪ כולל מע\"מ\nבמלאי: {{ $json.fields.InStock ? 'כן' : 'לא' }}\nתיאור: {{ $json.fields.Description }}",
+              "value": "=מוצר: {{ $json.fields.Name }}\nקטגוריה: {{ $json.fields.Category }}\nמחיר: {{ $json.fields.Price }} ₪ כולל מע\"מ\nתיאור: {{ $json.fields.Description }}",
               "type": "string"
             },
             {
@@ -123,7 +131,7 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1.3,
       "position": [
-        1040,
+        1560,
         0
       ],
       "parameters": {
@@ -150,7 +158,7 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        960,
+        1480,
         220
       ],
       "parameters": {
@@ -169,7 +177,7 @@
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "typeVersion": 1.1,
       "position": [
-        1160,
+        1680,
         220
       ],
       "parameters": {
@@ -198,7 +206,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1300,
+        1820,
         0
       ],
       "executeOnce": true,
@@ -221,10 +229,35 @@
         },
         "options": {}
       }
+    },
+    {
+      "name": "Carry Products",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "notes": "צומת ה-HTTP מחליף את הפריטים בתשובה שלו; זה מחזיר את רשומות המוצרים.",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "return $('Search Products').all();"
+      }
     }
   ],
   "connections": {
     "Reindex Webhook": {
+      "main": [
+        [
+          {
+            "node": "Search Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Products": {
       "main": [
         [
           {
@@ -239,14 +272,14 @@
       "main": [
         [
           {
-            "node": "Search Products",
+            "node": "Carry Products",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Search Products": {
+    "Carry Products": {
       "main": [
         [
           {
