@@ -41,7 +41,7 @@ export function SystemMap({ pulse }: { pulse: Pulse }) {
     <section className="panel hud p-5 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[11px] font-medium tracking-wide text-readout-3">מפת המערכת · 13 workflows</div>
+          <div className="text-[12px] font-medium tracking-wide text-readout-3">מפת המערכת · 13 workflows</div>
           <h2 className="text-lg font-bold leading-tight mt-0.5">{pulse.connected ? `${live} פעילים ב-24 השעות האחרונות` : 'המערכת לא מחוברת ל-n8n'}</h2>
         </div>
         <span className="mono text-[10px] text-readout-3 mt-1">{pulse.connected ? 'ONLINE' : 'OFFLINE'}</span>
@@ -96,7 +96,7 @@ export function SystemMap({ pulse }: { pulse: Pulse }) {
         </svg>
       </div>
 
-      <ul className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-[11px]" aria-label="סטטוס לפי workflow">
+      <ul className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-[12px]" aria-label="סטטוס לפי workflow">
         {pulse.nodes.map((n) => (
           <li key={n.key} className="flex items-center gap-2 min-w-0">
             <span aria-hidden className="size-1.5 rounded-full shrink-0" style={{ background: LED[n.led] }} />

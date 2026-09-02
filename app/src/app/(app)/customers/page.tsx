@@ -67,8 +67,8 @@ export default async function CustomersPage() {
               <TableRow>
                 <TableHead>מזהה</TableHead>
                 <TableHead>שם</TableHead>
-                <TableHead>אימייל</TableHead>
-                <TableHead>טלפון</TableHead>
+                <TableHead className="hidden md:table-cell">אימייל</TableHead>
+                <TableHead className="hidden sm:table-cell">טלפון</TableHead>
                 <TableHead>חשבוניות</TableHead>
                 <TableHead>סה״כ</TableHead>
               </TableRow>
@@ -84,10 +84,10 @@ export default async function CustomersPage() {
                         {c.fields.Name}
                       </Link>
                     </TableCell>
-                    <TableCell dir="ltr" className="text-ink-2 text-end">
+                    <TableCell dir="ltr" className="text-ink-2 text-end hidden md:table-cell">
                       {c.fields.Email ?? '—'}
                     </TableCell>
-                    <TableCell dir="ltr" className="num text-ink-2 text-end">
+                    <TableCell dir="ltr" className="num text-ink-2 text-end hidden sm:table-cell">
                       {c.fields.Phone ?? '—'}
                     </TableCell>
                     <TableCell className="num">{s?.count ?? 0}</TableCell>

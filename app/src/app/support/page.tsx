@@ -19,7 +19,7 @@ export default function SupportPage() {
             <Image src="/brand/logo-mark.png" alt="" width={36} height={36} priority />
             <div className="leading-tight">
               <div className="font-display font-bold">איי.איי אלקטרוניקה</div>
-              <div className="text-[11px] text-ink-3">מוצרים מקוריים · אחריות יבואן רשמי</div>
+              <div className="text-[12px] text-ink-3">מוצרים מקוריים · אחריות יבואן רשמי</div>
             </div>
           </div>
           <a href="https://t.me/aielec_support_bot" target="_blank" rel="noreferrer" className="text-xs text-inkblue hover:text-inkblue-hover">
@@ -30,7 +30,7 @@ export default function SupportPage() {
 
       <section className="max-w-3xl mx-auto w-full px-4 pt-8 pb-4 grid md:grid-cols-[1fr_220px] gap-6 items-end">
         <div>
-          <div className="text-[11px] font-medium tracking-wide text-ink-3">שירות לקוחות</div>
+          <div className="text-[12px] font-medium tracking-wide text-ink-3">שירות לקוחות</div>
           <h1 className="text-[28px] md:text-[34px] font-bold leading-tight mt-1">איך אפשר לעזור?</h1>
           <p className="text-ink-2 mt-2 max-w-prose">נציג ה-AI שלנו עונה מיד על שאלות על משלוחים, החזרות, אחריות, תשלומים ועל כל אחד מהמוצרים בקטלוג. שאלות מסובכות עוברות לנציג אנושי בשעות הפעילות: א׳–ה׳ 9:00–18:00, ו׳ 9:00–13:00.</p>
         </div>
@@ -43,7 +43,7 @@ export default function SupportPage() {
         <div className="panel p-4 md:p-5 h-[560px] flex flex-col">
           <ChatPanel sendAction={sendSupport} intro={SUPPORT_INTRO} suggestions={SUPPORT_SUGGESTIONS} agentLabel="נציג שירות · איי.איי אלקטרוניקה" placeholder="כתבו שאלה… (Enter לשליחה)" />
         </div>
-        <p className="text-[11px] text-ink-3 mt-3 text-center">התשובות מבוססות על מדיניות החנות וקטלוג המוצרים. אין למסור פרטי אשראי בצ׳אט.</p>
+        <p className="text-[12px] text-ink-3 mt-3 text-center">התשובות מבוססות על מדיניות החנות וקטלוג המוצרים. אין למסור פרטי אשראי בצ׳אט.</p>
       </section>
     </main>
   );

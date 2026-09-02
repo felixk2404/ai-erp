@@ -76,7 +76,7 @@ export function Hotkeys() {
           {rows.map(([k, label]) => (
             <li key={k} className="flex items-center justify-between py-2 text-sm">
               <span className="text-readout-2">{label}</span>
-              <kbd dir="ltr" className="mono text-[11px] text-signal bg-well border border-rule-strong rounded px-1.5 py-0.5 min-w-8 text-center">
+              <kbd dir="ltr" className="mono text-[12px] text-signal bg-well border border-rule-strong rounded px-1.5 py-0.5 min-w-8 text-center">
                 {k}
               </kbd>
             </li>

@@ -24,6 +24,22 @@ describe('summarizeExecutions', () => {
 });
 
 describe('summarizePulse', () => {
+  it('does not crash on queued executions with startedAt=null (n8n returns null while waiting)', async () => {
+    const { summarizePulse } = await import('./n8n-health');
+    const p = summarizePulse(
+      [
+        { id: 'q', status: 'new', startedAt: null, workflowId: 'kn53i73OcuCaz3SZ' },
+        { id: 's', status: 'success', startedAt: '2026-09-02T11:50:00Z', stoppedAt: '2026-09-02T11:50:01Z', workflowId: 'kn53i73OcuCaz3SZ' },
+        { id: 'w', status: 'waiting', startedAt: null, stoppedAt: '2026-09-02T11:55:00Z', workflowId: 'kn53i73OcuCaz3SZ' },
+      ],
+      [],
+      now,
+    );
+    expect(p.events.map((e) => e.id)).toEqual(['w', 's']);
+    expect(p.events[0].ms).toBeUndefined();
+    expect(p.health?.total).toBe(2);
+  });
+
   it('builds a newest-first feed with Hebrew workflow names and per-node LEDs', async () => {
     const { summarizePulse } = await import('./n8n-health');
     const p = summarizePulse(

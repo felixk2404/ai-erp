@@ -42,9 +42,9 @@ export function LoginForm() {
       <Button type="submit" size="lg" className="mt-6 w-full h-10" disabled={pending}>
         {pending ? 'מאמת…' : 'כניסה'}
       </Button>
-      <div className="mt-5 flex items-center justify-center gap-2 text-[11px] text-readout-3">
+      <div className="mt-5 flex items-center justify-center gap-2 text-[12px] text-readout-3">
         <span aria-hidden className="size-1.5 rounded-full bg-led-green led-live" />
-        13 workflows · 3 סוכנים · RAG פעיל
+        <bdi>13 תהליכי n8n</bdi> · <bdi>3 סוכני AI</bdi> · <bdi>RAG פעיל</bdi>
       </div>
     </form>
   );

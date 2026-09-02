@@ -75,7 +75,7 @@ test('invoice detail page opens from the list with timeline', async ({ page }) =
 
 test('command menu opens with cmd+k and navigates', async ({ page }) => {
   await page.keyboard.press('ControlOrMeta+k');
-  await page.getByPlaceholder('חפש עמוד, לקוח, חשבונית או מוצר…').fill('לידים');
+  await page.getByPlaceholder(/חפש עמוד/).fill('לידים');
   await page.keyboard.press('Enter');
   await expect(page.getByRole('heading', { name: 'לידים', level: 1 })).toBeVisible();
 });

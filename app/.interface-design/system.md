@@ -5,9 +5,9 @@
 (Previous world "פנקס נייר" retired 2026-09-02; old token names remain as aliases.)
 
 ## Tokens (globals.css)
-- Surfaces: `--void` #08090c (canvas) → `--chassis` #0f1116 (card) → `--chassis-2` #15181f (hover/inset/subheader) → `--chassis-3` #1b1f28 (popover). `--well` #0a0b0f for inputs (inset = darker).
-- Text: `--readout` #e6e9ef · `--readout-2` #9aa3b2 · `--readout-3` #707a8a (meta, ≥4.3:1 on chassis).
-- Rules: `--rule` rgba(255,255,255,.07) · `--rule-strong` .14. Depth: borders-only + cyan glow for focus/active/primary. No grey shadows.
+- Surfaces: `--void` #0d1017 (canvas) → `--chassis` #161a23 (card) → `--chassis-2` #1e2330 (hover/inset/subheader) → `--chassis-3` #252b3a (popover). `--well` #0f1219 for inputs (inset = darker). (Lifted 2026-09-02 after owner feedback "too dark".)
+- Text: `--readout` #f3f5f9 · `--readout-2` #bcc4d1 · `--readout-3` #94a0b2 (meta, ≈6:1 on chassis). Meta labels are 12px (not 11) on dark.
+- Rules: `--rule` rgba(255,255,255,.10) · `--rule-strong` .20. Depth: borders-only + cyan glow for focus/active/primary. No grey shadows.
 - Accent: `--signal` #5ad1ff (+hover #8ee0ff, soft 12%, glow 45%, `--signal-rgb` 90 209 255). LEDs: green #34d17a · amber #f0b429 · red #ff5a5f. `--copper` reserved.
 - Aliases: paper→void, paper-2→chassis, paper-3→chassis-2, ink→readout, inkblue→signal. New code uses new names.
 - Radius: 8 base, 4 small, 12 dialogs. `html.dark` set so shadcn dark variants apply.

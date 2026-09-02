@@ -16,7 +16,9 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3100';
 
 export default defineConfig({
   testDir: './e2e',
-  timeout: 60_000,
+  timeout: 90_000,
+  // dev server מקמפל עמוד ראשון ב-10–25s כשהמק עמוס; 5s ברירת המחדל של expect נופל על זה.
+  expect: { timeout: 20_000 },
   retries: 0,
   use: { baseURL, locale: 'he-IL', timezoneId: 'Asia/Jerusalem', viewport: { width: 1280, height: 800 } },
   webServer: process.env.PLAYWRIGHT_BASE_URL

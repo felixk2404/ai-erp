@@ -80,7 +80,7 @@ export function MobileNav({ counts }: { counts: NavCounts }) {
         </div>
       </div>
       <LayoutGroup id="mobile-nav">
-        <nav aria-label="ראשי" className="flex gap-1 overflow-x-auto px-3 pb-2 [scrollbar-width:none]">
+        <nav aria-label="ראשי" className="flex gap-1 overflow-x-auto px-3 pb-2 [scrollbar-width:none] [mask-image:linear-gradient(to_left,transparent,black_28px,black_calc(100%-28px),transparent)]">
           {LINKS(counts).map((l) => (
             <div key={l.href} className="shrink-0">
               <NavLink {...l} layoutId="nav-active-mobile" />

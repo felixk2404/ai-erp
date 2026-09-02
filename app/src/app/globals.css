@@ -10,16 +10,16 @@
 :root {
   color-scheme: dark;
 
-  --void: #08090c;
-  --chassis: #0f1116;
-  --chassis-2: #15181f;
-  --chassis-3: #1b1f28;
-  --well: #0a0b0f;
-  --readout: #e6e9ef;
-  --readout-2: #9aa3b2;
-  --readout-3: #707a8a;
-  --rule: rgba(255, 255, 255, 0.07);
-  --rule-strong: rgba(255, 255, 255, 0.14);
+  --void: #0d1017;
+  --chassis: #161a23;
+  --chassis-2: #1e2330;
+  --chassis-3: #252b3a;
+  --well: #0f1219;
+  --readout: #f3f5f9;
+  --readout-2: #bcc4d1;
+  --readout-3: #94a0b2;
+  --rule: rgba(255, 255, 255, 0.1);
+  --rule-strong: rgba(255, 255, 255, 0.2);
   --signal: #5ad1ff;
   --signal-hover: #8ee0ff;
   --signal-soft: rgba(90, 209, 255, 0.12);
@@ -160,7 +160,7 @@
   * {
     @apply border-border outline-ring/50;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
   html {
     @apply font-sans;
@@ -182,7 +182,7 @@
     pointer-events: none;
     background-image:
       radial-gradient(720px circle at 100% -10%, rgba(var(--signal-rgb) / 0.09), transparent 60%),
-      radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+      radial-gradient(rgba(255, 255, 255, 0.075) 1px, transparent 1px);
     background-size:
       100% 100%,
       24px 24px;
@@ -204,6 +204,20 @@
   input::placeholder,
   textarea::placeholder {
     color: var(--readout-3);
+  }
+  /* מגע: יעדי לחיצה 44px (WCAG) בלי לגעת בדסקטופ */
+  @media (pointer: coarse) {
+    button,
+    [role="button"],
+    select,
+    nav a,
+    input[type="checkbox"] {
+      min-height: 44px;
+    }
+    input[type="checkbox"] {
+      min-width: 24px;
+      min-height: 24px;
+    }
   }
 }
 

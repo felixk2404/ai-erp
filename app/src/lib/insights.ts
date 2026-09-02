@@ -1,7 +1,7 @@
 import { monthKey } from './format';
 import { INVOICE_STATUSES, type Customer, type Invoice, type InvoiceStatus, type Lead, type Task } from './types';
 
-const HEB_MONTHS = ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'];
+const HEB_MONTHS = ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', 'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'];
 const DAY = 24 * 60 * 60 * 1000;
 
 const isValid = (i: Invoice) => i.fields.Status !== 'error';

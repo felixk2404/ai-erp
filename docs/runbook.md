@@ -76,6 +76,15 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **שורות חשבונית**: `Invoices.Items` (JSON `[{sku,name,qty,price}]`). הטופס בוחר מוצרים מהקטלוג, השרת מחשב Amount מהשורות (`src/lib/invoice-items.ts`), WF1 מוסיף מע"מ 18%, WF8 מדפיס טבלת שורות ב-PDF. חשבוניות ישנות בלי Items מוצגות כסכום בלבד.
 - ⌘K חיפוש גלובלי, מעברי עמוד (View Transitions), עמודי פרט `/invoices/[id]`, `/customers/[id]`.
 
+## 10. Night Console (תוכנית 5)
+- **עיצוב**: עולם "חדר בקרה" כהה — טוקנים ב-`app/src/app/globals.css` (`--void/--chassis/--readout/--signal`, LED), פונטים Heebo + IBM Plex Sans Hebrew + IBM Plex Mono. הכללים ב-`app/.interface-design/system.md`; ההחלטות ב-`docs/superpowers/specs/2026-09-02-night-console-design.md`.
+- **פיד חי + מפת מערכת** (`/api/pulse`, polling 10s): דורשים `N8N_API_URL` + `N8N_API_KEY` (כמו בריאות n8n, סעיף 9). בלי env — המפה מוצגת מהמניפסט (`app/src/lib/workflows.ts`, 13 workflows עם id-ים מ-`n8n/config.json`) במצב OFFLINE. אם מייבאים את ה-workflows למופע n8n אחר — לעדכן את ה-id-ים במניפסט.
+- **⌘K עם AI**: הקלדה של 3 תווים ומעלה בפלטה מציעה "שאל את המנהל"; Enter שולח ל-`sendChat` (WF13 chat) והתשובה מוזרמת בפלטה.
+- **קיצורי מקלדת**: `?` עזרה · `g` ואז `d/i/l/c/p/t` ניווט · `n` פריט חדש בעמוד · ⌘K חיפוש.
+- **תקציר בוקר**: נחשף מילה-מילה (StreamText); בזמן הטעינה פאנל "הסוכן קורא נתונים" עם טיימר.
+- **בדיקות**: `pnpm test` (49), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
+- **תנועה**: הכל מכבד prefers-reduced-motion (beams/aurora/led נעצרים). אם המחשב חלש בדמו — אפשר להפעיל reduced motion במערכת ההפעלה.
+
 ## 6. מלכודות שנתקלנו בהן
 - הוק secret-guard חוסם כל פקודה עם `.env`; הסקריפטים טוענים דרך `scripts/load-env.sh`.
 - TextEdit מכניס תווי כיווניות נסתרים וגרשיים חכמים — load-env מנקה.

@@ -56,7 +56,7 @@ export function PulseFeed({ initial, interval = 10_000 }: { initial: Pulse; inte
     <section className="panel p-5 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[11px] font-medium tracking-wide text-readout-3">פעילות חיה · n8n</div>
+          <div className="text-[12px] font-medium tracking-wide text-readout-3">פעילות חיה · n8n</div>
           <h2 className="text-lg font-bold leading-tight mt-0.5 inline-flex items-center gap-2">
             <span aria-hidden className={`size-2.5 rounded-full ${live ? 'bg-led-green led-live' : 'bg-readout-3/50'}`} />
             {!pulse.connected ? 'לא מחובר' : events.length === 0 ? 'שקט' : 'המערכת עובדת'}
@@ -66,9 +66,21 @@ export function PulseFeed({ initial, interval = 10_000 }: { initial: Pulse; inte
       </div>
 
       {!pulse.connected ? (
-        <p className="mt-3 text-xs text-readout-3 leading-relaxed">
-          הגדר <span className="mono">N8N_API_URL</span> ו-<span className="mono">N8N_API_KEY</span> כדי לראות כאן כל הרצה של הסוכנים בזמן אמת.
-        </p>
+        <div className="mt-3 flex-1 flex flex-col">
+          <ol aria-hidden className="-mx-2 space-y-0.5">
+            {['סוכן המנהל', 'אימות חשבוניות', 'הפקת PDF', 'סוכן מכירות'].map((w, i) => (
+              <li key={w} className="flex items-center gap-3 px-2 h-9 text-sm" style={{ opacity: 0.55 - i * 0.12 }}>
+                <span className="size-2 rounded-full bg-readout-3/40 shrink-0" />
+                <span className="flex-1 text-readout-3">{w}</span>
+                <span className="mono text-[12px] text-readout-3/70">—</span>
+                <span className="mono text-[12px] text-readout-3/70 w-[76px] text-end">--:--</span>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-auto rounded-md border border-rule bg-well/70 p-3 text-[12px] text-readout-3 leading-relaxed">
+            כדי להדליק את הפיד: <span className="mono text-readout-2">N8N_API_URL</span> + <span className="mono text-readout-2">N8N_API_KEY</span> ב-env. כל הרצה של סוכן תופיע כאן תוך 10 שניות.
+          </div>
+        </div>
       ) : events.length === 0 ? (
         <p className="mt-3 text-xs text-readout-3">אין הרצות עדיין. שלח ליד או צור חשבונית ותראה אותן כאן.</p>
       ) : (
@@ -87,17 +99,17 @@ export function PulseFeed({ initial, interval = 10_000 }: { initial: Pulse; inte
                 <span aria-hidden className={`size-2 rounded-full shrink-0 ${LED[e.status]}`} />
                 <span className="flex-1 min-w-0 truncate text-readout">{e.workflow}</span>
                 <span className="sr-only">{LABEL[e.status]}</span>
-                <span className="mono text-[11px] text-readout-3 shrink-0" dir="ltr">
+                <span className="mono text-[12px] text-readout-3 shrink-0" dir="ltr">
                   {fmtMs(e.ms)}
                 </span>
-                <span className="text-[11px] text-readout-3 shrink-0 num w-[76px] text-end">{ago(e.at, now)}</span>
+                <span className="text-[12px] text-readout-3 shrink-0 num w-[76px] text-end">{ago(e.at, now)}</span>
               </motion.li>
             ))}
           </AnimatePresence>
         </ol>
       )}
       {pulse.connected && pulse.health && (
-        <div className="mt-auto pt-3 flex items-center gap-4 text-[11px] text-readout-3 num border-t border-rule">
+        <div className="mt-auto pt-3 flex items-center gap-4 text-[12px] text-readout-3 num border-t border-rule">
           <span>
             24h · <span className="text-readout">{pulse.health.total}</span> הרצות
           </span>

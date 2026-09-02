@@ -18,7 +18,7 @@ export function Timeline({ steps }: { steps: TimelineStep[] }) {
             <span className={`size-2.5 rounded-full relative z-10 ${DOT[s.state]}`} aria-hidden />
             <div>
               <div className={`text-xs font-medium ${s.state === 'todo' ? 'text-ink-3' : 'text-ink'}`}>{s.label}</div>
-              {s.hint && <div className="text-[11px] text-ink-3 num">{s.hint}</div>}
+              {s.hint && <div className="text-[12px] text-ink-3 num">{s.hint}</div>}
             </div>
           </div>
         </li>

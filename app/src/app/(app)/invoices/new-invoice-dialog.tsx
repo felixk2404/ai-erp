@@ -94,7 +94,7 @@ export function NewInvoiceDialog({
               </Button>
             </div>
             <div className="border border-rule rounded-md divide-y divide-rule">
-              <div className={`${cols} py-1.5 text-[11px] tracking-wide text-ink-3`}>
+              <div className={`${cols} py-1.5 text-[12px] tracking-wide text-ink-3`}>
                 <span>מוצר</span>
                 <span>כמות</span>
                 <span className="text-end">סה״כ שורה</span>

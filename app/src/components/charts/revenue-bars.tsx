@@ -17,7 +17,7 @@ export function RevenueBars({ data }: { data: MonthRow[] }) {
   return (
     <div className="relative h-[228px] w-full hud-grid rounded-md" dir="ltr">
       {shown && (
-        <div dir="rtl" className="absolute top-1 start-1 z-10 mono text-[11px] text-readout-3 pointer-events-none">
+        <div dir="rtl" className="absolute top-1 start-1 z-10 mono text-[12px] text-readout-3 pointer-events-none">
           <span className="text-signal">{shown.label}</span> · <span className="text-readout">{ils(shown.total)}</span> · {shown.count} חשבוניות
         </div>
       )}

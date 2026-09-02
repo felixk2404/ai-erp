@@ -21,15 +21,16 @@
 ## 3. טוקנים (globals.css)
 
 ```
---void        #08090c   canvas
---chassis     #0f1116   card
---chassis-2   #15181f   hover / inset / subheader
---chassis-3   #1b1f28   popover / dropdown
---well        #0a0b0f   inputs (כהה יותר מהסביבה — "מקבל תוכן")
---readout     #e6e9ef   text
---readout-2   #9aa3b2   supporting
---readout-3   #707a8a   meta (≥ 4.3:1 על chassis)
---rule        rgba(255,255,255,.07)   --rule-strong rgba(255,255,255,.14)
+--void        #0d1017   canvas
+--chassis     #161a23   card
+--chassis-2   #1e2330   hover / inset / subheader
+--chassis-3   #252b3a   popover / dropdown
+--well        #0f1219   inputs (כהה יותר מהסביבה — "מקבל תוכן")
+--readout     #f3f5f9   text
+--readout-2   #bcc4d1   supporting
+--readout-3   #94a0b2   meta (≈ 6:1 על chassis; תוויות מטא 12px)
+--rule        rgba(255,255,255,.10)   --rule-strong rgba(255,255,255,.20)
+(הערכים הוארו ב-2026-09-02 אחרי משוב הסטודנט: "חשוך מדי, לא רואים את הכתוב")
 --signal      #5ad1ff   accent יחיד   --signal-hover #8ee0ff
 --signal-soft rgba(90,209,255,.12)    --signal-glow rgba(90,209,255,.45)
 --led-green   #34d17a   --led-amber #f0b429   --led-red #ff5a5f
@@ -47,7 +48,7 @@ Aliases כדי שקוד קיים ימשיך לעבוד בלי diff: `--paper→-
 - Heebo 500/700/800 — h1/h2/מספר גיבור. tracking -0.02em מעל 22px.
 - IBM Plex Sans Hebrew 400/500/600 — UI.
 - IBM Plex Mono 400/500 — `.num`, `.mono` (מספרים, מק"ט, זמנים, קיצורי מקלדת).
-- סקאלה 1.25 מ-14: 11 (labels, tracked, uppercase ללטינית) · 14 · 18 · 22 · 28 · 36 (hero).
+- סקאלה 1.25 מ-14: 12 (labels, tracked; 10 mono ל-kickers לטיניים) · 14 · 18 · 20 (ערכי רצועה) · 28 · 30 (hero).
 
 ## 5. שכבת הרקע והחתימה
 

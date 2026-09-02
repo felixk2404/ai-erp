@@ -61,7 +61,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
         <AnimatePresence initial={false}>
           {messages.map((m, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, ease: EASE }} className={`flex flex-col ${m.role === 'user' ? 'items-start' : 'items-end'}`}>
-              {m.role === 'agent' && agentLabel && <span className="text-[11px] text-ink-3 mb-1 me-1">{agentLabel}</span>}
+              {m.role === 'agent' && agentLabel && <span className="text-[12px] text-ink-3 mb-1 me-1">{agentLabel}</span>}
               <div className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap leading-relaxed ${m.role === 'user' ? 'bg-signal-soft text-readout border border-signal/20' : 'bg-chassis-2 text-readout border border-rule'}`}>{m.text}</div>
               {m.products && m.products.length > 0 && (
                 <div className={`mt-2 grid gap-2 w-full max-w-[85%] ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-3'}`}>
@@ -76,7 +76,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
                         <div className="text-xs font-medium leading-snug line-clamp-2">{p.name}</div>
                         <div className="flex items-center justify-between gap-2 mt-0.5">
                           {p.price !== undefined && <span className="num text-xs text-ink">{ils(p.price)}</span>}
-                          <span className={`text-[11px] ${p.inStock ? 'text-led-green' : 'text-ink-3'}`}>{p.inStock ? 'במלאי' : 'אין במלאי'}</span>
+                          <span className={`text-[12px] ${p.inStock ? 'text-led-green' : 'text-ink-3'}`}>{p.inStock ? 'במלאי' : 'אין במלאי'}</span>
                         </div>
                       </div>
                     </div>

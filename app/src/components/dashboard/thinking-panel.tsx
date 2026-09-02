@@ -28,7 +28,7 @@ export function ThinkingPanel() {
           })}
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between text-[11px] text-readout-3">
+      <div className="mt-3 flex items-center justify-between text-[12px] text-readout-3">
         <span>הסוכן קורא את הנתונים…</span>
         <span className="mono" dir="ltr">
           {String(Math.floor(t / 60)).padStart(2, '0')}:{String(t % 60).padStart(2, '0')}

@@ -87,7 +87,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
         <DialogTitle className="sr-only">חיפוש</DialogTitle>
         {answer ? (
           <div className="p-4">
-            <div className="flex items-center gap-2 text-[11px] text-readout-3">
+            <div className="flex items-center gap-2 text-[12px] text-readout-3">
               <Sparkles className="size-3.5 text-signal" aria-hidden />
               <span>סוכן המנהל</span>
               <button type="button" onClick={back} className="ms-auto text-readout-3 hover:text-readout">
@@ -104,7 +104,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
                 <StreamText text={answer.reply!} wordMs={26} />
               )}
             </div>
-            <div className="mt-3 flex items-center justify-between text-[11px] text-readout-3 border-t border-rule pt-2">
+            <div className="mt-3 flex items-center justify-between text-[12px] text-readout-3 border-t border-rule pt-2">
               <span>Esc סגירה</span>
               <kbd className="mono">⌘K</kbd>
             </div>
@@ -126,17 +126,6 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
             </div>
             <Command.List className="max-h-[380px] overflow-y-auto p-2">
               <Command.Empty className="py-6 text-center text-sm text-readout-3">{canAsk ? 'אין תוצאה בחיפוש — Enter ישאל את הסוכן' : 'לא נמצא כלום'}</Command.Empty>
-              {canAsk && (
-                <Command.Group heading="סוכן AI" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:mono [&_[cmdk-group-heading]]:tracking-[0.16em] [&_[cmdk-group-heading]]:text-readout-3">
-                  <Command.Item value={`ask ${q}`} onSelect={() => ask(q)} className="flex items-center gap-3 rounded-md px-2 h-10 text-sm cursor-pointer data-[selected=true]:bg-signal-soft data-[selected=true]:text-signal">
-                    <Sparkles className="size-4 text-signal shrink-0" aria-hidden />
-                    <span className="truncate">
-                      שאל את המנהל: <span className="text-readout">«{q.trim()}»</span>
-                    </span>
-                    <CornerDownLeft className="size-3.5 text-readout-3 ms-auto shrink-0" aria-hidden />
-                  </Command.Item>
-                </Command.Group>
-              )}
               {groups.map((g) => {
                 const rows = all.filter((i) => i.group === g);
                 if (rows.length === 0) return null;
@@ -160,8 +149,20 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
                   </Command.Group>
                 );
               })}
+              {/* אחרי הניווט — כך הקלדת שם עמוד + Enter מנווטת; השאלה לסוכן היא הבחירה השנייה */}
+              {canAsk && (
+                <Command.Group heading="סוכן AI" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:mono [&_[cmdk-group-heading]]:tracking-[0.16em] [&_[cmdk-group-heading]]:text-readout-3">
+                  <Command.Item value={`ask ${q}`} onSelect={() => ask(q)} className="flex items-center gap-3 rounded-md px-2 h-10 text-sm cursor-pointer data-[selected=true]:bg-signal-soft data-[selected=true]:text-signal">
+                    <Sparkles className="size-4 text-signal shrink-0" aria-hidden />
+                    <span className="truncate">
+                      שאל את המנהל: <span className="text-readout">«{q.trim()}»</span>
+                    </span>
+                    <CornerDownLeft className="size-3.5 text-readout-3 ms-auto shrink-0" aria-hidden />
+                  </Command.Item>
+                </Command.Group>
+              )}
             </Command.List>
-            <div className="flex items-center justify-between px-3 h-9 border-t border-rule text-[11px] text-readout-3">
+            <div className="flex items-center justify-between px-3 h-9 border-t border-rule text-[12px] text-readout-3">
               <span>↑↓ ניווט · Enter בחירה · Esc סגירה · ? קיצורים</span>
               <kbd className="mono">⌘K</kbd>
             </div>
@@ -183,7 +184,7 @@ export function CommandMenuTrigger({ className = '' }: { className?: string }) {
         <Sparkles className="size-3.5 text-signal" aria-hidden />
         חיפוש / שאלה…
       </span>
-      <kbd className="mono text-[11px] text-readout-3">⌘K</kbd>
+      <kbd className="mono text-[12px] text-readout-3">⌘K</kbd>
     </button>
   );
 }

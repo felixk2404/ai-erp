@@ -1,6 +1,10 @@
 import { WORKFLOWS, workflowById, type WorkflowMeta } from './workflows';
 
-export type Execution = { id: string; status: string; startedAt: string; stoppedAt?: string; workflowId: string };
+export type Execution = { id: string; status: string; startedAt: string | null; stoppedAt?: string | null; workflowId: string };
+
+/** n8n מחזיר startedAt=null להרצות בתור. מנרמל: startedAt ← stoppedAt ← '' (מסונן מהחלון של 24h). */
+const startOf = (e: Execution) => e.startedAt ?? e.stoppedAt ?? '';
+const byNewest = (a: Execution, b: Execution) => startOf(b).localeCompare(startOf(a));
 export type Health = {
   total: number;
   success: number;
@@ -17,11 +21,11 @@ const isRun = (s: string) => s === 'running' || s === 'waiting' || s === 'new';
 
 /** מסכם הרצות n8n מ-24 השעות האחרונות. LED: ירוק = בלי שגיאות, ענבר = יש שגיאות, אדום = רק שגיאות, off = אין הרצות. */
 export function summarizeExecutions(execs: Execution[], workflowNames: Record<string, string>, now = new Date()): Health {
-  const recent = execs.filter((e) => now.getTime() - new Date(e.startedAt).getTime() <= DAY);
+  const recent = execs.filter((e) => now.getTime() - new Date(startOf(e)).getTime() <= DAY);
   const success = recent.filter((e) => e.status === 'success').length;
   const error = recent.filter((e) => isErr(e.status)).length;
   const running = recent.filter((e) => isRun(e.status)).length;
-  const sorted = [...recent].sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+  const sorted = [...recent].sort(byNewest);
   const lastErr = sorted.find((e) => isErr(e.status));
   const led: Health['led'] = recent.length === 0 ? 'off' : error === 0 ? 'green' : success === 0 ? 'red' : 'amber';
   return {
@@ -29,8 +33,8 @@ export function summarizeExecutions(execs: Execution[], workflowNames: Record<st
     success,
     error,
     running,
-    lastRunAt: sorted[0]?.startedAt,
-    lastError: lastErr ? { at: lastErr.startedAt, workflow: workflowNames[lastErr.workflowId] ?? lastErr.workflowId } : undefined,
+    lastRunAt: sorted[0] ? startOf(sorted[0]) : undefined,
+    lastError: lastErr ? { at: startOf(lastErr), workflow: workflowNames[lastErr.workflowId] ?? lastErr.workflowId } : undefined,
     led,
   };
 }
@@ -58,23 +62,24 @@ export function summarizePulse(execs: Execution[], workflows: WorkflowInfo[], no
   for (const w of workflows) names[w.id] = workflowById(w.id)?.name ?? w.name;
   const health = summarizeExecutions(execs, names, now);
   const events: PulseEvent[] = [...execs]
-    .sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+    .filter((e) => startOf(e))
+    .sort(byNewest)
     .slice(0, limit)
     .map((e) => ({
       id: e.id,
       workflowId: e.workflowId,
       workflow: names[e.workflowId] ?? e.workflowId,
       status: toStatus(e.status),
-      at: e.startedAt,
-      ms: e.stoppedAt ? Math.max(0, new Date(e.stoppedAt).getTime() - new Date(e.startedAt).getTime()) : undefined,
+      at: startOf(e),
+      ms: e.stoppedAt && e.startedAt ? Math.max(0, new Date(e.stoppedAt).getTime() - new Date(e.startedAt).getTime()) : undefined,
     }));
-  const recent = execs.filter((e) => now.getTime() - new Date(e.startedAt).getTime() <= DAY);
+  const recent = execs.filter((e) => now.getTime() - new Date(startOf(e)).getTime() <= DAY);
   const nodes: NodeStatus[] = WORKFLOWS.map((w) => {
-    const mine = recent.filter((e) => e.workflowId === w.id).sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+    const mine = recent.filter((e) => e.workflowId === w.id).sort(byNewest);
     const errors24h = mine.filter((e) => isErr(e.status)).length;
     const info = workflows.find((x) => x.id === w.id);
     const led: Health['led'] = mine.length === 0 ? 'off' : errors24h === 0 ? 'green' : errors24h === mine.length ? 'red' : 'amber';
-    return { ...w, active: info?.active, runs24h: mine.length, errors24h, lastRunAt: mine[0]?.startedAt, led };
+    return { ...w, active: info?.active, runs24h: mine.length, errors24h, lastRunAt: mine[0] ? startOf(mine[0]) : undefined, led };
   });
   return { health, events, nodes };
 }
@@ -115,7 +120,12 @@ export async function fetchHealth(): Promise<Health | null> {
 /** פיד + מפה. כשאין חיבור: המניפסט בלבד עם connected=false (המפה עדיין מוצגת). */
 export async function fetchPulse(): Promise<Pulse> {
   const at = new Date().toISOString();
-  const raw = await fetchRaw();
-  if (!raw) return { connected: false, at, health: null, events: [], nodes: WORKFLOWS.map((w) => ({ ...w, runs24h: 0, errors24h: 0, led: 'off' })) };
-  return { connected: true, at, ...summarizePulse(raw.execs, raw.workflows) };
+  const offline: Pulse = { connected: false, at, health: null, events: [], nodes: WORKFLOWS.map((w) => ({ ...w, runs24h: 0, errors24h: 0, led: 'off' })) };
+  try {
+    const raw = await fetchRaw();
+    if (!raw) return offline;
+    return { connected: true, at, ...summarizePulse(raw.execs, raw.workflows) };
+  } catch {
+    return offline; // צורת נתונים לא צפויה מ-n8n לא מפילה את הדשבורד
+  }
 }

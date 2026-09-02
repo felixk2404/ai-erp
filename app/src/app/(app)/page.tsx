@@ -36,7 +36,7 @@ function Panel({ title, sub, href, linkLabel, children, className = '' }: { titl
     <section className={`panel p-5 ${className}`}>
       <div className="flex items-baseline justify-between mb-4">
         <div>
-          {sub && <div className="text-[11px] font-medium tracking-wide text-readout-3">{sub}</div>}
+          {sub && <div className="text-[12px] font-medium tracking-wide text-readout-3">{sub}</div>}
           <h2 className="text-lg font-bold leading-tight">{title}</h2>
         </div>
         {href && (
@@ -135,7 +135,7 @@ export default async function Dashboard() {
                   <TableRow>
                     <TableHead className="ps-5">מספר</TableHead>
                     <TableHead>לקוח</TableHead>
-                    <TableHead>תאריך</TableHead>
+                    <TableHead className="hidden sm:table-cell">תאריך</TableHead>
                     <TableHead>סה״כ</TableHead>
                     <TableHead className="pe-5">סטטוס</TableHead>
                   </TableRow>
@@ -149,7 +149,7 @@ export default async function Dashboard() {
                         </Link>
                       </TableCell>
                       <TableCell className="text-readout-2">{nameById.get(i.fields.CustomerId) ?? i.fields.CustomerId}</TableCell>
-                      <TableCell className="num text-readout-2">{dateIL(i.fields.Created)}</TableCell>
+                      <TableCell className="num text-readout-2 hidden sm:table-cell">{dateIL(i.fields.Created)}</TableCell>
                       <TableCell>
                         <Money value={i.fields.Total ?? 0} />
                       </TableCell>

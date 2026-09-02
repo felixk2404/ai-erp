@@ -11,8 +11,8 @@ export function AttentionList({ items }: { items: AttentionItem[] }) {
     <section className="panel p-5 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[11px] font-medium tracking-wide text-readout-3">דורש טיפול</div>
-          <h2 className="text-lg font-bold leading-tight mt-0.5">{items.length === 0 ? 'הכל תקין' : `${items.length} פריטים`}</h2>
+          <div className="text-[12px] font-medium tracking-wide text-readout-3">דורש טיפול</div>
+          <h2 className="text-lg font-bold leading-tight mt-0.5">{items.length === 0 ? 'הכל תקין' : items.length === 1 ? 'פריט אחד' : `${items.length} פריטים`}</h2>
         </div>
         {reds > 0 && <span className="mono text-[10px] text-led-red border border-led-red/40 rounded px-1.5 py-0.5 mt-1">{reds} קריטי</span>}
       </div>

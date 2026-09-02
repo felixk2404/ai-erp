@@ -31,7 +31,7 @@ export function ProductCard({ product, action }: { product: Product; action?: Re
           )}
         </div>
         <div className="p-3 space-y-1.5">
-          <div className="text-[11px] font-medium tracking-wide text-readout-3">{f.Category ?? '—'}</div>
+          <div className="text-[12px] font-medium tracking-wide text-readout-3">{f.Category ?? '—'}</div>
           <h3 className="text-sm font-medium leading-snug text-readout line-clamp-2 min-h-[2.5em]">{f.Name}</h3>
           <div className="flex items-center justify-between pt-1">
             <Money value={f.Price ?? 0} className="font-medium" />

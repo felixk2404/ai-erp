@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
 import { LayoutDashboard, FileText, UserPlus, Users, Package, CheckSquare } from 'lucide-react';
@@ -13,8 +14,14 @@ export function NavLink({ href, label, count, icon, layoutId = 'nav-active' }: {
   const Icon = ICONS[icon];
   const pathname = usePathname();
   const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
+  const ref = useRef<HTMLAnchorElement>(null);
+  // בנייד הניווט נגלל אופקית — הפריט הפעיל תמיד נכנס לתצוגה.
+  useEffect(() => {
+    if (active) ref.current?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }, [active]);
   return (
     <Link
+      ref={ref}
       href={href}
       aria-current={active ? 'page' : undefined}
       className={`group relative flex items-center gap-2.5 rounded-md ps-3 pe-2.5 h-9 text-sm transition-colors duration-150 ${
@@ -31,7 +38,7 @@ export function NavLink({ href, label, count, icon, layoutId = 'nav-active' }: {
       )}
       <Icon className={`relative size-4 shrink-0 ${active ? 'text-signal' : 'text-readout-3 group-hover:text-readout-2'}`} strokeWidth={1.75} aria-hidden />
       <span className="relative flex-1">{label}</span>
-      {count ? <span className={`relative num text-[11px] ${active ? 'text-signal' : 'text-readout-3'}`}>{count}</span> : null}
+      {count ? <span className={`relative num text-[12px] ${active ? 'text-signal' : 'text-readout-3'}`}>{count}</span> : null}
     </Link>
   );
 }

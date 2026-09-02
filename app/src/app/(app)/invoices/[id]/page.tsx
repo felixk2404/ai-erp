@@ -110,7 +110,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         <aside className="space-y-4">
           <Tilt max={5}>
           <div className="panel p-5">
-            <div className="text-[11px] font-medium tracking-wide text-ink-3">סטטוס</div>
+            <div className="text-[12px] font-medium tracking-wide text-ink-3">סטטוס</div>
             <div className="mt-1">
               <StatusLed table="Invoices" status={f.Status} />
             </div>
@@ -138,7 +138,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           </Tilt>
 
           <div className="panel p-5">
-            <div className="text-[11px] font-medium tracking-wide text-ink-3">לקוח</div>
+            <div className="text-[12px] font-medium tracking-wide text-ink-3">לקוח</div>
             {customer ? (
               <Link href={`/customers/${customer.id}`} transitionTypes={['nav-forward']} className="block mt-1 font-medium hover:text-inkblue">
                 {customer.fields.Name}

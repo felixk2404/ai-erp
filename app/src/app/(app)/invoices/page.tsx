@@ -85,12 +85,12 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
               <TableRow>
                 <TableHead>מספר</TableHead>
                 <TableHead>לקוח</TableHead>
-                <TableHead>תאריך</TableHead>
-                <TableHead>לפני מע״מ</TableHead>
-                <TableHead>מע״מ</TableHead>
+                <TableHead className="hidden md:table-cell">תאריך</TableHead>
+                <TableHead className="hidden md:table-cell">לפני מע״מ</TableHead>
+                <TableHead className="hidden md:table-cell">מע״מ</TableHead>
                 <TableHead>סה״כ</TableHead>
                 <TableHead>סטטוס</TableHead>
-                <TableHead>מסמך</TableHead>
+                <TableHead className="hidden sm:table-cell">מסמך</TableHead>
                 <TableHead className="w-28" />
               </TableRow>
             </TableHeader>
@@ -108,11 +108,11 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                     {nameById.get(i.fields.CustomerId) ?? i.fields.CustomerId}
                     <div className="text-xs text-ink-3 num">{i.fields.CustomerId}</div>
                   </TableCell>
-                  <TableCell className="num text-ink-2">{dateIL(i.fields.Created)}</TableCell>
-                  <TableCell>
+                  <TableCell className="num text-ink-2 hidden md:table-cell">{dateIL(i.fields.Created)}</TableCell>
+                  <TableCell className="hidden md:table-cell">
                     <Money value={i.fields.Amount ?? 0} />
                   </TableCell>
-                  <TableCell className="text-ink-2">
+                  <TableCell className="text-ink-2 hidden md:table-cell">
                     <Money value={i.fields.VatAmount ?? 0} />
                   </TableCell>
                   <TableCell className="font-medium">
@@ -121,7 +121,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                   <TableCell>
                     <StatusLed table="Invoices" status={i.fields.Status} />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden sm:table-cell">
                     {i.fields.PdfUrl ? (
                       <a href={i.fields.PdfUrl} target="_blank" rel="noreferrer" className="text-inkblue text-sm hover:text-inkblue-hover">
                         PDF

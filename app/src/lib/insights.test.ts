@@ -24,7 +24,7 @@ describe('revenueByMonth', () => {
     expect(rows.map((r) => r.month)).toEqual(['2026-07', '2026-08', '2026-09']);
     expect(rows.map((r) => r.total)).toEqual([500, 0, 1180]);
     expect(rows[2].count).toBe(1);
-    expect(rows[2].label).toBe('ספט׳');
+    expect(rows[2].label).toBe('ספט');
   });
 });
 

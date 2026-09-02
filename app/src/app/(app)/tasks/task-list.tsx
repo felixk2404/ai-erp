@@ -70,7 +70,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
             </ul>
             {done.length > 0 && (
               <>
-                <div className="px-4 py-2 text-[11px] font-medium tracking-wide text-ink-3 bg-paper-3 border-y border-rule">
+                <div className="px-4 py-2 text-[12px] font-medium tracking-wide text-ink-3 bg-paper-3 border-y border-rule">
                   בוצעו · {done.length}
                 </div>
                 <ul aria-label="משימות שבוצעו">
