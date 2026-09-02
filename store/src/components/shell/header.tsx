@@ -17,8 +17,8 @@ const NAV = [
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.3 };
 
 /** עברית סופרת אחרת מאנגלית: אין "1 מוצרים". */
-const cartLabel = (count: number) =>
-  count === 0 ? 'פתיחת הסל, ריק' : count === 1 ? 'פתיחת הסל, מוצר אחד' : `פתיחת הסל, ${count} מוצרים`;
+const cartState = (count: number) =>
+  count === 0 ? 'הסל ריק' : count === 1 ? 'בסל מוצר אחד' : `בסל ${count} מוצרים`;
 
 function NavLink({ href, label, active, mobile = false, onClick }: { href: string; label: string; active: boolean; mobile?: boolean; onClick?: () => void }) {
   return (
@@ -71,7 +71,7 @@ export function Header() {
             type="button"
             data-cart-target
             onClick={() => setOpen(true)}
-            aria-label={cartLabel(count)}
+            aria-label={`פתיחת הסל. ${cartState(count)}`}
             className="relative grid size-11 shrink-0 place-items-center rounded-md text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow"
           >
             <ShoppingBagIcon size={20} strokeWidth={1.75} aria-hidden />
@@ -110,7 +110,7 @@ export function Header() {
         </div>
       </div>
       <span aria-live="polite" className="sr-only">
-        {cartLabel(count)}
+        {cartState(count)}
       </span>
     </header>
   );
