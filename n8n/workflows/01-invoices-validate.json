@@ -121,7 +121,11 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "פולינג שנופל מזיז את lastTimeChecked בלי לראות את השורה — retry בולע ריצוד רשת במקום לאבד חשבונית."
     },
     {
       "name": "Is Valid",
@@ -200,7 +204,10 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Aggregate",
@@ -361,7 +368,10 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Mark Error",
@@ -426,7 +436,10 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Create Fix Task",

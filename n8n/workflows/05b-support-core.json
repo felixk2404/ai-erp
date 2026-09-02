@@ -44,7 +44,11 @@
           "systemMessage": "__PROMPT_CUSTOMER_SERVICE__",
           "maxIterations": 6
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "שגיאת 429/5xx מ-OpenAI היא הכישלון הנפוץ ביותר כאן; 3 ניסיונות לפני שהלקוח מקבל התנצלות."
     },
     {
       "name": "OpenAI Chat Model",
