@@ -18,7 +18,9 @@ const SIZES_LEAD = '(min-width: 1280px) 612px, (min-width: 1024px) 50vw, (min-wi
  * היררכיה: תמונה → שם → שורת מפרט → מלאי + מחיר. הקישור מכסה את כל הכרטיס
  * (`after:inset-0`), וכפתור ההוספה הוא תחנת טאב נפרדת מעליו.
  * `variant="lead"` הוא הפריט המוביל של הרשת — גדול פי ארבעה, שם 22, שתי שורות
- * מפרט וכפתור beam. הוא נקודת המבט היחידה במסך; השאר מודמם בכוונה.
+ * מפרט וכפתור beam — נקודת המבט היחידה במסך; השאר מודמם בכוונה.
+ * התמונה שלו ב-object-contain על במת panel-2, כי כרטיס 2×2 חותך תצלום ריבועי;
+ * בכרטיס רגיל cover נותן מלבן נקי.
  */
 export function ProductCard({ product, variant = 'default' }: { product: Product; variant?: 'default' | 'lead' }) {
   const f = product.fields;
@@ -31,7 +33,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
     <Tilt className="h-full">
       <article className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-rule bg-panel-1 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-rule-strong focus-within:border-rule-strong">
         <div
-          className={`relative aspect-3/2 overflow-hidden bg-panel-2 sm:aspect-4/3 ${lead ? 'lg:aspect-auto lg:max-h-[400px] lg:flex-1' : 'shrink-0'}`}
+          className={`relative aspect-3/2 overflow-hidden bg-panel-2 sm:aspect-4/3 ${lead ? 'p-6 lg:aspect-auto lg:max-h-[400px] lg:flex-1' : 'shrink-0'}`}
         >
           <Shared name={`product-image-${sku}`}>
             {f.ImageUrl ? (
@@ -42,7 +44,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
                 sizes={lead ? SIZES_LEAD : SIZES}
                 priority={lead}
                 data-fly-src={sku}
-                className="object-cover"
+                className={lead ? 'object-contain' : 'object-cover'}
               />
             ) : (
               <div data-fly-src={sku} className="grid h-full place-items-center text-glow-4">
