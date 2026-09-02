@@ -3,15 +3,19 @@ import type { TaskSource } from './types';
 export type TaskSourceMeta = { label: string; href: string | null };
 
 /** מי יצר את המשימה ולאן ללכת כדי לטפל בה. `manual` וחסר = ידני, בלי קישור. */
-const MAP: Record<TaskSource, TaskSourceMeta> = {
-  order: { label: 'משלוח', href: '/customers' },
-  stock: { label: 'מלאי', href: '/products' },
-  lead: { label: 'ליד', href: '/leads' },
-  invoice: { label: 'חשבונית', href: '/invoices' },
-  manual: { label: 'ידני', href: null },
+const MAP: Record<TaskSource, { label: string; href: string | null; q: boolean }> = {
+  order: { label: 'משלוח', href: '/customers', q: false },
+  stock: { label: 'מלאי', href: '/products', q: true },
+  lead: { label: 'ליד', href: '/leads', q: false },
+  invoice: { label: 'חשבונית', href: '/invoices', q: true },
+  manual: { label: 'ידני', href: null, q: false },
 };
 
-export function taskSourceMeta(source?: string): TaskSourceMeta {
-  if (!source) return MAP.manual;
-  return (MAP as Record<string, TaskSourceMeta>)[source] ?? { label: source, href: null };
+/** קישור ליעד; למקורות שמסכיהם תומכים בחיפוש, מוסיף ?q=RefId כדי לנחות על השורה. */
+export function taskSourceMeta(source?: string, refId?: string): TaskSourceMeta {
+  if (!source) return { label: MAP.manual.label, href: MAP.manual.href };
+  const entry = (MAP as Record<string, { label: string; href: string | null; q: boolean }>)[source];
+  if (!entry) return { label: source, href: null };
+  const href = entry.q && entry.href && refId ? `${entry.href}?q=${encodeURIComponent(refId)}` : entry.href;
+  return { label: entry.label, href };
 }

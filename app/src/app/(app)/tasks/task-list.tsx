@@ -12,12 +12,14 @@ import { FieldError } from '@/components/forms/field-error';
 
 /** תג מקור: לאוטומציה יש קישור למסך היעד, למשימה ידנית רק תווית. המזהה לטיני ולכן LTR בנפרד מהתווית. */
 function TaskSourceTag({ source, refId }: { source?: string; refId?: string }) {
-  const m = taskSourceMeta(source);
+  const m = taskSourceMeta(source, refId);
   const cls = 'shrink-0 text-[12px] text-ink-3 whitespace-nowrap';
+  // מזהה רשומת Airtable גולמי (rec...) לא אמור להיחשף למשתמש — משימות ליד נושאות אותו.
+  const showRefId = refId && !refId.startsWith('rec');
   const content = (
     <>
       {m.label}
-      {refId && (
+      {showRefId && (
         <>
           {' · '}
           <span dir="ltr" className="num">{refId}</span>
@@ -26,7 +28,7 @@ function TaskSourceTag({ source, refId }: { source?: string; refId?: string }) {
     </>
   );
   if (!m.href) return <span className={cls}>{content}</span>;
-  const label = [m.label, refId].filter(Boolean).join(' ');
+  const label = [m.label, showRefId ? refId : null].filter(Boolean).join(' ');
   return (
     <Link href={m.href} className={`${cls} underline-offset-4 hover:underline hover:text-ink`} aria-label={`${label} — פתח`}>
       {content}

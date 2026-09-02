@@ -17,4 +17,20 @@ describe('taskSourceMeta', () => {
   it('falls back to the raw value for unknown sources', () => {
     expect(taskSourceMeta('weird')).toEqual({ label: 'weird', href: null });
   });
+
+  it('appends ?q=RefId for sources whose screen supports search', () => {
+    expect(taskSourceMeta('stock', 'TY-CB-UC100')).toEqual({
+      label: 'מלאי',
+      href: '/products?q=TY-CB-UC100',
+    });
+    expect(taskSourceMeta('invoice', 'INV-0007')).toEqual({
+      label: 'חשבונית',
+      href: '/invoices?q=INV-0007',
+    });
+  });
+
+  it('does not append ?q for sources whose screen has no search', () => {
+    expect(taskSourceMeta('order', 'ORD-0003')).toEqual({ label: 'משלוח', href: '/customers' });
+    expect(taskSourceMeta('lead', 'recABC')).toEqual({ label: 'ליד', href: '/leads' });
+  });
 });
