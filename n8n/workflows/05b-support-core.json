@@ -218,6 +218,40 @@
           "name": "OpenAI ERP"
         }
       }
+    },
+    {
+      "name": "check_stock",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        480
+      ],
+      "parameters": {
+        "toolDescription": "בדיקת מלאי ומחיר חיים מהמערכת. קלט: מק\"ט (למשל TY-HP-200) או מילה מהשם (למשל אוזניות). מחזיר שם, מק\"ט, מחיר בשקלים כולל מע\"מ, כמות במלאי (Stock) וקטגוריה. שירותים (קטגוריה 'שירותים') תמיד זמינים.",
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_PRODUCTS__?fields[]=Name&fields[]=Sku&fields[]=Price&fields[]=Stock&fields[]=Category&fields[]=InStock&maxRecords=5",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "=OR(FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/'/g, '') }}'), LOWER({Sku})), FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/'/g, '') }}'), LOWER({Name})))"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
     }
   ],
   "connections": {
@@ -304,6 +338,17 @@
           {
             "node": "products_catalog",
             "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check_stock": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support Agent",
+            "type": "ai_tool",
             "index": 0
           }
         ]
