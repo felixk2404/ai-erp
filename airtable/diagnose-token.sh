@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # מאבחן הרשאות של ה-PAT: לאילו בסיסים יש גישה, והאם יש scope לסכימה.
 set -uo pipefail
-cd "$(dirname "$0")/../n8n" && set -a && source .env && set +a
+cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh
 H=(-H "Authorization: Bearer $AIRTABLE_PAT")
 echo "מזהה הטוקן (החלק הציבורי לפני הנקודה): ${AIRTABLE_PAT%%.*}"
 echo "scopes של הטוקן:"

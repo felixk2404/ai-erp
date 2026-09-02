@@ -2,7 +2,7 @@
 # יוצר את חמש הטבלאות דרך Airtable Metadata API. בטוח להרצה חוזרת: מדלג על טבלאות ושדות שקיימים.
 # createdTime לא נתמך ביצירת טבלה, לכן Created מתווסף כשדה נפרד אחרי.
 set -euo pipefail
-cd "$(dirname "$0")/../n8n" && set -a && source .env && set +a
+cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh
 API="https://api.airtable.com/v0/meta/bases/$AIRTABLE_BASE_ID/tables"
 H=(-H "Authorization: Bearer $AIRTABLE_PAT" -H "Content-Type: application/json")
 

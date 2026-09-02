@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # מריץ את supabase.sql ומאמת. דורש: brew install libpq
 set -euo pipefail
-cd "$(dirname "$0")/.." && set -a && source .env && set +a
+cd "$(dirname "$0")/.." && source scripts/load-env.sh
 PSQL=$(command -v psql || echo /opt/homebrew/opt/libpq/bin/psql)
 "$PSQL" "$SUPABASE_DB_URL" -f supabase.sql
 echo "--- verify"

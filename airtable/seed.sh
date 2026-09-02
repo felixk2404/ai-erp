@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # טוען ל-Airtable: לקוח בדיקה אחד + 34 המוצרים מ-docs/course/products/products.csv (בקבוצות של 10).
 set -euo pipefail
-cd "$(dirname "$0")/../n8n" && set -a && source .env && set +a
+cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh
 export AIRTABLE_PAT AIRTABLE_BASE_ID
 python3 - <<'PY'
 import csv, json, os, urllib.request

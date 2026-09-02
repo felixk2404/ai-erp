@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # משווה את הסכימה בפועל לרשימה הצפויה. נכשל אם שדה חסר, מיותר, או בסוג שגוי.
 set -euo pipefail
-cd "$(dirname "$0")/../n8n" && set -a && source .env && set +a
+cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh
 ACTUAL=$(curl -s -H "Authorization: Bearer $AIRTABLE_PAT" \
   "https://api.airtable.com/v0/meta/bases/$AIRTABLE_BASE_ID/tables" \
   | jq -r '.tables[] | .name as $t | .fields[] | "\($t).\(.name):\(.type)"' | sort)

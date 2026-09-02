@@ -2,7 +2,7 @@
 # יוצר את ה-credentials הלא-OAuth ב-n8n דרך Public API. Google OAuth נעשה ב-UI.
 # דורש N8N_API_KEY ב-.env (Settings -> n8n API ב-n8n).
 set -euo pipefail
-cd "$(dirname "$0")/.." && set -a && source .env && set +a
+cd "$(dirname "$0")/.." && source scripts/load-env.sh
 API="http://localhost:5678/api/v1/credentials"
 H=(-H "X-N8N-API-KEY: $N8N_API_KEY" -H "Content-Type: application/json")
 

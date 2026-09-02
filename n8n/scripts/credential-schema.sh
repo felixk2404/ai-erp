@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # מדפיס את שדות ה-credential לפי סוג, למקרה שהסכימה של n8n השתנתה.
 set -euo pipefail
-cd "$(dirname "$0")/.." && set -a && source .env && set +a
+cd "$(dirname "$0")/.." && source scripts/load-env.sh
 for t in "${@:-airtableTokenApi openAiApi telegramApi supabaseApi httpHeaderAuth}"; do
   for x in $t; do
     echo "== $x"

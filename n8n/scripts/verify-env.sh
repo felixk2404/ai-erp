@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # מאמת שכל הטוקנים ב-.env עובדים. מדפיס רק תוצאות, לעולם לא ערכים.
 set -uo pipefail
-cd "$(dirname "$0")/.." && set -a && source .env && set +a
+cd "$(dirname "$0")/.." && source scripts/load-env.sh
 
 echo "--- filled? (רק כן/לא, בלי ערכים)"
 for v in AIRTABLE_PAT AIRTABLE_BASE_ID OPENAI_API_KEY TELEGRAM_MANAGER_TOKEN TELEGRAM_CUSTOMER_TOKEN OWNER_CHAT_ID SUPABASE_URL SUPABASE_SERVICE_KEY SUPABASE_DB_URL N8N_API_KEY; do
