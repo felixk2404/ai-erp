@@ -2,4 +2,9 @@
 
 - [x] תוכנית 1: תשתית ונתונים — docs/superpowers/plans/2026-09-02-01-infrastructure.md
 - [x] תוכנית 2: n8n workflows
-- [ ] תוכנית 3: אפליקציית Next.js
+- [x] תוכנית 3: אפליקציית Next.js
+
+## פתוח (אחרי 3 התוכניות)
+- [ ] אימות ידני של הסטודנט: PDF בדרייב, שני הבוטים בטלגרם, WF4 (תשובה למייל → Qualified)
+- [ ] Google OAuth Testing: Reconnect ביום הדמו
+- [ ] (רעיון) להעביר n8n ל-Render/Railway לפני ההגשה כדי שלא יהיה תלוי במק
