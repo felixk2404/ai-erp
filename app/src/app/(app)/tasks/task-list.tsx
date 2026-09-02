@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useRef, useTransition } from 'react';
+import { useActionState, useOptimistic, useRef, useTransition } from 'react';
 import { toast } from 'sonner';
 import type { Task } from '@/lib/types';
 import { addTask, toggleTask, type AddTaskState } from './actions';
@@ -10,7 +10,8 @@ import { FieldError } from '@/components/forms/field-error';
 
 function TaskRow({ task }: { task: Task }) {
   const [pending, start] = useTransition();
-  const done = task.fields.Status === 'done';
+  // אופטימי: הסימון משתנה מיידית, השרת מאשר אחר כך (או מחזיר toast שגיאה והמצב חוזר).
+  const [done, setDone] = useOptimistic(task.fields.Status === 'done');
   const id = `task-${task.id}`;
   return (
     <li className={`flex items-center gap-3 min-h-11 px-4 border-b border-rule last:border-0 ${pending ? 'opacity-60' : ''}`}>
@@ -19,11 +20,11 @@ function TaskRow({ task }: { task: Task }) {
         type="checkbox"
         className="size-4 accent-inkblue shrink-0"
         checked={done}
-        disabled={pending}
         aria-label={task.fields.Title}
         onChange={(e) => {
           const next = e.target.checked;
           start(async () => {
+            setDone(next);
             const r = await toggleTask(task.id, next);
             if (r.error) toast.error(r.error);
           });

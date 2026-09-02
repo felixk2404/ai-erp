@@ -11,7 +11,8 @@ try {
   /* אין .env.local — הבדיקות ידלגו על login */
 }
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3000';
+// 3100 ולא 3000: פורט 3000 תפוס לעתים על ידי פרויקטים אחרים במחשב הזה.
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3100';
 
 export default defineConfig({
   testDir: './e2e',

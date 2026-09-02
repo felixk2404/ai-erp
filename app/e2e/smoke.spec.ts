@@ -20,7 +20,7 @@ test('wrong password shows an error', async ({ page }) => {
   await expect(page).toHaveURL(/\/login/);
   await page.getByLabel('סיסמה').fill('definitely-wrong');
   await page.getByRole('button', { name: 'כניסה' }).click();
-  await expect(page.getByRole('alert')).toHaveText('סיסמה שגויה');
+  await expect(page.locator('form').getByRole('alert')).toHaveText('סיסמה שגויה');
 });
 
 test('dashboard renders rtl with the ledger strip', async ({ page }) => {
