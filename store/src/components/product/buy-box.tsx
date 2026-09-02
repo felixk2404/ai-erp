@@ -68,9 +68,12 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
         ))}
       </ul>
 
-      <div className="mt-4 border-t border-rule pt-4">
-        <AskBotLink sku={sku} />
-      </div>
+      {/* כשאזל, ההודעה הכנה שב-`AddToCart` כבר שולחת לבוט — פעולה אחת, לא שתיים. */}
+      {ok && (
+        <div className="mt-4 border-t border-rule pt-4">
+          <AskBotLink sku={sku} />
+        </div>
+      )}
     </aside>
   );
 }

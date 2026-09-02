@@ -18,7 +18,7 @@ const p = (fields: Partial<Product['fields']> & { Name: string }): Product => ({
 
 const all = [
   p({ Name: 'כבל HDMI 2.1', Sku: 'CB-HDMI-21', Category: 'כבלים', Price: 89, Description: 'תומך 4K 120Hz', Highlights: '4K 120Hz' }),
-  p({ Name: 'מסך גיימינג 27"', Sku: 'MN-G27', Category: 'מסכים', Price: 1180, Description: 'סודי', Highlights: 'רזולוציית QHD' }),
+  p({ Name: 'מסך גיימינג 27"', Sku: 'MN-G27', Category: 'מסכים', Price: 1180, Description: 'רזולוציית QHD', Highlights: 'פאנל IPS' }),
   p({ Name: 'עכבר אלחוטי', Sku: 'MS-W1', Category: 'היקפי', Price: 149 }),
   p({ Name: 'התקנה בבית הלקוח', Sku: 'SV-INSTALL', Category: 'שירותים', Price: 349 }),
 ].map(toCard);
@@ -35,13 +35,12 @@ describe('filterProducts', () => {
     expect(filterProducts(all, { c: '' })).toHaveLength(4);
   });
 
-  it('חיפוש — שם, מק"ט ומפרט, בלי תלות ברישיות', () => {
+  it('חיפוש — שם, מק"ט, מפרט ותיאור, בלי תלות ברישיות', () => {
     expect(skus(filterProducts(all, { q: 'hdmi' }))).toEqual(['CB-HDMI-21']);
     expect(skus(filterProducts(all, { q: 'MN-g' }))).toEqual(['MN-G27']);
     expect(skus(filterProducts(all, { q: 'עכבר' }))).toEqual(['MS-W1']);
     expect(skus(filterProducts(all, { q: '  qhd  ' }))).toEqual(['MN-G27']);
-    // התיאור המלא לא נוסע ללקוח, ולכן גם לא נחפש בו.
-    expect(filterProducts(all, { q: 'סודי' })).toEqual([]);
+    expect(skus(filterProducts(all, { q: 'IPS' }))).toEqual(['MN-G27']);
     expect(filterProducts(all, { q: 'אין דבר כזה' })).toEqual([]);
   });
 
@@ -168,20 +167,21 @@ describe('toCard', () => {
       Category: 'שמע',
       Price: 690,
       Stock: 7,
-      Description: 'תיאור שיווקי ארוך שאסור לו לנסוע ללקוח',
+      Description: 'תיאור שיווקי ארוך',
       Highlights: 'ANC\nסוללה 40 שעות\nBluetooth 5.3\nרביעית מיותרת',
       ImageUrl: 'https://example.com/a.webp',
     },
   };
 
-  it('לא מדליף כמות מלאי ולא תיאור', () => {
+  it('לא מדליף כמות מלאי — לא כשדה ולא כערך', () => {
     const card = toCard(full);
     const keys = Object.keys(card);
     expect(keys).not.toContain('Stock');
-    expect(keys).not.toContain('Description');
+    expect(keys).not.toContain('InStock');
     expect(keys).not.toContain('fields');
+    // `inStock` בוליאני הוא כן חלק מהחוזה; המספר 7 לא מופיע בשום מקום.
+    expect(card.inStock).toBe(true);
     expect(JSON.stringify(card)).not.toContain('7');
-    expect(JSON.stringify(card)).not.toContain('תיאור שיווקי');
   });
 
   it('בדיוק השדות שהכרטיס מציג', () => {
@@ -195,12 +195,13 @@ describe('toCard', () => {
       inStock: true,
       service: false,
       highlights: ['ANC', 'סוללה 40 שעות', 'Bluetooth 5.3'],
+      searchText: 'אוזניות\nty-hp-200\nanc\nסוללה 40 שעות\nbluetooth 5.3\nרביעית מיותרת\nתיאור שיווקי ארוך',
     });
   });
 
   it('שירות תמיד במלאי; חסרים נופלים לברירת מחדל', () => {
     const service = toCard(p({ Name: 'התקנה', Sku: 'SV-1', Category: 'שירותים' }));
-    expect(service).toMatchObject({ service: true, inStock: true, price: 0, highlights: [] });
+    expect(service).toMatchObject({ service: true, inStock: true, price: 0, highlights: [], searchText: 'התקנה\nsv-1' });
     expect(service.imageUrl).toBeUndefined();
     expect(toCard(p({ Name: 'אזל', Sku: 'X', Category: 'מסכים', Stock: 0 })).inStock).toBe(false);
   });

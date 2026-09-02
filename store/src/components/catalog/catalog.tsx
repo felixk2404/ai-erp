@@ -114,7 +114,7 @@ export function Catalog({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === 'Escape' && setQ('')}
-              placeholder="חיפוש לפי שם, מק״ט או מפרט"
+              placeholder="חיפוש לפי שם, מק״ט או תיאור"
               aria-label="חיפוש בקטלוג"
               className="h-10 w-full rounded-sm border border-rule-strong bg-void ps-9 pe-9 text-body text-glow placeholder:text-glow-4 [&::-webkit-search-cancel-button]:hidden"
             />

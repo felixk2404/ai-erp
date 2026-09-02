@@ -27,7 +27,8 @@ export const highlights = (p: Product) =>
 /**
  * מה שהלקוח באמת צריך כדי לראות כרטיס. הגבול בין שרת ללקוח עובר כאן ורק כאן:
  * כמות המלאי (`Stock`) היא מידע פנימי ואסור לה לנסוע ב-RSC payload, והתיאור
- * המלא הוא מטען מיותר — הכרטיס מציג לכל היותר שתי שורות מפרט.
+ * המלא הוא מטען מיותר — הכרטיס מציג לכל היותר שתי שורות מפרט. התיאור עצמו אינו
+ * סודי, ולכן הוא נכנס ל-`searchText` (שדה נגזר, מוכן לחיפוש) ולא כשדה להצגה.
  */
 export type ProductCardData = {
   id: string;
@@ -39,6 +40,9 @@ export type ProductCardData = {
   inStock: boolean;
   service: boolean;
   highlights: string[];
+  /** haystack מוכן לחיפוש: שם + מק"ט + מפרט + תיאור, אותיות קטנות. נבנה פעם אחת
+   *  בשרת במקום להרכיב מחרוזת לכל מוצר בכל הקלדה. */
+  searchText: string;
 };
 
 /** `Product` (Airtable) → מה שמותר לשלוח ללקוח. השער היחיד. */
@@ -53,6 +57,10 @@ export function toCard(p: Product): ProductCardData {
     inStock: inStock(p),
     service: isService(p),
     highlights: highlights(p),
+    searchText: [p.fields.Name, p.fields.Sku, p.fields.Highlights, p.fields.Description]
+      .filter(Boolean)
+      .join('\n')
+      .toLowerCase(),
   };
 }
 
@@ -64,10 +72,6 @@ export type View = (typeof VIEWS)[number];
 
 export type CatalogParams = { c: string; q: string; sort: Sort; view: View };
 
-/** haystack אחד לכל כרטיס: שם, מק"ט ומפרט — עברית ולטינית, ללא תלות ברישיות.
- *  התיאור המלא לא נוסע ללקוח (ראו `ProductCardData`), ולכן גם לא נחפש בו. */
-const haystack = (p: ProductCardData) => `${p.name}\n${p.sku}\n${p.highlights.join('\n')}`.toLowerCase();
-
 /**
  * סינון ומיון של הקטלוג — טהור, בלי React ובלי URL, כדי שיהיה נבדק.
  * `c` = קטגוריה בהתאמה מדויקת (ריק = הכל), `q` = חיפוש חופשי, `sort` = סדר התצוגה.
@@ -77,7 +81,7 @@ export function filterProducts(
   { c = '', q = '', sort = 'name' }: { c?: string; q?: string; sort?: Sort } = {},
 ): ProductCardData[] {
   const term = q.trim().toLowerCase();
-  const out = products.filter((p) => (!c || p.category === c) && (!term || haystack(p).includes(term)));
+  const out = products.filter((p) => (!c || p.category === c) && (!term || p.searchText.includes(term)));
   return out.sort((a, b) =>
     sort === 'price-asc'
       ? a.price - b.price
