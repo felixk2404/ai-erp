@@ -50,7 +50,7 @@ export function PriceButton({
         <p className="num flex h-10 w-full items-center justify-center rounded-md border border-rule bg-panel-1 px-4 text-body text-glow-3">
           {ils(price)}
         </p>
-        <button type="button" onClick={askBot} className={`${NOTIFY_LINK} text-center`}>
+        <button type="button" onClick={askBot} className={`${NOTIFY_LINK} text-center text-balance`}>
           {NOTIFY_TEXT}
         </button>
       </div>
