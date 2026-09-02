@@ -143,7 +143,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **⌘K עם AI**: הקלדה של 3 תווים ומעלה בפלטה מציעה "שאל את המנהל"; Enter שולח ל-`sendChat` (WF13 chat) והתשובה מוזרמת בפלטה.
 - **קיצורי מקלדת**: `?` עזרה · `g` ואז `d/i/l/c/p/t` ניווט · `n` פריט חדש בעמוד · ⌘K חיפוש.
 - **תקציר בוקר**: נחשף מילה-מילה (StreamText); בזמן הטעינה פאנל "הסוכן קורא נתונים" עם טיימר.
-- **בדיקות**: `pnpm test` (53), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
+- **בדיקות**: `pnpm test` (55), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
 - **תנועה**: הכל מכבד prefers-reduced-motion (beams/aurora/led נעצרים). אם המחשב חלש בדמו — אפשר להפעיל reduced motion במערכת ההפעלה.
 
 ## 11. החנות (store/)
