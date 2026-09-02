@@ -10,11 +10,11 @@ import { FreeShippingBar } from '@/components/cart/free-shipping-bar';
 import { useCart } from '@/components/cart/cart-provider';
 import { ils } from '@/lib/format';
 
-function Row({ label, children, muted = false }: { label: string; children: React.ReactNode; muted?: boolean }) {
+function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-4 text-sm">
-      <span className={muted ? 'text-glow-3' : 'text-glow-2'}>{label}</span>
-      <span className={muted ? 'text-glow-3' : 'text-glow'}>{children}</span>
+      <span className="text-glow-2">{label}</span>
+      <span className="text-glow">{children}</span>
     </div>
   );
 }
@@ -43,7 +43,7 @@ export function CartSheet() {
           <div className="flex items-baseline gap-2">
             <SheetTitle className="text-[18px] font-medium text-glow">העגלה שלך</SheetTitle>
             {/* אזור חי קבוע (לא מותנה) כדי שקוראי מסך יקבלו עדכון; ריק כשהעגלה ריקה — "0" לצד הכותרת הוא רעש. */}
-            <span aria-live="polite" className="num text-[13px] text-glow-3">
+            <span aria-live="polite" className="num text-sm text-glow-3">
               {totals.count > 0 ? totals.count : ''}
             </span>
           </div>
@@ -65,8 +65,7 @@ export function CartSheet() {
             <div className="relative grid size-24 place-items-center">
               <div
                 aria-hidden
-                className="absolute inset-0 rounded-full"
-                style={{ background: 'radial-gradient(closest-side, var(--color-beam-soft), transparent)' }}
+                className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
               />
               <ShoppingBagIcon size={34} strokeWidth={1.25} className="relative text-glow-4" aria-hidden />
             </div>
@@ -113,7 +112,7 @@ export function CartSheet() {
                   <span className="text-sm font-medium text-glow">סה״כ</span>
                   <CountUp value={totals.total} money className="text-[22px] leading-none font-medium text-glow" />
                 </motion.div>
-                <p className="text-end text-[11px] text-glow-3">
+                <p className="text-end text-[11px] text-glow-2">
                   כולל מע״מ <span className="num">{ils(totals.vat)}</span>
                 </p>
               </div>
@@ -123,7 +122,7 @@ export function CartSheet() {
                   href="/checkout"
                   transitionTypes={['nav-forward']}
                   onClick={() => setOpen(false)}
-                  className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-[15px] font-medium text-void transition-colors hover:bg-beam/85"
+                  className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-base font-medium text-void transition-colors hover:bg-beam/85"
                 >
                   <span>לקופה</span>
                   <span aria-hidden className="text-void/45">

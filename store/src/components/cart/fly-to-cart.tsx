@@ -27,11 +27,11 @@ function endVelocity(path: (t: number) => { x: number; y: number }) {
 export function FlyToCart() {
   const { lastAdded, setOpen } = useCart();
   const reduced = useReducedMotion();
-  const seen = useRef(0);
+  const seen = useRef<typeof lastAdded>(null);
 
   useEffect(() => {
-    if (!lastAdded || lastAdded.at === seen.current) return;
-    seen.current = lastAdded.at;
+    if (!lastAdded || lastAdded === seen.current) return;
+    seen.current = lastAdded;
 
     const target = document.querySelector<HTMLElement>('[data-cart-target]');
     const source = document.querySelector<HTMLElement>(`[data-fly-src="${CSS.escape(lastAdded.sku)}"]`);
@@ -53,7 +53,10 @@ export function FlyToCart() {
     const ghost = ((source instanceof HTMLImageElement ? source : source.querySelector('img')) ?? source).cloneNode(true) as HTMLElement;
     ghost.removeAttribute('data-fly-src');
     ghost.setAttribute('aria-hidden', 'true');
-    ghost.style.cssText = `position:fixed;inset-block-start:0;inset-inline-start:0;left:0;top:0;margin:0;width:${SIZE}px;height:${SIZE}px;max-width:none;object-fit:cover;border-radius:8px;border:1px solid var(--color-rule-strong);background:var(--color-panel-2);pointer-events:none;z-index:100;will-change:transform,opacity`;
+    // left/top פיזיים בכוונה: החישוב של הקשת נעשה בקואורדינטות client פיזיות
+    // (getBoundingClientRect). מאפיין לוגי כאן היה נפתר ל-right תחת dir=rtl,
+    // הקופסה הייתה נעשית over-constrained ומתעגנת בקצה הימני של החלון.
+    ghost.style.cssText = `position:fixed;left:0;top:0;margin:0;width:${SIZE}px;height:${SIZE}px;max-width:none;object-fit:cover;border-radius:8px;border:1px solid var(--color-rule-strong);background:var(--color-panel-2);pointer-events:none;z-index:100;will-change:transform,opacity`;
     document.body.appendChild(ghost);
 
     const flight = animate(0, 1, {

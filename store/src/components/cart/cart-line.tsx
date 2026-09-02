@@ -12,7 +12,7 @@ import { ils } from '@/lib/format';
 /**
  * שורת עגלה. היררכיה: התמונה עוגן, השם הוא מה שקוראים, הסכום של השורה הוא
  * המספר שסופרים — לכן הוא בסוף השורה השנייה, מול הבורר, ולא נבלע בין המטא.
- * שירות אין לו תמונה, ולכן הוא מקבל תג מונוספייס באותו ריבוע 56 — הרשת נשמרת.
+ * שירות אין לו תמונה, ולכן הוא מקבל תג טקסט באותו ריבוע 56 — הרשת נשמרת.
  *
  * `ref` נחשף כי `AnimatePresence mode="popLayout"` משכפל את הילד עם ref משלו.
  */
@@ -41,7 +41,7 @@ export function CartLine({
     >
       <div className="relative grid size-14 shrink-0 place-items-center overflow-hidden rounded-sm border border-rule bg-panel-2">
         {line.service ? (
-          <span className="num text-[11px] tracking-wide text-glow-3">שירות</span>
+          <span className="text-[11px] tracking-wide text-glow-3">שירות</span>
         ) : line.imageUrl ? (
           <Image src={line.imageUrl} alt={line.name} fill sizes="56px" className="object-cover" />
         ) : (
@@ -71,7 +71,10 @@ export function CartLine({
           </button>
         </div>
 
-        <p className="num mt-0.5 text-[11px] text-glow-3">{`${ils(line.price)} ליחידה`}</p>
+        {/* .num רק על המספר — "ליחידה" הוא עברית ואין לה גליפים ב-JetBrains Mono. */}
+        <p className="mt-0.5 text-[11px] text-glow-2">
+          <span className="num">{ils(line.price)}</span> ליחידה
+        </p>
 
         <div className="mt-2.5 flex items-center justify-between gap-2">
           <Quantity value={line.qty} onChange={onQty} />

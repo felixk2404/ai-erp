@@ -15,7 +15,7 @@ export function FreeShippingBar({ gap, subtotal }: { gap: number; subtotal: numb
 
   return (
     <div>
-      <p className={`text-[13px] ${reached ? 'text-ok' : 'text-glow-2'}`}>
+      <p className={`text-sm ${reached ? 'text-ok' : 'text-glow-2'}`}>
         {reached ? (
           'משלוח חינם'
         ) : (
