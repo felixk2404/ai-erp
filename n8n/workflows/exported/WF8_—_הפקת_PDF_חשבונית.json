@@ -221,7 +221,7 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1820,
+        1950,
         0
       ],
       "parameters": {
@@ -241,7 +241,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "id": "={{ $('Build HTML').item.json.invoiceId }}",
-            "PdfUrl": "={{ $json.webViewLink || ('https://drive.google.com/file/d/' + $json.id + '/view') }}",
+            "PdfUrl": "={{ $('Upload to Drive').item.json.webViewLink || ('https://drive.google.com/file/d/' + $('Upload to Drive').item.json.id + '/view') }}",
             "Status": "generated"
           },
           "matchingColumns": [
@@ -293,6 +293,39 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000007"
+    },
+    {
+      "name": "Share Public",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1690,
+        0
+      ],
+      "parameters": {
+        "resource": "file",
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone",
+            "allowFileDiscovery": false
+          }
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "e02EpJN1iWKQubkX",
+          "name": "Google Drive ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000008"
     }
   ],
   "connections": {
@@ -363,6 +396,17 @@
       ]
     },
     "Upload to Drive": {
+      "main": [
+        [
+          {
+            "node": "Share Public",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share Public": {
       "main": [
         [
           {

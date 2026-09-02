@@ -72,7 +72,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **תמונות**: Supabase Storage bucket `assets` (public) → `Products.ImageUrl`. יצירה: fal.ai `fal-ai/nano-banana-2` (~$0.08/תמונה). העלאה: `n8n/scripts/upload-asset.sh <url|file> products/<SKU>.webp <recId>`. נכסי מותג ב-`app/public/brand/`.
 - **מק"ט**: שדה `Products.Sku` (חולץ מהתיאור ב-`airtable/backfill-sku.sh`). שדות חדשים: `airtable/add-fields.sh`.
 - **דשבורד**: תקציר בוקר (סוכן המנהל, cache 6 שעות, כפתור רענן), דורש-טיפול (חשבוניות error / פתוחות > 14 יום / לידים Contacted > 7 יום), בריאות n8n (דורש `N8N_API_URL=https://goofy-glamour-syrup.ngrok-free.dev/api/v1` ו-`N8N_API_KEY` ב-.env.local וב-Vercel), גרפים בגוון יחיד.
-- **PDF בעמוד חשבונית**: iframe של Drive preview — דורש שהתיקייה `AI-ERP Invoices` תהיה משותפת "כל מי שיש לו את הקישור — צופה".
+- **PDF בעמוד חשבונית**: iframe של Drive preview. WF8 משתף כל PDF אוטומטית כ-"כל מי שיש לו את הקישור — צופה" (צומת Share Public) — לכן ה-preview עובד גם בלי חשבון Google.
 - ⌘K חיפוש גלובלי, מעברי עמוד (View Transitions), עמודי פרט `/invoices/[id]`, `/customers/[id]`.
 
 ## 6. מלכודות שנתקלנו בהן
