@@ -82,7 +82,7 @@ Airtable REST (Products, Orders)      │
 | `support` (קיים) | `{message, history?}` | ללא שינוי בחוזה; הסוכן מקבל כלי חדש |
 
 ### 5.2 WF10 — הזמנה חדשה (sub-workflow)
-1. Validate: zod-like בדיקה ב-Code node (שדות חובה, qty ≥ 1, ≤ 20 פריטים).
+1. Validate: zod-like בדיקה ב-Code node (שדות חובה, qty 1–99 גם אחרי מיזוג כפילויות, עד 10 שורות שונות — מגבלת batch של Airtable ב-PATCH).
 2. Products: HTTP Request ל-Airtable `OR({Sku}='..',...)` → מחירים אמיתיים, Stock, Category. מחיר תמיד מהקטלוג, לא מהדפדפן.
 3. Stock check: Code node → אם חסר, Respond `{ok:false, outOfStock}`.
 4. Customer: חיפוש לפי Email → צור אם אין (מספור `CUST-000N` מ-Aggregate).

@@ -15,7 +15,7 @@
 - Never read or write `n8n/.env`; scripts `cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh`. Never print secret values.
 - Workflow JSON templates live in `n8n/workflows/*.json` with placeholders `__AIRTABLE_BASE_ID__`, `__TBL_*__`, `__CRED_*__`, `__WF_<KEY>_ID__`, `__PROMPT_<NAME>__`, `__MODEL__`, `__OWNER_CHAT_ID__`, `__NGROK_DOMAIN__`. Import with `n8n/scripts/import-workflow.sh <file> --activate`. The config key for a file `10-order.json` is `ORDER` → `__WF_ORDER_ID__`. A sub-workflow must be imported and active **before** the workflow that calls it.
 - Airtable node output is `{id, createdTime, fields}`; HTTP Request to Airtable returns `{records:[...]}`. Keep one item per execution in WF10.
-- Money: catalog prices include 18% VAT. `Total = Subtotal + Shipping`. `Vat = round2(Total − Total/1.18)`. Invoice `Amount = round2(Total/1.18)`. Shipping = 29; 0 when Subtotal ≥ 300 or when all lines are services. Category `שירותים` = service (no stock, never out of stock). Max 20 lines, qty 1–99.
+- Money: catalog prices include 18% VAT. `Total = Subtotal + Shipping`. `Vat = round2(Total − Total/1.18)`. Invoice `Amount = round2(Total/1.18)`. Shipping = 29; 0 when Subtotal ≥ 300 or when all lines are services. Category `שירותים` = service (no stock, never out of stock). Max 10 distinct lines (Airtable PATCH batch cap), qty 1–99 also after merging duplicate SKUs.
 - Status values: Orders `new → confirmed → shipped → delivered | cancelled`. Invoices unchanged.
 - Hebrew, plain text, no emoji in customer email; HTML must escape user input.
 - After every workflow change: `n8n/scripts/export-workflows.sh` and commit `n8n/workflows/exported/`.
