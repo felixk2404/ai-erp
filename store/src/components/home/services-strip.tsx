@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { PriceButton } from '@/components/catalog/price-button';
 import { ils } from '@/lib/format';
-import { SERVICE } from '@/lib/catalog-filter';
+import { SERVICE, toCard } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
 
 /**
@@ -47,7 +47,7 @@ export function ServicesStrip({ services }: { services: Product[] }) {
               </Link>
               <p className="num mt-1 text-[14px] text-glow-3">{ils(s.fields.Price ?? 0)}</p>
             </div>
-            <PriceButton product={s} compact />
+            <PriceButton product={toCard(s)} compact />
           </li>
         ))}
       </ul>

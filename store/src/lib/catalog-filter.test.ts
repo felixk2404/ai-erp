@@ -1,5 +1,13 @@
 import { describe, it, expect } from 'vitest';
-import { catalogQuery, filterProducts, parseCatalogParams, gridPlan, pickLead } from './catalog-filter';
+import {
+  catalogQuery,
+  filterProducts,
+  parseCatalogParams,
+  gridPlan,
+  pickLead,
+  toCard,
+  type ProductCardData,
+} from './catalog-filter';
 import type { Product } from './types';
 
 const p = (fields: Partial<Product['fields']> & { Name: string }): Product => ({
@@ -9,12 +17,12 @@ const p = (fields: Partial<Product['fields']> & { Name: string }): Product => ({
 });
 
 const all = [
-  p({ Name: 'כבל HDMI 2.1', Sku: 'CB-HDMI-21', Category: 'כבלים', Price: 89, Description: 'תומך 4K 120Hz' }),
-  p({ Name: 'מסך גיימינג 27"', Sku: 'MN-G27', Category: 'מסכים', Price: 1180, Description: 'רזולוציית QHD' }),
+  p({ Name: 'כבל HDMI 2.1', Sku: 'CB-HDMI-21', Category: 'כבלים', Price: 89, Description: 'תומך 4K 120Hz', Highlights: '4K 120Hz' }),
+  p({ Name: 'מסך גיימינג 27"', Sku: 'MN-G27', Category: 'מסכים', Price: 1180, Description: 'סודי', Highlights: 'רזולוציית QHD' }),
   p({ Name: 'עכבר אלחוטי', Sku: 'MS-W1', Category: 'היקפי', Price: 149 }),
   p({ Name: 'התקנה בבית הלקוח', Sku: 'SV-INSTALL', Category: 'שירותים', Price: 349 }),
-];
-const skus = (list: Product[]) => list.map((x) => x.fields.Sku);
+].map(toCard);
+const skus = (list: ProductCardData[]) => list.map((x) => x.sku);
 
 describe('filterProducts', () => {
   it('ללא סינון — מחזיר הכל, ממוין לפי שם', () => {
@@ -27,11 +35,13 @@ describe('filterProducts', () => {
     expect(filterProducts(all, { c: '' })).toHaveLength(4);
   });
 
-  it('חיפוש — שם, מק"ט ותיאור, בלי תלות ברישיות', () => {
+  it('חיפוש — שם, מק"ט ומפרט, בלי תלות ברישיות', () => {
     expect(skus(filterProducts(all, { q: 'hdmi' }))).toEqual(['CB-HDMI-21']);
     expect(skus(filterProducts(all, { q: 'MN-g' }))).toEqual(['MN-G27']);
     expect(skus(filterProducts(all, { q: 'עכבר' }))).toEqual(['MS-W1']);
     expect(skus(filterProducts(all, { q: '  qhd  ' }))).toEqual(['MN-G27']);
+    // התיאור המלא לא נוסע ללקוח, ולכן גם לא נחפש בו.
+    expect(filterProducts(all, { q: 'סודי' })).toEqual([]);
     expect(filterProducts(all, { q: 'אין דבר כזה' })).toEqual([]);
   });
 
@@ -46,7 +56,7 @@ describe('filterProducts', () => {
   });
 
   it('מוצר בלי מחיר נספר כאפס ולא מפיל את המיון', () => {
-    const list = [...all, p({ Name: 'אביזר', Sku: 'X-0' })];
+    const list = [...all, toCard(p({ Name: 'אביזר', Sku: 'X-0' }))];
     expect(skus(filterProducts(list, { sort: 'price-asc' }))[0]).toBe('X-0');
   });
 
@@ -118,26 +128,80 @@ describe('pickLead', () => {
     p({ Name: 'בלי תמונה', Sku: 'NOIMG', Category: 'מסכים', Price: 4000, Stock: 2 }),
     p({ Name: 'מסך יקר', Sku: 'BIG', Category: 'מסכים', Price: 1290, Stock: 2, ImageUrl: 'x' }),
     p({ Name: 'כבל זול', Sku: 'CHEAP', Category: 'כבלים', Price: 45, Stock: 9, ImageUrl: 'x' }),
-  ];
+  ].map(toCard);
 
   it('היקר שבמוצרים הפיזיים שבמלאי ועם תמונה', () => {
-    expect(pickLead(lead)?.fields.Sku).toBe('BIG');
+    expect(pickLead(lead)?.sku).toBe('BIG');
   });
 
   it('שירותים, אזל ובלי תמונה לא נבחרים', () => {
     for (const sku of ['SV', 'OUT', 'NOIMG']) {
-      expect(pickLead(lead)?.fields.Sku).not.toBe(sku);
+      expect(pickLead(lead)?.sku).not.toBe(sku);
     }
   });
 
   it('רשימת ההעדפה של הדגל גוברת על המחיר', () => {
-    const preferred = [...lead, p({ Name: 'אוזניות הדגל', Sku: 'TY-HP-200', Category: 'שמע', Price: 690, Stock: 4, ImageUrl: 'x' })];
-    expect(pickLead(preferred)?.fields.Sku).toBe('TY-HP-200');
+    const preferred = [
+      ...lead,
+      toCard(p({ Name: 'אוזניות הדגל', Sku: 'TY-HP-200', Category: 'שמע', Price: 690, Stock: 4, ImageUrl: 'x' })),
+    ];
+    expect(pickLead(preferred)?.sku).toBe('TY-HP-200');
   });
 
   it('כשאין מועמד — הפריט הראשון', () => {
-    const onlyServices = [p({ Name: 'א', Sku: 'S1', Category: 'שירותים', Price: 10 }), p({ Name: 'ב', Sku: 'S2', Category: 'שירותים', Price: 20 })];
-    expect(pickLead(onlyServices)?.fields.Sku).toBe('S1');
+    const onlyServices = [
+      p({ Name: 'א', Sku: 'S1', Category: 'שירותים', Price: 10 }),
+      p({ Name: 'ב', Sku: 'S2', Category: 'שירותים', Price: 20 }),
+    ].map(toCard);
+    expect(pickLead(onlyServices)?.sku).toBe('S1');
     expect(pickLead([])).toBeNull();
+  });
+});
+
+describe('toCard', () => {
+  const full: Product = {
+    id: 'rec1',
+    createdTime: '',
+    fields: {
+      Name: 'אוזניות',
+      Sku: 'TY-HP-200',
+      Category: 'שמע',
+      Price: 690,
+      Stock: 7,
+      Description: 'תיאור שיווקי ארוך שאסור לו לנסוע ללקוח',
+      Highlights: 'ANC\nסוללה 40 שעות\nBluetooth 5.3\nרביעית מיותרת',
+      ImageUrl: 'https://example.com/a.webp',
+    },
+  };
+
+  it('לא מדליף כמות מלאי ולא תיאור', () => {
+    const card = toCard(full);
+    const keys = Object.keys(card);
+    expect(keys).not.toContain('Stock');
+    expect(keys).not.toContain('Description');
+    expect(keys).not.toContain('fields');
+    expect(JSON.stringify(card)).not.toContain('7');
+    expect(JSON.stringify(card)).not.toContain('תיאור שיווקי');
+  });
+
+  it('בדיוק השדות שהכרטיס מציג', () => {
+    expect(toCard(full)).toEqual({
+      id: 'rec1',
+      sku: 'TY-HP-200',
+      name: 'אוזניות',
+      price: 690,
+      category: 'שמע',
+      imageUrl: 'https://example.com/a.webp',
+      inStock: true,
+      service: false,
+      highlights: ['ANC', 'סוללה 40 שעות', 'Bluetooth 5.3'],
+    });
+  });
+
+  it('שירות תמיד במלאי; חסרים נופלים לברירת מחדל', () => {
+    const service = toCard(p({ Name: 'התקנה', Sku: 'SV-1', Category: 'שירותים' }));
+    expect(service).toMatchObject({ service: true, inStock: true, price: 0, highlights: [] });
+    expect(service.imageUrl).toBeUndefined();
+    expect(toCard(p({ Name: 'אזל', Sku: 'X', Category: 'מסכים', Stock: 0 })).inStock).toBe(false);
   });
 });

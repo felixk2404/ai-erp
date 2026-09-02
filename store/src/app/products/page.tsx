@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Catalog } from '@/components/catalog/catalog';
 import { EYEBROW } from '@/lib/ui';
 import { categories, getProducts } from '@/lib/catalog';
-import { parseCatalogParams } from '@/lib/catalog-filter';
+import { parseCatalogParams, toCard } from '@/lib/catalog-filter';
 
 export const metadata: Metadata = {
   title: 'מוצרים',
@@ -29,7 +29,7 @@ export default async function ProductsPage({
           כל מה שבחנות. מק״ט, מפרט, מלאי ומחיר — באותה שורה.
         </p>
       </div>
-      <Catalog products={products} categories={categories(products)} initial={parseCatalogParams(params)} />
+      <Catalog products={products.map(toCard)} categories={categories(products)} initial={parseCatalogParams(params)} />
     </>
   );
 }

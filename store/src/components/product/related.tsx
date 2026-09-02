@@ -1,5 +1,6 @@
 import { ProductCard } from '@/components/catalog/product-card';
 import { Reveal } from '@/components/motion/reveal';
+import { toCard } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
 
 /**
@@ -16,7 +17,7 @@ export function Related({ products }: { products: Product[] }) {
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.06} className="h-full">
-            <ProductCard product={p} />
+            <ProductCard product={toCard(p)} />
           </Reveal>
         ))}
       </div>

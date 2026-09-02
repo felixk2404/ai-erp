@@ -8,8 +8,16 @@ import { Reveal } from '@/components/motion/reveal';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/catalog/product-card';
 import { SpecGrid } from '@/components/catalog/spec-grid';
-import { catalogQuery, filterProducts, gridPlan, pickLead, type CatalogParams, type Sort, type View } from '@/lib/catalog-filter';
-import type { Product } from '@/lib/types';
+import {
+  catalogQuery,
+  filterProducts,
+  gridPlan,
+  pickLead,
+  type CatalogParams,
+  type ProductCardData,
+  type Sort,
+  type View,
+} from '@/lib/catalog-filter';
 
 const SORT_LABELS: Record<Sort, string> = {
   name: 'לפי שם',
@@ -35,7 +43,7 @@ export function Catalog({
   categories,
   initial,
 }: {
-  products: Product[];
+  products: ProductCardData[];
   categories: string[];
   initial: CatalogParams;
 }) {
@@ -106,7 +114,7 @@ export function Catalog({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === 'Escape' && setQ('')}
-              placeholder="חיפוש לפי שם, מק״ט או תיאור"
+              placeholder="חיפוש לפי שם, מק״ט או מפרט"
               aria-label="חיפוש בקטלוג"
               className="h-10 w-full rounded-sm border border-rule-strong bg-void ps-9 pe-9 text-[14px] text-glow placeholder:text-glow-4 [&::-webkit-search-cancel-button]:hidden"
             />
@@ -228,11 +236,11 @@ export function Catalog({
             // הכרטיס הראשון כבר במסך בטעינה, והוא מועמד ה-LCP. כניסה שמתחילה רק
             // אחרי ההידרציה דוחה את הציור שלו ב~1.5 שניות; מה שכבר כאן מגיע מוכן.
             return i === 0 ? (
-              <div key={p.fields.Sku ?? p.id} className={cls}>
+              <div key={p.sku} className={cls}>
                 {card}
               </div>
             ) : (
-              <Reveal key={p.fields.Sku ?? p.id} delay={Math.min(i * 0.04, 0.4)} className={cls}>
+              <Reveal key={p.sku} delay={Math.min(i * 0.04, 0.4)} className={cls}>
                 {card}
               </Reveal>
             );

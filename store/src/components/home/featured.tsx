@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Reveal } from '@/components/motion/reveal';
 import { ProductCard } from '@/components/catalog/product-card';
+import { toCard } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
 
 /**
@@ -36,7 +37,7 @@ export function Featured({ products }: { products: Product[] }) {
       <div className="mt-8 grid grid-cols-1 gap-4 [&_img]:saturate-[.6] [&_img]:brightness-[.65] [&_img]:transition-[filter] [&_img]:duration-300 [&_.group:hover_img]:saturate-100 [&_.group:hover_img]:brightness-100 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.06}>
-            <ProductCard product={p} />
+            <ProductCard product={toCard(p)} priority={false} />
           </Reveal>
         ))}
       </div>

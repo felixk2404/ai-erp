@@ -5,9 +5,8 @@ import { Tilt } from '@/components/motion/tilt';
 import { Shared } from '@/components/motion/page-transition';
 import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
-import { highlights, inStock } from '@/lib/catalog-filter';
 import { EYEBROW } from '@/lib/ui';
-import type { Product } from '@/lib/types';
+import type { ProductCardData } from '@/lib/catalog-filter';
 
 const SIZES = '(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw';
 
@@ -23,13 +22,22 @@ const SIZES = '(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 
  * קוצץ מוצר; בכרטיס רגיל cover נותן מלבן נקי. ב-lg הוא מתפצל לרוחב (תמונה
  * בחצי אחד, טקסט בשני) — כרטיס אנכי ברוחב כפול יוצא גבוה מדי ומפיל את הכפתור
  * מתחת לקפל ב-1366×800.
+ * הקלט הוא `ProductCardData` ולא `Product`: הכרטיס חוצה גבול שרת→לקוח, וכמות
+ * המלאי אסור לה לנסוע ב-RSC payload.
  */
-export function ProductCard({ product, variant = 'default' }: { product: Product; variant?: 'default' | 'lead' }) {
-  const f = product.fields;
-  const sku = f.Sku ?? product.id;
-  const ok = inStock(product);
+export function ProductCard({
+  product,
+  variant = 'default',
+  priority,
+}: {
+  product: ProductCardData;
+  variant?: 'default' | 'lead';
+  /** ברירת מחדל: המוביל בלבד. דף הבית מכבה — ה-hero הוא מועמד ה-LCP שלו. */
+  priority?: boolean;
+}) {
+  const { sku, name, category, imageUrl, inStock: ok } = product;
   const lead = variant === 'lead';
-  const specs = highlights(product).slice(0, lead ? 2 : 1);
+  const specs = product.highlights.slice(0, lead ? 2 : 1);
 
   return (
     <Tilt className="h-full">
@@ -40,16 +48,16 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
           className={`relative shrink-0 overflow-hidden bg-panel-2 ${lead ? 'aspect-3/2 lg:aspect-auto lg:w-1/2' : 'aspect-3/2 sm:aspect-4/3'}`}
         >
           <Shared name={`product-image-${sku}`}>
-            {f.ImageUrl ? (
+            {imageUrl ? (
               // `fill` מתעלם מ-padding, ולכן הבמה של המוביל היא מעטפת inset-6 —
               // מסגרת שווה בארבעת הצדדים סביב מוצר שמוצג במלואו.
               <div className={`absolute ${lead ? 'inset-6' : 'inset-0'}`}>
                 <Image
-                  src={f.ImageUrl}
-                  alt={f.Name}
+                  src={imageUrl}
+                  alt={name}
                   fill
                   sizes={SIZES}
-                  priority={lead}
+                  priority={priority ?? lead}
                   data-fly-src={sku}
                   className={lead ? 'object-contain' : 'object-cover'}
                 />
@@ -64,9 +72,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
         </div>
 
         <div className={`flex flex-1 flex-col p-4 ${lead ? 'lg:justify-center' : ''}`}>
-          {f.Category && (
-            <p className={EYEBROW}>{f.Category}</p>
-          )}
+          {category && <p className={EYEBROW}>{category}</p>}
           <h3
             className={`mt-2 line-clamp-2 font-medium text-glow ${lead ? 'text-[22px] leading-[1.3]' : 'text-[18px] leading-[1.375]'}`}
           >
@@ -75,7 +81,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
               transitionTypes={['nav-forward']}
               className="after:absolute after:inset-0 after:content-['']"
             >
-              {f.Name}
+              {name}
             </Link>
           </h3>
           {specs.map((s) => (

@@ -24,6 +24,38 @@ export const highlights = (p: Product) =>
     .filter(Boolean)
     .slice(0, 3);
 
+/**
+ * מה שהלקוח באמת צריך כדי לראות כרטיס. הגבול בין שרת ללקוח עובר כאן ורק כאן:
+ * כמות המלאי (`Stock`) היא מידע פנימי ואסור לה לנסוע ב-RSC payload, והתיאור
+ * המלא הוא מטען מיותר — הכרטיס מציג לכל היותר שתי שורות מפרט.
+ */
+export type ProductCardData = {
+  id: string;
+  sku: string;
+  name: string;
+  price: number;
+  category: string;
+  imageUrl?: string;
+  inStock: boolean;
+  service: boolean;
+  highlights: string[];
+};
+
+/** `Product` (Airtable) → מה שמותר לשלוח ללקוח. השער היחיד. */
+export function toCard(p: Product): ProductCardData {
+  return {
+    id: p.id,
+    sku: p.fields.Sku ?? p.id,
+    name: p.fields.Name,
+    price: p.fields.Price ?? 0,
+    category: p.fields.Category ?? '',
+    ...(p.fields.ImageUrl ? { imageUrl: p.fields.ImageUrl } : {}),
+    inStock: inStock(p),
+    service: isService(p),
+    highlights: highlights(p),
+  };
+}
+
 export const SORTS = ['name', 'price-asc', 'price-desc'] as const;
 export type Sort = (typeof SORTS)[number];
 
@@ -32,30 +64,26 @@ export type View = (typeof VIEWS)[number];
 
 export type CatalogParams = { c: string; q: string; sort: Sort; view: View };
 
-const price = (p: Product) => p.fields.Price ?? 0;
-
-/** haystack אחד לכל מוצר: שם, מק"ט ותיאור — עברית ולטינית, ללא תלות ברישיות. */
-const haystack = (p: Product) =>
-  `${p.fields.Name ?? ''}\n${p.fields.Sku ?? ''}\n${p.fields.Description ?? ''}`.toLowerCase();
+/** haystack אחד לכל כרטיס: שם, מק"ט ומפרט — עברית ולטינית, ללא תלות ברישיות.
+ *  התיאור המלא לא נוסע ללקוח (ראו `ProductCardData`), ולכן גם לא נחפש בו. */
+const haystack = (p: ProductCardData) => `${p.name}\n${p.sku}\n${p.highlights.join('\n')}`.toLowerCase();
 
 /**
  * סינון ומיון של הקטלוג — טהור, בלי React ובלי URL, כדי שיהיה נבדק.
  * `c` = קטגוריה בהתאמה מדויקת (ריק = הכל), `q` = חיפוש חופשי, `sort` = סדר התצוגה.
  */
 export function filterProducts(
-  products: Product[],
+  products: ProductCardData[],
   { c = '', q = '', sort = 'name' }: { c?: string; q?: string; sort?: Sort } = {},
-): Product[] {
+): ProductCardData[] {
   const term = q.trim().toLowerCase();
-  const out = products.filter(
-    (p) => (!c || p.fields.Category === c) && (!term || haystack(p).includes(term)),
-  );
+  const out = products.filter((p) => (!c || p.category === c) && (!term || haystack(p).includes(term)));
   return out.sort((a, b) =>
     sort === 'price-asc'
-      ? price(a) - price(b)
+      ? a.price - b.price
       : sort === 'price-desc'
-        ? price(b) - price(a)
-        : (a.fields.Name ?? '').localeCompare(b.fields.Name ?? '', 'he'),
+        ? b.price - a.price
+        : a.name.localeCompare(b.name, 'he'),
   );
 }
 
@@ -111,15 +139,12 @@ export function gridPlan(count: number): GridPlan {
  * המוביל של הרשת נבחר באותה רשימת העדפה של דגל דף הבית (`lib/home.ts`) לפני
  * כלל המחיר — כך שהפריט הגדול בקטלוג ובבית הוא אותו פריט, וגם הוא מצולם מהחזית.
  */
-export function pickLead(products: Product[]): Product | null {
-  const eligible = products.filter((p) => !isService(p) && inStock(p) && p.fields.ImageUrl);
+export function pickLead(products: ProductCardData[]): ProductCardData | null {
+  const eligible = products.filter((p) => !p.service && p.inStock && p.imageUrl);
   for (const want of FLAGSHIP_PREFERENCE) {
-    const hit = eligible.find((p) => (p.fields.Sku ?? p.id) === want);
+    const hit = eligible.find((p) => p.sku === want);
     if (hit) return hit;
   }
-  const dearest = eligible.reduce<Product | null>(
-    (best, p) => (best && (best.fields.Price ?? 0) >= (p.fields.Price ?? 0) ? best : p),
-    null,
-  );
+  const dearest = eligible.reduce<ProductCardData | null>((best, p) => (best && best.price >= p.price ? best : p), null);
   return dearest ?? products[0] ?? null;
 }

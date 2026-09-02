@@ -7,11 +7,14 @@ const STORAGE_KEY = 'aie-cart-v1';
 
 type LastAdded = { sku: string; at: number } | null;
 
+/** מה קרה בפועל ל-`add`: נוספה שורה, התמזגה לשורה קיימת, או שהעגלה סירבה. */
+export type AddResult = 'added' | 'merged' | 'max-lines' | 'max-qty';
+
 type CartContextValue = {
   cart: Cart;
   totals: ReturnType<typeof computeTotals>;
   ready: boolean;
-  add: (line: CartLine) => void;
+  add: (line: CartLine) => AddResult;
   remove: (sku: string) => void;
   setQty: (sku: string, qty: number) => void;
   clear: () => void;
@@ -63,12 +66,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [cart, ready]);
 
+  // הרדיוסר הוא המקור היחיד לגבולות (MAX_LINES/MAX_QTY); כאן רק מריצים אותו
+  // מראש כדי לדעת מה *באמת* יקרה, ומדווחים למי שקרא — הוא זה שמציג משוב.
   const add = useCallback(
-    (line: CartLine) => {
-      dispatch({ type: 'add', line });
+    (line: CartLine): AddResult => {
       const before = cart.lines.find((l) => l.sku === line.sku);
       const after = cartReducer(cart, { type: 'add', line }).lines.find((l) => l.sku === line.sku);
-      if (after && after.qty !== before?.qty) setLastAdded({ sku: line.sku, at: Date.now() });
+      if (!after) return 'max-lines';
+      if (before && after.qty === before.qty) return 'max-qty';
+      dispatch({ type: 'add', line });
+      setLastAdded({ sku: line.sku, at: Date.now() });
+      return before ? 'merged' : 'added';
     },
     [cart]
   );

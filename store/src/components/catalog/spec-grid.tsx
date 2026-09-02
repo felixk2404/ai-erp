@@ -4,10 +4,9 @@ import Link from 'next/link';
 import { motion } from 'motion/react';
 import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
-import { highlights, inStock } from '@/lib/catalog-filter';
 import { ils } from '@/lib/format';
 import { EYEBROW } from '@/lib/ui';
-import type { Product } from '@/lib/types';
+import type { ProductCardData } from '@/lib/catalog-filter';
 
 const HEAD = `px-4 py-3 ${EYEBROW}`;
 const CELL = 'px-4 py-3 align-middle';
@@ -24,13 +23,12 @@ const springAt = (i: number) => ({ type: 'spring' as const, bounce: 0.15, visual
  * tabular-nums כדי שהעמודות לא ירקדו בהחלפת סינון; השמות בעברית נשארים בהיבו.
  * מתחת ל-md אין טבלה אלא בלוקים מוערמים — טלפון לא אמור לגלול לצדדים.
  */
-export function SpecGrid({ products }: { products: Product[] }) {
+export function SpecGrid({ products }: { products: ProductCardData[] }) {
   return (
     <>
       <ul className="border-t border-rule md:hidden">
         {products.map((p, i) => {
-          const f = p.fields;
-          const sku = f.Sku ?? p.id;
+          const sku = p.sku;
           return (
             <motion.li key={sku} {...ROW_MOTION} transition={springAt(i)} className="border-b border-rule py-3">
               <div className="flex items-baseline gap-2">
@@ -45,13 +43,13 @@ export function SpecGrid({ products }: { products: Product[] }) {
                   transitionTypes={['nav-forward']}
                   className="line-clamp-1 text-[14px] font-medium text-glow"
                 >
-                  {f.Name}
+                  {p.name}
                 </Link>
               </div>
-              <p className="mt-1 line-clamp-2 text-[14px] text-glow-3">{highlights(p)[0]}</p>
+              <p className="mt-1 line-clamp-2 text-[14px] text-glow-3">{p.highlights[0]}</p>
               <div className="mt-2 flex items-center gap-3">
-                <StockBadge ok={inStock(p)} />
-                <span className="num text-[16px] text-glow">{ils(f.Price ?? 0)}</span>
+                <StockBadge ok={p.inStock} />
+                <span className="num text-[16px] text-glow">{ils(p.price)}</span>
                 <span className="ms-auto">
                   <PriceButton product={p} compact />
                 </span>
@@ -96,8 +94,7 @@ export function SpecGrid({ products }: { products: Product[] }) {
           </thead>
           <tbody>
             {products.map((p, i) => {
-              const f = p.fields;
-              const sku = f.Sku ?? p.id;
+              const sku = p.sku;
               return (
                 <motion.tr
                   key={sku}
@@ -116,16 +113,16 @@ export function SpecGrid({ products }: { products: Product[] }) {
                       transitionTypes={['nav-forward']}
                       className="line-clamp-2 text-[14px] text-glow-2 underline-offset-4 hover:text-glow hover:underline"
                     >
-                      {f.Name}
+                      {p.name}
                     </Link>
                   </td>
                   <td className={`${CELL} text-[14px] whitespace-normal text-glow-3`}>
-                    <span className="line-clamp-2">{highlights(p)[0]}</span>
+                    <span className="line-clamp-2">{p.highlights[0]}</span>
                   </td>
                   <td className={CELL}>
-                    <StockBadge ok={inStock(p)} />
+                    <StockBadge ok={p.inStock} />
                   </td>
-                  <td className={`${CELL} num text-end text-[16px] text-glow`}>{ils(f.Price ?? 0)}</td>
+                  <td className={`${CELL} num text-end text-[16px] text-glow`}>{ils(p.price)}</td>
                   <td className={`${CELL} text-end`}>
                     <PriceButton product={p} compact />
                   </td>
