@@ -1,4 +1,4 @@
-// render-menu.js — גוף צומת Code ב-WF5 (מוזרק כ-__CODE_RENDER_MENU__). קלט: callback_data + כל המוצרים.
+// render-menu.js — גוף צומת Code ב-WF5 (מוזרק לצומת דרך placeholder CODE_RENDER_MENU). קלט: callback_data + כל המוצרים.
 // פלט: { action: 'menu' | 'lead', text (HTML), keyboard (צורת inlineKeyboard של צומת הטלגרם), product? }.
 const SERVICE = 'שירותים';
 const MAX_CAT = 30; // callback_data ≤ 64 בתים; עברית = 2 בתים לתו, 'cat:' = 4
@@ -7,7 +7,6 @@ const esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</
 const price = (n) => Number(n || 0).toLocaleString('he-IL') + ' ₪';
 const btn = (text, data) => ({ text, additionalFields: { callback_data: data } });
 const keyboard = (...lines) => ({ rows: lines.map((buttons) => ({ row: { buttons } })) });
-const catKey = (c) => 'cat:' + String(c).slice(0, MAX_CAT);
 
 function renderMenu(data, products) {
   const items = products
@@ -18,12 +17,21 @@ function renderMenu(data, products) {
       highlights: String(p.Highlights || '').split('\n').map((s) => s.trim()).filter(Boolean).slice(0, 3),
     }));
   const cats = [...new Set(items.map((i) => i.category))].sort((a, b) => a.localeCompare(b, 'he'));
-  const home = (text) => ({ action: 'menu', text: text || 'במה תרצו להתעניין?', keyboard: keyboard(...cats.map((c) => [btn(c, catKey(c))]), [btn('שאלה חופשית', 'ask')]) });
+  // ponytail: 30-char truncation collides on shared prefixes; disambiguate with a #index suffix, kept unique per render.
+  const catKeys = new Map();
+  const usedKeys = new Set();
+  cats.forEach((c, index) => {
+    let key = 'cat:' + String(c).slice(0, MAX_CAT);
+    if (usedKeys.has(key)) key = 'cat:' + String(c).slice(0, MAX_CAT - 3) + '#' + index;
+    usedKeys.add(key);
+    catKeys.set(c, key);
+  });
+  const home = (text) => ({ action: 'menu', text: text || 'במה תרצו להתעניין?', keyboard: keyboard(...cats.map((c) => [btn(c, catKeys.get(c))]), [btn('שאלה חופשית', 'ask')]) });
   const d = String(data || 'home');
   if (d === 'home') return home();
   if (d === 'ask') return { action: 'menu', text: 'כתבו כאן כל שאלה ונענה מיד.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };
   if (d.startsWith('cat:')) {
-    const cat = cats.find((c) => catKey(c) === d);
+    const cat = cats.find((c) => catKeys.get(c) === d);
     if (!cat) return home('הקטגוריה כבר לא זמינה.');
     const list = items.filter((i) => i.category === cat).slice(0, MAX_LIST);
     const label = (i) => `${i.name} · ${price(i.price)}${!i.service && i.stock <= 0 ? ' (אזל)' : ''}`;
@@ -36,7 +44,7 @@ function renderMenu(data, products) {
   if (d.startsWith('lead:')) return { action: 'lead', text: `מעולה, רשמנו שאתם מתעניינים ב${esc(item.name)}.`, keyboard: keyboard([btn('תפריט ראשי', 'home')]), product };
   const stock = item.service ? 'שירות — זמין תמיד' : item.stock > 0 ? 'במלאי' : 'אזל מהמלאי';
   const text = [`<b>${esc(item.name)}</b>`, `${esc(item.sku)} · ${price(item.price)}`, ...item.highlights.map((h) => `• ${esc(h)}`), stock].join('\n');
-  return { action: 'menu', text, keyboard: keyboard([btn('מעוניין', 'lead:' + item.sku)], [btn('חזרה לקטגוריה', catKey(item.category)), btn('תפריט ראשי', 'home')]), product };
+  return { action: 'menu', text, keyboard: keyboard([btn('מעוניין', 'lead:' + item.sku)], [btn('חזרה לקטגוריה', catKeys.get(item.category)), btn('תפריט ראשי', 'home')]), product };
 }
 if (typeof $input !== 'undefined') return [{ json: renderMenu($('Classify').first().json.data, $input.all().map((i) => (i.json && i.json.fields) || i.json)) }];
 module.exports = { renderMenu };

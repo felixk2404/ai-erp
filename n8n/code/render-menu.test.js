@@ -53,3 +53,16 @@ test('callback_data stays within 64 bytes for long category names', () => {
   assert.ok(Buffer.byteLength(data, 'utf8') <= 64);
   assert.equal(renderMenu(data, [long]).keyboard.rows[0].row.buttons[0].additionalFields.callback_data, 'p:X-1');
 });
+
+test('categories sharing a 30-char prefix get distinct, resolvable keys', () => {
+  const items = [
+    { Name: 'מוצר X', Sku: 'X-1', Category: 'א'.repeat(30) + 'X', Price: 10, Stock: 1 },
+    { Name: 'מוצר Y', Sku: 'Y-1', Category: 'א'.repeat(30) + 'Y', Price: 20, Stock: 1 },
+  ];
+  const m = renderMenu('home', items);
+  const keys = buttons(m.keyboard).slice(0, 2).map((row) => row[0][1]);
+  assert.notEqual(keys[0], keys[1]);
+  for (const k of keys) assert.ok(Buffer.byteLength(k, 'utf8') <= 64);
+  const skus = keys.map((k) => buttons(renderMenu(k, items).keyboard)[0][0][1]).sort();
+  assert.deepEqual(skus, ['p:X-1', 'p:Y-1']);
+});

@@ -1,4 +1,4 @@
-// classify.js — גוף צומת Code ב-WF5 (מוזרק כ-__CODE_CLASSIFY__). מנרמל עדכון טלגרם לפריט אחד.
+// classify.js — גוף צומת Code ב-WF5 (מוזרק לצומת דרך placeholder CODE_CLASSIFY). מנרמל עדכון טלגרם לפריט אחד.
 // route: callback | contact | start | skip | chat. מחוץ ל-n8n הקובץ מייצא את הפונקציה לבדיקות.
 function classify(u) {
   const cq = u.callback_query;
