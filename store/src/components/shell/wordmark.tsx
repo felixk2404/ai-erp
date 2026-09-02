@@ -10,7 +10,7 @@ export function Wordmark({ size = 18 }: { size?: 18 | 22 }) {
         <span className="size-1.5 rounded-full bg-beam" />
       </span>
       <span
-        className={`font-extrabold tracking-[-0.02em] whitespace-nowrap ${size === 22 ? 'text-[22px]' : 'text-[18px]'}`}
+        className={`font-extrabold tracking-[-0.02em] whitespace-nowrap ${size === 22 ? 'text-2xl' : 'text-xl'}`}
       >
         <span className="text-glow">איי.איי</span> <span className="text-glow-2">אלקטרוניקה</span>
       </span>

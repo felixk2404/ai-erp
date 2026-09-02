@@ -15,9 +15,9 @@ export function Highlights({ items }: { items: string[] }) {
         {items.map((item) => (
           <li
             key={item}
-            className="flex items-start gap-3 border-t border-rule px-4 py-3 text-[16px] leading-6 text-glow first:border-t-0"
+            className="flex items-start gap-3 border-t border-rule px-4 py-3 text-lg leading-6 text-glow first:border-t-0"
           >
-            <span aria-hidden className="mt-px shrink-0 font-mono text-[14px] leading-6 text-beam">
+            <span aria-hidden className="mt-px shrink-0 font-mono text-body leading-6 text-beam">
               ◂
             </span>
             <span>{item}</span>

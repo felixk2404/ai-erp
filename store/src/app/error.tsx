@@ -14,23 +14,23 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   return (
     <div className="flex min-h-[50dvh] flex-col items-start justify-center gap-4">
       <p className={EYEBROW}>שגיאה</p>
-      <h1 className="text-[28px] leading-[1.15] font-extrabold tracking-[-0.02em] sm:text-[44px]">משהו נשבר כאן</h1>
+      <h1 className="text-3xl leading-[1.15] font-extrabold tracking-[-0.02em] sm:text-display">משהו נשבר כאן</h1>
       <p className="max-w-[48ch] text-glow-2">התקלה אצלנו, לא אצלכם. אפשר לנסות שוב.</p>
       <div className="mt-2 flex flex-wrap items-center gap-2">
-        <button type="button" onClick={reset} className={buttonVariants({ className: 'h-11 gap-1.5 rounded-md px-4 text-[14px]' })}>
+        <button type="button" onClick={reset} className={buttonVariants({ className: 'h-11 gap-1.5 rounded-md px-4 text-body' })}>
           <RotateCwIcon size={14} strokeWidth={2} aria-hidden />
           ניסיון חוזר
         </button>
         <Link
           href="/products"
           transitionTypes={['nav-back']}
-          className="flex h-11 items-center rounded-md px-4 text-[14px] text-glow-2 transition-colors hover:text-glow"
+          className="flex h-11 items-center rounded-md px-4 text-body text-glow-2 transition-colors hover:text-glow"
         >
           לקטלוג
         </Link>
       </div>
       {error.digest && (
-        <p dir="ltr" className="num text-[11px] text-glow-4">
+        <p dir="ltr" className="num text-meta text-glow-4">
           {error.digest}
         </p>
       )}

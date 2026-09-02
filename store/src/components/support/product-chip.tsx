@@ -29,7 +29,7 @@ export function ProductChip({ product }: { product: SupportProduct }) {
 
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm leading-tight text-glow">{product.name}</p>
-        <p className="mt-1 flex items-center gap-2 text-[11px] leading-none">
+        <p className="mt-1 flex items-center gap-2 text-meta leading-none">
           <span className="num text-glow-2">{ils(product.price)}</span>
           <span className={product.inStock ? 'text-ok' : 'text-glow-3'}>{product.inStock ? 'במלאי' : 'אזל'}</span>
         </p>

@@ -4,6 +4,7 @@ import { PolicyNav } from "@/components/content/policy-nav";
 import { AskBot } from "@/components/home/ask-bot";
 import { buttonVariants } from "@/components/ui/button";
 import { POLICIES } from "@/content/policies";
+import { EYEBROW } from "@/lib/ui";
 
 export const metadata: Metadata = { title: "מדיניות" };
 
@@ -19,8 +20,8 @@ export default function PoliciesPage() {
   return (
     <div className="py-8 lg:py-12">
       <header className="max-w-[68ch]">
-        <h1 className="text-[44px] leading-[1.05] font-extrabold tracking-[-0.02em] text-balance">מדיניות החנות</h1>
-        <p className="mt-3 text-lg text-glow-2">משלוחים, החזרות, אחריות ותשלומים — בקצרה ובלי אותיות קטנות.</p>
+        <h1 className="text-display leading-[1.05] font-extrabold tracking-[-0.02em] text-balance">מדיניות החנות</h1>
+        <p className="mt-3 text-xl text-glow-2">משלוחים, החזרות, אחריות ותשלומים — בקצרה ובלי אותיות קטנות.</p>
       </header>
 
       <div className="mt-16 grid gap-12 lg:grid-cols-[200px_1fr] lg:gap-x-16">
@@ -32,10 +33,10 @@ export default function PoliciesPage() {
           {POLICIES.map((policy, i) => (
             <Reveal key={policy.id} delay={i * 0.05}>
               <section id={policy.id} className="max-w-[68ch] scroll-mt-24">
-                <p className="font-sans text-[11px] tracking-[0.08em] text-glow-3">
+                <p className={EYEBROW}>
                   <span className="num">{String(i + 1).padStart(2, "0")}</span> / מדיניות
                 </p>
-                <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.02em] text-balance">{policy.title}</h2>
+                <h2 className="mt-1 text-2xl font-extrabold tracking-[-0.02em] text-balance">{policy.title}</h2>
                 <p className="mt-2 text-glow-2">{policy.summary}</p>
                 <ul className="mt-4 flex flex-col gap-2">
                   {policy.bullets.map((bullet) => (

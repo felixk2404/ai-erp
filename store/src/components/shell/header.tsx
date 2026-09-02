@@ -84,7 +84,7 @@ export function Header() {
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.5, opacity: 0 }}
                   transition={{ type: 'spring', bounce: 0.35, visualDuration: 0.25 }}
-                  className="num absolute top-1.5 end-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-beam px-1 text-[11px] leading-none font-medium text-void"
+                  className="num absolute top-1.5 end-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-beam px-1 text-meta leading-none font-medium text-void"
                 >
                   {count}
                 </motion.span>

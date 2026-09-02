@@ -56,7 +56,7 @@ export function FlyToCart() {
     // left/top פיזיים בכוונה: החישוב של הקשת נעשה בקואורדינטות client פיזיות
     // (getBoundingClientRect). מאפיין לוגי כאן היה נפתר ל-right תחת dir=rtl,
     // הקופסה הייתה נעשית over-constrained ומתעגנת בקצה הימני של החלון.
-    ghost.style.cssText = `position:fixed;left:0;top:0;margin:0;width:${SIZE}px;height:${SIZE}px;max-width:none;object-fit:cover;border-radius:8px;border:1px solid var(--color-rule-strong);background:var(--color-panel-2);pointer-events:none;z-index:100;will-change:transform,opacity`;
+    ghost.style.cssText = `position:fixed;left:0;top:0;margin:0;width:${SIZE}px;height:${SIZE}px;max-width:none;object-fit:cover;border-radius:8px;border:1px solid var(--color-rule-strong);background:var(--color-panel-2);pointer-events:none;z-index:var(--z-fly);will-change:transform,opacity`;
     document.body.appendChild(ghost);
 
     const flight = animate(0, 1, {
@@ -90,7 +90,7 @@ export function FlyToCart() {
         );
 
         ring.setAttribute('aria-hidden', 'true');
-        ring.style.cssText = `position:fixed;left:${b.left + b.width / 2}px;top:${b.top + b.height / 2}px;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:9999px;border:1px solid var(--color-beam);pointer-events:none;z-index:99`;
+        ring.style.cssText = `position:fixed;left:${b.left + b.width / 2}px;top:${b.top + b.height / 2}px;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:9999px;border:1px solid var(--color-beam);pointer-events:none;z-index:var(--z-fly)`;
         document.body.appendChild(ring);
         ringMounted = true;
         void animate(ring, { scale: [1, 2.2], opacity: [0.8, 0] }, { duration: 0.5, ease: 'easeOut' }).finished.then(() => ring.remove());

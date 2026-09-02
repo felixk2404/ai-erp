@@ -46,7 +46,7 @@ export function CartLine({
         ) : line.imageUrl ? (
           <Image src={line.imageUrl} alt={line.name} fill sizes="56px" className="object-cover" />
         ) : (
-          <span className="num text-[11px] text-glow-4" dir="ltr">
+          <span className="num text-meta text-glow-4" dir="ltr">
             {line.sku}
           </span>
         )}
@@ -73,7 +73,7 @@ export function CartLine({
         </div>
 
         {/* .num רק על המספר — "ליחידה" הוא עברית ואין לה גליפים ב-JetBrains Mono. */}
-        <p className="mt-0.5 text-[11px] text-glow-2">
+        <p className="mt-0.5 text-meta text-glow-2">
           <span className="num">{ils(line.price)}</span> ליחידה
         </p>
 

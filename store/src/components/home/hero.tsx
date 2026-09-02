@@ -11,6 +11,7 @@ import { inStock } from '@/lib/catalog-filter';
 import { ils } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/lib/types';
+import { EYEBROW } from '@/lib/ui';
 
 /** מונו רק על הספרות; היחידה והמילים העבריות נשארות בהיבו (החלטה כלל-אתרית). */
 const FACTS = [
@@ -42,7 +43,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
         className="grid min-h-[80dvh] content-center items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:grid-rows-[auto_auto]"
       >
         <div className="order-2 flex flex-col items-start lg:order-none lg:col-start-1 lg:row-start-1">
-          <p data-enter="2" className="text-[11px] font-medium tracking-[0.08em] text-glow-3">
+          <p data-enter="2" className={EYEBROW}>
             חדר תצוגה · <span className="num">{count}</span> מוצרים · אחריות יבואן
           </p>
 
@@ -52,7 +53,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             <WordReveal text="טכנולוגיה שרואים." />
           </h1>
 
-          <p data-enter="3" className="mt-5 max-w-[42ch] text-[18px] leading-[1.5] text-glow-2">
+          <p data-enter="3" className="mt-5 max-w-[42ch] text-xl leading-[1.5] text-glow-2">
             מוצרים מקוריים. שירות AI. משלוח עד הבית.
           </p>
 
@@ -60,11 +61,11 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             <Link
               href="/products"
               transitionTypes={['nav-forward']}
-              className={cn(buttonVariants(), 'h-12 rounded-md px-6 text-[16px]')}
+              className={cn(buttonVariants(), 'h-12 rounded-md px-6 text-lg')}
             >
               לקטלוג
             </Link>
-            <AskBot className={cn(buttonVariants({ variant: 'outline' }), 'h-12 rounded-md px-6 text-[16px]')}>
+            <AskBot className={cn(buttonVariants({ variant: 'outline' }), 'h-12 rounded-md px-6 text-lg')}>
               שאל את הבוט
             </AskBot>
           </div>
@@ -121,13 +122,13 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             </div>
 
             <span className="absolute bottom-[2%] start-0 z-10 block w-[192px] sm:w-[208px] lg:start-[-5%] rounded-md border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
-              <span dir="ltr" className="num block text-[11px] tracking-[0.06em] text-glow-3">
+              <span dir="ltr" className="num block text-meta tracking-[0.06em] text-glow-3">
                 {sku}
               </span>
-              <span className="mt-1 line-clamp-2 text-[14px] leading-[1.3] font-medium text-glow">{f.Name}</span>
+              <span className="mt-1 line-clamp-2 text-body leading-[1.3] font-medium text-glow">{f.Name}</span>
               <span className="mt-2 flex items-center justify-between gap-2 border-t border-rule pt-2">
                 <StockBadge ok={inStock(product)} />
-                <span className="num text-[14px] text-glow">{ils(f.Price ?? 0)}</span>
+                <span className="num text-body text-glow">{ils(f.Price ?? 0)}</span>
               </span>
             </span>
           </Link>
@@ -135,7 +136,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
 
         <dl
           data-enter="5"
-          className="order-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-[14px] tracking-[0.08em] text-glow-3 lg:col-span-2 lg:col-start-1 lg:row-start-2"
+          className="order-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-body tracking-[0.08em] text-glow-3 lg:col-span-2 lg:col-start-1 lg:row-start-2"
         >
           {FACTS.map((fact, i) => (
             <div key={fact.label} className="flex items-center gap-2">

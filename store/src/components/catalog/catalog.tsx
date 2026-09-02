@@ -116,7 +116,7 @@ export function Catalog({
               onKeyDown={(e) => e.key === 'Escape' && setQ('')}
               placeholder="חיפוש לפי שם, מק״ט או מפרט"
               aria-label="חיפוש בקטלוג"
-              className="h-10 w-full rounded-sm border border-rule-strong bg-void ps-9 pe-9 text-[14px] text-glow placeholder:text-glow-4 [&::-webkit-search-cancel-button]:hidden"
+              className="h-10 w-full rounded-sm border border-rule-strong bg-void ps-9 pe-9 text-body text-glow placeholder:text-glow-4 [&::-webkit-search-cancel-button]:hidden"
             />
             {q && (
               <button
@@ -135,7 +135,7 @@ export function Catalog({
               value={sort}
               onChange={(e) => setSort(e.target.value as Sort)}
               aria-label="מיון"
-              className="h-10 flex-1 rounded-sm border border-rule-strong bg-void px-3 text-[14px] text-glow-2 sm:flex-none"
+              className="h-10 flex-1 rounded-sm border border-rule-strong bg-void px-3 text-body text-glow-2 sm:flex-none"
             >
               {(Object.keys(SORT_LABELS) as Sort[]).map((s) => (
                 <option key={s} value={s}>
@@ -179,7 +179,7 @@ export function Catalog({
                     type="button"
                     onClick={() => setC(cat)}
                     aria-pressed={active}
-                    className="relative grid h-10 shrink-0 place-items-center rounded-sm px-3.5 text-[14px] font-medium"
+                    className="relative grid h-10 shrink-0 place-items-center rounded-sm px-3.5 text-body font-medium"
                   >
                     {active && (
                       <motion.span
@@ -205,7 +205,7 @@ export function Catalog({
               />
             )}
           </div>
-          <p aria-live="polite" className="shrink-0 text-[14px] text-glow-3">
+          <p aria-live="polite" className="shrink-0 text-body text-glow-3">
             <span className="num text-glow-2">{results.length}</span> {results.length === 1 ? 'מוצר' : 'מוצרים'}
           </p>
         </div>
@@ -219,8 +219,8 @@ export function Catalog({
           >
             <SearchXIcon size={20} strokeWidth={1.5} />
           </span>
-          <p className="max-w-sm text-[18px] text-glow-2">{`לא נמצא כלום ל־"${q || c}"`}</p>
-          <Button variant="outline" onClick={clear} className="h-10 rounded-md border-rule-strong bg-transparent px-4 text-[14px] text-glow-2 dark:bg-transparent dark:hover:bg-panel-2">
+          <p className="max-w-sm text-xl text-glow-2">{`לא נמצא כלום ל־"${q || c}"`}</p>
+          <Button variant="outline" onClick={clear} className="h-10 rounded-md border-rule-strong bg-transparent px-4 text-body text-glow-2 dark:bg-transparent dark:hover:bg-panel-2">
             נקה סינון
           </Button>
         </div>
@@ -251,7 +251,7 @@ export function Catalog({
       {/* הכפתור יושב מתחת לרשת: כשהיא צרה (פחות מ-4 תוצאות) הוא נצמד לקצה ההתחלה איתה. */}
       {filtered && results.length > 0 && (
         <div className={`flex pt-10 ${plan.lead ? 'justify-center' : 'justify-center sm:justify-start'}`}>
-          <Button variant="ghost" onClick={clear} className="h-10 rounded-md px-4 text-[14px] text-glow-3">
+          <Button variant="ghost" onClick={clear} className="h-10 rounded-md px-4 text-body text-glow-3">
             נקה סינון
           </Button>
         </div>

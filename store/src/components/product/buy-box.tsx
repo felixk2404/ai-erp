@@ -34,11 +34,11 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
   return (
     <aside className={`rounded-lg border bg-panel-1 p-6 lg:sticky lg:top-24 ${ok ? 'border-rule' : 'border-bad/30'}`}>
       {f.Category && <p className={EYEBROW}>{f.Category}</p>}
-      <h1 className="mt-4 text-[28px] leading-[1.15] font-extrabold tracking-[-0.02em]">{f.Name}</h1>
+      <h1 className="mt-4 text-3xl leading-[1.15] font-extrabold tracking-[-0.02em]">{f.Name}</h1>
 
       <div className="mt-4 flex items-baseline gap-2">
-        <span className="num text-[28px] leading-none font-medium text-glow">{ils(f.Price ?? 0)}</span>
-        <span className="text-[11px] text-glow-3">כולל מע״מ</span>
+        <span className="num text-3xl leading-none font-medium text-glow">{ils(f.Price ?? 0)}</span>
+        <span className="text-meta text-glow-3">כולל מע״מ</span>
       </div>
 
       {!service && <StockBadge ok={ok} className="mt-4" />}
@@ -55,7 +55,7 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
         />
       </div>
 
-      <ul className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-5 text-glow-3">
+      <ul className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta leading-5 text-glow-3">
         {trust.map(([label, value, unit], i) => (
           <li key={label} className="flex items-center gap-2">
             {i > 0 && <span aria-hidden>·</span>}

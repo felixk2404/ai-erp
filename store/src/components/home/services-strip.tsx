@@ -3,6 +3,7 @@ import { PriceButton } from '@/components/catalog/price-button';
 import { ils } from '@/lib/format';
 import { SERVICE, toCard } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
+import { EYEBROW } from '@/lib/ui';
 
 /**
  * Intent: להזכיר שהחנות מוכרת גם עבודה, לא רק קופסאות — ושאפשר להזמין אותה באותה לחיצה.
@@ -17,15 +18,15 @@ export function ServicesStrip({ services }: { services: Product[] }) {
     <section aria-labelledby="services-title" className="rounded-lg border border-rule bg-panel-1 p-6 md:p-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-medium tracking-[0.08em] text-glow-3">שירותים</p>
-          <h2 id="services-title" className="mt-2 text-[22px] leading-[1.2] font-extrabold tracking-[-0.02em]">
+          <p className={EYEBROW}>שירותים</p>
+          <h2 id="services-title" className="mt-2 text-2xl leading-[1.2] font-extrabold tracking-[-0.02em]">
             טכנאי בבית הלקוח, או תמיכה מרחוק
           </h2>
         </div>
         <Link
           href={`/products?c=${encodeURIComponent(SERVICE)}`}
           transitionTypes={['nav-forward']}
-          className="flex h-10 items-center text-[14px] text-glow-2 transition-colors hover:text-glow"
+          className="flex h-10 items-center text-body text-glow-2 transition-colors hover:text-glow"
         >
           כל השירותים ←
         </Link>
@@ -41,11 +42,11 @@ export function ServicesStrip({ services }: { services: Product[] }) {
               <Link
                 href={`/products/${s.fields.Sku ?? s.id}`}
                 transitionTypes={['nav-forward']}
-                className="line-clamp-2 text-[16px] leading-[1.3] font-medium text-glow underline-offset-4 hover:underline"
+                className="line-clamp-2 text-lg leading-[1.3] font-medium text-glow underline-offset-4 hover:underline"
               >
                 {s.fields.Name}
               </Link>
-              <p className="num mt-1 text-[14px] text-glow-3">{ils(s.fields.Price ?? 0)}</p>
+              <p className="num mt-1 text-body text-glow-3">{ils(s.fields.Price ?? 0)}</p>
             </div>
             <PriceButton product={toCard(s)} compact />
           </li>

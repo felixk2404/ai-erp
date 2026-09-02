@@ -5,7 +5,7 @@ import { MAX_LINES, MAX_QTY } from './cart';
  * עברית לעולם לא במונו — ומק"ט/מספר שצריך מונו מוסיף `num` לפני זה.
  * חיה כאן ולא ליד רכיב מסוים כי משתמשים בה בקטלוג, בקופה, בעגלה ובהזמנה.
  */
-export const EYEBROW = 'text-[11px] font-medium tracking-[0.08em] text-glow-3';
+export const EYEBROW = 'text-meta font-medium tracking-[0.08em] text-glow-3';
 
 /**
  * תוצאת `useCart().add`. הוספה מוצלחת לא מקבלת טוסט (הטיסה, המונה והמגירה הן

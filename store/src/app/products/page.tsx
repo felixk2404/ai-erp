@@ -24,8 +24,8 @@ export default async function ProductsPage({
     <>
       <div className="pb-6">
         <p className={EYEBROW}>קטלוג</p>
-        <h1 className="mt-2 text-[28px] leading-[1.05] font-extrabold tracking-[-0.02em] sm:text-[44px]">מוצרים</h1>
-        <p className="mt-2 max-w-md text-[14px] text-glow-3">
+        <h1 className="mt-2 text-3xl leading-[1.05] font-extrabold tracking-[-0.02em] sm:text-display">מוצרים</h1>
+        <p className="mt-2 max-w-md text-body text-glow-3">
           כל מה שבחנות. מק״ט, מפרט, מלאי ומחיר — באותה שורה.
         </p>
       </div>

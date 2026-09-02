@@ -25,18 +25,18 @@ export function TrustStrip() {
           <li key={title} className={`${CELL} border-b border-rule last:border-b-0 sm:border-b-0`}>
             <Icon size={18} strokeWidth={1.5} aria-hidden className="mt-0.5 shrink-0 text-glow-3" />
             <div>
-              <p className="text-[14px] font-medium text-glow">{title}</p>
-              <p className="mt-0.5 text-[14px] text-glow-3">{note}</p>
+              <p className="text-body font-medium text-glow">{title}</p>
+              <p className="mt-0.5 text-body text-glow-3">{note}</p>
             </div>
           </li>
         ))}
         <li className={CELL}>
           <MessageCircleIcon size={18} strokeWidth={1.5} aria-hidden className="mt-0.5 shrink-0 text-glow-3" />
           <AskBot className="text-start">
-            <span className="block text-[14px] font-medium text-glow underline-offset-4 hover:underline">
+            <span className="block text-body font-medium text-glow underline-offset-4 hover:underline">
               בוט שירות 24/7
             </span>
-            <span className="mt-0.5 block text-[14px] text-glow-3">שאלו על מוצר, מלאי או הזמנה</span>
+            <span className="mt-0.5 block text-body text-glow-3">שאלו על מוצר, מלאי או הזמנה</span>
           </AskBot>
         </li>
       </ul>

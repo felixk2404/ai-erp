@@ -15,7 +15,7 @@ const BEAM = 'border border-beam bg-beam text-void hover:bg-beam/85 dark:hover:b
 /** התראות חזרה למלאי לא קיימות בהדגמה — אז לא מבטיחים אותן. הבוט הוא הערוץ האמיתי. */
 const NOTIFY_TEXT = 'התראות חזרה למלאי לא זמינות בהדגמה — שאלו את הבוט';
 const NOTIFY_LINK =
-  'rounded-md text-start text-[11px] leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 transition-colors hover:text-glow hover:decoration-beam';
+  'rounded-md text-start text-meta leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 transition-colors hover:text-glow hover:decoration-beam';
 
 /**
  * המחיר חי *בתוך* הפעולה — "כמה זה" ו"קח את זה" הן החלטה אחת, וגם כשאזל
@@ -40,14 +40,14 @@ export function PriceButton({
   if (!inStock) {
     if (compact) {
       return (
-        <button type="button" onClick={askBot} title={NOTIFY_TEXT} className={NOTIFY_LINK}>
+        <button type="button" onClick={askBot} title={NOTIFY_TEXT} className={`${NOTIFY_LINK} whitespace-nowrap`}>
           שאלו את הבוט
         </button>
       );
     }
     return (
       <div className="flex w-full flex-col items-center gap-1.5">
-        <p className="num flex h-10 w-full items-center justify-center rounded-md border border-rule bg-panel-1 px-4 text-[14px] text-glow-3">
+        <p className="num flex h-10 w-full items-center justify-center rounded-md border border-rule bg-panel-1 px-4 text-body text-glow-3">
           {ils(price)}
         </p>
         <button type="button" onClick={askBot} className={`${NOTIFY_LINK} text-center`}>
@@ -64,7 +64,7 @@ export function PriceButton({
         const refusal = ADD_REFUSALS[add({ sku, name, price, qty: 1, service, imageUrl })];
         if (refusal) toast(refusal);
       }}
-      className={`${emphasis === 'beam' ? BEAM : REST} ${compact ? 'h-8 rounded-md px-3 text-[14px]' : 'h-10 w-full rounded-md px-4 text-[14px]'}`}
+      className={`${emphasis === 'beam' ? BEAM : REST} ${compact ? 'h-8 rounded-md px-3 text-body' : 'h-10 w-full rounded-md px-4 text-body'}`}
     >
       {compact ? (
         'הוסף'

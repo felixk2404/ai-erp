@@ -26,6 +26,23 @@
   --color-rule-strong: rgba(255, 255, 255, 0.16);
   --font-sans: var(--font-heebo);
   --font-mono: var(--font-jetbrains);
+  /* סקאלת הטיפוגרפיה של החנות (system.md): בסיס 14, יחס 1.25.
+     שמות ולא ערכים שרירותיים — `text-[14px]` ב-40 קבצים הוא סקאלה בעל-פה.
+     ל-lg/xl/2xl/3xl יש ב-Tailwind גובה-שורה מזווג שנקבע לגודל *אחר*, ולכן הוא
+     נדרס כאן במפורש; meta/body/display/hero יורשים את גובה השורה מההקשר. */
+  --text-meta: 11px;
+  --text-body: 14px;
+  --text-lg: 16px;
+  --text-lg--line-height: 1.5;
+  --text-xl: 18px;
+  --text-xl--line-height: 1.5;
+  --text-2xl: 22px;
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 28px;
+  --text-3xl--line-height: 1.15;
+  --text-display: 44px;
+  --text-hero: 64px;
+  --text-hero-lg: 96px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -67,6 +84,9 @@
   --z-sheet: 40;
   --z-widget: 50;
   --z-toast: 60;
+  /* ההעתק המעופף וטבעת הפגיעה חיים *מעל* הכל, גם מעל טוסט — הם נמשכים 450ms
+     ומתארים סיבתיות; כל דבר שיחתוך אותם ישבור את הקשר בין הלחיצה לעגלה. */
+  --z-fly: 70;
   --background: var(--color-void);
   --foreground: var(--color-glow);
   --card: var(--color-panel-1);
@@ -237,6 +257,23 @@ h3 {
   animation: aie-reveal 480ms cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
+/* שורת מפרט אינה כרטיס: אין בה תמונה, ולכן אין מה להחזיר לצבע. עלייה ודהייה
+   בלבד — וגם מסע קצר יותר, כי שורה נעה 16px בטבלה נראית כמו תקלה ולא ככניסה. */
+@keyframes aie-reveal-row {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-reveal-row] {
+  animation: aie-reveal-row 380ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
 /* הפריט מרחף בתוך האור — הלולאה היחידה בעמוד חוץ מפעימת הבוט. */
 @keyframes aie-hero-float {
   0%,
@@ -373,7 +410,8 @@ h3 {
   [data-hero-float] {
     animation: none;
   }
-  [data-reveal] {
+  [data-reveal],
+  [data-reveal-row] {
     animation-name: aie-word-reveal-calm;
     animation-duration: 250ms;
     animation-timing-function: ease-out;

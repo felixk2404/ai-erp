@@ -174,7 +174,7 @@ function OrderNumberDisplay({ value }: { value: string }) {
         className="absolute inset-0 mx-auto h-32 w-64 -translate-y-2 bg-[radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
       />
       <span className={`relative ${EYEBROW}`}>ההזמנה התקבלה</span>
-      <span dir="ltr" className="num relative flex text-[44px] leading-none font-extrabold text-glow sm:text-[64px]">
+      <span dir="ltr" className="num relative flex text-display leading-none font-extrabold text-glow sm:text-hero">
         {[...value].map((ch, i) => (
           <motion.span
             key={`${ch}-${i}`}
@@ -220,7 +220,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
         <Fragment key={step}>
           <span
             className={
-              `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-[11px] font-medium ` +
+              `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-meta font-medium ` +
               (i < current
                 ? 'border-beam bg-beam text-void'
                 : i === current
@@ -245,7 +245,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
               />
             </div>
           )}
-          <span className={`row-start-2 ${DOT_COL[i]} text-center text-[11px] font-medium ${i <= current ? 'text-glow-2' : 'text-glow-3'}`}>
+          <span className={`row-start-2 ${DOT_COL[i]} text-center text-meta font-medium ${i <= current ? 'text-glow-2' : 'text-glow-3'}`}>
             {STATUS_LABELS[step]}
           </span>
         </Fragment>
@@ -263,11 +263,11 @@ function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
           <li key={item.sku} className="flex flex-col gap-1 px-4 py-3">
             <div className="flex items-baseline justify-between gap-3">
               <span className="text-glow">{item.name}</span>
-              <span dir="ltr" className="num shrink-0 text-[11px] text-glow-3">
+              <span dir="ltr" className="num shrink-0 text-meta text-glow-3">
                 {item.sku}
               </span>
             </div>
-            <div className="num text-[11px] text-glow-2">
+            <div className="num text-meta text-glow-2">
               {item.qty} × {ils(item.price)} = <span className="text-glow">{ils(item.qty * item.price)}</span>
             </div>
           </li>
@@ -351,13 +351,13 @@ function InvoiceBlock({ order, stalled, onRefresh }: { order: TrackedOrder; stal
       )}
       <div className="flex items-center gap-3">
         {!order.pdfUrl && stalled && (
-          <Button variant="outline" onClick={onRefresh} className="h-9 gap-1.5 rounded-md px-3 text-[14px]">
+          <Button variant="outline" onClick={onRefresh} className="h-9 gap-1.5 rounded-md px-3 text-body">
             <RefreshCwIcon size={14} aria-hidden />
             רענון
           </Button>
         )}
         {order.invoiceNumber && (
-          <span dir="ltr" className="num text-[11px] text-glow-3">
+          <span dir="ltr" className="num text-meta text-glow-3">
             {order.invoiceNumber}
           </span>
         )}

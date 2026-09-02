@@ -74,7 +74,7 @@ export function ProductCard({
         <div className={`flex flex-1 flex-col p-4 ${lead ? 'lg:justify-center' : ''}`}>
           {category && <p className={EYEBROW}>{category}</p>}
           <h3
-            className={`mt-2 line-clamp-2 font-medium text-glow ${lead ? 'text-[22px] leading-[1.3]' : 'text-[18px] leading-[1.375]'}`}
+            className={`mt-2 line-clamp-2 font-medium text-glow ${lead ? 'text-2xl leading-[1.3]' : 'text-xl leading-[1.375]'}`}
           >
             <Link
               href={`/products/${sku}`}
@@ -85,7 +85,7 @@ export function ProductCard({
             </Link>
           </h3>
           {specs.map((s) => (
-            <p key={s} className="mt-1 line-clamp-1 text-[14px] leading-5 text-glow-3">
+            <p key={s} className="mt-1 line-clamp-1 text-body leading-5 text-glow-3">
               {s}
             </p>
           ))}

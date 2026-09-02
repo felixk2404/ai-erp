@@ -3,6 +3,7 @@ import { Reveal } from '@/components/motion/reveal';
 import { ProductCard } from '@/components/catalog/product-card';
 import { gridPlan, pickLead, toCard } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
+import { EYEBROW } from '@/lib/ui';
 
 /**
  * Intent: אחרי פריט אחד באור — עוד שבעה, ואחד מהם גדול. אותה שפה של הקטלוג
@@ -29,15 +30,15 @@ export function Featured({ products }: { products: Product[] }) {
     <section aria-labelledby="featured-title">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-[11px] font-medium tracking-[0.08em] text-glow-3">מוצרים</p>
-          <h2 id="featured-title" className="mt-2 text-[28px] leading-[1.15] font-extrabold tracking-[-0.02em]">
+          <p className={EYEBROW}>מוצרים</p>
+          <h2 id="featured-title" className="mt-2 text-3xl leading-[1.15] font-extrabold tracking-[-0.02em]">
             מבחר מהקטלוג
           </h2>
         </div>
         <Link
           href="/products"
           transitionTypes={['nav-forward']}
-          className="flex h-10 items-center text-[14px] text-glow-2 transition-colors hover:text-glow"
+          className="flex h-10 items-center text-body text-glow-2 transition-colors hover:text-glow"
         >
           כל המוצרים ←
         </Link>

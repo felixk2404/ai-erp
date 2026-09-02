@@ -11,7 +11,8 @@ import { ProductChip } from './product-chip';
 
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.3 };
 const TELEGRAM = 'https://t.me/aielec_support_bot';
-const SUGGESTIONS = ['מה ההבדל בין TY-200 ל-TY-Gamer H7?', 'מה מדיניות ההחזרות?', 'משלוח חינם?'];
+/** מק"טים אמיתיים מהקטלוג — שאלה שמחזירה כרטיסי מוצר, לא שאלה שמחזירה "לא מצאתי". */
+const SUGGESTIONS = ['מה ההבדל בין TY-HP-200 ל-TY-GH-700?', 'יש במלאי TY-MN-27Q?', 'מה מדיניות ההחזרות?'];
 
 type Msg =
   | { id: number; role: 'user'; text: string }
@@ -117,7 +118,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
         <span aria-hidden className="size-2 shrink-0 rounded-full bg-ok shadow-[0_0_8px_var(--color-ok)]" />
         <div className="min-w-0 flex-1">
           <p className="text-sm leading-tight font-medium text-glow">שירות לקוחות</p>
-          <p className="text-[11px] leading-tight text-glow-3">בדרך כלל עונה תוך שניות</p>
+          <p className="text-meta leading-tight text-glow-3">בדרך כלל עונה תוך שניות</p>
         </div>
         <button
           type="button"
@@ -134,7 +135,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
           /* מצב ריק — קומפוזיציה משלו בראש הגוף: פתיח, ברכה, ושלוש שאלות פתיחה. */
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <p className="text-[18px] leading-snug font-medium text-glow">{greetingFor(pathname)}</p>
+              <p className="text-xl leading-snug font-medium text-glow">{greetingFor(pathname)}</p>
               <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה — התשובה מגיעה מהקטלוג עצמו.</p>
             </div>
             <div className="flex flex-col items-start gap-2">
@@ -247,13 +248,13 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
           </button>
         </div>
 
-        {input.length > 400 && <p className="num mt-1.5 text-end text-[11px] text-glow-3">{input.length}/500</p>}
+        {input.length > 400 && <p className="num mt-1.5 text-end text-meta text-glow-3">{input.length}/500</p>}
 
         <a
           href={TELEGRAM}
           target="_blank"
           rel="noreferrer"
-          className="mt-2 block text-[11px] text-glow-3 transition-colors hover:text-glow-2"
+          className="mt-2 block text-meta text-glow-3 transition-colors hover:text-glow-2"
         >
           לשיחה בטלגרם:{' '}
           <span dir="ltr" className="num">

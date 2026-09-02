@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fragment } from "react";
 import { Reveal } from "@/components/motion/reveal";
+import { EYEBROW } from "@/lib/ui";
 
 export const metadata: Metadata = { title: "אודות" };
 
@@ -24,7 +25,7 @@ export default function AboutPage() {
   return (
     <div className="py-8 lg:py-12">
       <header className="max-w-[68ch]">
-        <h1 className="text-[44px] leading-[1.05] font-extrabold tracking-[-0.02em] text-balance sm:text-[64px]">
+        <h1 className="text-display leading-[1.05] font-extrabold tracking-[-0.02em] text-balance sm:text-hero">
           חנות שמריצים בה סוכני AI
         </h1>
       </header>
@@ -44,8 +45,8 @@ export default function AboutPage() {
 
       <Reveal className="mt-16">
         <section>
-          <p className="font-sans text-[11px] tracking-[0.08em] text-glow-3">איך זה עובד</p>
-          <h2 className="mt-1 text-[22px] font-extrabold tracking-[-0.02em] text-balance">
+          <p className={EYEBROW}>איך זה עובד</p>
+          <h2 className="mt-1 text-2xl font-extrabold tracking-[-0.02em] text-balance">
             מהזמנה למסמך, בלי מגע יד אדם
           </h2>
 
@@ -53,7 +54,7 @@ export default function AboutPage() {
             {STEPS.map((step, i) => (
               <Fragment key={step.label}>
                 <div className="flex-1 rounded-lg border border-rule bg-panel-1 p-4">
-                  <p className="num text-[11px] tracking-[0.08em] text-glow-3">{`0${i + 1}`}</p>
+                  <p className={`num ${EYEBROW}`}>{`0${i + 1}`}</p>
                   <p className={`mt-1 text-sm text-glow ${step.mono ? "font-mono" : "font-sans font-medium"}`}>{step.label}</p>
                   <p className="mt-2 text-sm text-glow-2">{step.desc}</p>
                 </div>
@@ -71,7 +72,7 @@ export default function AboutPage() {
 
       <Reveal delay={0.05} className="mt-16">
         <section>
-          <p className="font-sans text-[11px] tracking-[0.08em] text-glow-3">טכנולוגיות</p>
+          <p className={EYEBROW}>טכנולוגיות</p>
           <ul className="mt-4 flex flex-wrap gap-2">
             {STACK.map((tech) => (
               <li key={tech} className="rounded-full border border-rule px-3 py-1.5 font-mono text-sm text-glow-2">

@@ -70,7 +70,7 @@ export function LookupForm({
           aria-describedby={error ? errorId : undefined}
           aria-invalid={error ? true : undefined}
         />
-        {fixedOrderNumber !== undefined && <p className="text-[11px] text-glow-3">מהקישור שפתחתם</p>}
+        {fixedOrderNumber !== undefined && <p className="text-meta text-glow-3">מהקישור שפתחתם</p>}
       </div>
       <div className="flex flex-col gap-1.5 text-start">
         <Label htmlFor={emailId}>אימייל</Label>

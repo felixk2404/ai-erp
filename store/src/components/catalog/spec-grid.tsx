@@ -9,7 +9,7 @@ import type { ProductCardData } from '@/lib/catalog-filter';
 
 const HEAD = `px-4 py-3 ${EYEBROW}`;
 const CELL = 'px-4 py-3 align-middle';
-/** אותה חשיפה של `Reveal`, כאן ישירות על השורה — CSS, כדי שהטבלה תגיע גלויה מהשרת. */
+/** חשיפה ישירות על השורה — CSS, כדי שהטבלה תגיע גלויה מהשרת. */
 const revealAt = (i: number) => ({ animationDelay: `${Math.min(i * 0.04, 0.4)}s` });
 
 /**
@@ -25,9 +25,9 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
         {products.map((p, i) => {
           const sku = p.sku;
           return (
-            <li key={sku} data-reveal style={revealAt(i)} className="border-b border-rule py-3">
+            <li key={sku} data-reveal-row style={revealAt(i)} className="border-b border-rule py-3">
               <div className="flex items-baseline gap-2">
-                <span dir="ltr" className="num shrink-0 text-[14px] text-glow-3">
+                <span dir="ltr" className="num shrink-0 text-body text-glow-3">
                   {sku}
                 </span>
                 <span aria-hidden className="text-glow-4">
@@ -36,15 +36,15 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                 <Link
                   href={`/products/${sku}`}
                   transitionTypes={['nav-forward']}
-                  className="line-clamp-1 text-[14px] font-medium text-glow"
+                  className="line-clamp-1 text-body font-medium text-glow"
                 >
                   {p.name}
                 </Link>
               </div>
-              <p className="mt-1 line-clamp-2 text-[14px] text-glow-3">{p.highlights[0]}</p>
+              <p className="mt-1 line-clamp-2 text-body text-glow-3">{p.highlights[0]}</p>
               <div className="mt-2 flex items-center gap-3">
                 <StockBadge ok={p.inStock} />
-                <span className="num text-[16px] text-glow">{ils(p.price)}</span>
+                <span className="num text-lg text-glow">{ils(p.price)}</span>
                 <span className="ms-auto">
                   <PriceButton product={p} compact />
                 </span>
@@ -93,12 +93,12 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
               return (
                 <tr
                   key={sku}
-                  data-reveal
+                  data-reveal-row
                   style={revealAt(i)}
                   className="border-t border-rule transition-colors first:border-t-0 hover:bg-panel-1"
                 >
                   <td className={CELL}>
-                    <span dir="ltr" className="num text-[14px] text-glow-3">
+                    <span dir="ltr" className="num text-body text-glow-3">
                       {sku}
                     </span>
                   </td>
@@ -106,18 +106,18 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                     <Link
                       href={`/products/${sku}`}
                       transitionTypes={['nav-forward']}
-                      className="line-clamp-2 text-[14px] text-glow-2 underline-offset-4 hover:text-glow hover:underline"
+                      className="line-clamp-2 text-body text-glow-2 underline-offset-4 hover:text-glow hover:underline"
                     >
                       {p.name}
                     </Link>
                   </td>
-                  <td className={`${CELL} text-[14px] whitespace-normal text-glow-3`}>
+                  <td className={`${CELL} text-body whitespace-normal text-glow-3`}>
                     <span className="line-clamp-2">{p.highlights[0]}</span>
                   </td>
                   <td className={CELL}>
                     <StockBadge ok={p.inStock} />
                   </td>
-                  <td className={`${CELL} num text-end text-[16px] text-glow`}>{ils(p.price)}</td>
+                  <td className={`${CELL} num text-end text-lg text-glow`}>{ils(p.price)}</td>
                   <td className={`${CELL} text-end`}>
                     <PriceButton product={p} compact />
                   </td>

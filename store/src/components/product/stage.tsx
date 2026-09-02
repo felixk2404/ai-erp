@@ -52,7 +52,7 @@ export function Stage({ product }: { product: Product }) {
 
         <span
           dir="ltr"
-          className="num absolute start-5 top-5 rounded-sm border border-rule bg-panel-2/90 px-2 py-1 text-[11px] leading-none tracking-[0.06em] text-glow-3 backdrop-blur-sm"
+          className="num absolute start-5 top-5 rounded-sm border border-rule bg-panel-2/90 px-2 py-1 text-meta leading-none tracking-[0.06em] text-glow-3 backdrop-blur-sm"
         >
           {sku}
         </span>

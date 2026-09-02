@@ -33,7 +33,7 @@ export function SpecSheet({ product }: { product: Product }) {
 
   return (
     <SheetSection label="פרטים">
-      <dl className="text-[14px]">
+      <dl className="text-body">
         {rows.map((row) => (
           <div
             key={row.label}

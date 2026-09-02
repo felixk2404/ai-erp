@@ -45,11 +45,11 @@ export function OrderSummary({
             >
               <div className="relative grid size-10 shrink-0 place-items-center overflow-hidden rounded-sm border border-rule bg-panel-2">
                 {line.service ? (
-                  <span className="text-[11px] text-glow-3">שירות</span>
+                  <span className="text-meta text-glow-3">שירות</span>
                 ) : line.imageUrl ? (
                   <Image src={line.imageUrl} alt={line.name} fill sizes="40px" className="object-cover" />
                 ) : (
-                  <span className="num text-[11px] text-glow-4" dir="ltr">
+                  <span className="num text-meta text-glow-4" dir="ltr">
                     {line.sku}
                   </span>
                 )}
@@ -57,7 +57,7 @@ export function OrderSummary({
 
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm text-glow">{line.name}</p>
-                <p className="mt-0.5 text-[11px] text-glow-3">
+                <p className="mt-0.5 text-meta text-glow-3">
                   <span className="num">{line.qty}</span>
                   <span aria-hidden> × </span>
                   <span className="sr-only"> יחידות במחיר </span>
@@ -85,9 +85,9 @@ export function OrderSummary({
         </Row>
         <div className="flex items-baseline justify-between gap-4 border-t border-rule pt-3">
           <span className="text-sm font-medium text-glow">סה״כ</span>
-          <span className="num text-[22px] leading-none font-medium text-glow">{ils(totals.total)}</span>
+          <span className="num text-2xl leading-none font-medium text-glow">{ils(totals.total)}</span>
         </div>
-        <p className="text-end text-[11px] text-glow-3">
+        <p className="text-end text-meta text-glow-3">
           כולל מע״מ <span className="num">{ils(totals.vat)}</span>
         </p>
       </div>

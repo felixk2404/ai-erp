@@ -65,7 +65,7 @@ function Field({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id} className="text-[14px] text-glow-2">
+      <Label htmlFor={id} className="text-body text-glow-2">
         {label}
         {required && (
           <span aria-hidden className="text-beam">
@@ -79,7 +79,7 @@ function Field({
           {...shared}
           {...props}
           defaultValue={key}
-          className={`min-h-20 resize-none rounded-sm bg-panel-1 text-[16px] ${props.className ?? ''}`}
+          className={`min-h-20 resize-none rounded-sm bg-panel-1 text-lg ${props.className ?? ''}`}
         />
       ) : (
         <Input
@@ -87,16 +87,16 @@ function Field({
           {...shared}
           {...props}
           defaultValue={key}
-          className={`h-11 rounded-sm bg-panel-1 text-[16px] ${props.className ?? ''}`}
+          className={`h-11 rounded-sm bg-panel-1 text-lg ${props.className ?? ''}`}
         />
       )}
       {error && (
-        <p id={errorId} className="text-[11px] text-bad">
+        <p id={errorId} className="text-meta text-bad">
           {error}
         </p>
       )}
       {hint && (
-        <p id={hintId} className="text-[11px] text-glow-3">
+        <p id={hintId} className="text-meta text-glow-3">
           {hint}
         </p>
       )}
@@ -306,7 +306,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             <button
               type="button"
               onClick={() => setOpen(true)}
-              className="relative flex h-12 w-full items-center justify-center rounded-md bg-beam text-[16px] font-medium text-void transition-colors hover:bg-beam/85"
+              className="relative flex h-12 w-full items-center justify-center rounded-md bg-beam text-lg font-medium text-void transition-colors hover:bg-beam/85"
             >
               חזרה לעגלה
             </button>
@@ -318,8 +318,8 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             onClick={guardPending}
             className={
               demoted
-                ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-[16px] font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-4'
-                : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-[16px] font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/60'
+                ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-lg font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-4'
+                : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-lg font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/60'
             }
           >
             {pending ? (
@@ -344,7 +344,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             {pending ? 'שומרים את ההזמנה…' : ''}
           </span>
 
-          <p className="relative text-center text-[11px] text-glow-3">
+          <p className="relative text-center text-meta text-glow-3">
             השליחה יוצרת הזמנה אמיתית במערכת. אין תשלום ואין מסירת פרטי אשראי.
           </p>
         </div>
@@ -361,8 +361,8 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             <h2 className={EYEBROW}>מה קורה אחרי ההזמנה</h2>
             <ol className="flex flex-col gap-3 border-t border-rule pt-4">
               {AFTER_ORDER.map(([step, label]) => (
-                <li key={step} className="flex items-baseline gap-3 text-[14px] leading-5 text-glow-2">
-                  <span className="num shrink-0 text-[11px] text-glow-3">{step}</span>
+                <li key={step} className="flex items-baseline gap-3 text-body leading-5 text-glow-2">
+                  <span className="num shrink-0 text-meta text-glow-3">{step}</span>
                   {label}
                 </li>
               ))}

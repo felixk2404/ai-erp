@@ -44,13 +44,13 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
   if (!ok) {
     return (
       <div className="flex flex-col gap-2">
-        <p className="num flex h-11 items-center justify-center rounded-sm border border-rule bg-panel-2 text-[14px] text-glow-3">
+        <p className="num flex h-11 items-center justify-center rounded-sm border border-rule bg-panel-2 text-body text-glow-3">
           {ils(price)}
         </p>
         <Button
           variant="link"
           onClick={() => window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))}
-          className="h-auto justify-center px-0 text-center text-[11px] leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
+          className="h-auto justify-center px-0 text-center text-meta leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
         >
           התראות חזרה למלאי לא זמינות בהדגמה — שאלו את הבוט
         </Button>
@@ -64,7 +64,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
         <Quantity value={qty} onChange={setQty} />
         <Button
           onClick={() => put({ sku, name, price, qty, service, imageUrl })}
-          className="h-11 flex-1 gap-1.5 rounded-sm px-4 text-[14px]"
+          className="h-11 flex-1 gap-1.5 rounded-sm px-4 text-body"
         >
           הוסף לסל —<span className="num">{ils(price * qty)}</span>
         </Button>
@@ -76,7 +76,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           // ponytail: לשירות אין תמונה על העמוד הזה, ולכן FlyToCart (מחפש [data-fly-src="SKU"])
           // נופל למגירה בלבד — הפידבק הנכון ממילא, כי אין חפץ שיעוף.
           onClick={() => put({ sku: install.sku, name: install.name, price: install.price, qty: 1, service: true })}
-          className="h-11 w-full justify-between rounded-sm px-4 text-[14px] text-glow-2 hover:text-glow"
+          className="h-11 w-full justify-between rounded-sm px-4 text-body text-glow-2 hover:text-glow"
         >
           הזמן התקנה
           <span className="num text-glow-3">{ils(install.price)}</span>
@@ -95,7 +95,7 @@ export function AskBotLink({ sku }: { sku: string }) {
     <Button
       variant="link"
       onClick={() => window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))}
-      className="h-auto justify-start px-0 text-[14px] text-glow-2 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
+      className="h-auto justify-start px-0 text-body text-glow-2 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
     >
       שאל את הבוט על המוצר
     </Button>

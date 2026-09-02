@@ -8,9 +8,6 @@ export type ListOpts = { filter?: string; sort?: Sort[]; max?: number };
 const headers = () => ({ Authorization: `Bearer ${env().AIRTABLE_PAT}` });
 const base = () => `https://api.airtable.com/v0/${env().AIRTABLE_BASE_ID}`;
 
-/** מצטט מחרוזת לתוך filterByFormula: 'O\'Neil'. */
-export const escapeFormula = (s: string) => s.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-
 /** קורא רשומות מטבלה, עוקב אחרי offset (pagination) עד max או עד הסוף. תמיד no-store. */
 export async function list<F>(table: TableName, opts: ListOpts = {}): Promise<Rec<F>[]> {
   const out: Rec<F>[] = [];
@@ -31,11 +28,4 @@ export async function list<F>(table: TableName, opts: ListOpts = {}): Promise<Re
     offset = data.offset;
   } while (offset && (!opts.max || out.length < opts.max));
   return opts.max ? out.slice(0, opts.max) : out;
-}
-
-export async function get<F>(table: TableName, id: string): Promise<Rec<F> | null> {
-  const res = await fetch(`${base()}/${encodeURIComponent(table)}/${id}`, { headers: headers(), cache: 'no-store' });
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`Airtable ${res.status} on ${table}/${id}`);
-  return (await res.json()) as Rec<F>;
 }

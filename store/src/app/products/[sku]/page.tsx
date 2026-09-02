@@ -51,7 +51,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <DirectionalTransition>
-      <nav aria-label="ניווט חזרה" className="flex items-center gap-2 pb-6 text-[14px] text-glow-3">
+      <nav aria-label="ניווט חזרה" className="flex items-center gap-2 pb-6 text-body text-glow-3">
         <Link
           href="/products"
           transitionTypes={['nav-back']}
@@ -91,7 +91,7 @@ export default async function ProductPage({ params }: Props) {
           {f.Description && (
             <section>
               <h2 className={EYEBROW}>תיאור</h2>
-              <div className="mt-4 max-w-[68ch] text-[16px] leading-[1.7] text-glow-2">
+              <div className="mt-4 max-w-[68ch] text-lg leading-[1.7] text-glow-2">
                 {f.Description.split('\n')
                   .map((line) => line.trim())
                   .filter(Boolean)

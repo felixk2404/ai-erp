@@ -1,6 +1,7 @@
 export type Rec<F> = { id: string; createdTime: string; fields: F };
 
-export type TableName = 'Products' | 'Orders';
+/** רק המוצרים נקראים ישירות מ-Airtable; ההזמנות עוברות דרך WF13. */
+export type TableName = 'Products';
 
 export type ProductFields = {
   Name: string;

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Wordmark } from '@/components/shell/wordmark';
+import { EYEBROW } from '@/lib/ui';
 
 const LINKS = [
   { href: '/products', label: 'מוצרים' },
@@ -22,7 +23,7 @@ export function Footer() {
         </div>
 
         <nav aria-labelledby="footer-nav">
-          <h2 id="footer-nav" className="text-[11px] font-medium tracking-[0.08em] text-glow-3">
+          <h2 id="footer-nav" className={EYEBROW}>
             ניווט
           </h2>
           <ul className="mt-3 flex flex-col gap-1">
@@ -41,13 +42,13 @@ export function Footer() {
         </nav>
 
         <div>
-          <h2 className="text-[11px] font-medium tracking-[0.08em] text-glow-3">שירות לקוחות</h2>
+          <h2 className={EYEBROW}>שירות לקוחות</h2>
           <a
             href="https://t.me/aielec_support_bot"
             className="mt-3 flex h-11 w-fit items-center gap-2 rounded-md text-sm text-glow-2 transition-colors hover:text-glow"
           >
             בטלגרם
-            <span dir="ltr" className="num text-[14px] text-glow-3">
+            <span dir="ltr" className="num text-body text-glow-3">
               @aielec_support_bot
             </span>
           </a>
@@ -55,7 +56,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-rule">
-        <div className="container-x flex flex-wrap items-center justify-between gap-2 py-5 text-[11px] text-glow-3">
+        <div className="container-x flex flex-wrap items-center justify-between gap-2 py-5 text-meta text-glow-3">
           <p>פרויקט הדגמה — לא מתבצע חיוב</p>
           <p>
             <span className="num">2026</span> · איי.איי אלקטרוניקה

@@ -41,7 +41,7 @@ export function CartSheet() {
       >
         <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-rule px-4">
           <div className="flex items-baseline gap-2">
-            <SheetTitle className="text-[18px] font-medium text-glow">העגלה שלך</SheetTitle>
+            <SheetTitle className="text-xl font-medium text-glow">העגלה שלך</SheetTitle>
             {/* בלי aria-live: מונה העגלה בכותרת כבר מכריז את אותו שינוי, ושני אזורים
                 חיים על אותו נתון מקריאים אותו פעמיים. ריק כשהעגלה ריקה. */}
             <span className="num text-sm text-glow-3">
@@ -73,7 +73,7 @@ export function CartSheet() {
               <ShoppingBagIcon size={34} strokeWidth={1.25} className="relative text-glow-4" aria-hidden />
             </div>
             <div className="space-y-1.5">
-              <p className="text-[18px] font-medium text-glow">העגלה ריקה</p>
+              <p className="text-xl font-medium text-glow">העגלה ריקה</p>
               <p className="text-sm text-glow-3">כל מה שתוסיפו יופיע כאן.</p>
             </div>
             <Link
@@ -113,9 +113,9 @@ export function CartSheet() {
                 </Row>
                 <motion.div layout className="flex items-baseline justify-between gap-4 border-t border-rule pt-3">
                   <span className="text-sm font-medium text-glow">סה״כ</span>
-                  <CountUp value={totals.total} money className="text-[22px] leading-none font-medium text-glow" />
+                  <CountUp value={totals.total} money className="text-2xl leading-none font-medium text-glow" />
                 </motion.div>
-                <p className="text-end text-[11px] text-glow-2">
+                <p className="text-end text-meta text-glow-2">
                   כולל מע״מ <span className="num">{ils(totals.vat)}</span>
                 </p>
               </div>
