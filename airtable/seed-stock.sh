@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh
 export AIRTABLE_PAT AIRTABLE_BASE_ID
 python3 - <<'PY'
-import json, os, re, urllib.request, urllib.parse, hashlib
+import json, os, re, urllib.request, hashlib
 pat, base = os.environ["AIRTABLE_PAT"], os.environ["AIRTABLE_BASE_ID"]
 H = {"Authorization": f"Bearer {pat}", "Content-Type": "application/json"}
 def get(path):
@@ -25,7 +25,10 @@ def highlights(desc):
 updates, zeros = [], 0
 for r in sorted(recs, key=lambda r: r["fields"].get("Sku", "")):
     f = r["fields"]; sku = f.get("Sku", r["id"]); fields = {}
-    if not f.get("Highlights"): fields["Highlights"] = highlights(f.get("Description", ""))
+    if not f.get("Highlights"):
+        desc = f.get("Description", "")
+        h = highlights(desc) or (desc or "").strip()[:120]
+        if h: fields["Highlights"] = h
     if f.get("Category") != SERVICE and f.get("Stock") is None:
         stock = 0 if not f.get("InStock") else 1 + int(hashlib.md5(sku.encode()).hexdigest(), 16) % 40
         if stock == 0: zeros += 1
