@@ -101,3 +101,4 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - סיסמת DB עם `#`/`$` — load-env מקודד אוטומטית; מרכאות בודדות סביב הערך ב-.env.
 - Airtable Metadata API לא יוצר שדה Created time — מוסיפים ידנית, הסקריפט משנה שם ל-`Created`.
 - Gotenberg: Chromium איטי בהפעלה ראשונה — timeout 90s ב-compose.
+- WF1 נשבר כששתי חשבוניות נוצרות באותה דגימה של ה-Airtable Trigger: הצומת `Compute` משתמש ב-`$('Airtable Trigger').item` ואחרי `Aggregate` השיוך מעורפל → `Multiple matches found`. חשבונית תקועה ב-`new` לא תיקרא שוב על ידי הטריגר. בדמו — להזמין הזמנה אחת בכל דקה.
