@@ -1,0 +1,175 @@
+{
+  "name": "WF2 — קליטת לידים וכפילויות",
+  "nodes": [
+    {
+      "name": "Airtable Trigger",
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "tableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblZQ6kwztOuvFSJ2"
+        },
+        "triggerField": "Created",
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
+      "name": "Same Email",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblZQ6kwztOuvFSJ2",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "={{ \"LOWER({Email})='\" + ($json.fields.Email || '').toLowerCase() + \"'\" }}"
+            },
+            {
+              "name": "fields[]",
+              "value": "Email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "name": "Set Status",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblZQ6kwztOuvFSJ2"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable Trigger').item.json.id }}",
+            "Status": "={{ ($json.records || []).filter(r => r.id !== $('Airtable Trigger').item.json.id).length > 0 ? 'Duplicate' : 'New' }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
+    }
+  ],
+  "connections": {
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Same Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Same Email": {
+      "main": [
+        [
+          {
+            "node": "Set Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "WeWGjptjpf66sA7T",
+    "availableInMCP": true
+  },
+  "active": true
+}

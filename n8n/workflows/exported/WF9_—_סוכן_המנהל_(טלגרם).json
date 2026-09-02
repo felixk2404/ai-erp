@@ -1,0 +1,248 @@
+{
+  "name": "WF9 — סוכן המנהל (טלגרם)",
+  "nodes": [
+    {
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "qi4NUVHHMjzMFEdZ",
+          "name": "Telegram Manager"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000000",
+      "webhookId": "e81db5ea-8629-4272-8a0f-882c23860653"
+    },
+    {
+      "name": "Is Owner",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "o1",
+              "leftValue": "={{ $json.message.chat.id }}",
+              "rightValue": "=43590648",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "name": "Chat Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        -100
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "s",
+              "name": "sessionId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "name": "Manager Core",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        -100
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "zFz32ARQ3kedlK1f"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message": "={{ $json.message }}",
+            "sessionId": "={{ $json.sessionId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "name": "Send Reply",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -100
+      ],
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ ($json.reply || 'לא התקבלה תשובה').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "qi4NUVHHMjzMFEdZ",
+          "name": "Telegram Manager"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000004",
+      "webhookId": "abcaa0a8-e64c-4b46-b063-e1a0218885cc"
+    },
+    {
+      "name": "Deny",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        520,
+        120
+      ],
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "הבוט הזה מיועד לבעל העסק בלבד.",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "qi4NUVHHMjzMFEdZ",
+          "name": "Telegram Manager"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000005",
+      "webhookId": "53c9193a-34e5-4a8e-ba8e-7196e4a8930a"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Is Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Owner": {
+      "main": [
+        [
+          {
+            "node": "Chat Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Deny",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Manager Core",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager Core": {
+      "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "WeWGjptjpf66sA7T",
+    "availableInMCP": true
+  },
+  "active": true
+}

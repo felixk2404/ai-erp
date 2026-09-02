@@ -1,0 +1,331 @@
+{
+  "name": "WF3 — סוכן מכירות (מיילים קרים)",
+  "nodes": [
+    {
+      "name": "Every 3 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -100
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
+      "name": "Run Now Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        100
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "run-sales",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aDFfLDBJiKImqYTe",
+          "name": "ERP Webhook Secret"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000001",
+      "webhookId": "73056853-a353-47d6-9abd-693fc1156468"
+    },
+    {
+      "name": "Next New Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblZQ6kwztOuvFSJ2"
+        },
+        "filterByFormula": "AND({Status}='New', {Email}!='')",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "name": "Sales Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=כתוב מייל קר ראשון לליד הבא.\nשם: {{ $json.fields.Name }}\nחברה: {{ $json.fields.Company || 'לא ידוע' }}\nמייל: {{ $json.fields.Email }}",
+        "options": {
+          "systemMessage": "אתה סוכן המכירות של איי.איי אלקטרוניקה (AI Electronics), חנות אלקטרוניקה ישראלית שמספקת לעסקים מוצרים מקוריים בלבד עם אחריות יבואן רשמי. אתה כותב מייל קר ראשון לליד עסקי ישראלי.\nכללים:\n- כתוב בעברית. 4 עד 8 משפטים. פנייה אישית בשם הליד ובשם החברה אם ידועים. אם אין מידע על תחום העניין, אל תמציא אחד — כתוב על ציוד אלקטרוני לעסקים באופן כללי.\n- קריאה אחת לפעולה בלבד: לשאול על כמה יחידות מדובר, או להציע שיחה קצרה.\n- בלי הבטחות שווא: לא \"הזול בישראל\", לא דחיפות מזויפת, לא פרסים, לא אותיות גדולות. מחירים לעסקים לפני מע\"מ, הצעת מחיר בתוקף 14 יום. אל תבטיח הנחה.\n- הזדהות ברורה: החתימה \"צוות המכירות, איי.איי אלקטרוניקה\". שורה אחרונה: \"להסרה מרשימת התפוצה, השיבו למייל זה עם המילה הסר.\"\n- החזר רק את גוף המייל, טקסט רגיל, בלי שורת נושא, בלי Markdown.",
+          "maxIterations": 3
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        520,
+        220
+      ],
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5.4-mini"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "fnDA0cEIqDSNjE0R",
+          "name": "OpenAI ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "name": "Send Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "sendTo": "={{ $('Next New Lead').item.json.fields.Email }}",
+        "subject": "ציוד אלקטרוני לעסק — מקורי, עם אחריות יבואן | איי.איי אלקטרוניקה",
+        "emailType": "text",
+        "message": "={{ $json.output }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "cZ21a0epfV1Bce6Y",
+          "name": "Gmail ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000005",
+      "webhookId": "314960c9-7abf-4977-9730-22d9339f8bc7"
+    },
+    {
+      "name": "Mark Contacted",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblZQ6kwztOuvFSJ2"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Next New Lead').item.json.id }}",
+            "Status": "Contacted"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000006"
+    },
+    {
+      "name": "Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1300,
+        0
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ok",
+              "name": "ok",
+              "value": "={{ true }}",
+              "type": "boolean"
+            },
+            {
+              "id": "s",
+              "name": "sentTo",
+              "value": "={{ $('Next New Lead').item.json.fields.Email }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000007"
+    }
+  ],
+  "connections": {
+    "Every 3 Hours": {
+      "main": [
+        [
+          {
+            "node": "Next New Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run Now Webhook": {
+      "main": [
+        [
+          {
+            "node": "Next New Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Next New Lead": {
+      "main": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sales Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Mark Contacted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Contacted": {
+      "main": [
+        [
+          {
+            "node": "Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "WeWGjptjpf66sA7T",
+    "availableInMCP": true
+  },
+  "active": true
+}

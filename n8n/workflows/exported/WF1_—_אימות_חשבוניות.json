@@ -1,0 +1,517 @@
+{
+  "name": "WF1 — אימות חשבוניות",
+  "nodes": [
+    {
+      "name": "Airtable Trigger",
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "tableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblOaitAMK0JHqvwk"
+        },
+        "triggerField": "Created",
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
+      "name": "Is New",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "n1",
+              "leftValue": "={{ $json.fields.Status || 'new' }}",
+              "rightValue": "new",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "name": "Find Customer",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblHCgrpb8ZcAJSqw",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "={{ \"{CustomerId}='\" + ($json.fields.CustomerId || '') + \"'\" }}"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "name": "Is Valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "v1",
+              "leftValue": "={{ $('Airtable Trigger').item.json.fields.Amount || 0 }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            },
+            {
+              "id": "v2",
+              "leftValue": "={{ ($json.records || []).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "name": "Numbered Invoices",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -100
+      ],
+      "alwaysOutputData": true,
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblOaitAMK0JHqvwk"
+        },
+        "filterByFormula": "{InvoiceNumber}!=''",
+        "returnAll": true,
+        "options": {
+          "fields": [
+            "InvoiceNumber"
+          ]
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        -100
+      ],
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "data",
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000005"
+    },
+    {
+      "name": "Compute",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1560,
+        -100
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a",
+              "name": "id",
+              "value": "={{ $('Airtable Trigger').item.json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "b",
+              "name": "InvoiceNumber",
+              "value": "={{ $('Airtable Trigger').item.json.fields.InvoiceNumber || ('INV-' + String($json.data.filter(d => d.fields && d.fields.InvoiceNumber).length + 1).padStart(4, '0')) }}",
+              "type": "string"
+            },
+            {
+              "id": "c",
+              "name": "VatRate",
+              "value": "={{ new Date($('Airtable Trigger').item.json.fields.Created) >= new Date('2025-01-01') ? 0.18 : 0.17 }}",
+              "type": "number"
+            },
+            {
+              "id": "d",
+              "name": "VatAmount",
+              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * (new Date($('Airtable Trigger').item.json.fields.Created) >= new Date('2025-01-01') ? 0.18 : 0.17) * 100) / 100 }}",
+              "type": "number"
+            },
+            {
+              "id": "e",
+              "name": "Total",
+              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * (1 + (new Date($('Airtable Trigger').item.json.fields.Created) >= new Date('2025-01-01') ? 0.18 : 0.17)) * 100) / 100 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000006"
+    },
+    {
+      "name": "Mark Validated",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1820,
+        -100
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblOaitAMK0JHqvwk"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "InvoiceNumber": "={{ $json.InvoiceNumber }}",
+            "VatAmount": "={{ $json.VatAmount }}",
+            "Total": "={{ $json.Total }}",
+            "Status": "validated"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "InvoiceNumber",
+              "displayName": "InvoiceNumber",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "VatAmount",
+              "displayName": "VatAmount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Total",
+              "displayName": "Total",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000007"
+    },
+    {
+      "name": "Mark Error",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        120
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tblOaitAMK0JHqvwk"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable Trigger').item.json.id }}",
+            "Status": "error"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000008"
+    }
+  ],
+  "connections": {
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Is New",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is New": {
+      "main": [
+        [
+          {
+            "node": "Find Customer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Find Customer": {
+      "main": [
+        [
+          {
+            "node": "Is Valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Valid": {
+      "main": [
+        [
+          {
+            "node": "Numbered Invoices",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Numbered Invoices": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Compute",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compute": {
+      "main": [
+        [
+          {
+            "node": "Mark Validated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "WeWGjptjpf66sA7T",
+    "availableInMCP": true
+  },
+  "active": true
+}

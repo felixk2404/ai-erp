@@ -11,8 +11,8 @@
   "CRED_TELEGRAM_CUSTOMER": "lztyzbFqwIj1rtWy",
   "CRED_SUPABASE": "zsa5V2Dd3cmmETck",
   "CRED_WEBHOOK": "aDFfLDBJiKImqYTe",
-  "CRED_GMAIL": "TODO_FROM_N8N_UI",
-  "CRED_DRIVE": "TODO_FROM_N8N_UI",
+  "CRED_GMAIL": "cZ21a0epfV1Bce6Y",
+  "CRED_DRIVE": "e02EpJN1iWKQubkX",
   "DRIVE_FOLDER_ID": "1XADLI0r9ha9qbDHS1H5U-DvBZKvMIkjq",
   "OWNER_CHAT_ID": "43590648",
   "NGROK_DOMAIN": "goofy-glamour-syrup.ngrok-free.dev",
@@ -26,6 +26,9 @@
     "LEADS_DEDUPE": "sVCp9e8lWnx5kvrV",
     "POLICIES_EMBED": "q168BxqKDgaLwbJP",
     "PRODUCTS_EMBED": "Y0XgEK34Zdctslcm",
-    "CUSTOMER_SERVICE": "GGC2TpFYltm7DrWF"
+    "CUSTOMER_SERVICE": "GGC2TpFYltm7DrWF",
+    "SALES_COLD_EMAIL": "M7WjpE8Wd20EyOHZ",
+    "SALES_REPLIES": "5cQhVanCfhxM16ru",
+    "INVOICE_PDF": "wNxCRwm0N2F6Z8TS"
   }
 }

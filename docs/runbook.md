@@ -35,6 +35,27 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 ## 5. בוטים
 מנהל: @aielc_manager_bot (Chat ID של הבעלים: 43590648) · לקוחות: @aielec_support_bot
 
+## 7. workflows (n8n)
+מקור: `n8n/workflows/*.json` (תבניות עם placeholders). ייבוא/עדכון: `n8n/scripts/import-workflow.sh n8n/workflows/<file> --activate`. ייצוא מהשרת: `n8n/scripts/export-workflows.sh` → `n8n/workflows/exported/`. הרצות: `n8n/scripts/executions.sh "<שם>" [n]`.
+
+| workflow | טריגר | איך בודקים |
+|---|---|---|
+| WF-Error | Error Trigger (מוגדר בכל workflow) | שגיאה בכל workflow → טלגרם למנהל |
+| WF1 אימות חשבוניות | Airtable Trigger, Invoices.Created, כל דקה | `api-test.sh` create Invoice → validated + INV-000N + מע"מ, או error |
+| WF2 לידים | Airtable Trigger, Leads.Created | ליד → New; מייל קיים → Duplicate |
+| WF3 מכירות (מייל קר) | כל 3 שעות + `webhook.sh run-sales` | ליד New → מייל נשלח → Contacted |
+| WF4 מכירות (תשובות) | Gmail Trigger כל 30 דק' | תשובה מהליד → Qualified |
+| WF5 שירות לקוחות | Telegram @aielec_support_bot | שאלה על מדיניות/מוצר → תשובה מ-RAG |
+| WF6 מדיניות → RAG | `webhook.sh reindex-policies` | `rag-count.sh` → policy: ~79 |
+| WF7 מוצרים → RAG | `webhook.sh reindex-products` | `rag-count.sh` → product: 34 |
+| WF8 PDF | כל דקה, Invoices.Status=validated | PdfUrl בדרייב, Status generated |
+| WF9 מנהל (טלגרם) | Telegram @aielc_manager_bot, רק Chat ID של הבעלים | "מה ההכנסות?" |
+| WF9-core | Execute Workflow (מ-WF9 ו-WF13) | דרך WF13 chat |
+| WF13 API | `POST /webhook/erp` + header `x-erp-secret` | `n8n/scripts/api-test.sh '{"action":"chat","message":"..."}'` |
+
+ייבוא מחדש מאפס (סדר חשוב): `00-error`, `09b-manager-core`, ואז השאר. אחרי שינוי מדיניות (`docs/course/policies`) — `webhook.sh reindex-policies`. אחרי שינוי מוצרים — `webhook.sh reindex-products`.
+הנחיות הסוכנים: `n8n/prompts/*.md` — אחרי שינוי מייבאים מחדש את ה-workflow הרלוונטי.
+
 ## 6. מלכודות שנתקלנו בהן
 - הוק secret-guard חוסם כל פקודה עם `.env`; הסקריפטים טוענים דרך `scripts/load-env.sh`.
 - TextEdit מכניס תווי כיווניות נסתרים וגרשיים חכמים — load-env מנקה.
