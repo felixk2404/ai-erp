@@ -21,13 +21,13 @@ import {
 
 const SORT_LABELS: Record<Sort, string> = {
   name: 'לפי שם',
-  'price-asc': 'מחיר — מהזול',
-  'price-desc': 'מחיר — מהיקר',
+  'price-asc': 'מהזול ליקר',
+  'price-desc': 'מהיקר לזול',
 };
 
 const VIEW_BUTTONS = [
-  { id: 'grid' as const, Icon: LayoutGridIcon, label: 'תצוגת רשת' },
-  { id: 'spec' as const, Icon: Rows3Icon, label: 'תצוגת מפרט' },
+  { id: 'grid' as const, Icon: LayoutGridIcon, label: 'תצוגת כרטיסים' },
+  { id: 'spec' as const, Icon: Rows3Icon, label: 'תצוגת טבלה' },
 ];
 
 const PILL_SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.3 };
@@ -114,8 +114,8 @@ export function Catalog({
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === 'Escape' && setQ('')}
-              placeholder="חיפוש לפי שם, מק״ט או תיאור"
-              aria-label="חיפוש בקטלוג"
+              placeholder="חפשו לפי שם או מק״ט"
+              aria-label="חיפוש מוצרים"
               className="h-10 w-full rounded-sm border border-rule-strong bg-void ps-9 pe-9 text-body text-glow placeholder:text-glow-4 [&::-webkit-search-cancel-button]:hidden"
             />
             {q && (
@@ -219,9 +219,9 @@ export function Catalog({
           >
             <SearchXIcon size={20} strokeWidth={1.5} />
           </span>
-          <p className="max-w-sm text-xl text-glow-2">{`לא נמצא כלום ל־"${q || c}"`}</p>
+          <p className="max-w-sm text-xl text-glow-2">{`לא מצאנו כלום ל־"${q || c}"`}</p>
           <Button variant="outline" onClick={clear} className="h-10 rounded-md border-rule-strong bg-transparent px-4 text-body text-glow-2 dark:bg-transparent dark:hover:bg-panel-2">
-            נקה סינון
+            ניקוי סינון
           </Button>
         </div>
       ) : view === 'spec' ? (
@@ -252,7 +252,7 @@ export function Catalog({
       {filtered && results.length > 0 && (
         <div className={`flex pt-10 ${plan.lead ? 'justify-center' : 'justify-center sm:justify-start'}`}>
           <Button variant="ghost" onClick={clear} className="h-10 rounded-md px-4 text-body text-glow-3">
-            נקה סינון
+            ניקוי סינון
           </Button>
         </div>
       )}

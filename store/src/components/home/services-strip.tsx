@@ -20,7 +20,7 @@ export function ServicesStrip({ services }: { services: Product[] }) {
         <div>
           <p className={EYEBROW}>שירותים</p>
           <h2 id="services-title" className="mt-2 text-2xl leading-[1.2] font-extrabold tracking-[-0.02em]">
-            טכנאי בבית הלקוח, או תמיכה מרחוק
+            מתקינים, מתקנים, מאבחנים.
           </h2>
         </div>
         <Link

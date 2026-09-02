@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { POLICIES } from '../src/content/policies';
 
 /**
  * מסלול הלקוח מקצה לקצה. רץ מול dev (3200) או מול production
@@ -31,15 +32,15 @@ const cardLinks = (page: Page) => page.locator('h3 a[href^="/products/"]');
 /** תוכן העמוד בלבד — בלי הכותרת, הפוטר ומכריז-המסלול של Next (שגם הוא role=alert). */
 const main = (page: Page) => page.getByRole('main');
 
-test('דף הבית נטען RTL עם הכותרת הראשית ועגלה ריקה', async ({ page }) => {
+test('דף הבית נטען RTL עם הכותרת הראשית וסל ריק', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('html')).toHaveAttribute('lang', 'he');
   await expect(page.getByRole('heading', { level: 1, name: 'טכנולוגיה שרואים.' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'עגלה ריקה' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'הסל ריק' })).toBeVisible();
 });
 
-test('קטלוג: סינון לפי קטגוריה, חיפוש HDMI ותצוגת מפרט', async ({ page }) => {
+test('קטלוג: סינון לפי קטגוריה, חיפוש HDMI ותצוגת טבלה', async ({ page }) => {
   await page.goto('/products');
   const cards = cardLinks(page);
   await expect(cards.first()).toBeVisible();
@@ -49,10 +50,10 @@ test('קטלוג: סינון לפי קטגוריה, חיפוש HDMI ותצוגת
   await expect(async () => expect(await cards.count()).toBeLessThan(all)).toPass();
 
   await page.getByRole('group', { name: 'קטגוריות' }).getByRole('button', { name: 'הכל' }).click();
-  await page.getByRole('searchbox', { name: 'חיפוש בקטלוג' }).fill('HDMI');
+  await page.getByRole('searchbox', { name: 'חיפוש מוצרים' }).fill('HDMI');
   await expect(page.getByRole('link', { name: /כבל HDMI 2\.1/ })).toBeVisible();
 
-  await page.getByRole('button', { name: 'תצוגת מפרט' }).click();
+  await page.getByRole('button', { name: 'תצוגת טבלה' }).click();
   await expect(page.getByRole('table')).toBeVisible();
   await expect(page.getByRole('columnheader').first()).toBeVisible();
 });
@@ -66,8 +67,8 @@ test('עמוד מוצר: מחיר, מלאי, הוספה לסל ופתיחת המ
 
   await buyBox.getByRole('button', { name: /הוסף לסל/ }).click();
 
-  await expect(page.getByRole('button', { name: 'עגלה, פריט אחד' })).toBeVisible();
-  const drawer = page.getByRole('dialog', { name: 'העגלה שלך' });
+  await expect(page.getByRole('button', { name: 'בסל פריט אחד' })).toBeVisible();
+  const drawer = page.getByRole('dialog', { name: 'הסל שלך' });
   await expect(drawer).toBeVisible();
   await expect(drawer.getByText(ITEM.name)).toBeVisible();
   await expect(drawer.getByRole('link', { name: /לקופה/ })).toBeVisible();
@@ -79,7 +80,7 @@ test('קופה: שם ריק מחזיר שגיאה בעברית מתחת לשדה
   const name = page.getByLabel('שם מלא');
   await expect(name).toBeVisible();
   await page.getByRole('button', { name: /אישור הזמנה/ }).click();
-  await expect(page.getByText('יש להזין שם מלא')).toBeVisible();
+  await expect(page.getByText('צריך שם מלא')).toBeVisible();
   await expect(name).toHaveAttribute('aria-invalid', 'true');
 });
 
@@ -107,14 +108,15 @@ test('מוצר שאזל: תג "אזל" והפניה לבוט במקום הבטח
   await page.goto(`/products/${OUT_OF_STOCK_SKU}`);
   const buyBox = page.locator('aside').first();
   await expect(buyBox.getByText('אזל')).toBeVisible();
-  await expect(buyBox.getByRole('button', { name: /לא זמינות בהדגמה/ })).toBeVisible();
+  await expect(buyBox.getByRole('button', { name: /התראות חזרה למלאי/ })).toBeVisible();
   await expect(buyBox.getByRole('button', { name: /הוסף לסל/ })).toHaveCount(0);
 });
 
-test('עמוד המדיניות מציג ארבעה סעיפים', async ({ page }) => {
+test('עמוד המדיניות מציג את כל הסעיפים', async ({ page }) => {
   await page.goto('/policies');
   await expect(page.getByRole('heading', { level: 1, name: 'מדיניות החנות' })).toBeVisible();
-  await expect(main(page).getByRole('heading', { level: 2 })).toHaveCount(4);
+  // מספר הסעיפים גדל עם `content/policies.ts` — נספר משם ולא ממספר קסם שמתיישן.
+  await expect(main(page).getByRole('heading', { level: 2 })).toHaveCount(POLICIES.length);
   for (const title of ['משלוחים', 'החזרות והחלפות', 'אחריות', 'תשלומים']) {
     await expect(main(page).getByRole('heading', { level: 2, name: title })).toBeVisible();
   }
@@ -137,7 +139,7 @@ test.describe.serial('קופה מקצה לקצה', () => {
 
     // WF10: מלאי → הזמנה → חשבונית → מייל. עד 90 שניות (runbook §7.1).
     await page.waitForURL(/\/orders\/ORD-\d+/, { timeout: 120_000 });
-    await expect(page.getByText('ההזמנה התקבלה')).toBeVisible({ timeout: 60_000 });
+    await expect(page.getByText('מספר הזמנה')).toBeVisible({ timeout: 60_000 });
     console.log('order created:', new URL(page.url()).pathname);
   });
 });

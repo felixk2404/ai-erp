@@ -10,7 +10,7 @@ export function Highlights({ items }: { items: string[] }) {
   if (items.length === 0) return null;
 
   return (
-    <SheetSection label="מפרט">
+    <SheetSection label="שווה לדעת">
       <ul>
         {items.map((item) => (
           <li

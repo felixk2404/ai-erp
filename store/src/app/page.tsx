@@ -34,13 +34,13 @@ export default async function Home() {
       ) : (
         /* אין חפץ פיזי במלאי: אומרים את זה במשפט אחד ומציעים את הדרך היחידה שנשארה. */
         <section className="py-16 text-center">
-          <p className="text-2xl font-medium text-glow-2">כל המוצרים אזלו כרגע. השירותים עדיין זמינים.</p>
+          <p className="text-2xl font-medium text-glow-2">הכול אזל כרגע. השירותים עדיין פתוחים להזמנה.</p>
           <Link
             href="/products"
             transitionTypes={['nav-forward']}
             className="mt-4 inline-flex h-11 items-center text-lg text-glow-2 transition-colors hover:text-glow"
           >
-            לקטלוג המלא ←
+            לכל המוצרים ←
           </Link>
         </section>
       )}

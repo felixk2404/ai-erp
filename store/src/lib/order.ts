@@ -25,14 +25,14 @@ export function shippingErrors(v: { address?: string; city?: string }, physical:
 
 const schema = z
   .object({
-    name: z.string().trim().min(2, 'יש להזין שם מלא').max(60, 'שם ארוך מדי'),
+    name: z.string().trim().min(2, 'צריך שם מלא').max(60, 'שם ארוך מדי'),
     // trim+lowercase לפני הבדיקה: אימייל שהודבק עם רווח או באותיות גדולות הוא תקין.
-    email: z.string().trim().toLowerCase().pipe(z.email('אימייל לא תקין')),
+    email: z.string().trim().toLowerCase().pipe(z.email('כתובת אימייל לא תקינה')),
     // רווחים מוסרים, מקף נשאר — "050 123 4567" ו-"050-1234567" הם אותו מספר.
     phone: z
       .string()
       .transform((s) => s.replace(/\s+/g, ''))
-      .refine((v) => /^0\d{1,2}-?\d{7}$/.test(v), 'טלפון לא תקין'),
+      .refine((v) => /^0\d{1,2}-?\d{7}$/.test(v), 'מספר טלפון לא תקין'),
     address: z.string().trim().max(120, 'כתובת ארוכה מדי').optional(),
     city: z.string().trim().max(120, 'שם עיר ארוך מדי').optional(),
     note: z.string().trim().max(500, 'ההערה ארוכה מדי').optional(),
@@ -42,11 +42,11 @@ const schema = z
         try {
           return JSON.parse(s) as unknown;
         } catch {
-          ctx.addIssue({ code: 'custom', message: 'העגלה ריקה' });
+          ctx.addIssue({ code: 'custom', message: 'הסל ריק' });
           return z.NEVER;
         }
       })
-      .pipe(z.array(lineSchema).min(1, 'העגלה ריקה').max(MAX_LINES, `עד ${MAX_LINES} פריטים שונים בהזמנה`)),
+      .pipe(z.array(lineSchema).min(1, 'הסל ריק').max(MAX_LINES, `עד ${MAX_LINES} מוצרים שונים בהזמנה`)),
   })
   .superRefine((v, ctx) => {
     // הדגל `service` מהדפדפן הוא רק רמז לטופס; השרת גוזר אותו מהקטלוג ובודק שוב.

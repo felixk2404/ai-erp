@@ -15,7 +15,7 @@ export default function ProductNotFound() {
         המוצר לא נמצא
       </h1>
       <p className="max-w-[48ch] text-glow-2">
-        ייתכן שהמק״ט השתנה או שהפריט ירד מהמדף. אפשר לחפש אותו בקטלוג.
+        כנראה שהמק״ט השתנה או שהמוצר ירד מהמדף. אפשר לחפש אותו בין כל המוצרים.
       </p>
       <Link
         href="/products"

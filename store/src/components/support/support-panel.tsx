@@ -12,7 +12,7 @@ import { ProductChip } from './product-chip';
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.3 };
 const TELEGRAM = 'https://t.me/aielec_support_bot';
 /** מק"טים אמיתיים מהקטלוג — שאלה שמחזירה כרטיסי מוצר, לא שאלה שמחזירה "לא מצאתי". */
-const SUGGESTIONS = ['מה ההבדל בין TY-HP-200 ל-TY-GH-700?', 'יש במלאי TY-MN-27Q?', 'מה מדיניות ההחזרות?'];
+const SUGGESTIONS = ['מה ההבדל בין TY-HP-200 ל-TY-GH-700?', 'יש במלאי TY-MN-27Q?', 'כמה עולה משלוח ומתי זה מגיע?'];
 
 type Msg =
   | { id: number; role: 'user'; text: string }
@@ -23,7 +23,7 @@ type Msg =
 function greetingFor(pathname: string): string {
   if (/^\/products\/[^/]+/.test(pathname)) return 'שאלות על המוצר הזה? אני כאן.';
   if (pathname.startsWith('/orders')) return 'שאלה על ההזמנה?';
-  return 'שלום! איך אפשר לעזור?';
+  return 'היי, במה אפשר לעזור?';
 }
 
 /** תשובת הסוכן נחשפת משפט־משפט (40ms) — נותן תחושת הקלדה בלי streaming אמיתי. */
@@ -91,7 +91,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
         ...m,
         res.reply
           ? { id: (idRef.current += 1), role: 'agent', text: res.reply, products: res.products ?? [] }
-          : { id: (idRef.current += 1), role: 'error', text: res.error ?? 'משהו השתבש.', retry: text },
+          : { id: (idRef.current += 1), role: 'error', text: res.error ?? 'לא הצלחנו לענות עכשיו.', retry: text },
       ]);
     });
   };
@@ -136,7 +136,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
           <div className="space-y-5">
             <div className="space-y-1.5">
               <p className="text-xl leading-snug font-medium text-glow">{greetingFor(pathname)}</p>
-              <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה — התשובה מגיעה מהקטלוג עצמו.</p>
+              <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה. שאלו כל דבר.</p>
             </div>
             <div className="flex flex-col items-start gap-2">
               {SUGGESTIONS.map((s) => (
@@ -187,7 +187,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
                   <div className="max-w-[90%] rounded-md border border-bad/40 bg-panel-2 px-3 py-2 text-sm text-glow-2">
                     <p>{m.text}</p>
                     <button type="button" onClick={() => ask(m.retry)} className="mt-1.5 font-medium text-beam hover:underline">
-                      נסה שוב
+                      נסו שוב
                     </button>
                   </div>
                 )}

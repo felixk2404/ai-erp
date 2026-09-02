@@ -65,7 +65,7 @@ export function CartLine({
           <button
             type="button"
             onClick={onRemove}
-            aria-label={`הסר ${line.name} מהעגלה`}
+            aria-label={`הסרת ${line.name} מהסל`}
             className="-me-2 -mt-1.5 grid size-9 shrink-0 place-items-center rounded-sm text-glow-4 transition-colors hover:bg-panel-2 hover:text-bad"
           >
             <XIcon size={15} strokeWidth={1.75} aria-hidden />

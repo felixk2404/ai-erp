@@ -32,7 +32,7 @@ export function SpecSheet({ product }: { product: Product }) {
   ];
 
   return (
-    <SheetSection label="פרטים">
+    <SheetSection label="מפרט מלא">
       <dl className="text-body">
         {rows.map((row) => (
           <div

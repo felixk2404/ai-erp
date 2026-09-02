@@ -24,9 +24,9 @@ const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.28 };
  * שנשארה פתוחה בקופה — "ואז מה". שקט בכוונה: אין beam, אין מסגרת, רק קו.
  */
 const AFTER_ORDER = [
-  ['01', 'אישור במייל'],
-  ['02', 'חשבונית PDF'],
-  ['03', 'מעקב בעמוד ההזמנה'],
+  ['01', 'אישור מגיע למייל'],
+  ['02', 'חשבונית PDF מצורפת'],
+  ['03', 'עוקבים בעמוד ההזמנה'],
 ] as const;
 
 /** שדה טקסט של הקופה: תווית, שדה, ושגיאה שיושבת מתחת ומחוברת ב-aria. */
@@ -182,7 +182,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             style={{ background: 'radial-gradient(closest-side, var(--color-beam-soft), transparent)' }}
           />
           <p className="relative text-sm text-glow-2">
-            <span className="font-medium text-glow">הדגמה — לא מתבצע חיוב.</span> ההזמנה נשמרת במערכת ותקבלו מייל אישור.
+            <span className="font-medium text-glow">הדגמה — לא מתבצע חיוב.</span> ההזמנה נשמרת במערכת ואישור נשלח במייל, בלי שום פרטי אשראי.
           </p>
         </div>
 
@@ -204,7 +204,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
           </div>
         </details>
 
-        <Fieldset title="פרטים">
+        <Fieldset title="הפרטים שלכם">
           <Field label="שם מלא" name="name" required autoComplete="name" error={state.errors?.name} defaultValue={state.values?.name} />
           <Field
             label="אימייל"
@@ -213,7 +213,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             required
             dir="ltr"
             autoComplete="email"
-            hint="לשם יישלח אישור ההזמנה והחשבונית"
+            hint="לכאן נשלח את אישור ההזמנה והחשבונית"
             error={state.errors?.email}
             defaultValue={state.values?.email}
           />
@@ -232,7 +232,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
         </Fieldset>
 
         {physical && (
-          <Fieldset title="משלוח">
+          <Fieldset title="לאן שולחים">
             <Field
               label="כתובת"
               name="address"
@@ -253,11 +253,11 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
         )}
 
         <Field
-          label="הערה"
+          label="הערה להזמנה"
           name="note"
           textarea
           maxLength={500}
-          placeholder="משהו שכדאי שנדע — אופציונלי"
+          placeholder="קומה, קוד לבניין, שעה שנוחה לכם"
           error={state.errors?.note}
           defaultValue={state.values?.note}
         />
@@ -277,7 +277,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
                 <ul className="mt-2 flex flex-col gap-1">
                   {missingNames.map((name) => (
                     <li key={name} className="text-sm text-glow-2">
-                      {name} — <span className="text-bad">לא זמין בכמות המבוקשת</span>
+                      {name} — <span className="text-bad">אין במלאי בכמות שביקשתם</span>
                     </li>
                   ))}
                 </ul>
@@ -288,7 +288,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
                   transitionTypes={['nav-forward']}
                   className="mt-3 inline-block text-sm text-beam underline-offset-4 hover:underline"
                 >
-                  למעקב הזמנה לפי אימייל
+                  לעמוד מעקב ההזמנות
                 </Link>
               )}
             </motion.div>
@@ -308,7 +308,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
               onClick={() => setOpen(true)}
               className="relative flex h-12 w-full items-center justify-center rounded-md bg-beam text-lg font-medium text-void transition-colors hover:bg-beam/85"
             >
-              חזרה לעגלה
+              חזרה לסל
             </button>
           )}
 
@@ -345,7 +345,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
           </span>
 
           <p className="relative text-center text-meta text-glow-3">
-            השליחה יוצרת הזמנה אמיתית במערכת. אין תשלום ואין מסירת פרטי אשראי.
+            ההזמנה נכנסת למערכת באמת. בלי תשלום ובלי פרטי אשראי.
           </p>
         </div>
       </div>

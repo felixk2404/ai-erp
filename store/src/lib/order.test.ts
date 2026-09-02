@@ -12,7 +12,7 @@ describe('checkout', () => {
   it('hebrew field errors', () => {
     const r = parseCheckout(fd({ name: 'א', email: 'bad', phone: '12', items: '[]' }));
     expect(r.ok).toBe(false);
-    if (!r.ok) { expect(r.errors.name).toMatch(/שם/); expect(r.errors.email).toMatch(/אימייל/); expect(r.errors.phone).toMatch(/טלפון/); expect(r.errors.items).toMatch(/ריקה/); }
+    if (!r.ok) { expect(r.errors.name).toMatch(/שם/); expect(r.errors.email).toMatch(/אימייל/); expect(r.errors.phone).toMatch(/טלפון/); expect(r.errors.items).toMatch(/ריק/); }
   });
   it('rejects over-long fields and non-string entries', () => {
     const long = parseCheckout(fd({ name: 'ד'.repeat(61), email: 'd@x.co', phone: '050-1234567', address: 'א'.repeat(121), city: 'ב', items: physical }));

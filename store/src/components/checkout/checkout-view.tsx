@@ -45,7 +45,7 @@ export function CheckoutView() {
       ) : placed ? (
         <p className="text-glow-2">ההזמנה נשמרה. פותחים את עמוד ההזמנה…</p>
       ) : empty ? (
-        <p className="text-glow-2">העגלה ריקה — מעבירים אתכם לקטלוג.</p>
+        <p className="text-glow-2">הסל ריק. מעבירים אתכם למוצרים.</p>
       ) : (
         <CheckoutForm onPlaced={handlePlaced} />
       )}

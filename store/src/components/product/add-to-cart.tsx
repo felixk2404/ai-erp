@@ -52,7 +52,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           onClick={() => window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))}
           className="h-auto justify-center px-0 text-center text-meta leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
         >
-          התראות חזרה למלאי לא זמינות בהדגמה — שאלו את הבוט
+          בהדגמה אין התראות חזרה למלאי. שאלו את הבוט מתי חוזר
         </Button>
       </div>
     );
@@ -78,7 +78,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           onClick={() => put({ sku: install.sku, name: install.name, price: install.price, qty: 1, service: true })}
           className="h-11 w-full justify-between rounded-sm px-4 text-body text-glow-2 hover:text-glow"
         >
-          הזמן התקנה
+          הוסיפו התקנה
           <span className="num text-glow-3">{ils(install.price)}</span>
         </Button>
       )}
@@ -97,7 +97,7 @@ export function AskBotLink({ sku }: { sku: string }) {
       onClick={() => window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))}
       className="h-auto justify-start px-0 text-body text-glow-2 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
     >
-      שאל את הבוט על המוצר
+      שאלו את הבוט על המוצר
     </Button>
   );
 }

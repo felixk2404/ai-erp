@@ -139,7 +139,7 @@ function SuccessView({
           קודם הם ריחפו בין שני פאנלים כשורה בודדת בלי בית. */}
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <section className="flex min-w-0 flex-col gap-3">
-          <h2 className="text-sm font-medium text-glow-3">פריטים</h2>
+          <h2 className="text-sm font-medium text-glow-3">מה הזמנתם</h2>
           <ItemsTable items={order.items} />
         </section>
         <div className="flex flex-col gap-4 lg:mt-8">
@@ -173,7 +173,7 @@ function OrderNumberDisplay({ value }: { value: string }) {
         aria-hidden
         className="absolute inset-0 mx-auto h-32 w-64 -translate-y-2 bg-[radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
       />
-      <span className={`relative ${EYEBROW}`}>ההזמנה התקבלה</span>
+      <span className={`relative ${EYEBROW}`}>מספר הזמנה</span>
       <span dir="ltr" className="num relative flex text-display leading-none font-extrabold text-glow sm:text-hero">
         {[...value].map((ch, i) => (
           <motion.span
@@ -277,7 +277,7 @@ function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
       <table className="hidden w-full text-sm sm:table">
         <thead>
           <tr className="border-b border-rule bg-panel-1 text-glow-3">
-            <th className="px-4 py-2 text-start font-medium">פריט</th>
+            <th className="px-4 py-2 text-start font-medium">מוצר</th>
             <th className="px-4 py-2 text-start font-medium">מק&quot;ט</th>
             <th className="px-4 py-2 text-start font-medium">כמות</th>
             <th className="px-4 py-2 text-start font-medium">סה&quot;כ</th>
@@ -310,7 +310,7 @@ function Totals({ order }: { order: TrackedOrder }) {
   return (
     <dl className="flex flex-col gap-1.5 rounded-lg border border-rule bg-panel-1 px-4 py-3 text-sm">
       <div className="flex justify-between">
-        <dt className="text-glow-3">ביניים</dt>
+        <dt className="text-glow-3">סכום ביניים</dt>
         <dd className="num text-glow-2">{ils(order.subtotal)}</dd>
       </div>
       <div className="flex justify-between">
@@ -342,7 +342,7 @@ function InvoiceBlock({ order, stalled, onRefresh }: { order: TrackedOrder; stal
           הורדת חשבונית PDF
         </a>
       ) : stalled ? (
-        <span className="text-sm text-glow-2">החשבונית עדיין מופקת — רעננו בעוד דקה</span>
+        <span className="text-sm text-glow-2">החשבונית עדיין מופקת. בדקו שוב בעוד דקה</span>
       ) : (
         <span className="inline-flex items-center gap-2 text-sm text-glow-3">
           <LoaderIcon size={16} aria-hidden className="animate-spin" />
@@ -353,7 +353,7 @@ function InvoiceBlock({ order, stalled, onRefresh }: { order: TrackedOrder; stal
         {!order.pdfUrl && stalled && (
           <Button variant="outline" onClick={onRefresh} className="h-9 gap-1.5 rounded-md px-3 text-body">
             <RefreshCwIcon size={14} aria-hidden />
-            רענון
+            בדיקה מחדש
           </Button>
         )}
         {order.invoiceNumber && (
@@ -386,7 +386,7 @@ function OrderSkeleton() {
         <Skeleton className="h-16 w-full rounded-lg" />
       </div>
       {/* מחוץ ל-aria-hidden, אחרת אין מי שיקרא אותו. */}
-      <span className="sr-only">טוען את פרטי ההזמנה…</span>
+      <span className="sr-only">טוענים את ההזמנה…</span>
     </>
   );
 }

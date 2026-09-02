@@ -39,7 +39,7 @@ export function LookupForm({
     const on = normalizeOrderNumber(orderNumber);
     const em = email.trim();
     if (!on || !em) {
-      setError('נא למלא מספר הזמנה ואימייל');
+      setError('צריך מספר הזמנה ואימייל');
       return;
     }
     setError('');

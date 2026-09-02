@@ -17,10 +17,10 @@ export function FreeShippingBar({ gap, subtotal }: { gap: number; subtotal: numb
     <div>
       <p className={`text-sm ${reached ? 'text-ok' : 'text-glow-2'}`}>
         {reached ? (
-          'משלוח חינם'
+          'המשלוח עלינו'
         ) : (
           <>
-            עוד <span className="num text-glow">{ils(gap)}</span> למשלוח חינם
+            עוד <span className="num text-glow">{ils(gap)}</span> והמשלוח עלינו
           </>
         )}
       </p>

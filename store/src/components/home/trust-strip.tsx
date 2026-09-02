@@ -4,7 +4,7 @@ import { AskBot } from '@/components/home/ask-bot';
 const ITEMS = [
   { Icon: TruckIcon, title: 'משלוח 29 ₪', note: 'חינם בהזמנה מעל 300 ₪' },
   { Icon: ShieldCheckIcon, title: 'אחריות יבואן רשמי', note: 'על כל מוצר בחנות' },
-  { Icon: RotateCcwIcon, title: 'החזרה תוך 14 יום', note: 'באריזה מקורית, בלי סיבה' },
+  { Icon: RotateCcwIcon, title: 'החזרה עד 14 יום', note: 'באריזה מקורית, בלי להסביר למה' },
 ] as const;
 
 const CELL = 'flex items-start gap-3 py-4 lg:py-0';
@@ -34,9 +34,9 @@ export function TrustStrip() {
           <MessageCircleIcon size={18} strokeWidth={1.5} aria-hidden className="mt-0.5 shrink-0 text-glow-3" />
           <AskBot className="text-start">
             <span className="block text-body font-medium text-glow underline-offset-4 hover:underline">
-              בוט שירות 24/7
+              הבוט עונה 24/7
             </span>
-            <span className="mt-0.5 block text-body text-glow-3">שאלו על מוצר, מלאי או הזמנה</span>
+            <span className="mt-0.5 block text-body text-glow-3">מלאי, מחיר או איפה ההזמנה</span>
           </AskBot>
         </li>
       </ul>

@@ -6,7 +6,7 @@ import { parseCatalogParams, toCard } from '@/lib/catalog-filter';
 
 export const metadata: Metadata = {
   title: 'מוצרים',
-  description: 'הקטלוג המלא — מק״ט, מפרט, מלאי ומחיר בשורה אחת.',
+  description: 'מוצרים מקוריים עם אחריות יבואן רשמי. מחיר כולל מע״מ, משלוח מ־29 ₪ וחינם מעל 300 ₪.',
 };
 
 /**
@@ -26,7 +26,7 @@ export default async function ProductsPage({
         <p className={EYEBROW}>קטלוג</p>
         <h1 className="mt-2 text-3xl leading-[1.05] font-extrabold tracking-[-0.02em] sm:text-display">מוצרים</h1>
         <p className="mt-2 max-w-md text-body text-glow-3">
-          כל מה שבחנות. מק״ט, מפרט, מלאי ומחיר — באותה שורה.
+          <span className="num">{products.length}</span> מוצרים מקוריים, כולם עם אחריות יבואן. מחיר כולל מע״מ, בלי הפתעות בקופה.
         </p>
       </div>
       <Catalog products={products.map(toCard)} categories={categories(products)} initial={parseCatalogParams(params)} />

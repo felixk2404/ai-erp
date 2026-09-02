@@ -36,12 +36,12 @@ export function CartSheet() {
       <SheetContent
         side="left"
         showCloseButton={false}
-        aria-label="העגלה שלך"
+        aria-label="הסל שלך"
         className="flex flex-col gap-0 border-rule-strong bg-panel-1 p-0 data-[side=left]:w-full data-[side=left]:sm:max-w-[420px]"
       >
         <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-rule px-4">
           <div className="flex items-baseline gap-2">
-            <SheetTitle className="text-xl font-medium text-glow">העגלה שלך</SheetTitle>
+            <SheetTitle className="text-xl font-medium text-glow">הסל שלך</SheetTitle>
             {/* בלי aria-live: מונה העגלה בכותרת כבר מכריז את אותו שינוי, ושני אזורים
                 חיים על אותו נתון מקריאים אותו פעמיים. ריק כשהעגלה ריקה. */}
             <span className="num text-sm text-glow-3">
@@ -52,7 +52,7 @@ export function CartSheet() {
             render={
               <button
                 type="button"
-                aria-label="סגירת העגלה"
+                aria-label="סגירת הסל"
                 /* סגירת המגירה היא פעולת מסגרת: 44px עם טבעת rule. ה-X שמסיר שורה
                    קטן ובלי מסגרת, כדי ששני ה-X-ים לא ייקראו כאותו משקל. */
                 className="grid size-11 shrink-0 place-items-center rounded-md border border-rule text-glow-3 transition-colors hover:border-rule-strong hover:bg-panel-2 hover:text-glow"
@@ -73,7 +73,7 @@ export function CartSheet() {
               <ShoppingBagIcon size={34} strokeWidth={1.25} className="relative text-glow-4" aria-hidden />
             </div>
             <div className="space-y-1.5">
-              <p className="text-xl font-medium text-glow">העגלה ריקה</p>
+              <p className="text-xl font-medium text-glow">הסל ריק</p>
               <p className="text-sm text-glow-3">כל מה שתוסיפו יופיע כאן.</p>
             </div>
             <Link
@@ -82,7 +82,7 @@ export function CartSheet() {
               onClick={() => setOpen(false)}
               className="inline-flex h-11 items-center rounded-md border border-rule-strong px-5 text-sm font-medium text-glow transition-colors hover:bg-panel-2"
             >
-              לקטלוג
+              לכל המוצרים
             </Link>
           </div>
         ) : (
@@ -105,7 +105,7 @@ export function CartSheet() {
               {physical && <FreeShippingBar gap={totals.freeShippingGap} subtotal={totals.subtotal} />}
 
               <div className="space-y-2">
-                <Row label="ביניים">
+                <Row label="סכום ביניים">
                   <span className="num">{ils(totals.subtotal)}</span>
                 </Row>
                 <Row label="משלוח">

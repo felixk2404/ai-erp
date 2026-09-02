@@ -62,7 +62,7 @@ export function OrderSummary({
                   <span aria-hidden> × </span>
                   <span className="sr-only"> יחידות במחיר </span>
                   <span className="num">{ils(line.price)}</span>
-                  {missing && <span className="ms-2 text-bad">לא זמין</span>}
+                  {missing && <span className="ms-2 text-bad">אזל</span>}
                 </p>
               </div>
 
@@ -73,7 +73,7 @@ export function OrderSummary({
       </ul>
 
       <div className="mt-4 space-y-2 border-t border-rule pt-4">
-        <Row label="ביניים">
+        <Row label="סכום ביניים">
           <span className="num">{ils(totals.subtotal)}</span>
         </Row>
         <Row label="משלוח">

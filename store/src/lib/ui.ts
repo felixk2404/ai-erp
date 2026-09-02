@@ -14,6 +14,6 @@ export const EYEBROW = 'text-meta font-medium tracking-[0.08em] text-glow-3';
 export const ADD_REFUSALS = {
   added: '',
   merged: '',
-  'max-lines': `העגלה מלאה — עד ${MAX_LINES} מוצרים שונים`,
-  'max-qty': `הגעת לכמות המקסימלית (${MAX_QTY})`,
+  'max-lines': `הסל מלא. אפשר עד ${MAX_LINES} מוצרים שונים`,
+  'max-qty': `אי-אפשר יותר מ־${MAX_QTY} יחידות מאותו מוצר`,
 } as const;

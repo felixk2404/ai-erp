@@ -17,7 +17,7 @@ import { EYEBROW } from '@/lib/ui';
 const FACTS = [
   { label: 'משלוח', value: '29', unit: '₪' },
   { label: 'חינם מעל', value: '300', unit: '₪' },
-  { label: 'החזרה', value: '14', unit: 'יום' },
+  { label: 'החזרה עד', value: '14', unit: 'יום' },
 ] as const;
 
 /**
@@ -44,7 +44,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
       >
         <div className="order-2 flex flex-col items-start lg:order-none lg:col-start-1 lg:row-start-1">
           <p data-enter="2" className={EYEBROW}>
-            חדר תצוגה · <span className="num">{count}</span> מוצרים · אחריות יבואן
+            <span className="num">{count}</span> מוצרים · אחריות יבואן רשמי
           </p>
 
           {/* 9ch = "טכנולוגיה" ועוד ~9% אוויר: ה-ch של היבו צר מהאות העברית הממוצעת, אז זה כופה
@@ -54,7 +54,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
           </h1>
 
           <p data-enter="3" className="mt-5 max-w-[42ch] text-xl leading-[1.5] text-glow-2">
-            מוצרים מקוריים. שירות AI. משלוח עד הבית.
+            מוצרים מקוריים עם אחריות יבואן רשמי, עד הדלת.
           </p>
 
           <div data-enter="4" className="mt-8 flex flex-wrap items-center gap-3">
@@ -63,10 +63,10 @@ export function Hero({ product, count }: { product: Product; count: number }) {
               transitionTypes={['nav-forward']}
               className={cn(buttonVariants(), 'h-12 rounded-md px-6 text-lg')}
             >
-              לקטלוג
+              לכל המוצרים
             </Link>
             <AskBot className={cn(buttonVariants({ variant: 'outline' }), 'h-12 rounded-md px-6 text-lg')}>
-              שאל את הבוט
+              שאלו את הבוט
             </AskBot>
           </div>
         </div>

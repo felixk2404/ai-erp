@@ -31,7 +31,7 @@ export function Quantity({
       <MotionButton
         variant="ghost"
         size="icon"
-        aria-label="הפחת כמות"
+        aria-label="הפחתת כמות"
         disabled={value <= min}
         onClick={() => onChange(value - 1)}
         whileHover={{ scale: 1.06 }}
@@ -60,7 +60,7 @@ export function Quantity({
       <MotionButton
         variant="ghost"
         size="icon"
-        aria-label="הוסף כמות"
+        aria-label="הוספת כמות"
         disabled={value >= max}
         onClick={() => onChange(value + 1)}
         whileHover={{ scale: 1.06 }}

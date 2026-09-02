@@ -30,9 +30,9 @@ export function Featured({ products }: { products: Product[] }) {
     <section aria-labelledby="featured-title">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className={EYEBROW}>מוצרים</p>
+          <p className={EYEBROW}>המומלצים</p>
           <h2 id="featured-title" className="mt-2 text-3xl leading-[1.15] font-extrabold tracking-[-0.02em]">
-            מבחר מהקטלוג
+            אלה שכדאי לראות
           </h2>
         </div>
         <Link

@@ -13,7 +13,7 @@ const REST =
 const BEAM = 'border border-beam bg-beam text-void hover:bg-beam/85 dark:hover:bg-beam/85';
 
 /** התראות חזרה למלאי לא קיימות בהדגמה — אז לא מבטיחים אותן. הבוט הוא הערוץ האמיתי. */
-const NOTIFY_TEXT = 'התראות חזרה למלאי לא זמינות בהדגמה — שאלו את הבוט';
+const NOTIFY_TEXT = 'בהדגמה אין התראות חזרה למלאי. שאלו את הבוט מתי חוזר';
 const NOTIFY_LINK =
   'rounded-md text-start text-meta leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 transition-colors hover:text-glow hover:decoration-beam';
 

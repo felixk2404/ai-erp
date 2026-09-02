@@ -13,7 +13,7 @@ export default function NotFound() {
     <div className="flex min-h-[50dvh] flex-col items-start justify-center gap-4">
       <p className={`num ${EYEBROW}`}>404</p>
       <h1 className="text-3xl leading-[1.15] font-extrabold tracking-[-0.02em] sm:text-display">הדף לא נמצא</h1>
-      <p className="max-w-[48ch] text-glow-2">הקישור שהגעתם ממנו כנראה כבר לא קיים. הקטלוג במקום.</p>
+      <p className="max-w-[48ch] text-glow-2">הקישור כנראה כבר לא קיים. אפשר להתחיל מכל המוצרים.</p>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <Link
           href="/products"
@@ -21,7 +21,7 @@ export default function NotFound() {
           className={buttonVariants({ className: 'h-11 gap-1.5 rounded-md px-4 text-body' })}
         >
           <ArrowRightIcon size={14} strokeWidth={2} aria-hidden />
-          לקטלוג
+          לכל המוצרים
         </Link>
         <Link
           href="/"

@@ -56,7 +56,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
 
       <div className="relative mx-auto hidden max-w-[980px] overflow-x-auto rounded-lg border border-rule md:block">
         <table className="w-full min-w-[720px] table-fixed border-collapse">
-          <caption className="sr-only">רשימת מוצרים</caption>
+          <caption className="sr-only">טבלת המוצרים</caption>
           <colgroup>
             <col className="w-[8rem]" />
             <col />
@@ -71,13 +71,13 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                 מק&quot;ט
               </th>
               <th scope="col" className={`${HEAD} text-start`}>
-                שם
+                מוצר
               </th>
               <th scope="col" className={`${HEAD} text-start`}>
                 מפרט
               </th>
               <th scope="col" className={`${HEAD} text-start`}>
-                מלאי
+                זמינות
               </th>
               <th scope="col" className={`${HEAD} text-end`}>
                 מחיר

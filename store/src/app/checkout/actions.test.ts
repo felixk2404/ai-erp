@@ -153,7 +153,7 @@ describe('placeOrder — מונה הקצב', () => {
     // שש שליחות פסולות — יותר מהמכסה (5). אף אחת מהן לא מגיעה ל-n8n.
     for (let i = 0; i < 6; i += 1) {
       const res = await placeOrder({}, form({ name: '' }));
-      expect(res.errors?.name).toBe('יש להזין שם מלא');
+      expect(res.errors?.name).toBe('צריך שם מלא');
     }
     expect(mocks.erpCall).not.toHaveBeenCalled();
 

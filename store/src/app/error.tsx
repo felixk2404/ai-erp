@@ -19,14 +19,14 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <button type="button" onClick={reset} className={buttonVariants({ className: 'h-11 gap-1.5 rounded-md px-4 text-body' })}>
           <RotateCwIcon size={14} strokeWidth={2} aria-hidden />
-          ניסיון חוזר
+          נסו שוב
         </button>
         <Link
           href="/products"
           transitionTypes={['nav-back']}
           className="flex h-11 items-center rounded-md px-4 text-body text-glow-2 transition-colors hover:text-glow"
         >
-          לקטלוג
+          לכל המוצרים
         </Link>
       </div>
       {error.digest && (

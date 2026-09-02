@@ -90,7 +90,7 @@ export default async function ProductPage({ params }: Props) {
 
           {f.Description && (
             <section>
-              <h2 className={EYEBROW}>תיאור</h2>
+              <h2 className={EYEBROW}>על המוצר</h2>
               <div className="mt-4 max-w-[68ch] text-lg leading-[1.7] text-glow-2">
                 {f.Description.split('\n')
                   .map((line) => line.trim())
