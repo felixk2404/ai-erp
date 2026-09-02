@@ -36,13 +36,19 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   // ולכן הוא חייב לגרום לרינדור מחדש.
   const [polls, setPolls] = useReducer((_: number, next: number) => next, 0);
   const emailRef = useRef('');
+  // מונה דורות: כל בירור חדש (ידני או פולינג) פוסל את קודמיו. בלעדיו תשובה
+  // איטית שנוחתת אחרי חדשה מציירת מצב שכבר לא נכון — ובעמוד הזה "לא נכון"
+  // הוא הסטטוס שהלקוח בא לראות.
+  const gen = useRef(0);
 
   const runLookup = useCallback(
     async (email: string) => {
       emailRef.current = email;
+      const g = ++gen.current;
       setPolls(0);
       setPhase({ kind: 'loading' });
       const res = await lookupOrder(orderNumber, email);
+      if (g !== gen.current) return;
       if (res.ok) {
         setPhase({ kind: 'success', order: res.order });
         return;
@@ -68,11 +74,14 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   // עד 6 פעמים — ואז נעצור ונאמר את זה, במקום ספינר שמסתובב לנצח.
   useEffect(() => {
     if (phase.kind !== 'success') return;
-    if (phase.order.invoiceStatus === 'generated' || polls >= POLL_MAX) return;
+    // התנאי הוא `pdfUrl` ולא `invoiceStatus`, כי זה מה שהמסך מכריז עליו "מוכן":
+    // סטטוס `generated` שהתהפך לפני שה-URL נכתב עצר את הפולינג על ספינר נצחי.
+    if (phase.order.pdfUrl || polls >= POLL_MAX) return;
     const timer = setTimeout(() => {
+      const g = ++gen.current;
       setPolls(polls + 1);
       void lookupOrder(orderNumber, emailRef.current).then((res) => {
-        if (res.ok) setPhase({ kind: 'success', order: res.order });
+        if (g === gen.current && res.ok) setPhase({ kind: 'success', order: res.order });
       });
     }, POLL_MS);
     return () => clearTimeout(timer);
@@ -94,7 +103,7 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
     <div aria-busy={phase.kind === 'loading'} className="mx-auto flex max-w-4xl flex-col gap-8 py-4">
       {/* שורת מצב אחת, קבועה — במקום להכריז מחדש על כל העמוד בכל שינוי סטטוס. */}
       <span aria-live="polite" className="sr-only">
-        {phase.kind === 'success' ? 'ההזמנה נטענה' : ''}
+        {phase.kind === 'success' ? (phase.order.pdfUrl ? 'החשבונית מוכנה להורדה' : 'ההזמנה נטענה') : ''}
       </span>
       {phase.kind === 'loading' && <OrderSkeleton />}
 
@@ -116,7 +125,12 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
       )}
 
       {phase.kind === 'success' && (
-        <SuccessView order={phase.order} invoiceStalled={polls >= POLL_MAX} onRefresh={() => void runLookup(emailRef.current)} />
+        <SuccessView
+          order={phase.order}
+          /* "נתקע" = נגמרו הניסיונות, או שה-ERP אומר שהחשבונית הופקה ואין URL. */
+          invoiceStalled={polls >= POLL_MAX || phase.order.invoiceStatus === 'generated'}
+          onRefresh={() => void runLookup(emailRef.current)}
+        />
       )}
     </div>
   );
