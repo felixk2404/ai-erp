@@ -24,7 +24,7 @@ export function LoginForm() {
           <span aria-hidden className="absolute -inset-1.5 rounded-xl bg-signal/25 blur-lg -z-10" />
         </span>
         <div>
-          <div className="mono text-[10px] tracking-[0.2em] text-signal/80">AI-ERP · CONSOLE</div>
+          <div lang="en" className="mono text-[10px] tracking-[0.2em] text-signal/80">AI-ERP · CONSOLE</div>
           <h1 className="font-heading text-[24px] leading-tight font-extrabold">איי.איי אלקטרוניקה</h1>
         </div>
       </div>

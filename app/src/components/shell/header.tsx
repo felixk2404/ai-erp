@@ -6,7 +6,11 @@ export function Header({ title, kicker, actions }: { title: string; kicker?: str
   return (
     <header className="flex flex-wrap items-end justify-between gap-x-4 gap-y-3 pb-6">
       <div>
-        {kicker && <div className="mono text-[10px] tracking-[0.18em] text-readout-3 mb-1">{kicker}</div>}
+        {kicker && (
+          <div lang="en" className="mono text-[10px] tracking-[0.18em] text-readout-3 mb-1">
+            {kicker}
+          </div>
+        )}
         <h1 className="font-heading text-[28px] font-extrabold leading-none">{title}</h1>
       </div>
       <div className="flex flex-wrap items-center gap-2">

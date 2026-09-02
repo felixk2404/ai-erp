@@ -25,7 +25,7 @@ function Brand({ compact = false }: { compact?: boolean }) {
         <span aria-hidden className="absolute -inset-1 rounded-lg bg-signal/20 blur-md -z-10" />
       </span>
       <div className="leading-tight">
-        <div className="mono text-[10px] tracking-[0.18em] text-signal/80">AI-ERP · CONSOLE</div>
+        <div lang="en" className="mono text-[10px] tracking-[0.18em] text-signal/80">AI-ERP · CONSOLE</div>
         <div className={`font-heading font-bold whitespace-nowrap ${compact ? 'text-sm' : 'text-[15px]'}`}>איי.איי אלקטרוניקה</div>
       </div>
     </div>
