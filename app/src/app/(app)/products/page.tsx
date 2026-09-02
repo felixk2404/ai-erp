@@ -41,7 +41,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
     (p) =>
       (!category || p.fields.Category === category) &&
       (!needle ||
-        p.fields.Name.toLowerCase().includes(needle) ||
+        (p.fields.Name ?? '').toLowerCase().includes(needle) ||
         (p.fields.Sku ?? '').toLowerCase().includes(needle) ||
         (p.fields.Description ?? '').toLowerCase().includes(needle)),
   );

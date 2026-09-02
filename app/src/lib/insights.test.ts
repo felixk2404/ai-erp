@@ -35,6 +35,12 @@ describe('statusBreakdown', () => {
     expect(rows.find((r) => r.status === 'paid')).toEqual({ status: 'paid', count: 2, total: 30 });
     expect(rows.find((r) => r.status === 'new')?.count).toBe(1);
   });
+
+  it('keeps a status that is not in the list instead of dropping it from the chart', () => {
+    const rows = statusBreakdown([inv({ Status: 'paid', Total: 10 }), inv({ Status: 'refunded' as Invoice['fields']['Status'], Total: 7 })]);
+    expect(rows.reduce((s, r) => s + r.count, 0)).toBe(2);
+    expect(rows.find((r) => r.status === 'refunded')).toEqual({ status: 'refunded', count: 1, total: 7 });
+  });
 });
 
 describe('leadsFunnel', () => {
@@ -84,6 +90,37 @@ describe('attentionItems', () => {
   });
   it('returns an empty list when everything is fine', () => {
     expect(attentionItems({ invoices: [inv({ Status: 'paid' })], leads: [], tasks: [], now })).toEqual([]);
+  });
+
+  it('flags records with a missing date instead of dropping them silently', () => {
+    const missing = undefined as unknown as string;
+    const items = attentionItems({
+      invoices: [inv({ id: 'nodate', InvoiceNumber: 'INV-0009', Status: 'generated', Created: missing })],
+      leads: [lead({ id: 'nodate', Name: 'רותם', Status: 'Contacted', Created: missing })],
+      tasks: [],
+      now,
+    });
+    expect(items).toHaveLength(2);
+    expect(items[0].href).toBe('/invoices/nodate');
+    expect(items.every((i) => !/NaN|undefined/.test(i.title))).toBe(true);
+  });
+
+  it('flags a priced invoice with no total — it is counted but adds 0 to revenue', () => {
+    const items = attentionItems({ invoices: [inv({ id: 'notot', Status: 'generated', Total: undefined })], leads: [], tasks: [], now });
+    expect(items).toHaveLength(1);
+    expect(items[0]).toMatchObject({ severity: 'amber', href: '/invoices/notot' });
+    // חשבונית חדשה עוד לא עברה חישוב מע״מ — לא מדווחים עליה
+    expect(attentionItems({ invoices: [inv({ Status: 'new', Total: undefined })], leads: [], tasks: [], now })).toEqual([]);
+  });
+
+  it('names a lead with no name instead of rendering undefined', () => {
+    const items = attentionItems({
+      invoices: [],
+      leads: [lead({ id: 'anon', Name: undefined as unknown as string, Status: 'Contacted', Created: '2026-08-10T00:00:00Z' })],
+      tasks: [],
+      now,
+    });
+    expect(items[0].title).not.toMatch(/undefined/);
   });
 });
 

@@ -14,4 +14,8 @@ describe('matchProducts', () => {
     expect(matchProducts('המק"ט TY-CB-HD21 במלאי', products).map((x) => x.id)).toEqual(['d']);
     expect(matchProducts('מדיניות ההחזרות היא 14 יום', products)).toEqual([]);
   });
+  it('ignores a catalog row with no name instead of failing the whole reply', () => {
+    const nameless = { id: 'x', createdTime: '', fields: { Name: undefined as unknown as string } } as Product;
+    expect(matchProducts('יש לנו את TY-200 במלאי', [nameless, ...products]).map((x) => x.id)).toEqual(['a']);
+  });
 });

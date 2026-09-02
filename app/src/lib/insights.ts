@@ -1,5 +1,5 @@
 import { monthKey } from './format';
-import { INVOICE_STATUSES, type Customer, type Invoice, type InvoiceStatus, type Lead, type Task } from './types';
+import { INVOICE_STATUSES, type Customer, type Invoice, type Lead, type Task } from './types';
 
 const HEB_MONTHS = ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', 'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'];
 const DAY = 24 * 60 * 60 * 1000;
@@ -27,13 +27,15 @@ export function revenueByMonth(invoices: Invoice[], months = 6, now = new Date()
   return rows;
 }
 
-export type StatusRow = { status: InvoiceStatus; count: number; total: number };
+export type StatusRow = { status: string; count: number; total: number };
 
+/** ספירה לפי סטטוס. סטטוס לא מוכר (אופציה שנוספה באיירטייבל) מקבל שורה משלו במקום להיעלם מהגרף. */
 export function statusBreakdown(invoices: Invoice[]): StatusRow[] {
   const rows: StatusRow[] = INVOICE_STATUSES.map((status) => ({ status, count: 0, total: 0 }));
   for (const i of invoices) {
-    const r = rows.find((x) => x.status === (i.fields.Status ?? 'new'));
-    if (!r) continue;
+    const status = i.fields.Status ?? 'new';
+    let r = rows.find((x) => x.status === status);
+    if (!r) rows.push((r = { status, count: 0, total: 0 }));
     r.count += 1;
     r.total += i.fields.Total ?? 0;
   }
@@ -80,20 +82,35 @@ export type AttentionItem = { kind: 'error' | 'overdue' | 'stale-lead'; severity
 const OVERDUE_DAYS = 14;
 const STALE_LEAD_DAYS = 7;
 
-/** מה דורש פעולה: חשבוניות שגויות, חשבוניות שלא שולמו מעל 14 יום, לידים שנשלח להם מייל ולא ענו מעל 7 ימים. */
+/** סטטוסים שאחריהם המע״מ כבר חושב — חשבונית כזו בלי Total היא כשל שקט בהכנסות. */
+const PRICED = new Set<string>(['validated', 'generated', 'paid']);
+
+/** מה דורש פעולה: חשבוניות שגויות, חשבוניות שלא שולמו מעל 14 יום, לידים שנשלח להם מייל ולא ענו מעל 7 ימים,
+ *  ורשומות עם נתון חסר — תאריך או סכום — שאחרת פשוט נעלמות מהחישוב ומהפאנל. */
 export function attentionItems({ invoices, leads, now = new Date() }: { invoices: Invoice[]; leads: Lead[]; tasks: Task[]; now?: Date }): AttentionItem[] {
   const items: AttentionItem[] = [];
   const ageDays = (iso: string) => Math.floor((now.getTime() - new Date(iso).getTime()) / DAY);
   for (const i of invoices) {
+    const age = ageDays(i.fields.Created);
+    const num = i.fields.InvoiceNumber ?? 'ללא מספר';
     if (i.fields.Status === 'error') {
-      items.push({ kind: 'error', severity: 'red', title: `חשבונית ${i.fields.InvoiceNumber ?? 'ללא מספר'} נכשלה באימות`, hint: i.fields.CustomerId, href: `/invoices/${i.id}` });
-    } else if (i.fields.Status === 'generated' && ageDays(i.fields.Created) >= OVERDUE_DAYS) {
-      items.push({ kind: 'overdue', severity: 'amber', title: `${i.fields.InvoiceNumber ?? 'חשבונית'} פתוחה ${ageDays(i.fields.Created)} ימים`, hint: i.fields.Total !== undefined ? `${i.fields.Total.toLocaleString('en-US', { minimumFractionDigits: 2 })} ₪` : undefined, href: `/invoices/${i.id}` });
+      items.push({ kind: 'error', severity: 'red', title: `חשבונית ${num} נכשלה באימות`, hint: i.fields.CustomerId, href: `/invoices/${i.id}` });
+    } else if (Number.isNaN(age)) {
+      items.push({ kind: 'error', severity: 'amber', title: `לחשבונית ${num} אין תאריך`, hint: 'בלי תאריך היא לא נספרת בהכנסות — השלימו אותו באיירטייבל', href: `/invoices/${i.id}` });
+    } else if (i.fields.Status === 'generated' && age >= OVERDUE_DAYS) {
+      items.push({ kind: 'overdue', severity: 'amber', title: `${i.fields.InvoiceNumber ?? 'חשבונית'} פתוחה ${age} ימים`, hint: i.fields.Total !== undefined ? `${i.fields.Total.toLocaleString('en-US', { minimumFractionDigits: 2 })} ₪` : undefined, href: `/invoices/${i.id}` });
+    } else if (i.fields.Total === undefined && PRICED.has(i.fields.Status ?? 'new')) {
+      items.push({ kind: 'error', severity: 'amber', title: `לחשבונית ${num} אין סכום כולל`, hint: 'המע״מ לא חושב — היא נספרת אבל מוסיפה 0 להכנסות', href: `/invoices/${i.id}` });
     }
   }
   for (const l of leads) {
-    if (l.fields.Status === 'Contacted' && ageDays(l.fields.Created) >= STALE_LEAD_DAYS) {
-      items.push({ kind: 'stale-lead', severity: 'amber', title: `${l.fields.Name} לא ענה ${ageDays(l.fields.Created)} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
+    if (l.fields.Status !== 'Contacted') continue;
+    const age = ageDays(l.fields.Created);
+    const name = l.fields.Name ?? 'ללא שם';
+    if (Number.isNaN(age)) {
+      items.push({ kind: 'stale-lead', severity: 'amber', title: `אין תאריך לליד ${name}`, hint: 'בלי תאריך אי אפשר לדעת כמה זמן הוא ממתין', href: '/leads?status=Contacted' });
+    } else if (age >= STALE_LEAD_DAYS) {
+      items.push({ kind: 'stale-lead', severity: 'amber', title: `${name} לא ענה ${age} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
     }
   }
   const rank = { red: 0, amber: 1 };

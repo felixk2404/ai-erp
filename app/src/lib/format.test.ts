@@ -17,4 +17,13 @@ describe('format', () => {
     expect(monthKey('2026-09-02T08:28:29.000Z')).toBe('2026-09');
     expect(monthKey('2026-08-31T22:30:00.000Z')).toBe('2026-09');
   });
+
+  it('survives a record whose date field Airtable never sent', () => {
+    // איירטייבל משמיט שדות ריקים לגמרי, אז Created יכול להגיע undefined למרות הטיפוס
+    const missing = undefined as unknown as string;
+    expect(monthKey(missing)).toBe('');
+    expect(monthKey('')).toBe('');
+    expect(dateIL(missing)).toBe('—');
+    expect(dateIL('לא תאריך')).toBe('—');
+  });
 });
