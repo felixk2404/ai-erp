@@ -45,10 +45,10 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 |---|---|---|
 | WF-Error | Error Trigger (מוגדר בכל workflow) | שגיאה בכל workflow → טלגרם למנהל |
 | WF1 אימות חשבוניות | Airtable Trigger, Invoices.Created, כל דקה | `api-test.sh` create Invoice → validated + INV-000N + מע"מ, או error; חשבונית שגויה → משימת "לתקן INV-…" |
-| WF2 לידים | Airtable Trigger, Leads.Created | ליד → New; מייל קיים → Duplicate |
+| WF2 לידים | Airtable Trigger, Leads.Created | כפילות לפי אימייל, ואם אין — לפי טלפון (digits-only compare); ליד → New; מייל קיים → Duplicate |
 | WF3 מכירות (מייל קר) | כל 3 שעות + `webhook.sh run-sales` | ליד New → מייל נשלח → Contacted |
 | WF4 מכירות (תשובות) | Gmail Trigger כל 30 דק' | תשובה מהליד → Qualified + משימת "להתקשר ל…" |
-| WF5 שירות לקוחות | Telegram @aielec_support_bot | שאלה על מדיניות/מוצר → תשובה מ-RAG |
+| WF5 שירות לקוחות | Telegram @aielec_support_bot | תפריט קטלוג בכפתורים (/menu), "מעוניין" יוצר ליד + משימה + הודעה לבעלים; טקסט חופשי → סוכן; שאלה על מדיניות/מוצר → תשובה מ-RAG |
 | WF6 מדיניות → RAG | `webhook.sh reindex-policies` | `rag-count.sh` → policy: ~79 |
 | WF7 מוצרים → RAG | `webhook.sh reindex-products` | `rag-count.sh` → product: 34 |
 | WF8 PDF | כל דקה, Invoices.Status=validated | PdfUrl בדרייב, Status generated |
@@ -60,6 +60,9 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **משימות (Tasks)**: תור פעולות אנושיות. WF10 יוצר "לשלוח ORD-…" לכל הזמנה פיזית ו"להזמין מלאי" כשמלאי יורד מתחת ל-3 (בלי כפילות לאותו מק"ט). WF4 יוצר "להתקשר ל…" לליד שענה. WF1 יוצר "לתקן INV-…" לחשבונית שגויה. `Source` + `RefId` מקשרים למסך היעד באפליקציה. סוכן המנהל מקבל `open_tasks`.
 
 פעולות WF13: `create` · `chat` · `update` · `support` · `order` (מריץ את WF10) · `order_status` (`{orderNumber,email}` → סטטוס ההזמנה + PdfUrl של החשבונית).
+
+- **תפריט טלגרם (WF5)**: `/start` או `/menu` פותח כפתורי קטגוריות → מוצרים → מפרט → "מעוניין". הלוגיקה ב-`n8n/code/classify.js` ו-`n8n/code/render-menu.js` (בדיקות: `node --test "n8n/code/*.test.js"`), מוזרקת ל-workflow בייבוא (`__CODE_NAME__`). המצב חי ב-`callback_data`; הטלפון מתחבר לליד לפי `TelegramChatId`. ליד מטלגרם: `Source=telegram`, בלי אימייל, ולכן WF3 לא שולח לו מייל קר.
+- כפתורי התפריט (`Edit Menu`, `Send Menu`, `Confirm Lead`) נשלחים ל-Telegram Bot API ישירות מצומתי HTTP Request, כי צומת ה-Telegram של n8n לא יכול לקבל מקלדת דינמית; טוקן הבוט מגיע לצמתים האלה דרך `$env.TELEGRAM_CUSTOMER_TOKEN`, ש-`n8n/docker-compose.yml` מזריק לקונטיינר מקובץ ה-env (git-ignored).
 
 ### 7.1 חוזה WF13 לחנות (מקור האמת)
 כל הקריאות: `POST https://<NGROK_DOMAIN>/webhook/erp`, `Content-Type: application/json`, header `x-erp-secret: <N8N_WEBHOOK_SECRET>`.

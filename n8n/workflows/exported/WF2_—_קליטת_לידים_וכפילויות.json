@@ -40,7 +40,7 @@
       "id": "00000000-0000-4000-8000-000000000000"
     },
     {
-      "name": "Same Email",
+      "name": "Same Email Or Phone",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -57,7 +57,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "={{ \"LOWER({Email})='\" + ($json.fields.Email || '').toLowerCase() + \"'\" }}"
+              "value": "={{ (() => { const q = (s) => String(s).replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\"); const e = ($json.fields.Email || '').trim().toLowerCase(); const p = ($json.fields.Phone || '').replace(/\\D/g, ''); if (e) return \"LOWER({Email})='\" + q(e) + \"'\"; if (p) return \"REGEX_REPLACE({Phone},\\\"[^0-9]\\\",\\\"\\\")='\" + q(p) + \"'\"; return 'FALSE()'; })() }}"
             },
             {
               "name": "fields[]",
@@ -147,14 +147,14 @@
       "main": [
         [
           {
-            "node": "Same Email",
+            "node": "Same Email Or Phone",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Same Email": {
+    "Same Email Or Phone": {
       "main": [
         [
           {
