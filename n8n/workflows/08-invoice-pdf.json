@@ -6,7 +6,7 @@
   },
   "nodes": [
     {
-      "name": "Every Minute",
+      "name": "Every 5 Minutes",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -18,11 +18,12 @@
           "interval": [
             {
               "field": "minutes",
-              "minutesInterval": 1
+              "minutesInterval": 5
             }
           ]
         }
-      }
+      },
+      "notes": "הרצה מלאה של חשבונית אחת נמדדה ב-64–312 שניות (הרצות 860/863/882/884/885/468). דקה אחת הייתה קצרה מהעבודה עצמה."
     },
     {
       "name": "Validated Invoices",
@@ -47,8 +48,80 @@
         },
         "filterByFormula": "{Status}='validated'",
         "returnAll": false,
-        "limit": 5,
+        "limit": 1,
         "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "name": "Claim Invoice",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        390,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "תופס את החשבונית לפני העבודה: הרצה מקבילה כבר לא תבחר אותה ולא ייווצר PDF כפול. ponytail: אם ההפקה נכשלת החשבונית נתקעת ב-generating — ההרצה נכשלת ו-WF-Error מתריע, שחרור ידני ב-Airtable.",
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_INVOICES__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Status": "generating"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
       },
       "credentials": {
         "airtableTokenApi": {
@@ -75,7 +148,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "={{ \"{CustomerId}='\" + ($json.fields.CustomerId || '') + \"'\" }}"
+              "value": "={{ \"{CustomerId}='\" + ($('Validated Invoices').first().json.fields.CustomerId || '') + \"'\" }}"
             },
             {
               "name": "maxRecords",
@@ -90,7 +163,10 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Build HTML",
@@ -119,7 +195,7 @@
               "id": "h",
               "name": "html",
               "type": "string",
-              "value": "=<!doctype html><html lang=\"he\" dir=\"rtl\"><head><meta charset=\"utf-8\"><link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap\" rel=\"stylesheet\"><style>body{font-family:Heebo,Arial,sans-serif;color:#111;margin:0;padding:48px}h1{margin:0;font-size:28px;color:#0f766e}.muted{color:#666;font-size:13px}table{width:100%;border-collapse:collapse;margin-top:32px}th,td{text-align:right;padding:12px;border-bottom:1px solid #e5e7eb}th{background:#f0fdfa;font-weight:700}.sum td{color:#444}.total td{font-size:18px;font-weight:700;border-top:2px solid #0f766e}.box{display:flex;justify-content:space-between;margin-top:32px}.foot{margin-top:56px;font-size:12px;color:#666}</style></head><body><div class=\"box\"><div><h1>חשבונית מס</h1><div class=\"muted\">מספר {{ $('Validated Invoices').item.json.fields.InvoiceNumber }} · מסמך ממוחשב</div></div><div style=\"text-align:left\"><img src=\"https://ai-erp-rho.vercel.app/brand/logo-mark.png\" alt=\"\" style=\"height:56px;display:block;margin:0 0 6px auto\"><strong>איי.איי אלקטרוניקה בע\"מ</strong><div class=\"muted\">AI Electronics · ח.פ. 51-000000-0</div><div class=\"muted\">תאריך: {{ ($('Validated Invoices').item.json.fields.Created || $now.toISO()).split('T')[0].split('-').reverse().join('/') }}</div></div></div><div class=\"box\"><div><strong>לכבוד</strong><div>{{ $json.records?.[0]?.fields?.Name || $('Validated Invoices').item.json.fields.CustomerId }}</div><div class=\"muted\">{{ $json.records?.[0]?.fields?.Email || '' }} {{ $json.records?.[0]?.fields?.Phone || '' }}</div><div class=\"muted\">מזהה לקוח: {{ $('Validated Invoices').item.json.fields.CustomerId }}</div></div></div><table><thead><tr><th>פירוט</th><th>כמות</th><th>מחיר</th><th>סה\"כ</th></tr></thead><tbody>{{ (() => { try { const esc = s => String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]); const f = n => Number(n).toLocaleString('he-IL', {minimumFractionDigits: 2}) + ' ₪'; return JSON.parse($('Validated Invoices').item.json.fields.Items || '[]').map(i => '<tr><td>' + esc(i.name) + ' <span class=\"muted\" dir=\"ltr\">' + esc(i.sku) + '</span></td><td>' + i.qty + '</td><td>' + f(i.price) + '</td><td>' + f(i.qty * i.price) + '</td></tr>').join(''); } catch (e) { return ''; } })() }}<tr class=\"sum\"><td colspan=\"3\">סה\"כ לפני מע\"מ</td><td>{{ Number($('Validated Invoices').item.json.fields.Amount).toLocaleString('he-IL', {minimumFractionDigits: 2}) }} ₪</td></tr><tr class=\"sum\"><td colspan=\"3\">מע\"מ {{ Math.round($('Validated Invoices').item.json.fields.VatAmount / $('Validated Invoices').item.json.fields.Amount * 100) }}%</td><td>{{ Number($('Validated Invoices').item.json.fields.VatAmount).toLocaleString('he-IL', {minimumFractionDigits: 2}) }} ₪</td></tr><tr class=\"total\"><td colspan=\"3\">סה\"כ לתשלום</td><td>{{ Number($('Validated Invoices').item.json.fields.Total).toLocaleString('he-IL', {minimumFractionDigits: 2}) }} ₪</td></tr></tbody></table><div class=\"foot\">מסמך זה הופק אוטומטית על ידי מערכת AI-ERP. המחירים כוללים מע\"מ כחוק. תודה שקניתם באיי.איי אלקטרוניקה.</div></body></html>"
+              "value": "=<!doctype html><html lang=\"he\" dir=\"rtl\"><head><meta charset=\"utf-8\"><link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap\" rel=\"stylesheet\"><style>body{font-family:Heebo,Arial,sans-serif;color:#111;margin:0;padding:48px}h1{margin:0;font-size:28px;color:#0f766e}.muted{color:#666;font-size:13px}table{width:100%;border-collapse:collapse;margin-top:32px}th,td{text-align:right;padding:12px;border-bottom:1px solid #e5e7eb}th{background:#f0fdfa;font-weight:700}.sum td{color:#444}.total td{font-size:18px;font-weight:700;border-top:2px solid #0f766e}.box{display:flex;justify-content:space-between;margin-top:32px}.foot{margin-top:56px;font-size:12px;color:#666}</style></head><body><div class=\"box\"><div><h1>חשבונית מס</h1><div class=\"muted\">מספר {{ $('Validated Invoices').item.json.fields.InvoiceNumber }} · מסמך ממוחשב</div></div><div style=\"text-align:left\"><img src=\"https://ai-erp-rho.vercel.app/brand/logo-mark.png\" alt=\"\" style=\"height:56px;display:block;margin:0 0 6px auto\"><strong>איי.איי אלקטרוניקה בע\"מ</strong><div class=\"muted\">AI Electronics · ח.פ. 51-000000-0</div><div class=\"muted\">תאריך: {{ ($('Validated Invoices').item.json.fields.Created || $now.toISO()).split('T')[0].split('-').reverse().join('/') }}</div></div></div><div class=\"box\"><div><strong>לכבוד</strong><div>{{ String($json.records?.[0]?.fields?.Name || $('Validated Invoices').item.json.fields.CustomerId).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]) }}</div><div class=\"muted\">{{ String($json.records?.[0]?.fields?.Email || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]) }} {{ String($json.records?.[0]?.fields?.Phone || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]) }}</div><div class=\"muted\">מזהה לקוח: {{ String($('Validated Invoices').item.json.fields.CustomerId || '').replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]) }}</div></div></div><table><thead><tr><th>פירוט</th><th>כמות</th><th>מחיר</th><th>סה\"כ</th></tr></thead><tbody>{{ (() => { try { const esc = s => String(s).replace(/[<>&]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;'})[c]); const f = n => Number(n).toLocaleString('he-IL', {minimumFractionDigits: 2}) + ' ₪'; return JSON.parse($('Validated Invoices').item.json.fields.Items || '[]').map(i => '<tr><td>' + esc(i.name) + ' <span class=\"muted\" dir=\"ltr\">' + esc(i.sku) + '</span></td><td>' + i.qty + '</td><td>' + f(i.price) + '</td><td>' + f(i.qty * i.price) + '</td></tr>').join(''); } catch (e) { return ''; } })() }}<tr class=\"sum\"><td colspan=\"3\">סה\"כ לפני מע\"מ</td><td>{{ Number($('Validated Invoices').item.json.fields.Amount).toLocaleString('he-IL', {minimumFractionDigits: 2}) }} ₪</td></tr><tr class=\"sum\"><td colspan=\"3\">מע\"מ {{ Math.round($('Validated Invoices').item.json.fields.VatAmount / ($('Validated Invoices').item.json.fields.Amount || 1) * 100) }}%</td><td>{{ Number($('Validated Invoices').item.json.fields.VatAmount).toLocaleString('he-IL', {minimumFractionDigits: 2}) }} ₪</td></tr><tr class=\"total\"><td colspan=\"3\">סה\"כ לתשלום</td><td>{{ Number($('Validated Invoices').item.json.fields.Total).toLocaleString('he-IL', {minimumFractionDigits: 2}) }} ₪</td></tr></tbody></table><div class=\"foot\">מסמך זה הופק אוטומטית על ידי מערכת AI-ERP. המחירים כוללים מע\"מ כחוק. תודה שקניתם באיי.איי אלקטרוניקה.</div></body></html>"
             }
           ]
         },
@@ -179,7 +255,10 @@
           },
           "timeout": 120000
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Upload to Drive",
@@ -324,22 +403,11 @@
     }
   ],
   "connections": {
-    "Every Minute": {
-      "main": [
-        [
-          {
-            "node": "Validated Invoices",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Validated Invoices": {
       "main": [
         [
           {
-            "node": "Customer",
+            "node": "Claim Invoice",
             "type": "main",
             "index": 0
           }
@@ -406,6 +474,28 @@
         [
           {
             "node": "Mark Generated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claim Invoice": {
+      "main": [
+        [
+          {
+            "node": "Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Validated Invoices",
             "type": "main",
             "index": 0
           }
