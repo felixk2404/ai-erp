@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
-import { cartReducer, totals as computeTotals, type Cart, type CartLine } from '@/lib/cart';
+import { cartReducer, parseStoredCart, totals as computeTotals, type Cart, type CartLine } from '@/lib/cart';
 
 const STORAGE_KEY = 'aie-cart-v1';
 
@@ -44,13 +44,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (hydrated.current) return;
     hydrated.current = true;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = raw ? (JSON.parse(raw) as Cart) : null;
-      if (parsed && Array.isArray(parsed.lines)) {
-        for (const line of parsed.lines) dispatch({ type: 'add', line });
-      }
+      // parseStoredCart drops any line that would turn the totals into NaN —
+      // see lib/cart.ts. Storage itself can still throw (Safari private mode).
+      for (const line of parseStoredCart(localStorage.getItem(STORAGE_KEY))) dispatch({ type: 'add', line });
     } catch {
-      // corrupt/unavailable storage: start from an empty cart
+      // unavailable storage: start from an empty cart
     }
     setReady(true);
   }, []);

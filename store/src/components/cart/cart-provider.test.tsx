@@ -115,6 +115,20 @@ describe('CartProvider', () => {
     expect(logOf()).toBe('added,max-qty');
   });
 
+  it('a poisoned stored line is dropped instead of turning the totals into NaN', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ lines: [{ sku: 'A', name: 'A', price: 10, qty: 2, service: false }, { sku: 'B', name: 'B', service: false }] })
+    );
+    render(
+      <CartProvider>
+        <Consumer />
+      </CartProvider>
+    );
+    await screen.findByText('true');
+    expect(screen.getByTestId('count').textContent).toBe('2');
+  });
+
   it('hydration is idempotent under StrictMode double-invoked effects', async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ lines: [{ sku: 'A', name: 'A', price: 10, qty: 2, service: false }] }));
     render(

@@ -22,3 +22,26 @@ export function totals(cart: Cart) {
   const total = round2(subtotal + shipping);
   return { subtotal, shipping, total, vat: round2(total - total / 1.18), count: cart.lines.reduce((s, l) => s + l.qty, 0), freeShippingGap: physical ? Math.max(0, round2(FREE_SHIPPING_FROM - subtotal)) : 0 };
 }
+
+/**
+ * `localStorage` הוא הגבול היחיד בפרויקט שלא היה מאומת: שורה בלי `price` או `qty`
+ * מחלחלת ל-`totals` ומייצרת `NaN ₪` בכל מקום, ואז נכתבת חזרה. השורות שנפסלו
+ * נזרקות בשקט — הרדיוסר ממילא חוסם את השאר (MAX_LINES/MAX_QTY).
+ */
+export function parseStoredCart(raw: string | null): CartLine[] {
+  if (!raw) return [];
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return [];
+  }
+  const lines = (parsed as { lines?: unknown } | null)?.lines;
+  if (!Array.isArray(lines)) return [];
+  return lines.filter((l): l is CartLine => {
+    const c = l as Partial<CartLine> | null;
+    return (
+      typeof c?.sku === 'string' && c.sku !== '' && typeof c.name === 'string' && Number.isFinite(c.price) && Number.isFinite(c.qty)
+    );
+  });
+}

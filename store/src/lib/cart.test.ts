@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cartReducer, totals, MAX_LINES, MAX_QTY, type Cart } from './cart';
+import { cartReducer, parseStoredCart, totals, MAX_LINES, MAX_QTY, type Cart } from './cart';
 const line = (sku: string, price: number, service = false) => ({ sku, name: sku, price, qty: 1, service });
 const empty: Cart = { lines: [] };
 describe('cart', () => {
@@ -26,5 +26,32 @@ describe('cart', () => {
     expect(totals({ lines: [{ ...line('A', 150), qty: 2 }] })).toMatchObject({ shipping: 0, total: 300, freeShippingGap: 0 });
     expect(totals({ lines: [line('S', 99, true)] })).toMatchObject({ shipping: 0, total: 99, freeShippingGap: 0 });
     expect(totals(empty)).toMatchObject({ subtotal: 0, shipping: 0, total: 0, count: 0 });
+  });
+});
+
+/**
+ * `localStorage` הוא גבול אמון: שורה שנשמרה בגרסה ישנה, או שנערכה ביד,
+ * מגיעה חזרה בלי `price` והופכת את כל הסכומים ל-`NaN ₪` — במגירה, ב-CTA
+ * ובסיכום ההזמנה — וגם נכתבת חזרה, כך שהמצב דביק בין רענונים.
+ */
+describe('parseStoredCart', () => {
+  const good = { sku: 'A', name: 'A', price: 10, qty: 2, service: false };
+  it('returns the lines of a well-formed cart', () => {
+    expect(parseStoredCart(JSON.stringify({ lines: [good] }))).toEqual([good]);
+  });
+  it('drops lines that would poison the totals', () => {
+    const raw = JSON.stringify({
+      lines: [good, { sku: 'B', name: 'B', qty: 1, service: false }, { sku: 'C', name: 'C', price: 5, service: false }, { name: 'D', price: 1, qty: 1 }, null, 'x'],
+    });
+    const lines = parseStoredCart(raw);
+    expect(lines).toEqual([good]);
+    expect(totals({ lines }).total).not.toBeNaN();
+  });
+  it('survives missing, malformed and wrongly-shaped storage', () => {
+    expect(parseStoredCart(null)).toEqual([]);
+    expect(parseStoredCart('not json')).toEqual([]);
+    expect(parseStoredCart('null')).toEqual([]);
+    expect(parseStoredCart(JSON.stringify({ lines: 'nope' }))).toEqual([]);
+    expect(parseStoredCart(JSON.stringify([good]))).toEqual([]);
   });
 });
