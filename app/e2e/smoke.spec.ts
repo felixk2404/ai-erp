@@ -37,15 +37,45 @@ test('all pages render with their heading', async ({ page }) => {
   }
 });
 
+const TASK_PREFIX = 'בדיקה אוטומטית';
+
+/**
+ * הבדיקה כותבת שורה אמיתית ל-Airtable. בלי הניקוי הזה כל הרצה משאירה משימה,
+ * והן מציפות את `open_tasks` של סוכן המנהל עד שהוא עונה מהן במקום מהמשימות האמיתיות.
+ * מנקה לפי תחילית, כך שגם שאריות מהרצות שנפלו באמצע נעלמות.
+ */
+async function deleteTestTasks() {
+  const pat = process.env.AIRTABLE_PAT;
+  const base = process.env.AIRTABLE_BASE_ID;
+  if (!pat || !base) return;
+  const headers = { Authorization: `Bearer ${pat}` };
+  const url = new URL(`https://api.airtable.com/v0/${base}/Tasks`);
+  url.searchParams.set('filterByFormula', `FIND('${TASK_PREFIX}', {Title}) = 1`);
+  const res = await fetch(url, { headers });
+  if (!res.ok) return;
+  const { records } = (await res.json()) as { records: { id: string }[] };
+  for (let i = 0; i < records.length; i += 10) {
+    const q = records
+      .slice(i, i + 10)
+      .map((r) => `records[]=${r.id}`)
+      .join('&');
+    await fetch(`https://api.airtable.com/v0/${base}/Tasks?${q}`, { method: 'DELETE', headers });
+  }
+}
+
 test('creates a task and toggles it done', async ({ page }) => {
   await page.goto('/tasks');
-  const title = `בדיקה אוטומטית ${Date.now()}`;
-  await page.getByPlaceholder('משימה חדשה').fill(title);
-  await page.getByRole('button', { name: 'הוסף' }).click();
-  const row = page.getByRole('checkbox', { name: title });
-  await expect(row).toBeVisible({ timeout: 20_000 });
-  await row.check();
-  await expect(page.getByText(title)).toHaveCSS('text-decoration-line', 'line-through', { timeout: 20_000 });
+  const title = `${TASK_PREFIX} ${Date.now()}`;
+  try {
+    await page.getByPlaceholder('משימה חדשה').fill(title);
+    await page.getByRole('button', { name: 'הוסף' }).click();
+    const row = page.getByRole('checkbox', { name: title });
+    await expect(row).toBeVisible({ timeout: 20_000 });
+    await row.check();
+    await expect(page.getByText(title)).toHaveCSS('text-decoration-line', 'line-through', { timeout: 20_000 });
+  } finally {
+    await deleteTestTasks();
+  }
 });
 
 test('manager chat answers in hebrew with a shekel amount', async ({ page }) => {
