@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
-import { ils } from '@/lib/format';
+import { ils, modelName } from '@/lib/format';
 import { EYEBROW } from '@/lib/ui';
 import type { ProductCardData } from '@/lib/catalog-filter';
 
@@ -38,7 +38,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                   transitionTypes={['nav-forward']}
                   className="line-clamp-1 text-body font-medium text-glow"
                 >
-                  {p.name}
+                  {modelName(p.name)}
                 </Link>
               </div>
               <p className="mt-1 line-clamp-2 text-body text-glow-3">{p.highlights[0]}</p>
@@ -115,7 +115,7 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
                       transitionTypes={['nav-forward']}
                       className="line-clamp-2 text-body text-glow-2 underline-offset-4 hover:text-glow hover:underline"
                     >
-                      {p.name}
+                      {modelName(p.name)}
                     </Link>
                   </td>
                   <td className={`${CELL} text-body whitespace-normal text-glow-3`}>

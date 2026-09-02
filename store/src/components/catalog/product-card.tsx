@@ -7,6 +7,7 @@ import { StockBadge } from '@/components/catalog/stock-badge';
 import { PriceButton } from '@/components/catalog/price-button';
 import { EYEBROW } from '@/lib/ui';
 import type { ProductCardData } from '@/lib/catalog-filter';
+import { modelName } from '@/lib/format';
 
 const SIZES = '(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw';
 
@@ -81,7 +82,7 @@ export function ProductCard({
               transitionTypes={['nav-forward']}
               className="after:absolute after:inset-0 after:content-['']"
             >
-              {name}
+              {modelName(name)}
             </Link>
           </h3>
           {specs.map((s) => (

@@ -8,7 +8,7 @@ import { StockBadge } from '@/components/catalog/stock-badge';
 import { AskBot } from '@/components/home/ask-bot';
 import { buttonVariants } from '@/components/ui/button';
 import { inStock } from '@/lib/catalog-filter';
-import { ils } from '@/lib/format';
+import { ils, modelName } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/lib/types';
 import { EYEBROW } from '@/lib/ui';
@@ -125,7 +125,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
               <span dir="ltr" className="num block text-meta tracking-[0.06em] text-glow-3">
                 {sku}
               </span>
-              <span className="mt-1 line-clamp-2 text-body leading-[1.3] font-medium text-glow">{f.Name}</span>
+              <span className="mt-1 line-clamp-2 text-body leading-[1.3] font-medium text-glow">{modelName(f.Name)}</span>
               <span className="mt-2 flex items-center justify-between gap-2 border-t border-rule pt-2">
                 <StockBadge ok={inStock(product)} />
                 <span className="num text-body text-glow">{ils(f.Price ?? 0)}</span>

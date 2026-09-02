@@ -64,7 +64,7 @@ export function PriceButton({
         const refusal = ADD_REFUSALS[add({ sku, name, price, qty: 1, service, imageUrl })];
         if (refusal) toast(refusal);
       }}
-      className={`${emphasis === 'beam' ? BEAM : REST} ${compact ? 'h-8 rounded-md px-3 text-body' : 'h-10 w-full rounded-md px-4 text-body'}`}
+      className={`${emphasis === 'beam' ? BEAM : REST} ${compact ? 'h-8 rounded-md px-3 text-body' : 'h-10 min-w-0 flex-1 rounded-md px-4 text-body'}`}
     >
       {compact ? (
         'הוסף לסל'

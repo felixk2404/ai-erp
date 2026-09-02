@@ -37,12 +37,12 @@ export function Quantity({
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
         transition={SPRING}
-        className="size-8 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
+        className="size-10 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
       >
         <MinusIcon size={14} strokeWidth={2} aria-hidden />
       </MotionButton>
 
-      <div className="relative h-8 w-9 overflow-hidden">
+      <div className="relative h-10 w-9 overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={value}
@@ -66,7 +66,7 @@ export function Quantity({
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
         transition={SPRING}
-        className="size-8 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
+        className="size-10 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
       >
         <PlusIcon size={14} strokeWidth={2} aria-hidden />
       </MotionButton>

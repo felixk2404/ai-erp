@@ -61,7 +61,7 @@ export function LookupForm({
         <Input
           id={orderId}
           dir="ltr"
-          className="num"
+          className="num h-11"
           placeholder="ORD-0001"
           value={orderNumber}
           readOnly={fixedOrderNumber !== undefined}
@@ -77,6 +77,7 @@ export function LookupForm({
           id={emailId}
           type="email"
           dir="ltr"
+          className="h-11"
           autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -89,7 +90,7 @@ export function LookupForm({
           {error}
         </p>
       )}
-      <Button type="submit">בדיקת סטטוס</Button>
+      <Button type="submit" className="h-11">בדיקת סטטוס</Button>
     </form>
   );
 }

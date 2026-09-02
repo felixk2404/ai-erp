@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRightIcon } from 'lucide-react';
+import { ArrowLeftIcon } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { EYEBROW } from '@/lib/ui';
 
@@ -22,7 +22,7 @@ export default function ProductNotFound() {
         transitionTypes={['nav-back']}
         className={buttonVariants({ className: 'mt-2 h-11 gap-1.5 rounded-md px-4 text-body' })}
       >
-        <ArrowRightIcon size={14} strokeWidth={2} aria-hidden />
+        <ArrowLeftIcon size={14} strokeWidth={2} aria-hidden />
         לכל המוצרים
       </Link>
     </div>

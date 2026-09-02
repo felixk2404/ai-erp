@@ -7,7 +7,7 @@ import { motion } from 'motion/react';
 import { XIcon } from 'lucide-react';
 import { Quantity } from '@/components/cart/quantity';
 import type { CartLine as Line } from '@/lib/cart';
-import { ils } from '@/lib/format';
+import { ils, modelName } from '@/lib/format';
 import { EYEBROW } from '@/lib/ui';
 
 /**
@@ -60,7 +60,7 @@ export function CartLine({
             onClick={onNavigate}
             className="line-clamp-2 flex-1 text-sm leading-snug font-medium text-glow transition-colors hover:text-beam"
           >
-            {line.name}
+            {modelName(line.name)}
           </Link>
           <button
             type="button"
