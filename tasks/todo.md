@@ -6,13 +6,23 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] 2. Final renders: Nano Banana Pro mark → Bria background removal; gpt-image-2 edit for the ELECTRONICS lockup (dark + cutout).
 - [x] 3. Assets in app/public/brand: logo-mark.png (transparent 1024), logo-lockup.png (transparent), logo-lockup-dark.png, telegram-avatar.png. Old logo.png removed.
 - [x] 4. Wired: sidebar (desktop + mobile), login, /support header, favicon (layout.tsx), WF8 invoice PDF header (img from ai-erp-rho.vercel.app/brand/logo-mark.png).
-- [ ] 5. WF8 import to n8n — two attempts failed on sqlite lock / "Database is not ready", retrying.
-- [ ] 6. Browser check: /support OK (logo in header). Login + dashboard sidebar pending.
-- [ ] 7. Commit only logo files (another session is committing concurrently in this repo).
+- [x] 5. WF8 imported to n8n (id wNxCRwm0N2F6Z8TS, active). Needed a container restart: sqlite mutex deadlock, recovery took ~5 min.
+- [x] 6. Browser check passed: login, dashboard sidebar, /support locally; /support on production after deploy.
+- [x] 7. Logo files went out inside the night-console session's commit 260f0be; WF8 header committed separately as c5d132c. Live on production.
 - [ ] 8. Telegram: Felix uploads telegram-avatar.png via BotFather /setuserpic (manual).
 
 ## Skipped
 - Flat SVG version: PNG cutout reads fine at 16px; add an SVG only if print/vector is ever needed.
 
 ## Review
-(fill after done)
+לוגו החברה הוחלף בכל המערכת. הישן (ספר חשבוניות שטוח) הוחלף בסמל AI תלת-ממדי: סרט טיטניום מקופל, להב I, כדור כחול בקודקוד, וכיתוב ELECTRONICS מתחת. שלושה סבבי קונספט עד שהכיוון התכנס (שטוח מעגל מודפס, שטוח עתידני, ואז תלת-ממד). ההפקה: Nano Banana Pro לסמל, gpt-image-2/edit לכיתוב, Bria להסרת רקע.
+מה שנשאר ידני: אווטאר הבוטים בטלגרם דרך BotFather /setuserpic.
+
+## תוכנית 5 — Night Console (סשן העיצוב, 2026-09-02) — הושלם ונפרס
+- [x] T1–T6: docs/superpowers/plans/2026-09-02-05-night-console.md · commits 260f0be, f2b02c5.
+- ירוק: build, typecheck, lint, vitest 50/50. e2e מול פרודקשן https://ai-erp-rho.vercel.app: **9/9**. מקומית "support page" נופל רק כש-n8n מחזיר 503.
+- נפרס 17:25 (ai-frl1ioxtq, target production). env `N8N_API_URL/KEY` סונכרנו ל-Vercel (production + preview) — פיד חי ומפת מערכת ONLINE בפרודקשן.
+- באג שנתפס באימות ותוקן: `startedAt:null` מ-n8n הפיל את הדשבורד (`n8n-health.ts` + בדיקה).
+- rtl-qa: header wrap בנייד, ניווט נייד scrollIntoView+fade, עמודות משניות מוסתרות בנייד, יעדי לחיצה 44px במגע, גרש בחודשים, "פריט אחד".
+- משוב "חשוך מדי": משטחים/טקסט/קווים הוארו, תוויות מטא 12px.
+- ידוע/לא שלנו: אזהרת hydration `caret-color` בשדה סיסמה בלוגין (Base UI, dev בלבד, קיימת מלפני).
