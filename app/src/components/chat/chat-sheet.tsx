@@ -10,7 +10,7 @@ export function ChatSheet() {
     <Sheet>
       <SheetTrigger render={<Button variant="outline" />}>שאל את המנהל</SheetTrigger>
       <SheetContent side="left" dir="rtl" className="w-[420px] sm:max-w-[420px] flex flex-col p-5">
-        <SheetHeader className="p-0 text-start">
+        <SheetHeader className="p-0 pe-8 text-start">
           <SheetTitle>סוכן המנהל</SheetTitle>
           <SheetDescription>שאלות על הכנסות, חשבוניות, לידים ומשימות — מהנתונים החיים.</SheetDescription>
         </SheetHeader>

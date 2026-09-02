@@ -1,5 +1,5 @@
 // צילומי מסך של כל המסכים (desktop + mobile) אחרי login. מתוך app/: OUT=<dir> node e2e/screens.mjs
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 const env = Object.fromEntries(

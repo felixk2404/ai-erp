@@ -118,14 +118,14 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         {products.length === 0 ? (
           <EmptyState title="אין מוצרים" hint={q || category ? 'נסה סינון אחר' : 'הוסף מוצר ראשון'} />
         ) : (
-          <Table>
+          <Table className="table-fixed">
             <TableHeader>
               <TableRow>
-                <TableHead>שם</TableHead>
-                <TableHead>קטגוריה</TableHead>
-                <TableHead>מחיר</TableHead>
-                <TableHead>מלאי</TableHead>
-                <TableHead className="w-[40%]">תיאור</TableHead>
+                <TableHead className="w-[22%]">שם</TableHead>
+                <TableHead className="w-[12%]">קטגוריה</TableHead>
+                <TableHead className="w-[12%]">מחיר</TableHead>
+                <TableHead className="w-[14%]">מלאי</TableHead>
+                <TableHead className="w-[40%] max-w-[420px]">תיאור</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -150,8 +150,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                       {p.fields.InStock ? 'במלאי' : 'אין במלאי'}
                     </ActionButton>
                   </TableCell>
-                  <TableCell className="text-ink-2 text-sm">
-                    <span className="line-clamp-2" title={p.fields.Description}>
+                  <TableCell className="text-ink-2 text-sm max-w-[420px]">
+                    <span className="line-clamp-2 break-words" title={p.fields.Description}>
                       {p.fields.Description ?? '—'}
                     </span>
                   </TableCell>

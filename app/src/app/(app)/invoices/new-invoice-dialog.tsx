@@ -30,7 +30,7 @@ export function NewInvoiceDialog({ customers }: { customers: CustomerOption[] })
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button />}>חשבונית חדשה</DialogTrigger>
       <DialogContent dir="rtl">
-        <DialogHeader className="text-start">
+        <DialogHeader className="text-start pe-8">
           <DialogTitle>חשבונית חדשה</DialogTitle>
           <DialogDescription>המע״מ (18%) והמספר הרץ מחושבים אוטומטית על ידי n8n.</DialogDescription>
         </DialogHeader>

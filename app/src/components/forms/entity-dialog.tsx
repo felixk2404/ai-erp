@@ -40,7 +40,7 @@ export function EntityDialog({ trigger, title, description, action, successMessa
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button />}>{trigger}</DialogTrigger>
       <DialogContent dir="rtl">
-        <DialogHeader className="text-start">
+        <DialogHeader className="text-start pe-8">
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
