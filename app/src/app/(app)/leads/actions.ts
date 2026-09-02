@@ -13,7 +13,7 @@ export async function createLead(_prev: FormState, fd: FormData): Promise<FormSt
   const parsed = parseLeadForm(fd);
   if (!parsed.ok) return { errors: parsed.errors };
   try {
-    await erpCreate<LeadFields>('Leads', parsed.data);
+    await erpCreate<LeadFields>('Leads', { ...parsed.data, Source: 'manual' });
   } catch (e) {
     return { error: msg(e, 'שגיאה ביצירת הליד') };
   }

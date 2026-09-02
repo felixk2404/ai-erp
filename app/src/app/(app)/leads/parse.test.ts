@@ -11,8 +11,23 @@ describe('parseLeadForm', () => {
   it('accepts name + email, trims, and drops an empty company', () => {
     expect(parseLeadForm(fd({ Name: ' דנה ', Email: 'dana@example.com', Company: '' }))).toEqual({
       ok: true,
-      data: { Name: 'דנה', Email: 'dana@example.com', Company: undefined },
+      data: { Name: 'דנה', Email: 'dana@example.com', Company: undefined, Phone: undefined },
     });
+  });
+
+  it('accepts an israeli phone with or without dash and strips spaces', () => {
+    const r = parseLeadForm(fd({ Name: 'דנה', Email: 'dana@example.com', Phone: '050 123 4567' }));
+    expect(r.ok && r.data.Phone).toBe('0501234567');
+    const r2 = parseLeadForm(fd({ Name: 'דנה', Email: 'dana@example.com', Phone: '03-1234567' }));
+    expect(r2.ok && r2.data.Phone).toBe('03-1234567');
+  });
+
+  it('drops an empty phone and rejects a bad one', () => {
+    const r = parseLeadForm(fd({ Name: 'דנה', Email: 'dana@example.com', Phone: '' }));
+    expect(r.ok && r.data.Phone).toBeUndefined();
+    const bad = parseLeadForm(fd({ Name: 'דנה', Email: 'dana@example.com', Phone: '12345' }));
+    expect(bad.ok).toBe(false);
+    if (!bad.ok) expect(bad.errors.Phone).toBe('טלפון לא תקין');
   });
 
   it('keeps a company when given', () => {

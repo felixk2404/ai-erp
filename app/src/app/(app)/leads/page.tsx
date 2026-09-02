@@ -3,6 +3,7 @@ import { list, escapeFormula } from '@/lib/airtable';
 import { dateIL } from '@/lib/format';
 import { LEAD_STATUSES, type LeadFields } from '@/lib/types';
 import { statusMeta } from '@/lib/status';
+import { leadSourceLabel } from '@/lib/lead-source';
 import { Header } from '@/components/shell/header';
 import { StatusLed } from '@/components/status-led';
 import { EmptyState } from '@/components/empty-state';
@@ -56,6 +57,11 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   <Label htmlFor="lead-company">חברה</Label>
                   <Input id="lead-company" name="Company" />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lead-phone">טלפון</Label>
+                  <Input id="lead-phone" name="Phone" type="tel" dir="ltr" placeholder="050-1234567" />
+                  <FieldError name="Phone" />
+                </div>
               </>
             </EntityDialog>
           </>
@@ -90,6 +96,8 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                 <TableHead>שם</TableHead>
                 <TableHead>חברה</TableHead>
                 <TableHead>אימייל</TableHead>
+                <TableHead>טלפון</TableHead>
+                <TableHead>מקור</TableHead>
                 <TableHead>נוצר</TableHead>
                 <TableHead>סטטוס</TableHead>
                 <TableHead className="w-40">שינוי</TableHead>
@@ -102,6 +110,13 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                   <TableCell className="text-ink-2">{l.fields.Company ?? '—'}</TableCell>
                   <TableCell dir="ltr" className="text-ink-2 text-end">
                     {l.fields.Email ?? '—'}
+                  </TableCell>
+                  <TableCell dir="ltr" className="num text-ink-2 text-end">
+                    {l.fields.Phone ?? '—'}
+                  </TableCell>
+                  <TableCell className="text-ink-2">
+                    {leadSourceLabel(l.fields.Source)}
+                    {l.fields.Note && <span className="block text-xs text-ink-3">{l.fields.Note}</span>}
                   </TableCell>
                   <TableCell className="num text-ink-2">{dateIL(l.fields.Created)}</TableCell>
                   <TableCell>
