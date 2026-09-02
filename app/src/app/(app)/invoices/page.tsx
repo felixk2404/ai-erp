@@ -12,6 +12,7 @@ import { markPaid } from './actions';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Shared } from '@/components/motion/page-transition';
 
 export const dynamic = 'force-dynamic';
 
@@ -93,7 +94,13 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
             <TableBody>
               {invoices.map((i) => (
                 <TableRow key={i.id}>
-                  <TableCell className="num font-medium">{i.fields.InvoiceNumber ?? '—'}</TableCell>
+                  <TableCell className="num font-medium">
+                    <Shared name={`invoice-${i.id}`}>
+                      <Link href={`/invoices/${i.id}`} transitionTypes={['nav-forward']} className="hover:text-inkblue">
+                        {i.fields.InvoiceNumber ?? '—'}
+                      </Link>
+                    </Shared>
+                  </TableCell>
                   <TableCell>
                     {nameById.get(i.fields.CustomerId) ?? i.fields.CustomerId}
                     <div className="text-xs text-ink-3 num">{i.fields.CustomerId}</div>

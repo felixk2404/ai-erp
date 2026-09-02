@@ -38,6 +38,11 @@ export async function erpChat(message: string, sessionId: string): Promise<strin
   return (await post<{ reply: string }>('erp', { action: 'chat', message, sessionId })).reply;
 }
 
+/** סוכן שירות הלקוחות (RAG) — אותו סוכן כמו בטלגרם, דרך WF13. */
+export async function erpSupport(message: string, sessionId: string): Promise<string> {
+  return (await post<{ reply: string }>('erp', { action: 'support', message, sessionId })).reply;
+}
+
 export type WebhookPath = 'reindex-products' | 'reindex-policies' | 'run-sales';
 
 export function runWebhook<T = Record<string, unknown>>(path: WebhookPath): Promise<Envelope<T>> {

@@ -13,7 +13,7 @@ import { FieldError } from '@/components/forms/field-error';
 
 export type CustomerOption = { id: string; label: string };
 
-export function NewInvoiceDialog({ customers }: { customers: CustomerOption[] }) {
+export function NewInvoiceDialog({ customers, defaultCustomerId }: { customers: CustomerOption[]; defaultCustomerId?: string }) {
   const [open, setOpen] = useState(false);
   const [state, action] = useActionState<FormState, FormData>(async (prev, fd) => {
     const result = await createInvoice(prev, fd);
@@ -37,7 +37,7 @@ export function NewInvoiceDialog({ customers }: { customers: CustomerOption[] })
         <form action={action} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="CustomerId">לקוח</Label>
-            <Select name="CustomerId">
+            <Select name="CustomerId" defaultValue={defaultCustomerId}>
               <SelectTrigger id="CustomerId" className="w-full">
                 <SelectValue placeholder="בחר לקוח" />
               </SelectTrigger>

@@ -1,0 +1,101 @@
+import { monthKey } from './format';
+import { INVOICE_STATUSES, type Customer, type Invoice, type InvoiceStatus, type Lead, type Task } from './types';
+
+const HEB_MONTHS = ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'];
+const DAY = 24 * 60 * 60 * 1000;
+
+const isValid = (i: Invoice) => i.fields.Status !== 'error';
+
+export type MonthRow = { month: string; label: string; total: number; count: number };
+
+/** הכנסות לפי חודש, N חודשים אחרונים כולל ריקים, מהישן לחדש. */
+export function revenueByMonth(invoices: Invoice[], months = 6, now = new Date()): MonthRow[] {
+  const rows: MonthRow[] = [];
+  const [y0, m0] = monthKey(now.toISOString()).split('-').map(Number);
+  for (let k = months - 1; k >= 0; k--) {
+    const d = new Date(Date.UTC(y0, m0 - 1 - k, 1));
+    const month = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+    rows.push({ month, label: HEB_MONTHS[d.getUTCMonth()], total: 0, count: 0 });
+  }
+  const byMonth = new Map(rows.map((r) => [r.month, r]));
+  for (const i of invoices.filter(isValid)) {
+    const r = byMonth.get(monthKey(i.fields.Created));
+    if (!r) continue;
+    r.total += i.fields.Total ?? 0;
+    r.count += 1;
+  }
+  return rows;
+}
+
+export type StatusRow = { status: InvoiceStatus; count: number; total: number };
+
+export function statusBreakdown(invoices: Invoice[]): StatusRow[] {
+  const rows: StatusRow[] = INVOICE_STATUSES.map((status) => ({ status, count: 0, total: 0 }));
+  for (const i of invoices) {
+    const r = rows.find((x) => x.status === (i.fields.Status ?? 'new'));
+    if (!r) continue;
+    r.count += 1;
+    r.total += i.fields.Total ?? 0;
+  }
+  return rows;
+}
+
+export type Funnel = { stages: { status: 'New' | 'Contacted' | 'Qualified'; count: number }[]; other: Record<string, number>; conversion: number };
+
+/** משפך: New → Contacted → Qualified. conversion = Qualified מתוך כל מי שבמשפך. */
+export function leadsFunnel(leads: Lead[]): Funnel {
+  const count = { New: 0, Contacted: 0, Qualified: 0 } as Record<'New' | 'Contacted' | 'Qualified', number>;
+  const other: Record<string, number> = {};
+  for (const l of leads) {
+    const s = l.fields.Status ?? 'New';
+    if (s in count) count[s as keyof typeof count] += 1;
+    else other[s] = (other[s] ?? 0) + 1;
+  }
+  const inFunnel = count.New + count.Contacted + count.Qualified;
+  return {
+    stages: (['New', 'Contacted', 'Qualified'] as const).map((status) => ({ status, count: count[status] })),
+    other,
+    conversion: inFunnel ? Math.round((count.Qualified / inFunnel) * 100) : 0,
+  };
+}
+
+export type TopCustomer = { customerId: string; name: string; href: string; total: number; count: number };
+
+export function topCustomers(invoices: Invoice[], customers: Customer[], limit = 5): TopCustomer[] {
+  const byId = new Map(customers.map((c) => [c.fields.CustomerId, c]));
+  const agg = new Map<string, TopCustomer>();
+  for (const i of invoices.filter(isValid)) {
+    const id = i.fields.CustomerId;
+    const c = byId.get(id);
+    const row = agg.get(id) ?? { customerId: id, name: c?.fields.Name ?? id, href: c ? `/customers/${c.id}` : '/customers', total: 0, count: 0 };
+    row.total += i.fields.Total ?? 0;
+    row.count += 1;
+    agg.set(id, row);
+  }
+  return [...agg.values()].sort((a, b) => b.total - a.total).slice(0, limit);
+}
+
+export type AttentionItem = { kind: 'error' | 'overdue' | 'stale-lead'; severity: 'red' | 'amber'; title: string; hint?: string; href: string };
+
+const OVERDUE_DAYS = 14;
+const STALE_LEAD_DAYS = 7;
+
+/** מה דורש פעולה: חשבוניות שגויות, חשבוניות שלא שולמו מעל 14 יום, לידים שנשלח להם מייל ולא ענו מעל 7 ימים. */
+export function attentionItems({ invoices, leads, now = new Date() }: { invoices: Invoice[]; leads: Lead[]; tasks: Task[]; now?: Date }): AttentionItem[] {
+  const items: AttentionItem[] = [];
+  const ageDays = (iso: string) => Math.floor((now.getTime() - new Date(iso).getTime()) / DAY);
+  for (const i of invoices) {
+    if (i.fields.Status === 'error') {
+      items.push({ kind: 'error', severity: 'red', title: `חשבונית ${i.fields.InvoiceNumber ?? 'ללא מספר'} נכשלה באימות`, hint: i.fields.CustomerId, href: `/invoices/${i.id}` });
+    } else if (i.fields.Status === 'generated' && ageDays(i.fields.Created) >= OVERDUE_DAYS) {
+      items.push({ kind: 'overdue', severity: 'amber', title: `${i.fields.InvoiceNumber ?? 'חשבונית'} פתוחה ${ageDays(i.fields.Created)} ימים`, hint: i.fields.Total !== undefined ? `${i.fields.Total.toLocaleString('en-US', { minimumFractionDigits: 2 })} ₪` : undefined, href: `/invoices/${i.id}` });
+    }
+  }
+  for (const l of leads) {
+    if (l.fields.Status === 'Contacted' && ageDays(l.fields.Created) >= STALE_LEAD_DAYS) {
+      items.push({ kind: 'stale-lead', severity: 'amber', title: `${l.fields.Name} לא ענה ${ageDays(l.fields.Created)} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
+    }
+  }
+  const rank = { red: 0, amber: 1 };
+  return items.sort((a, b) => rank[a.severity] - rank[b.severity]);
+}

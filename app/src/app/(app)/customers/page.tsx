@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { list } from '@/lib/airtable';
 import type { CustomerFields, InvoiceFields } from '@/lib/types';
 import { Header } from '@/components/shell/header';
@@ -78,7 +79,11 @@ export default async function CustomersPage() {
                 return (
                   <TableRow key={c.id}>
                     <TableCell className="num text-ink-2">{c.fields.CustomerId}</TableCell>
-                    <TableCell className="font-medium">{c.fields.Name}</TableCell>
+                    <TableCell className="font-medium">
+                      <Link href={`/customers/${c.id}`} transitionTypes={['nav-forward']} className="hover:text-inkblue">
+                        {c.fields.Name}
+                      </Link>
+                    </TableCell>
                     <TableCell dir="ltr" className="text-ink-2 text-start">
                       {c.fields.Email ?? '—'}
                     </TableCell>

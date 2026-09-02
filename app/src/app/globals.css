@@ -149,3 +149,38 @@
 @utility num {
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- View Transitions (React <ViewTransition/>) ---------- */
+:root {
+  --vt-exit: 150ms;
+  --vt-enter: 220ms;
+}
+@keyframes vt-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes vt-slide-in-start {
+  from { transform: translateX(-24px); }
+  to { transform: translateX(0); }
+}
+@keyframes vt-slide-in-end {
+  from { transform: translateX(24px); }
+  to { transform: translateX(0); }
+}
+/* RTL: "קדימה" = התוכן החדש מגיע מהצד הרחוק (שמאל) */
+::view-transition-old(.nav-forward) { animation: var(--vt-exit) ease-in both vt-fade reverse; }
+::view-transition-new(.nav-forward) {
+  animation: var(--vt-enter) cubic-bezier(0.23, 1, 0.32, 1) var(--vt-exit) both vt-fade, var(--vt-enter) cubic-bezier(0.23, 1, 0.32, 1) var(--vt-exit) both vt-slide-in-start;
+}
+::view-transition-old(.nav-back) { animation: var(--vt-exit) ease-in both vt-fade reverse; }
+::view-transition-new(.nav-back) {
+  animation: var(--vt-enter) cubic-bezier(0.23, 1, 0.32, 1) var(--vt-exit) both vt-fade, var(--vt-enter) cubic-bezier(0.23, 1, 0.32, 1) var(--vt-exit) both vt-slide-in-end;
+}
+::view-transition-group(.morph) { animation-duration: 260ms; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
