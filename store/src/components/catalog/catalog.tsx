@@ -1,7 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { LayoutGridIcon, Rows3Icon, SearchIcon, SearchXIcon, XIcon } from 'lucide-react';
 import { Reveal } from '@/components/motion/reveal';
@@ -47,8 +46,6 @@ export function Catalog({
   categories: string[];
   initial: CatalogParams;
 }) {
-  const router = useRouter();
-  const [, startTransition] = useTransition();
   const [c, setC] = useState(initial.c);
   const [q, setQ] = useState(initial.q);
   const [sort, setSort] = useState<Sort>(initial.sort);
@@ -61,6 +58,10 @@ export function Catalog({
   const lead = plan.lead ? pickLead(results) : null;
   const ordered = lead ? [lead, ...results.filter((x) => x !== lead)] : results;
 
+  // ה-URL מתעדכן בלי רשת: הסינון קורה כאן, על 34 הפריטים שכבר בזיכרון, ואילו
+  // `router.replace` היה מוריד מחדש את כל ה-RSC של מסלול דינמי כדי לקבל בדיוק
+  // את אותם כרטיסים. `history.replaceState` מסונכרן עם ה-App Router מאז 14.1.
+  // ההשהיה נשארת רק להקלדה, שאחרת כותבת ערך להיסטוריה בכל תו.
   const prev = useRef<CatalogParams | null>(null);
   useEffect(() => {
     const next: CatalogParams = { c, q, sort, view };
@@ -69,12 +70,12 @@ export function Catalog({
     if (!before) return;
     const qs = catalogQuery(next);
     const url = qs ? `/products?${qs}` : '/products';
-    if (before.c === c && before.sort === sort && before.view === view) {
+    if (before.q !== q) {
       const id = setTimeout(() => window.history.replaceState(null, '', url), 300);
       return () => clearTimeout(id);
     }
-    startTransition(() => router.replace(url, { scroll: false }));
-  }, [c, q, sort, view, router]);
+    window.history.replaceState(null, '', url);
+  }, [c, q, sort, view]);
 
   // הדהייה בקצה רשימת הקטגוריות היא רמז שיש עוד — ולכן מוצגת רק כשבאמת יש עוד.
   const [overflows, setOverflows] = useState(false);
