@@ -1,6 +1,6 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { renderMenu } = require('./render-menu.js');
+const { renderMenu, S } = require('./render-menu.js');
 
 const products = [
   { Name: 'מסך 27 אינץ\' TY-Vision', Sku: 'TY-MN-27Q', Category: 'מסכים', Price: 1290, Stock: 3, Highlights: 'פאנל IPS\n165Hz\nQHD\nרביעי לא נכנס' },
@@ -15,9 +15,17 @@ test('home lists categories alphabetically plus free question', () => {
   assert.deepEqual(buttons(m.keyboard), [[['כבלים', 'cat:כבלים']], [['מסכים', 'cat:מסכים']], [['שירותים', 'cat:שירותים']], [['שאלה חופשית', 'ask']]]);
 });
 
-test('category lists products with price, marks out of stock, has back', () => {
+test('an opening /start introduces the store, a menu reached from inside the conversation does not', () => {
+  assert.equal(renderMenu('home', products).text, 'היי, כאן איי.איי אלקטרוניקה. אפשר לעיין בקטלוג או לשאול כל שאלה.');
+  const again = renderMenu('home', products, true);
+  assert.equal(again.text, 'במה נעזור?');
+  assert.ok(again.text.length < renderMenu('home', products).text.length);
+  assert.deepEqual(buttons(again.keyboard), buttons(renderMenu('home', products).keyboard));
+});
+
+test('category lists products with price, marks out of stock, and offers the way back', () => {
   const m = renderMenu('cat:כבלים', products);
-  assert.deepEqual(buttons(m.keyboard), [[['כבל HDMI 2.1 · 59 ₪ (אזל)', 'p:TY-CB-HD21']], [['חזרה', 'home']]]);
+  assert.deepEqual(buttons(m.keyboard), [[['כבל HDMI 2.1 · 59 ₪ (אזל)', 'p:TY-CB-HD21']], [['תפריט ראשי', 'home']]]);
 });
 
 test('product shows sku, price, up to 3 highlights, stock line, and buttons', () => {
@@ -33,17 +41,37 @@ test('service is always available and html is escaped', () => {
   assert.ok(m.text.endsWith('שירות — זמין תמיד'));
 });
 
-test('lead action carries the product and a home button', () => {
+test('lead action says what was done and what happens next, and carries the product', () => {
   const m = renderMenu('lead:TY-CB-HD21', products);
   assert.equal(m.action, 'lead');
-  assert.equal(m.text, 'מעולה, רשמנו שאתם מתעניינים בכבל HDMI 2.1.');
+  assert.equal(m.text, 'רשמנו. נחזור אליכם עם פרטים על כבל HDMI 2.1.');
   assert.deepEqual(m.product, { name: 'כבל HDMI 2.1', sku: 'TY-CB-HD21' });
 });
 
 test('unknown sku or category falls back to home with a note', () => {
   assert.equal(renderMenu('p:NOPE', products).text, 'המוצר כבר לא זמין.');
   assert.equal(renderMenu('cat:אין', products).text, 'הקטגוריה כבר לא זמינה.');
-  assert.equal(renderMenu('ask', products).text, 'כתבו כאן כל שאלה ונענה מיד.');
+  assert.equal(renderMenu('ask', products).text, 'כתבו כאן מה מחפשים ונענה.');
+});
+
+test('no screen is a dead end: the same way back sits last on every screen below home', () => {
+  for (const d of ['ask', 'cat:כבלים', 'p:TY-MN-27Q', 'lead:TY-CB-HD21']) {
+    const rows = buttons(renderMenu(d, products, true).keyboard);
+    const last = rows[rows.length - 1];
+    assert.deepEqual(last[last.length - 1], ['תפריט ראשי', 'home'], d);
+  }
+  // מסכי הנפילה מחזירים לתפריט עצמו, ולכן הם נושאים את כפתורי הבית
+  const homeKeys = buttons(renderMenu('home', products).keyboard).flat().map((b) => b[1]);
+  for (const d of ['p:NOPE', 'cat:אין', 'לא קיים']) assert.deepEqual(buttons(renderMenu(d, products).keyboard).flat().map((b) => b[1]), homeKeys, d);
+});
+
+// אין כאן בדיקה של "צורה דקדוקית אחידה" — אי אפשר לקבוע צורה בעברית מתוך מחרוזת בלי לזייף את הבדיקה.
+// מה שכן נבדק: הצורה החיצונית של תוויות הכפתורים, שממנה נגזרת האחידות בעין.
+test('button labels stay short and carry no final punctuation', () => {
+  for (const key of ['askBtn', 'leadBtn', 'backBtn', 'homeBtn']) {
+    assert.ok(S[key].split(' ').length <= 3, key);
+    assert.ok(!/[.?!:,]$/.test(S[key]), key);
+  }
 });
 
 test('callback_data stays within 64 bytes for long category names', () => {
@@ -54,10 +82,10 @@ test('callback_data stays within 64 bytes for long category names', () => {
   assert.equal(renderMenu(data, [long]).keyboard.rows[0].row.buttons[0].additionalFields.callback_data, 'p:X-1');
 });
 
-test('empty catalog (or Airtable error item) shows the error screen with a home button', () => {
+test('empty catalog (or Airtable error item) shows the error screen with a way forward', () => {
   for (const products of [[], [{ error: 'boom' }]]) {
     const m = renderMenu('home', products);
-    assert.equal(m.text, 'משהו השתבש, נסו שוב.');
+    assert.equal(m.text, 'משהו השתבש אצלנו. אפשר לנסות שוב.');
     assert.deepEqual(buttons(m.keyboard), [[['תפריט ראשי', 'home']]]);
   }
 });
