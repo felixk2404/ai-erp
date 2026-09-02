@@ -57,7 +57,11 @@ export default async function Dashboard() {
         items={[
           { label: 'הכנסות החודש', value: <Money value={monthRevenue} />, hint: `${monthInvoices.length} חשבוניות`, hero: true },
           { label: 'חשבוניות פתוחות', value: open.length, hint: <Money value={openSum} /> },
-          { label: 'לידים חדשים', value: leadCounts.New ?? 0, hint: `${leadCounts.Contacted ?? 0} נשלח מייל · ${leadCounts.Qualified ?? 0} ענו` },
+          {
+            label: 'לידים חדשים',
+            value: leadCounts.New ?? 0,
+            hint: `${leadCounts.Contacted ?? 0} נשלח מייל · ${leadCounts.Qualified ?? 0} ענו`,
+          },
           { label: 'משימות פתוחות', value: tasks.length },
         ]}
       />

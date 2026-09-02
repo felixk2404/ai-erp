@@ -13,3 +13,8 @@
 - Read/Write Files node דורש `N8N_RESTRICT_FILE_ACCESS_TO=<dir>` (n8n 2.x), אחרת "Access to the file is not allowed".
 - Airtable search node ב-n8n מחזיר 0 פריטים כשאין תוצאה — עם כמה פריטי קלט, הפריט "נעלם" ושובר pairing. לחיפוש 1:1 לכל פריט משתמשים ב-HTTP Request ל-Airtable REST (`{records: []}` תמיד).
 - webhook.sh: ברירת מחדל של body חייבת להיות JSON תקין (`'{}'`), לא `{\}`.
+
+## 2026-09-02 — Next.js 16 / shadcn base-nova
+- shadcn style `base-nova` בנוי על Base UI, לא Radix: אין `asChild`; משתמשים ב-`render={<Button />}` על Trigger.
+- eslint `react-hooks/set-state-in-effect`: לא לסנכרן תוצאת action ב-useEffect; עוטפים את ה-server action בפונקציה client ב-`useActionState` ומטפלים ב-toast/close שם.
+- `pnpm build | grep` מחזיר exit של grep — לא לשרשר commit אחרי pipeline כזה; להריץ build לבד ולבדוק exit code.

@@ -40,12 +40,21 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
     <>
       <Header
         title="חשבוניות"
-        actions={<NewInvoiceDialog customers={customers.map((c) => ({ id: c.fields.CustomerId, label: `${c.fields.Name} · ${c.fields.CustomerId}` }))} />}
+        actions={
+          <NewInvoiceDialog
+            customers={customers.map((c) => ({ id: c.fields.CustomerId, label: `${c.fields.Name} · ${c.fields.CustomerId}` }))}
+          />
+        }
       />
 
       <form className="flex flex-wrap items-center gap-2 mb-4" role="search">
         <Input name="q" defaultValue={q} placeholder="חיפוש לפי מספר או לקוח" className="max-w-xs" aria-label="חיפוש" />
-        <select name="status" defaultValue={status} aria-label="סטטוס" className="h-9 rounded-md border border-input bg-paper-3 px-3 text-sm">
+        <select
+          name="status"
+          defaultValue={status}
+          aria-label="סטטוס"
+          className="h-9 rounded-md border border-input bg-paper-3 px-3 text-sm"
+        >
           <option value="">כל הסטטוסים</option>
           {INVOICE_STATUSES.map((s) => (
             <option key={s} value={s}>

@@ -13,7 +13,9 @@ export function LedgerStrip({ items }: { items: LedgerItem[] }) {
         {items.map((it) => (
           <div key={it.label} className={`px-6 py-5 ${it.hero ? 'min-w-64' : 'min-w-44'}`}>
             <div className="text-[11px] font-medium tracking-wide text-ink-3">{it.label}</div>
-            <div className={`num mt-1 ${it.hero ? 'text-[28px] leading-none font-semibold text-ink' : 'text-lg leading-tight font-medium text-ink'}`}>
+            <div
+              className={`num mt-1 ${it.hero ? 'text-[28px] leading-none font-semibold text-ink' : 'text-lg leading-tight font-medium text-ink'}`}
+            >
               {it.value}
             </div>
             {it.hint !== undefined && <div className="mt-1.5 text-xs text-ink-3 num">{it.hint}</div>}

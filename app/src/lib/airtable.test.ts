@@ -5,8 +5,7 @@ vi.mock('./env', () => ({ env: () => ({ AIRTABLE_PAT: 'pat', AIRTABLE_BASE_ID: '
 
 import { list, get, escapeFormula } from './airtable';
 
-const json = (b: unknown, status = 200) =>
-  new Response(JSON.stringify(b), { status, headers: { 'content-type': 'application/json' } });
+const json = (b: unknown, status = 200) => new Response(JSON.stringify(b), { status, headers: { 'content-type': 'application/json' } });
 
 describe('airtable', () => {
   beforeEach(() => vi.restoreAllMocks());

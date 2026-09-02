@@ -29,7 +29,12 @@ describe('n8n client', () => {
       .mockResolvedValue(json({ ok: true, record: { id: 'rec1', createdTime: 't', fields: { Status: 'done' } } }));
     const rec = await erpUpdate('Tasks', 'rec1', { Status: 'done' });
     expect(rec.fields).toEqual({ Status: 'done' });
-    expect(JSON.parse(fetchMock.mock.calls[0][1]!.body as string)).toEqual({ action: 'update', table: 'Tasks', id: 'rec1', payload: { Status: 'done' } });
+    expect(JSON.parse(fetchMock.mock.calls[0][1]!.body as string)).toEqual({
+      action: 'update',
+      table: 'Tasks',
+      id: 'rec1',
+      payload: { Status: 'done' },
+    });
   });
 
   it('erpChat returns the reply', async () => {
