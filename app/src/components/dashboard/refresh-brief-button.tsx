@@ -10,17 +10,21 @@ export function RefreshBriefButton() {
   return (
     <button
       type="button"
-      disabled={pending}
-      onClick={() =>
+      aria-disabled={pending}
+      onClick={() => {
+        if (pending) return;
         start(async () => {
           await refreshBrief();
           router.refresh();
-        })
-      }
-      className="text-xs text-ink-3 hover:text-ink disabled:opacity-60 h-7 px-2 rounded-md hover:bg-paper-3 transition-colors"
+        });
+      }}
+      className="text-xs text-ink-3 hover:text-ink aria-disabled:opacity-60 h-7 px-2 rounded-md hover:bg-paper-3 transition-colors"
       aria-label="רענן תקציר"
     >
       {pending ? 'מרענן…' : 'רענן'}
+      <span aria-live="polite" className="sr-only">
+        {pending ? 'מרענן תקציר' : ''}
+      </span>
     </button>
   );
 }

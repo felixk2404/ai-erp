@@ -16,7 +16,11 @@ type Props = {
   'aria-label'?: string;
 };
 
-/** כפתור שמריץ server action עם מצב המתנה ו-toast לתוצאה. */
+/**
+ * כפתור שמריץ server action עם מצב המתנה ו-toast לתוצאה.
+ * `aria-disabled` ולא `disabled` — כפתור מושבת נושר מסדר ה-tab והמיקוד נופל ל-<body>
+ * בדיוק בזמן שהפעולה רצה (2.4.3). ההגנה על לחיצה כפולה עברה לתוך ה-handler.
+ */
 export function ActionButton({ action, children, pendingText = 'רגע…', variant = 'outline', size = 'sm', className, ...rest }: Props) {
   const [pending, start] = useTransition();
   return (
@@ -24,10 +28,11 @@ export function ActionButton({ action, children, pendingText = 'רגע…', vari
       type="button"
       variant={variant}
       size={size}
-      className={className}
-      disabled={pending}
+      className={`aria-disabled:opacity-60 ${className ?? ''}`}
+      aria-disabled={pending}
       aria-label={rest['aria-label']}
-      onClick={() =>
+      onClick={() => {
+        if (pending) return;
         start(async () => {
           try {
             const r = await action();
@@ -36,10 +41,13 @@ export function ActionButton({ action, children, pendingText = 'רגע…', vari
           } catch (e) {
             toast.error(e instanceof Error ? e.message : 'הפעולה נכשלה');
           }
-        })
-      }
+        });
+      }}
     >
       {pending ? pendingText : children}
+      <span aria-live="polite" className="sr-only">
+        {pending ? pendingText : ''}
+      </span>
     </Button>
   );
 }

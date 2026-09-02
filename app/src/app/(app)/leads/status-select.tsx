@@ -12,15 +12,17 @@ export function LeadStatusSelect({ id, status }: { id: string; status?: string }
     <select
       aria-label="סטטוס ליד"
       defaultValue={status ?? 'New'}
-      disabled={pending}
+      // השבתה באמצע אינטראקציה מאבדת את המיקוד מה-select עצמו — שומרים אותו פעיל ומגנים בקוד
+      aria-busy={pending}
       onChange={(e) => {
+        if (pending) return;
         const value = e.target.value;
         start(async () => {
           const r = await setLeadStatus(id, value);
           if (r.error) toast.error(r.error);
         });
       }}
-      className="h-8 rounded-md border border-input bg-well px-2 text-sm text-ink-2 disabled:opacity-60"
+      className="h-8 rounded-md border border-input bg-well px-2 text-sm text-ink-2 aria-busy:opacity-60"
     >
       {LEAD_STATUSES.map((s) => (
         <option key={s} value={s}>
