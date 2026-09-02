@@ -130,7 +130,7 @@ export default async function Dashboard() {
             {invoices.length === 0 ? (
               <EmptyState illustration="invoices" title="אין חשבוניות עדיין" />
             ) : (
-              <Table>
+              <Table label="חשבוניות אחרונות">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="ps-5">מספר</TableHead>

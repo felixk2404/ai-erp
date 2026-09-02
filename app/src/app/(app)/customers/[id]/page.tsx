@@ -62,7 +62,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
           {invoices.length === 0 ? (
             <EmptyState illustration="invoices" title="אין חשבוניות ללקוח" hint="צור חשבונית ראשונה מהכפתור למעלה" />
           ) : (
-            <Table>
+            <Table label="חשבוניות הלקוח">
               <TableHeader>
                 <TableRow>
                   <TableHead>מספר</TableHead>

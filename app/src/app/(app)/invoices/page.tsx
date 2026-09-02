@@ -81,7 +81,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
         {invoices.length === 0 ? (
           <EmptyState title="אין חשבוניות" hint={q || status ? 'נסה סינון אחר' : 'צור את החשבונית הראשונה'} />
         ) : (
-          <Table>
+          <Table label="חשבוניות">
             <TableHeader>
               <TableRow>
                 <TableHead>מספר</TableHead>

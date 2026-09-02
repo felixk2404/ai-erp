@@ -90,7 +90,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         {leads.length === 0 ? (
           <EmptyState title="אין לידים" hint={status ? 'אין לידים בסטטוס הזה' : 'הוסף ליד ראשון'} />
         ) : (
-          <Table>
+          <Table label="לידים">
             <TableHeader>
               <TableRow>
                 <TableHead>שם</TableHead>

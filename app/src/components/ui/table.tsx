@@ -4,10 +4,17 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-function Table({ className, ...props }: React.ComponentProps<'table'>) {
+/**
+ * `label` הוא חובה: הוא גם השם של אזור הגלילה (שבלעדיו העמודות שמעבר לרוחב המסך
+ * לא נגישות מהמקלדת — 2.1.1) וגם ה-caption שמזהה את הטבלה ברשימת הטבלאות של קורא מסך.
+ */
+function Table({ className, label, children, ...props }: React.ComponentProps<'table'> & { label: string }) {
   return (
-    <div data-slot="table-container" className="relative w-full overflow-x-auto">
-      <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props} />
+    <div data-slot="table-container" role="region" aria-label={label} tabIndex={0} className="relative w-full overflow-x-auto">
+      <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props}>
+        <caption className="sr-only">{label}</caption>
+        {children}
+      </table>
     </div>
   );
 }
@@ -37,6 +44,7 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
 function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   return (
     <th
+      scope="col"
       data-slot="table-head"
       className={cn(
         'h-10 px-3 text-start align-middle font-medium whitespace-nowrap text-readout-3 text-[12px] tracking-wide bg-chassis-2/60 [&:has([role=checkbox])]:pe-0',

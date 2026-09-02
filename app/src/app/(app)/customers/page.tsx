@@ -62,7 +62,7 @@ export default async function CustomersPage() {
         {customers.length === 0 ? (
           <EmptyState title="אין לקוחות" hint="הוסף לקוח ראשון כדי להפיק לו חשבוניות" />
         ) : (
-          <Table>
+          <Table label="לקוחות">
             <TableHeader>
               <TableRow>
                 <TableHead>מזהה</TableHead>

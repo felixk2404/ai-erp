@@ -67,7 +67,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
           {items.length > 0 && (
             <div className="panel overflow-hidden">
-              <Table>
+              <Table label="פריטי החשבונית">
                 <TableHeader>
                   <TableRow>
                     <TableHead>פריט</TableHead>
