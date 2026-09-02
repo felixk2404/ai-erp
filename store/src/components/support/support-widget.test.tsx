@@ -37,7 +37,9 @@ describe('SupportWidget', () => {
     );
 
     await act(async () => launcher().click());
-    await act(async () => screen.getByText('יש במלאי TY-MN-27Q?').click());
+    // הפאנל נטען ב-next/dynamic — צריך להמתין לו בפעם הראשונה.
+    const suggestion = await screen.findByText('יש במלאי TY-MN-27Q?');
+    await act(async () => suggestion.click());
     expect(transcript()).toContain('כן, יש במלאי.');
 
     await act(async () => screen.getByRole('button', { name: 'סגירת השיחה' }).click());
@@ -48,6 +50,7 @@ describe('SupportWidget', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
 
     await act(async () => launcher().click());
+    await screen.findByRole('dialog');
     expect(transcript()).toContain('כן, יש במלאי.');
   });
 });

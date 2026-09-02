@@ -4,7 +4,15 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { MessageCircleIcon, XIcon } from 'lucide-react';
 import { useCart } from '@/components/cart/cart-provider';
-import { SupportPanel, type Msg } from './support-panel';
+import dynamic from 'next/dynamic';
+import type { Msg } from './support-panel';
+
+/**
+ * הפאנל נטען רק כשנפתח. הוא גורר איתו ProductChip, next/image, פיצול המשפטים
+ * ופרימיטיבים של motion — עבור מסך שרוב הביקורים לעולם לא לוחצים עליו, בכל מסלול.
+ * `{open && …}` כבר קיים, ולכן זו השורה היחידה שצריך.
+ */
+const SupportPanel = dynamic(() => import('./support-panel').then((m) => m.SupportPanel), { ssr: false });
 
 /** `window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))` פותח את הבוט עם שאלה מוכנה. */
 export type SupportEventDetail = { sku?: string; message?: string };
