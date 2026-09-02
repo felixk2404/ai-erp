@@ -57,3 +57,5 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי; גם הזמנת ה-e2e ("בדיקת E2E", ORD-0008) — למחוק או לשנות שם.
 - [ ] Airtable: שדה `Featured` ב-Products במקום `FLAGSHIP_PREFERENCE` הקשיח ב-`store/src/lib/catalog-filter.ts` — מוצרי הדגל בדף הבית צריכים להיות נתון, לא קוד.
 - [ ] להוציא את n8n מהמק לפני ההגשה (ngrok + Docker מקומיים = החנות חיה רק כשהמחשב דולק). קופה, מעקב ובוט תלויים בזה.
+
+- [ ] ליטוש נדחה (2026-09-03): Reveal בגלילה (`animation-timeline: view()`), ₪ fallback באנדרואיד, אחידות צילומי מוצר (חומרה מול שירותים), ספרת שלב עתידי בציר הזמן ב-glow-4, שדה Featured ב-Airtable במקום `FLAGSHIP_PREFERENCE`
