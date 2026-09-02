@@ -1,15 +1,54 @@
 {
   "name": "WF-Error — התראות שגיאה",
-  "settings": { "executionOrder": "v1" },
+  "settings": {
+    "executionOrder": "v1"
+  },
   "nodes": [
-    { "name": "Error Trigger", "type": "n8n-nodes-base.errorTrigger", "typeVersion": 1, "position": [0, 0], "parameters": {} },
-    { "name": "Telegram Owner", "type": "n8n-nodes-base.telegram", "typeVersion": 1.2, "position": [260, 0],
+    {
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "Telegram Owner",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        260,
+        0
+      ],
       "parameters": {
         "chatId": "__OWNER_CHAT_ID__",
-        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution.lastNodeExecuted }}\nשגיאה: {{ ($json.execution.error.message || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution.url }}",
-        "additionalFields": { "appendAttribution": false, "parse_mode": "HTML" }
+        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution?.lastNodeExecuted || ($json.trigger ? 'טריגר (polling)' : '—') }}\nשגיאה: {{ (($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || JSON.stringify($json.trigger?.error || {}).slice(0, 300)) + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution?.url || '' }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
       },
-      "credentials": { "telegramApi": { "id": "__CRED_TELEGRAM_MANAGER__", "name": "Telegram Manager" } } }
+      "credentials": {
+        "telegramApi": {
+          "id": "__CRED_TELEGRAM_MANAGER__",
+          "name": "Telegram Manager"
+        }
+      }
+    }
   ],
-  "connections": { "Error Trigger": { "main": [[{ "node": "Telegram Owner", "type": "main", "index": 0 }]] } }
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
 }

@@ -18,3 +18,8 @@
 - shadcn style `base-nova` בנוי על Base UI, לא Radix: אין `asChild`; משתמשים ב-`render={<Button />}` על Trigger.
 - eslint `react-hooks/set-state-in-effect`: לא לסנכרן תוצאת action ב-useEffect; עוטפים את ה-server action בפונקציה client ב-`useActionState` ומטפלים ב-toast/close שם.
 - `pnpm build | grep` מחזיר exit של grep — לא לשרשר commit אחרי pipeline כזה; להריץ build לבד ולבדוק exit code.
+
+## 2026-09-02 — n8n alerts during host overload
+- Symptom: burst of Telegram alerts (WF1/WF2 Airtable Trigger, WF8 DNS) with empty node/message. Root cause: Mac load avg ~20 (several next dev servers, Chrome, VS Code, 3 parallel Claude sessions) starved the Docker VM → n8n SQLite lock timeouts + DNS EAI_AGAIN. Not a workflow bug; WF8 retries every minute, polling triggers resume.
+- Fix applied: 00-error now reads `trigger.error` for polling-trigger failures (was only `execution.error` → empty text).
+- Rule: before running builds/e2e/screenshots, check `uptime`; stop my own dev servers when done. Don't run playwright + build + docker exports concurrently on this Mac.
