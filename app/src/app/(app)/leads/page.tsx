@@ -100,7 +100,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
                 <TableRow key={l.id}>
                   <TableCell className="font-medium">{l.fields.Name}</TableCell>
                   <TableCell className="text-ink-2">{l.fields.Company ?? '—'}</TableCell>
-                  <TableCell dir="ltr" className="text-ink-2 text-start">
+                  <TableCell dir="ltr" className="text-ink-2 text-end">
                     {l.fields.Email ?? '—'}
                   </TableCell>
                   <TableCell className="num text-ink-2">{dateIL(l.fields.Created)}</TableCell>

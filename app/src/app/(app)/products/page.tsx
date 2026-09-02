@@ -181,7 +181,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                       <img src={p.fields.ImageUrl} alt="" width={40} height={40} className="size-10 rounded-md object-cover border border-rule" loading="lazy" />
                     )}
                   </TableCell>
-                  <TableCell dir="ltr" className="text-start font-mono text-xs text-ink-2">
+                  <TableCell dir="ltr" className="text-end font-mono text-xs text-ink-2">
                     {p.fields.Sku ?? '—'}
                   </TableCell>
                   <TableCell className="font-medium whitespace-normal">{p.fields.Name}</TableCell>

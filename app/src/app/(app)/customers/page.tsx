@@ -84,10 +84,10 @@ export default async function CustomersPage() {
                         {c.fields.Name}
                       </Link>
                     </TableCell>
-                    <TableCell dir="ltr" className="text-ink-2 text-start">
+                    <TableCell dir="ltr" className="text-ink-2 text-end">
                       {c.fields.Email ?? '—'}
                     </TableCell>
-                    <TableCell dir="ltr" className="num text-ink-2 text-start">
+                    <TableCell dir="ltr" className="num text-ink-2 text-end">
                       {c.fields.Phone ?? '—'}
                     </TableCell>
                     <TableCell className="num">{s?.count ?? 0}</TableCell>
