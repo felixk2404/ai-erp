@@ -37,8 +37,8 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
   if (!ok) {
     return (
       <div className="flex flex-col gap-2">
-        <p className="flex h-11 items-center justify-center gap-1.5 rounded-sm border border-rule bg-panel-2 text-[14px] text-glow-3">
-          אזל —<span className="num">{ils(price)}</span>
+        <p className="num flex h-11 items-center justify-center rounded-sm border border-rule bg-panel-2 text-[14px] text-glow-3">
+          {ils(price)}
         </p>
         <Button
           variant="link"

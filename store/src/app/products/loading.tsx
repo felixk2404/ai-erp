@@ -5,9 +5,9 @@ const PILLS = ['w-14', 'w-20', 'w-16', 'w-24', 'w-20'];
 
 /**
  * שלד באותו מבנה כמו הרשת האמיתית: באר תמונה 3:2 (4:3 מ-sm) ומתחתיה גוף
- * בן שם דו-שורתי, שורת מפרט ושורת פעולה — כך שהמעבר מטעינה לתוכן כמעט לא מזיז
- * פיקסלים. הראשון רחב כפול ב-lg, כמו הכרטיס המוביל. הגובה מדויק לשם בן שתי
- * שורות; שם בן שורה אחת מקצר את הכרטיס האמיתי במעט.
+ * בן שם, שורת מפרט ושורת פעולה — כך שהמעבר מטעינה לתוכן כמעט לא מזיז פיקסלים.
+ * הראשון רחב כפול ב-lg, כמו הכרטיס המוביל. אותו מבנה `flex-1` + `mt-auto`
+ * של הכרטיס האמיתי, כדי ששורת הפעולה תשב באותו גובה גם לשם בן שורה אחת.
  */
 export default function Loading() {
   return (
@@ -36,14 +36,13 @@ export default function Loading() {
 
       <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-4">
         {CARDS.map((i) => (
-          <div key={i} className={`overflow-hidden rounded-lg border border-rule bg-panel-1 ${i === 0 ? 'lg:col-span-2' : ''}`}>
-            <div className={i === 0 ? 'aspect-3/2 bg-panel-2' : 'aspect-3/2 bg-panel-2 sm:aspect-4/3'} />
-            <div className="p-4">
+          <div key={i} className={`flex h-full flex-col overflow-hidden rounded-lg border border-rule bg-panel-1 ${i === 0 ? 'lg:col-span-2' : ''}`}>
+            <div className={i === 0 ? 'aspect-3/2 shrink-0 bg-panel-2' : 'aspect-3/2 shrink-0 bg-panel-2 sm:aspect-4/3'} />
+            <div className="flex flex-1 flex-col p-4">
               <Skeleton className="h-[11px] w-14 rounded-sm" />
-              <Skeleton className="mt-2 h-[21px] w-full rounded-sm" />
-              <Skeleton className="mt-2 h-[21px] w-3/5 rounded-sm" />
-              <Skeleton className="mt-1 h-5 w-4/5 rounded-sm" />
-              <div className="mt-4 flex items-center justify-between gap-3 border-t border-rule pt-4">
+              <Skeleton className="mt-2 h-[25px] w-4/5 rounded-sm" />
+              <Skeleton className="mt-1 h-5 w-3/5 rounded-sm" />
+              <div className="mt-auto flex items-center justify-between gap-3 border-t border-rule pt-4">
                 <Skeleton className="h-5 w-16 rounded-sm" />
                 <Skeleton className="h-10 w-[150px] rounded-sm" />
               </div>

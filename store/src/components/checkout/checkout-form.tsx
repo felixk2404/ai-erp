@@ -313,10 +313,10 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             {pending ? (
               <>
                 <LoaderCircleIcon size={16} className="animate-spin" aria-hidden />
-                <span aria-live="polite">שומרים את ההזמנה…</span>
+                <span>שומרים את ההזמנה…</span>
               </>
             ) : (
-              <span aria-live="polite" className="flex items-center gap-2">
+              <span className="flex items-center gap-2">
                 <span>{blocked ? 'שליחה חוזרת' : 'אישור הזמנה'}</span>
                 <span aria-hidden className={blocked ? 'text-glow-4' : 'text-void/45'}>
                   —
@@ -325,6 +325,12 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
               </span>
             )}
           </button>
+
+          {/* אזור חי אחד שנשאר מותקן; רק הטקסט שלו מתחלף. שני spans שנטענים
+              ונעלמים לסירוגין לא תמיד מוכרזים בקוראי מסך. */}
+          <span aria-live="polite" className="sr-only">
+            {pending ? 'שומרים את ההזמנה…' : ''}
+          </span>
 
           <p className="relative text-center text-[11px] text-glow-3">
             השליחה יוצרת הזמנה אמיתית במערכת. אין תשלום ואין מסירת פרטי אשראי.

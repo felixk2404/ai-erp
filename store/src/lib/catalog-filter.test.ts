@@ -1,16 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  SERVICE,
-  catalogQuery,
-  filterProducts,
-  highlights,
-  inStock,
-  isService,
-  parseCatalogParams,
-  gridPlan,
-  pickLead,
-} from './catalog-filter';
-import * as server from './catalog';
+import { catalogQuery, filterProducts, parseCatalogParams, gridPlan, pickLead } from './catalog-filter';
 import type { Product } from './types';
 
 const p = (fields: Partial<Product['fields']> & { Name: string }): Product => ({
@@ -103,34 +92,17 @@ describe('catalogQuery', () => {
   });
 });
 
-// הפרדיקטים כפולים בכוונה (catalog.ts מושך server-only ולכן אסור בצד לקוח).
-// הבדיקה הזו היא המנעול שמונע מהם להתפצל.
-describe('parity מול catalog.ts', () => {
-  const cases = [
-    p({ Name: 'שירות', Category: 'שירותים' }),
-    p({ Name: 'אזל', Category: 'כבלים', Stock: 0 }),
-    p({ Name: 'יש', Category: 'כבלים', Stock: 3 }),
-    p({ Name: 'בלי שדה', Category: 'כבלים' }),
-    p({ Name: 'מפרט', Highlights: ' a \n\n b \nc\nd ' }),
-  ];
-
-  it('isService / inStock / highlights מתנהגים זהה', () => {
-    expect(SERVICE).toBe(server.SERVICE);
-    for (const x of cases) {
-      expect(isService(x)).toBe(server.isService(x));
-      expect(inStock(x)).toBe(server.inStock(x));
-      expect(highlights(x)).toEqual(server.highlights(x));
-    }
-  });
-});
-
 describe('gridPlan', () => {
   it('מספר העמודות לא עולה על מספר התוצאות', () => {
-    expect(gridPlan(1).columns).toBe('grid-cols-1');
-    expect(gridPlan(2).columns).toBe('grid-cols-1 sm:grid-cols-2');
-    expect(gridPlan(3).columns).toBe('grid-cols-1 sm:grid-cols-2 lg:grid-cols-3');
     expect(gridPlan(4).columns).toBe('grid-cols-1 sm:grid-cols-2 lg:grid-cols-4');
     expect(gridPlan(34).columns).toBe('grid-cols-1 sm:grid-cols-2 lg:grid-cols-4');
+  });
+
+  it('מתחת ל-4 תוצאות — מסילה חסומה ל-320px וצמודה לקצה ההתחלה', () => {
+    for (const n of [1, 2, 3]) {
+      expect(gridPlan(n).columns).toContain('minmax(0,320px)');
+      expect(gridPlan(n).columns).toContain('justify-start');
+    }
   });
 
   it('כרטיס מוביל רק מ-4 תוצאות ומעלה', () => {
@@ -156,6 +128,11 @@ describe('pickLead', () => {
     for (const sku of ['SV', 'OUT', 'NOIMG']) {
       expect(pickLead(lead)?.fields.Sku).not.toBe(sku);
     }
+  });
+
+  it('רשימת ההעדפה של הדגל גוברת על המחיר', () => {
+    const preferred = [...lead, p({ Name: 'אוזניות הדגל', Sku: 'TY-HP-200', Category: 'שמע', Price: 690, Stock: 4, ImageUrl: 'x' })];
+    expect(pickLead(preferred)?.fields.Sku).toBe('TY-HP-200');
   });
 
   it('כשאין מועמד — הפריט הראשון', () => {

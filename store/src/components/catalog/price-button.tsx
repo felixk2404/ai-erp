@@ -14,7 +14,8 @@ const BEAM = 'border border-beam bg-beam text-void hover:bg-beam/85 dark:hover:b
 
 /**
  * המחיר חי *בתוך* הפעולה — "כמה זה" ו"קח את זה" הן החלטה אחת, וגם כשאזל
- * המספר נשאר על המסך ("אזל — 349.00 ₪") כי זו עדיין המידה להשוואה.
+ * המספר נשאר על המסך כי זו עדיין המידה להשוואה. את המילה "אזל" אומר התג
+ * שלצדו, פעם אחת בלבד.
  * אין טוסט על הוספה: האישור הוא התמונה שעפה, המונה והמגירה (system.md §תנועה).
  */
 export function PriceButton({
@@ -46,8 +47,8 @@ export function PriceButton({
     }
     return (
       <div className="flex w-full flex-col items-center gap-1.5">
-        <p className="flex h-10 w-full items-center justify-center gap-1.5 rounded-md border border-rule bg-panel-1 px-4 text-[14px] text-glow-3">
-          אזל —<span className="num">{ils(price)}</span>
+        <p className="num flex h-10 w-full items-center justify-center rounded-md border border-rule bg-panel-1 px-4 text-[14px] text-glow-3">
+          {ils(price)}
         </p>
         <button
           type="button"

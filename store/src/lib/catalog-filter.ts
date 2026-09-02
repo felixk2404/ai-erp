@@ -1,9 +1,10 @@
+import { FLAGSHIP_PREFERENCE } from './home';
 import type { Product } from './types';
 
 /**
  * הפרדיקטים הטהורים חיים כאן ולא ב-`catalog.ts`, כי `catalog.ts` מושך `server-only`
- * דרך `airtable.ts` ולכן אסור בצד לקוח. `catalog-filter.test.ts` נועל את שתי
- * המימושים זה לזה (parity) כדי שלא יתפצלו.
+ * דרך `airtable.ts` ולכן אסור בצד לקוח. `catalog.ts` מייצא אותם מחדש — מימוש אחד,
+ * שני שערים.
  */
 export const SERVICE = 'שירותים';
 
@@ -85,12 +86,14 @@ export function catalogQuery({ c, q, sort, view }: CatalogParams): string {
 export type GridPlan = { lead: boolean; columns: string };
 
 // מספר העמודות לא עולה על מספר התוצאות, אחרת סינון שמחזיר 2 פריטים משאיר
-// מסילות ריקות ושחורות לצדם. מחרוזות מלאות כדי ש-Tailwind יראה אותן.
+// מסילות ריקות ושחורות לצדם. מתחת ל-4 תוצאות גם רוחב המסילה נחסם ל-320px
+// ונצמד לקצה ההתחלה — אחרת שני כרטיסים נמתחים ל-620px ומשנים סוג.
+// מחרוזות מלאות כדי ש-Tailwind יראה אותן.
 const COLUMNS = [
   'grid-cols-1',
-  'grid-cols-1',
-  'grid-cols-1 sm:grid-cols-2',
-  'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+  'grid-cols-1 sm:grid-cols-[repeat(1,minmax(0,320px))] sm:justify-start',
+  'grid-cols-1 sm:grid-cols-[repeat(2,minmax(0,320px))] sm:justify-start',
+  'grid-cols-1 sm:grid-cols-[repeat(2,minmax(0,320px))] sm:justify-start lg:grid-cols-[repeat(3,minmax(0,320px))]',
   'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
 ];
 
@@ -99,8 +102,16 @@ export function gridPlan(count: number): GridPlan {
   return { lead: count >= 4, columns: COLUMNS[Math.min(count, 4)] };
 }
 
+/**
+ * המוביל של הרשת נבחר באותה רשימת העדפה של דגל דף הבית (`lib/home.ts`) לפני
+ * כלל המחיר — כך שהפריט הגדול בקטלוג ובבית הוא אותו פריט, וגם הוא מצולם מהחזית.
+ */
 export function pickLead(products: Product[]): Product | null {
   const eligible = products.filter((p) => !isService(p) && inStock(p) && p.fields.ImageUrl);
+  for (const want of FLAGSHIP_PREFERENCE) {
+    const hit = eligible.find((p) => (p.fields.Sku ?? p.id) === want);
+    if (hit) return hit;
+  }
   const dearest = eligible.reduce<Product | null>(
     (best, p) => (best && (best.fields.Price ?? 0) >= (p.fields.Price ?? 0) ? best : p),
     null,
