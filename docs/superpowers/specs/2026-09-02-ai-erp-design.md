@@ -76,8 +76,8 @@ Next.js על Vercel ──────┘
 | Customers | CustomerId, Name, Email, Phone |
 
 ערכי Status:
-- Invoices: `new` → `validated` → `generated` (או `error`).
-- Leads: `new` → `contacted` → `replied` (או `duplicate`).
+- Invoices: `new` → `validated` → `generated` → `paid` (או `error`). `paid` מסומן מהאפליקציה; "לא שולם" לסוכן המנהל = new/validated/generated.
+- Leads (לפי playbook הקורס, `docs/course/policies/09-sales-agent-playbook.md`): `New` → `Contacted` → `Qualified` (התקבלה תשובה) או `Dead`; `Duplicate` כשיש מייל זהה.
 - Tasks: `open`, `done`.
 
 קשרים בין טבלאות הם מפתחות זרים כטקסט (`CUST-0001`), לא Linked records.
