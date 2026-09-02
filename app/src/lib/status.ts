@@ -4,17 +4,18 @@ export type Led = 'green' | 'amber' | 'red' | 'off';
 export type StatusMeta = { label: string; led: Led };
 
 const MAP: Record<TableName, Record<string, StatusMeta>> = {
+  // חשבונית = נקבה. סדרת עבר־נקבה אחת, כמו STATUS_LABELS בחנות — התג בטבלה וציר הזמן בעמוד קוראים מכאן.
   Invoices: {
-    new: { label: 'חדש', led: 'amber' },
-    validated: { label: 'אומת', led: 'amber' },
-    generated: { label: 'הופק PDF', led: 'green' },
-    paid: { label: 'שולם', led: 'green' },
+    new: { label: 'נוצרה', led: 'amber' },
+    validated: { label: 'אומתה', led: 'amber' },
+    generated: { label: 'הופקה', led: 'green' },
+    paid: { label: 'שולמה', led: 'green' },
     error: { label: 'שגיאה', led: 'red' },
   },
   Leads: {
     New: { label: 'חדש', led: 'amber' },
     Contacted: { label: 'נשלח מייל', led: 'amber' },
-    Qualified: { label: 'ענה — מתאים', led: 'green' },
+    Qualified: { label: 'ענה', led: 'green' },
     Dead: { label: 'סגור', led: 'off' },
     Duplicate: { label: 'כפול', led: 'off' },
   },

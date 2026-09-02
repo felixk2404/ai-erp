@@ -6,6 +6,7 @@ import type { CustomerFields, InvoiceFields } from '@/lib/types';
 import { Header } from '@/components/shell/header';
 import { Money } from '@/components/money';
 import { StatusLed } from '@/components/status-led';
+import { statusMeta } from '@/lib/status';
 import { Timeline, type TimelineStep } from '@/components/timeline';
 import { DirectionalTransition, Shared } from '@/components/motion/page-transition';
 import { markPaid } from '../actions';
@@ -17,7 +18,6 @@ import { Tilt } from '@/components/motion/tilt';
 export const dynamic = 'force-dynamic';
 
 const ORDER = ['new', 'validated', 'generated', 'paid'] as const;
-const LABEL: Record<(typeof ORDER)[number], string> = { new: 'נוצרה', validated: 'אומתה + מע״מ', generated: 'הופק PDF', paid: 'שולם' };
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,7 +29,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const status = f.Status ?? 'new';
   const idx = status === 'error' ? -1 : ORDER.indexOf(status as (typeof ORDER)[number]);
   const steps: TimelineStep[] = ORDER.map((s, i) => ({
-    label: LABEL[s],
+    label: statusMeta('Invoices', s).label,
     hint: i === 0 ? dateIL(f.Created) : undefined,
     state: status === 'error' ? (i === 0 ? 'error' : 'todo') : i < idx ? 'done' : i === idx ? (s === 'paid' ? 'done' : 'current') : 'todo',
   }));
@@ -48,7 +48,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         actions={
           f.Status === 'generated' ? (
             <ActionButton action={markPaid.bind(null, invoice.id)} variant="default" size="default">
-              סמן שולם
+              סימון כשולמה
             </ActionButton>
           ) : undefined
         }
@@ -61,7 +61,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         <section className="space-y-6">
           <div className="panel p-6">
             <Timeline steps={steps} />
-            {status === 'error' && <p className="mt-4 text-sm text-led-red">החשבונית נכשלה באימות: סכום לא חיובי או לקוח לא קיים. תקנו ב-Airtable או צרו חשבונית חדשה.</p>}
+            {status === 'error' && <p className="mt-4 text-sm text-led-red">החשבונית נכשלה באימות: סכום לא חיובי או לקוח לא קיים. תקן ב-Airtable או צור חשבונית חדשה.</p>}
           </div>
 
 

@@ -21,7 +21,7 @@ export function LeadsFunnel({ data }: { data: FunnelData }) {
       ))}
       <div className="flex items-center justify-between pt-1 text-xs text-readout-3">
         <span>
-          המרה לענו: <span className="num text-readout">{data.conversion}%</span>
+          שיעור מענה: <span className="num text-readout">{data.conversion}%</span>
         </span>
         {Object.keys(data.other).length > 0 && (
           <span className="num">

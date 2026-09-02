@@ -132,7 +132,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                     )}
                   </TableCell>
                   <TableCell>
-                    {i.fields.Status === 'generated' && <ActionButton action={markPaid.bind(null, i.id)}>סמן שולם</ActionButton>}
+                    {i.fields.Status === 'generated' && <ActionButton action={markPaid.bind(null, i.id)}>סימון כשולמה</ActionButton>}
                   </TableCell>
                 </TableRow>
               ))}

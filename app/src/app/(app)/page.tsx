@@ -112,7 +112,7 @@ export default async function Dashboard() {
             <Panel title="חשבוניות לפי סטטוס" sub="כל הזמנים">
               <StatusBar rows={statusBreakdown(invoices)} />
             </Panel>
-            <Panel title="משפך לידים" sub="חדש → נשלח מייל → ענה" href="/leads" linkLabel="כל הלידים">
+            <Panel title="משפך לידים" sub="ענה ← נשלח מייל ← חדש" href="/leads" linkLabel="כל הלידים">
               <LeadsFunnel data={funnel} />
             </Panel>
           </div>
