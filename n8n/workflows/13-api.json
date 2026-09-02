@@ -63,14 +63,16 @@
       "parameters": { "workflowId": { "__rl": true, "mode": "id", "value": "__WF_ORDER_ID__" },
         "workflowInputs": { "mappingMode": "defineBelow", "value": { "order": "={{ $json.order }}" }, "matchingColumns": [],
           "schema": [ { "id": "order", "displayName": "order", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "object" } ] },
-        "options": { "waitForSubWorkflow": true } } },
+        "options": { "waitForSubWorkflow": true } }, "onError": "continueErrorOutput" },
+    { "name": "Respond Order Error", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 1060],
+      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל.' }) }}", "options": {} } },
     { "name": "Respond Order", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 700],
       "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify($json) }}", "options": {} } },
     { "name": "Find Order", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 880], "onError": "continueRegularOutput",
       "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_ORDERS__",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
         "sendQuery": true, "queryParameters": { "parameters": [
-          { "name": "filterByFormula", "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')" },
+          { "name": "filterByFormula", "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').toUpperCase().replace(/[^A-Z0-9-]/g, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')" },
           { "name": "maxRecords", "value": "1" }
         ] },
         "options": { "timeout": 20000 } },
@@ -79,7 +81,7 @@
       "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_INVOICES__",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
         "sendQuery": true, "queryParameters": { "parameters": [
-          { "name": "filterByFormula", "value": "={InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}'" },
+          { "name": "filterByFormula", "value": "=AND({InvoiceNumber}!='', {InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}')" },
           { "name": "maxRecords", "value": "1" }
         ] },
         "options": { "timeout": 20000 } },
@@ -101,7 +103,7 @@
       [{ "node": "Respond Bad Request", "type": "main", "index": 0 }]
     ] },
     "Order Input": { "main": [[{ "node": "Place Order", "type": "main", "index": 0 }]] },
-    "Place Order": { "main": [[{ "node": "Respond Order", "type": "main", "index": 0 }]] },
+    "Place Order": { "main": [[{ "node": "Respond Order", "type": "main", "index": 0 }], [{ "node": "Respond Order Error", "type": "main", "index": 0 }]] },
     "Find Order": { "main": [[{ "node": "Find Invoice", "type": "main", "index": 0 }]] },
     "Find Invoice": { "main": [[{ "node": "Respond Status", "type": "main", "index": 0 }]] },
     "Support Input": { "main": [[{ "node": "Support Core", "type": "main", "index": 0 }]] },

@@ -84,6 +84,7 @@
         0
       ],
       "parameters": {
+        "batchSize": 1,
         "options": {}
       }
     },
@@ -105,7 +106,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "={{ \"{CustomerId}='\" + ($json.fields.CustomerId || '') + \"'\" }}"
+              "value": "={{ \"AND({CustomerId}!='', {CustomerId}='\" + String($json.fields.CustomerId || '').replace(/\\\\/g,'\\\\\\\\').replace(/'/g,\"\\\\'\") + \"')\" }}"
             },
             {
               "name": "maxRecords",
@@ -141,7 +142,7 @@
           "conditions": [
             {
               "id": "v1",
-              "leftValue": "={{ $('Loop Over Items').item.json.fields.Amount || 0 }}",
+              "leftValue": "={{ $('Loop Over Items').first().json.fields.Amount || 0 }}",
               "rightValue": 0,
               "operator": {
                 "type": "number",
@@ -229,13 +230,13 @@
             {
               "id": "a",
               "name": "id",
-              "value": "={{ $('Loop Over Items').item.json.id }}",
+              "value": "={{ $('Loop Over Items').first().json.id }}",
               "type": "string"
             },
             {
               "id": "b",
               "name": "InvoiceNumber",
-              "value": "={{ $('Loop Over Items').item.json.fields.InvoiceNumber || ('INV-' + String(Math.max(0, ...$json.data.map(d => parseInt(String(d.fields && d.fields.InvoiceNumber || '').split('-')[1], 10) || 0)) + 1).padStart(4, '0')) }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.InvoiceNumber || ('INV-' + String(Math.max(0, ...$json.data.map(d => parseInt(String(d.fields && d.fields.InvoiceNumber || '').split('-')[1], 10) || 0)) + 1).padStart(4, '0')) }}",
               "type": "string"
             },
             {
@@ -247,13 +248,13 @@
             {
               "id": "d",
               "name": "VatAmount",
-              "value": "={{ Math.round($('Loop Over Items').item.json.fields.Amount * 0.18 * 100) / 100 }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.VatAmount || Math.round($('Loop Over Items').first().json.fields.Amount * 0.18 * 100) / 100 }}",
               "type": "number"
             },
             {
               "id": "e",
               "name": "Total",
-              "value": "={{ Math.round($('Loop Over Items').item.json.fields.Amount * 1.18 * 100) / 100 }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.Total || Math.round($('Loop Over Items').first().json.fields.Amount * 1.18 * 100) / 100 }}",
               "type": "number"
             }
           ]
@@ -386,7 +387,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $('Loop Over Items').item.json.id }}",
+            "id": "={{ $('Loop Over Items').first().json.id }}",
             "Status": "error"
           },
           "matchingColumns": [

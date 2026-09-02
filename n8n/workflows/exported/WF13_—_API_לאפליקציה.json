@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "9afd31ec-f29f-49b2-8aaf-c7d3fdb3d889"
+      "webhookId": "49a388d2-6067-429d-bd1b-dbaf42636e74"
     },
     {
       "name": "Route",
@@ -544,7 +544,23 @@
           "waitForSubWorkflow": true
         }
       },
+      "onError": "continueErrorOutput",
       "id": "00000000-0000-4000-8000-000000000014"
+    },
+    {
+      "name": "Respond Order Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        1060
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל.' }) }}",
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000015"
     },
     {
       "name": "Respond Order",
@@ -559,7 +575,7 @@
         "responseBody": "={{ JSON.stringify($json) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000015"
+      "id": "00000000-0000-4000-8000-000000000016"
     },
     {
       "name": "Find Order",
@@ -580,46 +596,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')"
-            },
-            {
-              "name": "maxRecords",
-              "value": "1"
-            }
-          ]
-        },
-        "options": {
-          "timeout": 20000
-        }
-      },
-      "credentials": {
-        "airtableTokenApi": {
-          "id": "Qjg3M9Ztcfuye68g",
-          "name": "Airtable ERP"
-        }
-      },
-      "id": "00000000-0000-4000-8000-000000000016"
-    },
-    {
-      "name": "Find Invoice",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        780,
-        880
-      ],
-      "alwaysOutputData": true,
-      "parameters": {
-        "method": "GET",
-        "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblOaitAMK0JHqvwk",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "airtableTokenApi",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "filterByFormula",
-              "value": "={InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}'"
+              "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').toUpperCase().replace(/[^A-Z0-9-]/g, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')"
             },
             {
               "name": "maxRecords",
@@ -640,6 +617,45 @@
       "id": "00000000-0000-4000-8000-000000000017"
     },
     {
+      "name": "Find Invoice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        880
+      ],
+      "alwaysOutputData": true,
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblOaitAMK0JHqvwk",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "=AND({InvoiceNumber}!='', {InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}')"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000018"
+    },
+    {
       "name": "Respond Status",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
@@ -652,7 +668,7 @@
         "responseBody": "={{ (() => { const o = $('Find Order').first().json.records?.[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000018"
+      "id": "00000000-0000-4000-8000-000000000019"
     },
     {
       "name": "Respond Bad Request",
@@ -669,7 +685,7 @@
           "responseCode": 400
         }
       },
-      "id": "00000000-0000-4000-8000-000000000019"
+      "id": "00000000-0000-4000-8000-000000000020"
     }
   ],
   "connections": {
@@ -753,6 +769,13 @@
         [
           {
             "node": "Respond Order",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Order Error",
             "type": "main",
             "index": 0
           }
