@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
 import { cartReducer, totals as computeTotals, type Cart, type CartLine } from '@/lib/cart';
 
 const STORAGE_KEY = 'aie-cart-v1';
@@ -33,7 +33,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // Hydrate from localStorage after mount (SSR-safe: server and first client
   // render both start from an empty cart, avoiding a hydration mismatch).
+  // Guarded by a ref (not just empty deps) because Strict Mode double-invokes
+  // effects in dev — without the guard, every stored line gets re-added and
+  // its qty doubles.
+  const hydrated = useRef(false);
   useEffect(() => {
+    if (hydrated.current) return;
+    hydrated.current = true;
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       const parsed = raw ? (JSON.parse(raw) as Cart) : null;
@@ -60,7 +66,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const add = useCallback(
     (line: CartLine) => {
       dispatch({ type: 'add', line });
-      if (cartReducer(cart, { type: 'add', line }) !== cart) setLastAdded({ sku: line.sku, at: Date.now() });
+      const before = cart.lines.find((l) => l.sku === line.sku);
+      const after = cartReducer(cart, { type: 'add', line }).lines.find((l) => l.sku === line.sku);
+      if (after && after.qty !== before?.qty) setLastAdded({ sku: line.sku, at: Date.now() });
     },
     [cart]
   );

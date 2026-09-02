@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { StrictMode } from 'react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { CartProvider, useCart } from './cart-provider';
@@ -50,5 +51,21 @@ describe('CartProvider', () => {
     );
     await screen.findByText('true'); // wait for ready
     expect(screen.getByTestId('count').textContent).toBe('2');
+  });
+
+  it('hydration is idempotent under StrictMode double-invoked effects', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ lines: [{ sku: 'A', name: 'A', price: 10, qty: 2, service: false }] }));
+    render(
+      <StrictMode>
+        <CartProvider>
+          <Consumer />
+        </CartProvider>
+      </StrictMode>
+    );
+    await screen.findByText('true'); // wait for ready
+    expect(screen.getByTestId('count').textContent).toBe('2'); // not 4
+
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null');
+    expect(stored.lines[0].qty).toBe(2);
   });
 });
