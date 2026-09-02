@@ -77,7 +77,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="p-sku">מק״ט</Label>
-                  <Input id="p-sku" name="Sku" dir="ltr" placeholder="TY-XX-000" className="font-mono uppercase" />
+                  <Input id="p-sku" name="Sku" dir="ltr" spellCheck={false} placeholder="TY-XX-000" className="font-mono uppercase" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -160,7 +160,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         </div>
       ) : view === 'table' ? (
         <div className="panel overflow-hidden">
-          <Table className="table-fixed">
+          <Table label="מוצרים" className="table-fixed">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[64px]" />

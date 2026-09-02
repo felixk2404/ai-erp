@@ -25,7 +25,7 @@ export function ProductCard({ product, action }: { product: Product; action?: Re
           <span aria-hidden className="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none" />
           <span aria-hidden className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-chassis to-transparent pointer-events-none" />
           {f.Sku && (
-            <span className="absolute top-2 start-2 rounded-md bg-void/70 backdrop-blur px-1.5 py-0.5 text-[10px] mono tracking-wider text-signal border border-signal/25" dir="ltr">
+            <span className="absolute top-2 start-2 rounded-md bg-void/90 backdrop-blur px-1.5 py-0.5 text-[11px] mono tracking-wider text-signal border border-signal/25" dir="ltr">
               {f.Sku}
             </span>
           )}

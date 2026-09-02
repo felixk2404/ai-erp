@@ -20,7 +20,7 @@ export function ThinkingPanel() {
           {STEPS.map((s, i) => {
             const state = i < Math.floor(t / 2) ? 'done' : s === step ? 'now' : 'todo';
             return (
-              <div key={s} className={`flex items-center gap-2.5 text-xs ${state === 'todo' ? 'text-readout-3/60' : state === 'done' ? 'text-readout-3' : 'text-readout'}`}>
+              <div key={s} className={`flex items-center gap-2.5 text-xs ${state === 'todo' ? 'text-readout-3' : state === 'done' ? 'text-readout-3' : 'text-readout'}`}>
                 <span aria-hidden className={`size-1.5 rounded-full ${state === 'done' ? 'bg-led-green' : state === 'now' ? 'bg-signal led-live' : 'bg-readout-3/40'}`} />
                 <span className={state === 'now' ? 'shimmer' : ''}>{s}</span>
               </div>

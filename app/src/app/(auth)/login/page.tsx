@@ -12,7 +12,7 @@ export default function LoginPage() {
       <Suspense fallback={null}>
         <LoginForm />
       </Suspense>
-      <p className="absolute bottom-5 inset-x-0 text-center mono text-[10px] tracking-[0.2em] text-readout-3/70">AI-ERP · NIGHT CONSOLE · JOHN BRYCE FINAL PROJECT</p>
+      <p className="absolute bottom-5 inset-x-0 text-center mono text-[10px] tracking-[0.2em] text-readout-3">AI-ERP · NIGHT CONSOLE · JOHN BRYCE FINAL PROJECT</p>
     </main>
   );
 }

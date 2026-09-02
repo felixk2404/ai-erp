@@ -13,7 +13,7 @@ export function SupportWidget() {
     <Sheet>
       <SheetTrigger
         render={<button type="button" aria-label="שירות לקוחות" />}
-        className="fixed bottom-5 end-5 z-30 size-12 rounded-full bg-inkblue text-white shadow-[0_8px_24px_-8px_rgba(43,76,126,.6)] grid place-items-center transition-transform duration-150 ease-out hover:-translate-y-0.5 active:scale-95"
+        className="fixed bottom-5 end-5 z-30 size-12 rounded-full bg-signal text-[#06121a] shadow-[0_8px_24px_-8px_rgba(43,76,126,.6)] grid place-items-center transition-transform duration-150 ease-out hover:-translate-y-0.5 active:scale-95"
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z" />

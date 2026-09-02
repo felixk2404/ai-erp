@@ -58,7 +58,8 @@
   --accent-foreground: var(--signal);
   --destructive: var(--led-red);
   --border: var(--rule);
-  --input: var(--rule-strong);
+  /* גבול שדה קלט מנותק מהקו הדקורטיבי: הוא הסימן היחיד לאן להקליד וצריך 3:1 (1.4.11) */
+  --input: rgba(255, 255, 255, 0.4);
   --ring: var(--signal);
   --chart-1: var(--signal);
   --chart-2: var(--copper);
@@ -204,6 +205,16 @@
   input::placeholder,
   textarea::placeholder {
     color: var(--readout-3);
+  }
+  /* 2.4.7 — קו מיקוד אחיד לכל מה שלא עובר דרך פרימיטיב shadcn. ציאן על void = 10.87:1 */
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* 2.4.11 — הסיידבר והסרגל הנייד דביקים; יעד עוגן לא ייעצר מתחתם */
+  [id] {
+    scroll-margin-top: 5rem;
   }
   /* מגע: יעדי לחיצה 44px (WCAG) בלי לגעת בדסקטופ */
   @media (pointer: coarse) {
@@ -401,7 +412,16 @@
   .led-live::after,
   .scanline,
   .shimmer,
-  .aurora-blob {
+  .aurora-blob,
+  .cursor-blink::after,
+  .animate-pulse {
     animation: none !important;
+  }
+  /* skeleton וסימני ההקלדה מאבדים את הפעימה — נשארת הבחנה סטטית */
+  .animate-pulse {
+    opacity: 0.65;
+  }
+  .animate-spin {
+    animation-duration: 2.4s !important;
   }
 }
