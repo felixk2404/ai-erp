@@ -223,7 +223,7 @@ export function Catalog({
       ) : (
         <div className={`grid gap-4 pt-8 ${plan.columns}`}>
           {ordered.map((p, i) => (
-            <Reveal key={p.fields.Sku ?? p.id} delay={Math.min(i * 0.04, 0.4)} className={`h-full ${plan.lead && i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}`}>
+            <Reveal key={p.fields.Sku ?? p.id} delay={Math.min(i * 0.04, 0.4)} className={`h-full ${plan.lead && i === 0 ? 'lg:col-span-2' : ''}`}>
               <ProductCard product={p} variant={plan.lead && i === 0 ? 'lead' : 'default'} />
             </Reveal>
           ))}

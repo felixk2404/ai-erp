@@ -9,7 +9,6 @@ import { highlights, inStock } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
 
 const SIZES = '(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw';
-const SIZES_LEAD = '(min-width: 1280px) 612px, (min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw';
 
 /**
  * חפץ בחדר תצוגה: במנוחה המוצר בצבע מלא — האפור שמור לכניסה בגלילה בלבד
@@ -17,10 +16,12 @@ const SIZES_LEAD = '(min-width: 1280px) 612px, (min-width: 1024px) 50vw, (min-wi
  * תחת הסמן הכרטיס מיטה ±6°, מקבל הילת beam ומתרומם 2px.
  * היררכיה: תמונה → שם → שורת מפרט → מלאי + מחיר. הקישור מכסה את כל הכרטיס
  * (`after:inset-0`), וכפתור ההוספה הוא תחנת טאב נפרדת מעליו.
- * `variant="lead"` הוא הפריט המוביל של הרשת — גדול פי ארבעה, שם 22, שתי שורות
+ * `variant="lead"` הוא הפריט המוביל של הרשת — רחב כפול, שם 22, שתי שורות
  * מפרט וכפתור beam — נקודת המבט היחידה במסך; השאר מודמם בכוונה.
- * התמונה שלו ב-object-contain על במת panel-2, כי כרטיס 2×2 חותך תצלום ריבועי;
- * בכרטיס רגיל cover נותן מלבן נקי.
+ * התמונה שלו ב-object-contain על במת panel-2 עם מסגרת inset-6, כי חיתוך cover
+ * קוצץ מוצר; בכרטיס רגיל cover נותן מלבן נקי. ב-lg הוא מתפצל לרוחב (תמונה
+ * בחצי אחד, טקסט בשני) — כרטיס אנכי ברוחב כפול יוצא גבוה מדי ומפיל את הכפתור
+ * מתחת לקפל ב-1366×800.
  */
 export function ProductCard({ product, variant = 'default' }: { product: Product; variant?: 'default' | 'lead' }) {
   const f = product.fields;
@@ -31,21 +32,27 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
 
   return (
     <Tilt className="h-full">
-      <article className="group relative flex h-full flex-col overflow-hidden rounded-lg border border-rule bg-panel-1 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-rule-strong focus-within:border-rule-strong">
+      <article
+        className={`group relative flex h-full flex-col overflow-hidden rounded-lg border border-rule bg-panel-1 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-rule-strong focus-within:border-rule-strong ${lead ? 'lg:flex-row' : ''}`}
+      >
         <div
-          className={`relative aspect-3/2 overflow-hidden bg-panel-2 sm:aspect-4/3 ${lead ? 'p-6 lg:aspect-auto lg:max-h-[400px] lg:flex-1' : 'shrink-0'}`}
+          className={`relative shrink-0 overflow-hidden bg-panel-2 ${lead ? 'aspect-3/2 lg:aspect-auto lg:w-1/2' : 'aspect-3/2 sm:aspect-4/3'}`}
         >
           <Shared name={`product-image-${sku}`}>
             {f.ImageUrl ? (
-              <Image
-                src={f.ImageUrl}
-                alt={f.Name}
-                fill
-                sizes={lead ? SIZES_LEAD : SIZES}
-                priority={lead}
-                data-fly-src={sku}
-                className={lead ? 'object-contain' : 'object-cover'}
-              />
+              // `fill` מתעלם מ-padding, ולכן הבמה של המוביל היא מעטפת inset-6 —
+              // מסגרת שווה בארבעת הצדדים סביב מוצר שמוצג במלואו.
+              <div className={`absolute ${lead ? 'inset-6' : 'inset-0'}`}>
+                <Image
+                  src={f.ImageUrl}
+                  alt={f.Name}
+                  fill
+                  sizes={SIZES}
+                  priority={lead}
+                  data-fly-src={sku}
+                  className={lead ? 'object-contain' : 'object-cover'}
+                />
+              </div>
             ) : (
               <div data-fly-src={sku} className="grid h-full place-items-center text-glow-4">
                 <PackageIcon size={lead ? 40 : 28} strokeWidth={1.25} aria-hidden />
@@ -55,7 +62,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
           {!ok && <div aria-hidden className="absolute inset-0 bg-void/45" />}
         </div>
 
-        <div className="flex flex-1 flex-col p-4">
+        <div className={`flex flex-1 flex-col p-4 ${lead ? 'lg:justify-center' : ''}`}>
           {f.Category && (
             <p className="text-[11px] leading-none tracking-[0.08em] text-glow-3">{f.Category}</p>
           )}
@@ -76,7 +83,9 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
             </p>
           ))}
 
-          <div className="relative z-10 mt-auto flex items-center justify-between gap-3 border-t border-rule pt-4">
+          <div
+            className={`relative z-10 mt-auto flex items-center justify-between gap-3 border-t border-rule pt-4 ${lead ? 'lg:mt-6' : ''}`}
+          >
             <StockBadge ok={ok} />
             <PriceButton product={product} emphasis={lead ? 'beam' : undefined} />
           </div>

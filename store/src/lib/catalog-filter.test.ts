@@ -125,16 +125,17 @@ describe('parity מול catalog.ts', () => {
 });
 
 describe('gridPlan', () => {
-  it('פחות מ-4 תוצאות: בלי מוביל, שלוש עמודות', () => {
-    for (const n of [0, 1, 2, 3]) {
-      expect(gridPlan(n)).toEqual({ lead: false, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' });
-    }
+  it('מספר העמודות לא עולה על מספר התוצאות', () => {
+    expect(gridPlan(1).columns).toBe('grid-cols-1');
+    expect(gridPlan(2).columns).toBe('grid-cols-1 sm:grid-cols-2');
+    expect(gridPlan(3).columns).toBe('grid-cols-1 sm:grid-cols-2 lg:grid-cols-3');
+    expect(gridPlan(4).columns).toBe('grid-cols-1 sm:grid-cols-2 lg:grid-cols-4');
+    expect(gridPlan(34).columns).toBe('grid-cols-1 sm:grid-cols-2 lg:grid-cols-4');
   });
 
-  it('4 ומעלה: כרטיס מוביל וארבע עמודות', () => {
-    for (const n of [4, 5, 34]) {
-      expect(gridPlan(n)).toEqual({ lead: true, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' });
-    }
+  it('כרטיס מוביל רק מ-4 תוצאות ומעלה', () => {
+    for (const n of [0, 1, 2, 3]) expect(gridPlan(n).lead).toBe(false);
+    for (const n of [4, 5, 34]) expect(gridPlan(n).lead).toBe(true);
   });
 });
 

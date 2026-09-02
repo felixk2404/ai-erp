@@ -84,21 +84,21 @@ export function catalogQuery({ c, q, sort, view }: CatalogParams): string {
 
 export type GridPlan = { lead: boolean; columns: string };
 
-/**
- * פחות מ-4 תוצאות → בלי כרטיס מוביל ובלי 4 עמודות: סינון שמחזיר 2 פריטים
- * לא ישאיר חצי שורה שחורה, והמוביל לא ישתלט על רשת של שלושה.
- */
+// מספר העמודות לא עולה על מספר התוצאות, אחרת סינון שמחזיר 2 פריטים משאיר
+// מסילות ריקות ושחורות לצדם. מחרוזות מלאות כדי ש-Tailwind יראה אותן.
+const COLUMNS = [
+  'grid-cols-1',
+  'grid-cols-1',
+  'grid-cols-1 sm:grid-cols-2',
+  'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+  'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+];
+
+/** כרטיס מוביל רק כשיש מספיק תוצאות שיצדיקו אותו; אחרת רשת אחידה וצרה. */
 export function gridPlan(count: number): GridPlan {
-  return count >= 4
-    ? { lead: true, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' }
-    : { lead: false, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' };
+  return { lead: count >= 4, columns: COLUMNS[Math.min(count, 4)] };
 }
 
-/**
- * המוביל של הרשת חייב להיות מוצר אמיתי, לא שירות: פיזי, במלאי, עם תמונה —
- * והיקר שבהם, כי זה הפריט שמצדיק חלון ראווה. אם אף אחד לא עומד בתנאים
- * (למשל סינון לקטגוריית "שירותים") נופלים לפריט הראשון כדי שתמיד יהיה מוביל.
- */
 export function pickLead(products: Product[]): Product | null {
   const eligible = products.filter((p) => !isService(p) && inStock(p) && p.fields.ImageUrl);
   const dearest = eligible.reduce<Product | null>(
