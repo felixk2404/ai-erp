@@ -8,8 +8,8 @@ import { Money } from '@/components/money';
 import { StatusLed } from '@/components/status-led';
 import { Timeline, type TimelineStep } from '@/components/timeline';
 import { DirectionalTransition, Shared } from '@/components/motion/page-transition';
-import { Button } from '@/components/ui/button';
 import { markPaid } from '../actions';
+import { ActionButton } from '@/components/forms/action-button';
 import { parseItems, lineTotal } from '@/lib/invoice-items';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tilt } from '@/components/motion/tilt';
@@ -47,9 +47,9 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         title={f.InvoiceNumber ?? 'חשבונית ללא מספר'}
         actions={
           f.Status === 'generated' ? (
-            <form action={markPaid.bind(null, invoice.id)}>
-              <Button>סמן שולם</Button>
-            </form>
+            <ActionButton action={markPaid.bind(null, invoice.id)} variant="default" size="default">
+              סמן שולם
+            </ActionButton>
           ) : undefined
         }
       />

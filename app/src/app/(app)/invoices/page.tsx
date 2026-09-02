@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/empty-state';
 import { NewInvoiceDialog } from './new-invoice-dialog';
 import { toProductOptions } from '@/lib/invoice-items';
 import { markPaid } from './actions';
+import { ActionButton } from '@/components/forms/action-button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -131,13 +132,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                     )}
                   </TableCell>
                   <TableCell>
-                    {i.fields.Status === 'generated' && (
-                      <form action={markPaid.bind(null, i.id)}>
-                        <Button size="sm" variant="outline">
-                          סמן שולם
-                        </Button>
-                      </form>
-                    )}
+                    {i.fields.Status === 'generated' && <ActionButton action={markPaid.bind(null, i.id)}>סמן שולם</ActionButton>}
                   </TableCell>
                 </TableRow>
               ))}

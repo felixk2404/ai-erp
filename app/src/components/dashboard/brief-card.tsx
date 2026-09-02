@@ -21,7 +21,10 @@ export async function BriefCard() {
         <RefreshBriefButton />
       </div>
       {brief.error ? (
-        <p className="mt-4 text-sm text-readout-3">{brief.error}</p>
+        <p className="mt-4 text-sm text-led-amber flex items-start gap-2">
+          <span aria-hidden className="size-2 rounded-full bg-led-amber shrink-0 mt-1.5" />
+          {brief.error}
+        </p>
       ) : (
         <div className="mt-4 relative ps-4 text-sm text-readout leading-relaxed">
           <span aria-hidden className="absolute inset-y-1 start-0 w-px bg-gradient-to-b from-signal via-signal/40 to-transparent" />
@@ -29,7 +32,8 @@ export async function BriefCard() {
         </div>
       )}
       <div className="mt-auto pt-4 flex items-center justify-between text-[12px] text-readout-3 num">
-        <span>עודכן {new Date(brief.at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jerusalem' })}</span>
+        {/* בלי "עודכן" על ניסיון שנכשל — אחרת השעה מתארת תקציר שלא קיים */}
+        <span>{brief.error ? 'לא עודכן' : `עודכן ${new Date(brief.at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jerusalem' })}`}</span>
         <span className="mono text-[10px]">gpt · RAG · airtable</span>
       </div>
     </section>

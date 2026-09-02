@@ -38,8 +38,13 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
     setInput('');
     setMessages((m) => [...m, { role: 'user', text: q }]);
     start(async () => {
-      const r = await sendAction(q);
-      setMessages((m) => [...m, { role: 'agent', text: r.reply ?? `⚠ ${r.error}`, products: r.products }]);
+      try {
+        const r = await sendAction(q);
+        setMessages((m) => [...m, { role: 'agent', text: r.reply ?? `⚠ ${r.error}`, products: r.products }]);
+      } catch {
+        // כשל תעבורה (timeout של הפונקציה, 500, גרסה שהתחלפה) — נוחת בשיחה כמו כל תשובה, לא מפיל את העמוד
+        setMessages((m) => [...m, { role: 'agent', text: '⚠ ההודעה לא נשלחה. נסו שוב בעוד רגע.' }]);
+      }
     });
   };
 
