@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, useTransition } from 'react';
+import { useEffect, useMemo, useRef, useState, useTransition, type Dispatch, type SetStateAction } from 'react';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { ArrowUpIcon, XIcon } from 'lucide-react';
@@ -14,10 +14,13 @@ const TELEGRAM = 'https://t.me/aielec_support_bot';
 /** מק"טים אמיתיים מהקטלוג — שאלה שמחזירה כרטיסי מוצר, לא שאלה שמחזירה "לא מצאתי". */
 const SUGGESTIONS = ['מה ההבדל בין TY-HP-200 ל-TY-GH-700?', 'יש במלאי TY-MN-27Q?', 'כמה עולה משלוח ומתי זה מגיע?'];
 
-type Msg =
+export type Msg =
   | { id: number; role: 'user'; text: string }
   | { id: number; role: 'agent'; text: string; products: SupportProduct[] }
   | { id: number; role: 'error'; text: string; retry: string };
+
+/** מפתח יציב לכל בועה, נגזר מהרשימה עצמה — בלי ref שצריך לנדוד יחד עם התמליל. */
+const nextId = (m: Msg[]) => (m.at(-1)?.id ?? 0) + 1;
 
 /** ברכה לפי המקום שממנו נפתחה השיחה — הסוכן "יודע" איפה הלקוח עומד. */
 function greetingFor(pathname: string): string {
@@ -51,15 +54,24 @@ function AgentText({ text }: { text: string }) {
  * Intent: חלון שיחה קטן שנפתח מעל הכפתור הצף — נוכח, לא חוסם את החנות.
  * Hierarchy: הבועה האחרונה היא המוקד; הכותרת והפוטר מודחתים ל-glow-3.
  */
-export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at: number } | null; onClose: () => void }) {
+export function SupportPanel({
+  prefill,
+  onClose,
+  messages,
+  setMessages,
+}: {
+  prefill: { text: string; at: number } | null;
+  onClose: () => void;
+  /** התמליל חי ב-SupportWidget, שנשאר מותקן: הפאנל נסגר, השיחה לא נמחקת. */
+  messages: Msg[];
+  setMessages: Dispatch<SetStateAction<Msg[]>>;
+}) {
   const pathname = usePathname();
-  const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState(prefill?.text ?? '');
   const [seenPrefill, setSeenPrefill] = useState(prefill?.at ?? 0);
   const [pending, start] = useTransition();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
-  const idRef = useRef(0);
 
   const sku = pathname.match(/^\/products\/([^/]+)/)?.[1];
   const empty = messages.length === 0 && !pending;
@@ -84,14 +96,14 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
     const text = raw.trim();
     if (!text || pending) return;
     setInput('');
-    setMessages((m) => [...m, { id: (idRef.current += 1), role: 'user', text }]);
+    setMessages((m) => [...m, { id: nextId(m), role: 'user', text }]);
     start(async () => {
       const res = await sendSupport(text, { sku, page: pathname });
       setMessages((m) => [
         ...m,
         res.reply
-          ? { id: (idRef.current += 1), role: 'agent', text: res.reply, products: res.products ?? [] }
-          : { id: (idRef.current += 1), role: 'error', text: res.error ?? 'לא הצלחנו לענות עכשיו.', retry: text },
+          ? { id: nextId(m), role: 'agent', text: res.reply, products: res.products ?? [] }
+          : { id: nextId(m), role: 'error', text: res.error ?? 'לא הצלחנו לענות עכשיו.', retry: text },
       ]);
     });
   };
@@ -136,7 +148,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
           <div className="space-y-5">
             <div className="space-y-1.5">
               <p className="text-xl leading-snug font-medium text-glow">{greetingFor(pathname)}</p>
-              <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה. שאלו כל דבר.</p>
+              <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה. אפשר לשאול הכול.</p>
             </div>
             <div className="flex flex-col items-start gap-2">
               {SUGGESTIONS.map((s) => (
@@ -197,7 +209,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
 
           {pending && (
             <div className="flex items-start">
-              <div className="rounded-md bg-panel-3 px-3 py-2" aria-label="הסוכן מקליד">
+              <div role="status" aria-label="הסוכן מקליד" className="rounded-md bg-panel-3 px-3 py-2">
                 <motion.span
                   aria-hidden
                   className="inline-block h-4 w-[2px] bg-beam align-middle"

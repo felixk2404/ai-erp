@@ -4,7 +4,7 @@ import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { MessageCircleIcon, XIcon } from 'lucide-react';
 import { useCart } from '@/components/cart/cart-provider';
-import { SupportPanel } from './support-panel';
+import { SupportPanel, type Msg } from './support-panel';
 
 /** `window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))` פותח את הבוט עם שאלה מוכנה. */
 export type SupportEventDetail = { sku?: string; message?: string };
@@ -20,6 +20,10 @@ export function SupportWidget() {
   // מתוך גוף effect (ראו cart-provider.tsx), ו-dispatch עובר.
   const [open, setOpen] = useReducer((_: boolean, next: boolean) => next, false);
   const [prefill, setPrefill] = useState<{ text: string; at: number } | null>(null);
+  // התמליל חי כאן ולא בפאנל: הפאנל מתפרק בסגירה, אבל `sessionId` בעוגייה חי
+  // שבוע ו-WF13 שומר את ההיסטוריה בצד שלו. תמליל שנמחק בסגירה השאיר את הלקוח
+  // מול מסך ריק בזמן שהסוכן ממשיך לענות על שיחה שהוא כבר לא רואה.
+  const [messages, setMessages] = useState<Msg[]>([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const reduce = useReducedMotion();
   // מגירת העגלה במובייל תופסת את כל המסך, והמשגר ישב בדיוק על "מעבר לקופה".
@@ -44,8 +48,8 @@ export function SupportWidget() {
 
   // מגירת העגלה והפאנל חולקים פינה; כשהעגלה נפתחת השיחה נסגרת ולא נשארת מתחתיה.
   useEffect(() => {
-    if (cartOpen) setOpen(false);
-  }, [cartOpen]);
+    if (cartOpen) close();
+  }, [cartOpen, close]);
 
   useEffect(() => {
     if (!open) return;
@@ -97,9 +101,9 @@ export function SupportWidget() {
         </motion.button>
       )}
 
-      <AnimatePresence>{open && <SupportPanel prefill={prefill} onClose={close} />}</AnimatePresence>
+      <AnimatePresence>
+        {open && <SupportPanel prefill={prefill} onClose={close} messages={messages} setMessages={setMessages} />}
+      </AnimatePresence>
     </>
   );
 }
-
-export default SupportWidget;
