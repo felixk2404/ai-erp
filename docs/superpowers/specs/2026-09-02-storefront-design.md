@@ -69,17 +69,20 @@ Airtable REST (Products, Orders)      │
 ### 4.3 חוקים
 - מע"מ קבוע 18%. מחירי הקטלוג **כוללים מע"מ** (כמו בכל חנות ישראלית). ב-Order: `Total = Subtotal + Shipping`, `Vat = Total − Total/1.18`. בחשבונית שנוצרת: `Amount = Total/1.18` (לפני מע"מ), WF1 מחשב מע"מ וסה"כ כרגיל — כך הסה"כ בחשבונית שווה בדיוק ל-Total בהזמנה (עיגול לאגורה).
 - משלוח: 29 ₪; חינם מעל 300 ₪; 0 ₪ אם כל הפריטים שירותים. קבועים בקוד ובפרומפט של הסוכן.
-- מלאי: WF10 בודק `qty ≤ Stock` לכל פריט פיזי; אם נכשל מחזיר `{ok:false, error, outOfStock:[sku...]}` והחנות מציגה מה חסר. אם עבר, מפחית `Stock -= qty`. מגבלה ידועה: race בין שתי הזמנות באותה שנייה. מקובל.
+- מלאי: WF10 בודק `qty ≤ Stock` לכל פריט פיזי; אם נכשל מחזיר `{ok:false, error, outOfStock:[{sku,name,available}]}` והחנות מציגה מה חסר — **לפי `name` בלבד; אין להציג את `available`**, כי המלאי משתנה בין הבקשה לתצוגה והמספר יטעה את הלקוח. אם עבר, מפחית `Stock -= qty`. מגבלה ידועה: race בין שתי הזמנות באותה שנייה. מקובל.
+- מספור: מגבלה ידועה: שתי הזמנות באותה שנייה עלולות לקבל אותו ORD/INV; מקובל לפרויקט. זיהוי: `airtable/show-records.sh Invoices` וחיפוש כפילויות ב-InvoiceNumber; תיקון ידני של המספר.
 - לקוח: WF10 מחפש Customer לפי Email (case-insensitive); אם אין, יוצר `CUST-000N` חדש. הזמנה תמיד מקושרת ל-CustomerId, ולכן החשבונית עוברת אימות ב-WF1.
 
 ## 5. n8n
 
 ### 5.1 WF13 — פעולות חדשות
+> **מקור האמת לחוזה המלא (JSON מדויק, קודי HTTP, מגבלות): `docs/runbook.md` §7.1.** הטבלה כאן היא סיכום בלבד.
+
 | action | payload | תגובה |
 |---|---|---|
-| `order` | `{customer:{name,email,phone,address,city}, items:[{sku,qty}], note?}` | `{ok:true, orderNumber, total, invoiceNumber}` או `{ok:false, error, outOfStock?}` — WF13 קורא ל-WF10 כ-sub-workflow ומחזיר את התוצאה |
-| `order_status` | `{orderNumber, email}` | `{ok:true, order:{orderNumber,status,items,total,created,invoiceNumber,pdfUrl?}}` או `{ok:false, error:"לא נמצא"}` — HTTP Request ל-Airtable, השוואת אימייל בשרת |
-| `support` (קיים) | `{message, history?}` | ללא שינוי בחוזה; הסוכן מקבל כלי חדש |
+| `order` | `{customer:{name,email,phone,address,city}, items:[{sku,qty}], note?}` | `{ok:true, orderNumber, invoiceNumber, subtotal, shipping, vat, total, items}` או `{ok:false, error, outOfStock?}` — WF13 קורא ל-WF10 כ-sub-workflow ומחזיר את התוצאה |
+| `order_status` | `{orderNumber, email}` | `{ok:true, order:{orderNumber,status,items,subtotal,shipping,total,created,invoiceNumber,pdfUrl?,invoiceStatus?}}` או `{ok:false, error:"ההזמנה לא נמצאה"}` — HTTP Request ל-Airtable, השוואת אימייל בשרת, `orderNumber` לא רגיש לאותיות |
+| `support` (קיים) | `{message, sessionId}` | `{ok:true, reply}` — הזיכרון בצד השרת לפי `sessionId` (WF13 מוסיף קידומת `web-`); הדפדפן **לא** שולח היסטוריה. הסוכן מקבל כלי חדש |
 
 ### 5.2 WF10 — הזמנה חדשה (sub-workflow)
 1. Validate: zod-like בדיקה ב-Code node (שדות חובה, qty 1–99 גם אחרי מיזוג כפילויות, עד 10 שורות שונות — מגבלת batch של Airtable ב-PATCH).

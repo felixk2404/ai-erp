@@ -1,4 +1,6 @@
-# Company logo — איי.איי אלקטרוניקה (2026-09-02)
+# AI-ERP — משימות
+
+## Company logo — איי.איי אלקטרוניקה (2026-09-02)
 
 Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 
@@ -35,5 +37,6 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] כלי check_stock לסוכן
 - [x] הזמנות בעמוד המנהל
 - [x] תיקון לולאה ב-WF1 (Loop Over Items)
+- [x] גל תיקונים אחרי סקירה סופית (2026-09-02): כשל התראה לא מפיל הזמנה, תשובת שגיאה ל-`Place Order`, סה"כ החשבונית מגיע מההזמנה (בלי סטיית אגורה), `order_status` לא רגיש לאותיות, חוזה WF13 בראנבוק §7.1
 - [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי לפני ההגשה
 - [ ] STORE_DOMAIN ב-config.json → הכתובת האמיתית של החנות אחרי הפריסה (ואז import מחדש של WF10)

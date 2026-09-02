@@ -9,5 +9,6 @@ case "${1:-happy}" in
   service) call "{\"action\":\"order\",\"order\":{\"customer\":{\"name\":\"בדיקה שירות\",\"email\":\"$EMAIL\",\"phone\":\"050-0000000\"},\"items\":[{\"sku\":\"TY-SRV-01\",\"qty\":1}]}}" ;;
   oos)    call "{\"action\":\"order\",\"order\":{\"customer\":{\"name\":\"בדיקה מלאי\",\"email\":\"$EMAIL\",\"phone\":\"050-0000000\",\"address\":\"הרצל 1\",\"city\":\"תל אביב\"},\"items\":[{\"sku\":\"TY-HP-200\",\"qty\":99}]}}" ;;
   bad)    call '{"action":"order","order":{"customer":{"name":"x","email":"nope","phone":"1"},"items":[]}}' ;;
-  status) call "{\"action\":\"order_status\",\"orderNumber\":\"$2\",\"email\":\"${3:-$EMAIL}\"}" ;;
+  status) ORD=${2:?usage: order-test.sh status ORD-000N [email]}
+          call "$(python3 -c 'import json,sys;print(json.dumps({"action":"order_status","orderNumber":sys.argv[1],"email":sys.argv[2]}))' "$ORD" "${3:-$EMAIL}")" ;;
 esac

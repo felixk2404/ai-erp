@@ -9,7 +9,6 @@ H=(-H "Authorization: Bearer $AIRTABLE_PAT" -H "Content-Type: application/json")
 text()     { printf '{"name":"%s","type":"singleLineText"}' "$1"; }
 longtext() { printf '{"name":"%s","type":"multilineText"}' "$1"; }
 num()      { printf '{"name":"%s","type":"number","options":{"precision":2}}' "$1"; }
-int()      { printf '{"name":"%s","type":"number","options":{"precision":0}}' "$1"; }
 email()    { printf '{"name":"%s","type":"email"}' "$1"; }
 phone()    { printf '{"name":"%s","type":"phoneNumber"}' "$1"; }
 url()      { printf '{"name":"%s","type":"url"}' "$1"; }

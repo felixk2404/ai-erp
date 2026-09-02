@@ -59,7 +59,56 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 
 פעולות WF13: `create` · `chat` · `update` · `support` · `order` (מריץ את WF10) · `order_status` (`{orderNumber,email}` → סטטוס ההזמנה + PdfUrl של החשבונית).
 
-אם המייל נכשל (OAuth של Gmail פג) — ההזמנה כבר נשמרה ב-Airtable; ההתראה מגיעה בטלגרם למנהל. Reconnect ל-Gmail credential, ולסמן את ההזמנה `confirmed` ידנית ב-Orders.
+### 7.1 חוזה WF13 לחנות (מקור האמת)
+כל הקריאות: `POST https://<NGROK_DOMAIN>/webhook/erp`, `Content-Type: application/json`, header `x-erp-secret: <N8N_WEBHOOK_SECRET>`.
+
+**קודי HTTP:** `200` לכל תשובה עסקית — גם `ok:true` וגם `ok:false` (שגיאת ולידציה, מלאי, הזמנה לא נמצאה). `400` ל-action לא מוכר. `403` ל-secret שגוי או חסר. החנות בודקת תמיד את `ok` בגוף התשובה, לא רק את קוד ה-HTTP.
+
+**`order`** — יוצר הזמנה (WF13 מריץ את WF10 כ-sub-workflow):
+```json
+{ "action": "order", "order": {
+  "customer": { "name": "דוד לוי", "email": "d@example.com", "phone": "050-0000000", "address": "הרצל 1", "city": "תל אביב" },
+  "items": [ { "sku": "TY-PB-20", "qty": 1 } ],
+  "note": "אופציונלי, עד 500 תווים" } }
+```
+תשובה תקינה:
+```json
+{ "ok": true, "orderNumber": "ORD-0003", "invoiceNumber": "INV-0005",
+  "subtotal": 189, "shipping": 29, "vat": 33.25, "total": 218,
+  "items": [ { "sku": "TY-PB-20", "name": "סוללת גיבוי 20,000mAh TY-Power", "qty": 1, "price": 189 } ] }
+```
+שגיאת ולידציה — ההודעות מופרדות בפסיק: `{ "ok": false, "error": "שם חסר, אימייל לא תקין" }`.
+חוסר מלאי:
+```json
+{ "ok": false, "error": "חלק מהפריטים אינם במלאי בכמות המבוקשת",
+  "outOfStock": [ { "sku": "TY-HP-200", "name": "אוזניות אלחוטיות TY-200", "available": 2 } ] }
+```
+`available` הוא לשימוש פנימי בלבד — **החנות לא מציגה אותו** ללקוח (המלאי משתנה בין הבקשה לתצוגה), אלא רק את שמות הפריטים החסרים.
+כשל בשמירה (WF10 נופל אחרי שהחל לכתוב): `{ "ok": false, "error": "שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל." }`.
+
+**מגבלות ולידציה:** עד **10 שורות** שונות בהזמנה (מגבלת batch של Airtable ב-PATCH); `qty` בין 1 ל-**99** לכל שורה, גם אחרי מיזוג כפילויות של אותו מק"ט; כתובת ועיר נדרשות אם יש פריט פיזי אחד לפחות. מחיר תמיד נלקח מהקטלוג, לעולם לא מהדפדפן.
+
+**`order_status`** — `orderNumber` לא רגיש לאותיות (`ord-0001` = `ORD-0001`); האימייל חייב להתאים להזמנה:
+```json
+{ "action": "order_status", "orderNumber": "ORD-0001", "email": "d@example.com" }
+```
+```json
+{ "ok": true, "order": { "orderNumber": "ORD-0001", "status": "confirmed",
+  "items": [ { "sku": "...", "name": "...", "qty": 1, "price": 349 } ],
+  "subtotal": 439, "shipping": 0, "total": 439, "created": "2026-09-02T14:37:30.000Z",
+  "invoiceNumber": "INV-0003", "pdfUrl": "https://drive.google.com/...", "invoiceStatus": "generated" } }
+```
+לא נמצא: `{ "ok": false, "error": "ההזמנה לא נמצאה" }`. `pdfUrl`/`invoiceStatus` הם `null` עד ש-WF8 מייצר את ה-PDF (עד כ-2 דקות אחרי ההזמנה).
+
+**`support`** — צ'אט שירות לקוחות. הזיכרון בצד השרת לפי `sessionId` (WF13 מוסיף קידומת `web-`), ולכן **אין** לשלוח היסטוריית שיחה מהדפדפן:
+```json
+{ "action": "support", "message": "יש במלאי TY-HP-200?", "sessionId": "מזהה יציב לכל דפדפן" }
+```
+```json
+{ "ok": true, "reply": "כן, TY-HP-200 נמצא במלאי. המחיר הוא 349 ₪ כולל מע\"מ." }
+```
+
+אם המייל נכשל (OAuth של Gmail פג) — ההזמנה נשמרת, מסומנת `confirmed`, והחנות מקבלת תשובה תקינה; חסר רק אישור המייל ללקוח. Reconnect ל-Gmail credential ושולחים את האישור ידנית. איך מזהים שהמייל נכשל: ראו סעיף 6 (מלכודות).
 
 מלכודת n8n: ב-httpRequest, שני פרמטרים ב-Query Parameters עם אותו שם (למשל `fields[]`) נדרסים — רק האחרון נשלח. לרשימת `fields[]` יש לשרשר אותם ל-URL עצמו (כמו ב-WF10 `Last Order`) או לוותר עליהם.
 
@@ -101,5 +150,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - סיסמת DB עם `#`/`$` — load-env מקודד אוטומטית; מרכאות בודדות סביב הערך ב-.env.
 - Airtable Metadata API לא יוצר שדה Created time — מוסיפים ידנית, הסקריפט משנה שם ל-`Created`.
 - Gotenberg: Chromium איטי בהפעלה ראשונה — timeout 90s ב-compose.
-- WF1 נשבר כששתי חשבוניות נוצרות באותה דגימה של ה-Airtable Trigger: הצומת `Compute` משתמש ב-`$('Airtable Trigger').item` ואחרי `Aggregate` השיוך מעורפל → `Multiple matches found`. חשבונית תקועה ב-`new` לא תיקרא שוב על ידי הטריגר. בדמו — להזמין הזמנה אחת בכל דקה.
+- WF1 נשבר בעבר כששתי חשבוניות נוצרו באותה דגימה של ה-Airtable Trigger: הצומת `Compute` השתמש ב-`$('Airtable Trigger').item`, ואחרי `Aggregate` השיוך היה מעורפל → `Multiple matches found`, והחשבונית נתקעה ב-`new` בלי שהטריגר יקרא אותה שוב. **תוקן 2026-09-02**: הגוף עטוף ב-`Loop Over Items` (batchSize 1) והביטויים משתמשים ב-`$('Loop Over Items').first()`. אין יותר צורך להגביל להזמנה אחת בדקה.
 - Aggregate/Summarize אחרי טריגר מרובה-פריטים שובר את השיוך של `$('Trigger').item` → עוטפים את הגוף ב-Loop Over Items (תיקון WF1, 2026-09-02).
+- מספור רץ (ORD/INV) מחושב מהמקסימום הקיים ולא מנעילה. **מגבלה ידועה: שתי הזמנות באותה שנייה עלולות לקבל אותו ORD/INV; מקובל לפרויקט.** זיהוי: `airtable/show-records.sh Invoices` וחיפוש כפילויות ב-InvoiceNumber; תיקון ידני של המספר.
+- WF10: כשל של `Email Customer` או `Notify Manager` כבר לא מפיל את ההזמנה (`onError: continueRegularOutput`) — ההזמנה מסומנת `confirmed` והחנות מקבלת תשובה תקינה. במצב הזה **ה-Error Workflow לא נורה**, ולכן מייל שנכשל נראה רק ברשימת ההרצות של WF10: `n8n/scripts/executions.sh "WF10 — הזמנה מהחנות"` → פותחים את ההרצה ובודקים את הצומת `Email Customer`.
