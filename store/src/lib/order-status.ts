@@ -28,3 +28,8 @@ export const STATUS_LABELS: Record<OrderStatus, string> = {
 export function stepIndex(status: OrderStatus): number {
   return (STATUS_STEPS as readonly string[]).indexOf(status);
 }
+
+/** מוסיף הנחיה לניסיון חוזר כשה-ERP לא מצא את ההזמנה — `includes` ולא שוויון מדויק, כדי לא להישבר על ניסוח קצת שונה. */
+export function withRetryHint(error: string): string {
+  return error.includes('לא נמצאה') ? `${error} — בדקו את המספר והאימייל` : error;
+}

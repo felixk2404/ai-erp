@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeEmail, normalizeOrderNumber, STATUS_LABELS, STATUS_STEPS, stepIndex } from './order-status';
+import { normalizeEmail, normalizeOrderNumber, STATUS_LABELS, STATUS_STEPS, stepIndex, withRetryHint } from './order-status';
 
 describe('normalizeOrderNumber', () => {
   it('trims, upper-cases and strips anything outside A-Z0-9-', () => {
@@ -24,6 +24,16 @@ describe('stepIndex', () => {
 
   it('returns -1 for cancelled, which sits outside the timeline', () => {
     expect(stepIndex('cancelled')).toBe(-1);
+  });
+});
+
+describe('withRetryHint', () => {
+  it('adds a retry hint when the ERP says the order was not found', () => {
+    expect(withRetryHint('ההזמנה לא נמצאה')).toBe('ההזמנה לא נמצאה — בדקו את המספר והאימייל');
+  });
+
+  it('leaves other errors untouched', () => {
+    expect(withRetryHint('השירות לא זמין כרגע, נסו שוב בעוד רגע')).toBe('השירות לא זמין כרגע, נסו שוב בעוד רגע');
   });
 });
 

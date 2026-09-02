@@ -9,13 +9,25 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { LookupForm, type LookupValues } from '@/components/orders/lookup-form';
 import { lookupOrder } from '@/app/orders/actions';
 import { ils } from '@/lib/format';
-import { STATUS_LABELS, STATUS_STEPS, stepIndex } from '@/lib/order-status';
+import { STATUS_LABELS, STATUS_STEPS, stepIndex, withRetryHint } from '@/lib/order-status';
 import type { OrderStatus, TrackedOrder } from '@/lib/types';
 
 const EMAIL_KEY = 'aie-order-email';
-const NOT_FOUND = 'ההזמנה לא נמצאה';
 const POLL_MS = 20_000;
 const POLL_MAX = 6;
+
+// הילת השלב הנוכחי בציר: CSS טהור (לא motion) כדי ש-prefers-reduced-motion
+// יעצור אותה ברמת הדפדפן, בלי ענף מארקאפ נפרד ל"מצב מופחת תנועה".
+const PULSE_CSS = `
+@keyframes aie-timeline-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0; transform: scale(1.4); }
+}
+[data-timeline-pulse] { animation: aie-timeline-pulse 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  [data-timeline-pulse] { animation: none; opacity: 0.5; transform: scale(1); }
+}
+`;
 
 type Phase = { kind: 'loading' } | { kind: 'form' } | { kind: 'error'; message: string } | { kind: 'success'; order: TrackedOrder };
 
@@ -44,8 +56,7 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
         setPhase({ kind: 'success', order: res.order });
         return;
       }
-      const message = res.error === NOT_FOUND ? `${NOT_FOUND} — בדקו את המספר והאימייל` : res.error;
-      setPhase({ kind: 'error', message });
+      setPhase({ kind: 'error', message: withRetryHint(res.error) });
     },
     [orderNumber]
   );
@@ -155,10 +166,7 @@ function OrderNumberDisplay({ value }: { value: string }) {
         className="absolute inset-0 mx-auto h-32 w-64 -translate-y-2 bg-[radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
       />
       <span className="relative text-xs font-medium tracking-wide text-glow-3">ההזמנה התקבלה</span>
-      <span
-        dir="ltr"
-        className="num relative flex text-[44px] leading-none font-extrabold text-glow drop-shadow-[0_0_20px_var(--color-beam-soft)] sm:text-[64px]"
-      >
+      <span dir="ltr" className="num relative flex text-[44px] leading-none font-extrabold text-glow sm:text-[64px]">
         {[...value].map((ch, i) => (
           <motion.span
             key={`${ch}-${i}`}
@@ -195,57 +203,73 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
   const LINE_COL = ['col-start-2', 'col-start-4', 'col-start-6'] as const;
 
   return (
-    <div
-      role="group"
-      aria-label="סטטוס ההזמנה"
-      className="grid grid-cols-[auto_1fr_auto_1fr_auto_1fr_auto] items-center gap-y-2"
-    >
-      {STATUS_STEPS.map((step, i) => (
-        <Fragment key={step}>
-          <span
-            className={
-              `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-xs font-medium ` +
-              (i < current
-                ? 'border-beam bg-beam text-void'
-                : i === current
-                  ? 'border-beam bg-panel-1 text-beam'
-                  : 'border-rule bg-panel-1 text-glow-4')
-            }
-          >
-            {i < current ? <CheckIcon size={14} aria-hidden /> : i + 1}
-            {i === current && (
-              <motion.span
-                aria-hidden
-                className="absolute inset-0 rounded-full bg-beam-soft"
-                animate={{ opacity: [0.6, 0, 0.6], scale: [1, 1.6, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              />
+    <>
+      <style>{PULSE_CSS}</style>
+      <div
+        role="group"
+        aria-label="סטטוס ההזמנה"
+        className="grid grid-cols-[auto_1fr_auto_1fr_auto_1fr_auto] items-center gap-y-2"
+      >
+        {STATUS_STEPS.map((step, i) => (
+          <Fragment key={step}>
+            <span
+              className={
+                `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-xs font-medium ` +
+                (i < current
+                  ? 'border-beam bg-beam text-void'
+                  : i === current
+                    ? 'border-beam bg-panel-1 text-beam'
+                    : 'border-rule bg-panel-1 text-glow-4')
+              }
+            >
+              {i < current ? <CheckIcon size={14} aria-hidden /> : i + 1}
+              {/* פעימה סמנטית (מתקשרת "כאן עכשיו"), לא קישוט — ראו system.md #9.
+                  CSS טהור, לא motion: כך `prefers-reduced-motion` עוצר אותה נטיבית
+                  בלי ענף מארקאפ נפרד. */}
+              {i === current && <span aria-hidden data-timeline-pulse className="absolute inset-0 rounded-full bg-beam-soft" />}
+            </span>
+            {i < LINE_COL.length && (
+              <div className={`row-start-1 ${LINE_COL[i]} relative mx-1 h-px bg-rule`}>
+                <motion.div
+                  aria-hidden
+                  className="absolute inset-0 origin-right bg-beam"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: i < current ? 1 : 0 }}
+                  transition={{ type: 'spring', bounce: 0.15, visualDuration: 0.4, delay: i * 0.08 }}
+                />
+              </div>
             )}
-          </span>
-          {i < LINE_COL.length && (
-            <div className={`row-start-1 ${LINE_COL[i]} relative mx-1 h-px bg-rule`}>
-              <motion.div
-                aria-hidden
-                className="absolute inset-0 origin-right bg-beam"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: i < current ? 1 : 0 }}
-                transition={{ type: 'spring', bounce: 0.1, visualDuration: 0.4, delay: i * 0.08 }}
-              />
-            </div>
-          )}
-          <span className={`row-start-2 ${DOT_COL[i]} text-center text-xs font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
-            {STATUS_LABELS[step]}
-          </span>
-        </Fragment>
-      ))}
-    </div>
+            <span className={`row-start-2 ${DOT_COL[i]} text-center text-xs font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
+              {STATUS_LABELS[step]}
+            </span>
+          </Fragment>
+        ))}
+      </div>
+    </>
   );
 }
 
 function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-rule">
-      <table className="w-full min-w-[480px] text-sm">
+      {/* < sm: כרטיס דו-שורתי לכל פריט — טבלה עם 4 עמודות נחתכת ב-390px. */}
+      <ul className="flex flex-col divide-y divide-rule sm:hidden">
+        {items.map((item) => (
+          <li key={item.sku} className="flex flex-col gap-1 px-4 py-3">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-glow">{item.name}</span>
+              <span dir="ltr" className="num shrink-0 text-xs text-glow-3">
+                {item.sku}
+              </span>
+            </div>
+            <div className="num text-xs text-glow-2">
+              {item.qty} × {ils(item.price)} = <span className="text-glow">{ils(item.qty * item.price)}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <table className="hidden w-full text-sm sm:table">
         <thead>
           <tr className="border-b border-rule bg-panel-1 text-glow-3">
             <th className="px-4 py-2 text-start font-medium">פריט</th>
@@ -286,7 +310,9 @@ function Totals({ order }: { order: TrackedOrder }) {
       </div>
       <div className="flex justify-between">
         <dt className="text-glow-3">משלוח</dt>
-        <dd className="num text-glow-2">{order.shipping === 0 ? 'חינם' : ils(order.shipping)}</dd>
+        <dd className={order.shipping === 0 ? 'text-glow-2' : 'num text-glow-2'}>
+          {order.shipping === 0 ? 'חינם' : ils(order.shipping)}
+        </dd>
       </div>
       <div className="flex justify-between border-t border-rule pt-1.5 text-base font-medium">
         <dt className="text-glow">סה&quot;כ</dt>
