@@ -19,13 +19,22 @@ import type { Product } from '@/lib/types';
 const HIDDEN = { opacity: 0, y: 20, filter: 'blur(10px)' };
 const SHOWN = { opacity: 1, y: 0, filter: 'blur(0px)' };
 
-const scene = { hidden: {}, visible: { transition: { delayChildren: stagger(0.1) } } };
-const column = { hidden: {}, visible: { transition: { delayChildren: stagger(0.07) } } };
+const scene = {
+  hidden: {},
+  visible: { transition: { delayChildren: stagger(0.1) } },
+};
+const column = {
+  hidden: {},
+  visible: { transition: { delayChildren: stagger(0.07) } },
+};
 
 /** הפריט "מתמקד": יוצא מטושטש ונמוך ונוחת חד — כמו עדשה שנתפסת על האובייקט. */
 const item = {
   hidden: HIDDEN,
-  visible: { ...SHOWN, transition: { type: 'spring' as const, stiffness: 100, damping: 20 } },
+  visible: {
+    ...SHOWN,
+    transition: { type: 'spring' as const, stiffness: 100, damping: 20 },
+  },
 };
 
 /** תנועה מופחתת: אותו DOM, אותם ערכים — רק בלי המסע. הבחירה נעשית בלקוח בלבד. */
@@ -33,24 +42,30 @@ const itemCalm = {
   hidden: HIDDEN,
   visible: {
     ...SHOWN,
-    transition: { opacity: { duration: 0.3, ease: 'easeOut' as const }, y: { duration: 0 }, filter: { duration: 0 } },
+    transition: {
+      opacity: { duration: 0.3, ease: 'easeOut' as const },
+      y: { duration: 0 },
+      filter: { duration: 0 },
+    },
   },
 };
 
-/** מונו רק על הספרות; המילים העבריות נשארות בהיבו (החלטה כלל-אתרית). */
+/** מונו רק על הספרות; היחידה והמילים העבריות נשארות בהיבו (החלטה כלל-אתרית). */
 const FACTS = [
-  { label: 'משלוח', value: '29 ₪' },
-  { label: 'חינם מעל', value: '300 ₪' },
+  { label: 'משלוח', value: '29', unit: '₪' },
+  { label: 'חינם מעל', value: '300', unit: '₪' },
   { label: 'החזרה', value: '14', unit: 'יום' },
 ] as const;
 
 /**
  * Intent: חדר תצוגה חשוך שבו פריט אחד עומד באור. הכותרת מסבירה את האור, לא מתחרה בו.
- * Hierarchy: מוצר הדגל (דיסקה מוארת, 460px) → כותרת → CTA ראשי → מפרט מונו. כל השאר מודמם.
+ * Hierarchy: מוצר הדגל (דיסקה מוארת, 500px) → כותרת → CTA ראשי → שורת עובדות. כל השאר מודמם.
+ *   במובייל המוצר ראשון (`order-1`); ב-lg הוא בעמודה השנייה ושורת העובדות משתרעת על שתיהן.
  * Palette: void מלא רוחב, panel-2 לדיסקה, beam רק בכפתור אחד ובהילה הרכה מסביב לדיסקה.
  * Depth: קווי rule + הילה רדיאלית + טבעת מקווקוות מסתובבת. אין צל אחד בכל הסקשן.
- * Typography: eyebrow מונו 11, h1 Heebo 800 44→64, משנה 18/1.5 glow-2, מפרט מונו 13.
- * Spacing: מלא-רוחב עם תוכן מיושר ל-1280, min-h 80dvh, פער 40px בין הבלוקים בעמודת הטקסט.
+ * Typography: eyebrow היבו 11 (מונו רק על המספר), h1 Heebo 800 בטווח 44→96, משנה 18/1.5 glow-2,
+ *   שורת העובדות היבו 14 עם ספרות במונו.
+ * Spacing: מלא-רוחב עם תוכן מיושר ל-1280, min-h 80dvh, פער 40px בין שורות הרשת.
  */
 export function Hero({ product, count }: { product: Product; count: number }) {
   const reduce = useReducedMotion();
@@ -74,6 +89,8 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             חדר תצוגה · <span className="num">{count}</span> מוצרים · אחריות יבואן
           </motion.p>
 
+          {/* 9ch = "טכנולוגיה" ועוד ~9% אוויר: ה-ch של היבו צר מהאות העברית הממוצעת, אז זה כופה
+              שבירה אחרי המילה הראשונה בלי לחתוך אותה. בלי זה הכותרת נשארת שורה אחת ונשפכת מהעמודה. */}
           <h1 className="mt-5 max-w-[9ch] text-[clamp(44px,6vw,96px)] leading-[0.95] font-extrabold tracking-[-0.02em] text-balance">
             <WordReveal text="טכנולוגיה שרואים." />
           </h1>
@@ -94,9 +111,6 @@ export function Hero({ product, count }: { product: Product; count: number }) {
               שאל את הבוט
             </AskBot>
           </motion.div>
-
-
-
         </motion.div>
 
         {/* המוצר ראשון במובייל (`order-1`): בחדר תצוגה מסתכלים על החפץ, לא קוראים שלט. */}
@@ -105,44 +119,52 @@ export function Hero({ product, count }: { product: Product; count: number }) {
           className="relative order-1 mx-auto w-full max-w-[340px] sm:max-w-[380px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-[500px]"
         >
           {/* קישור אחד על כל הדיסקה: מסתכלים על הפריט, לוחצים על הפריט. כרטיס המפרט הוא התווית שלו. */}
-          <Link href={`/products/${sku}`} transitionTypes={['nav-forward']} className="group relative block aspect-square">
+          <Link
+            href={`/products/${sku}`}
+            transitionTypes={['nav-forward']}
+            className="group relative block aspect-square"
+          >
             {/* overflow-clip כאן ולא על הקישור: תיבת הגבול של הטבעת המסתובבת היא ריבוע מסובב (×1.41),
                 ובלעדיו היא מרחיבה את גלילת הדף במובייל — אבל כרטיס המפרט חייב להישאר *מחוץ* לקליפ. */}
             <div className="absolute inset-0 overflow-clip rounded-full">
-            {/* הטבעת המקווקוות: סיבוב איטי שמסמן "פריט בתצוגה". CSS ולא JS, כדי ש-prefers-reduced-motion יכבה אותו בוודאות. */}
-            <div
-              aria-hidden
-              className="absolute inset-[4%] animate-[spin_20s_linear_infinite] rounded-full border border-dashed border-rule-strong motion-reduce:animate-none"
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 rounded-full [background:radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
-            />
+              {/* הטבעת המקווקוות: סיבוב איטי שמסמן "פריט בתצוגה". CSS ולא JS, כדי ש-prefers-reduced-motion יכבה אותו בוודאות. */}
+              <div
+                aria-hidden
+                className="absolute inset-[4%] animate-[spin_20s_linear_infinite] rounded-full border border-dashed border-rule-strong motion-reduce:animate-none"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 rounded-full [background:radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
+              />
 
-            {/* הדיסקה צפה 6 שניות — הפריט "מרחף" בתוך האור. reducedMotion="user" הגלובלי מבטל transform. */}
-            <motion.div
-              animate={reduce ? undefined : { y: [-10, 10, -10] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute inset-[10%] overflow-hidden rounded-full border border-rule bg-panel-2"
-            >
-              <Shared name={`product-image-${sku}`}>
-                {f.ImageUrl ? (
-                  <Image
-                    src={f.ImageUrl}
-                    alt={f.Name}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 80vw, 400px"
-                    data-fly-src={sku}
-                    className="object-cover [filter:saturate(0.18)_brightness(0.88)_contrast(1.08)] [mask-image:radial-gradient(closest-side,#000_42%,transparent_94%)]"
-                  />
-                ) : (
-                  <div data-fly-src={sku} className="grid h-full place-items-center text-glow-4">
-                    <PackageIcon size={40} strokeWidth={1} aria-hidden />
-                  </div>
-                )}
-              </Shared>
-            </motion.div>
+              {/* הדיסקה צפה 6 שניות — הפריט "מרחף" בתוך האור. reducedMotion="user" הגלובלי מבטל transform. */}
+              <motion.div
+                animate={reduce ? undefined : { y: [-10, 10, -10] }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="absolute inset-[10%] overflow-hidden rounded-full border border-rule bg-panel-2"
+              >
+                <Shared name={`product-image-${sku}`}>
+                  {f.ImageUrl ? (
+                    <Image
+                      src={f.ImageUrl}
+                      alt={f.Name}
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 80vw, 400px"
+                      data-fly-src={sku}
+                      className="object-cover [filter:saturate(0.18)_brightness(0.88)_contrast(1.08)] [mask-image:radial-gradient(closest-side,#000_42%,transparent_94%)]"
+                    />
+                  ) : (
+                    <div data-fly-src={sku} className="grid h-full place-items-center text-glow-4">
+                      <PackageIcon size={40} strokeWidth={1} aria-hidden />
+                    </div>
+                  )}
+                </Shared>
+              </motion.div>
             </div>
 
             <span className="absolute bottom-[2%] start-0 z-10 block w-[192px] sm:w-[208px] lg:start-[-5%] rounded-[12px] border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
@@ -162,21 +184,20 @@ export function Hero({ product, count }: { product: Product; count: number }) {
           variants={enter}
           className="order-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-[14px] tracking-[0.08em] text-glow-3 lg:col-span-2 lg:col-start-1 lg:row-start-2"
         >
-            {FACTS.map((fact, i) => (
-              <div key={fact.label} className="flex items-center gap-2">
-                <dt>{fact.label}</dt>
-                <dd className="text-glow-2">
-                  <span className="num">{fact.value}</span>
-                  {'unit' in fact && ` ${fact.unit}`}
-                </dd>
-                {/* מפריד *עוקב* ולא מוביל: בשבירת שורה הנקודה נשארת בסוף השורה ולא פותחת אותה. */}
-                {i < FACTS.length - 1 && (
-                  <span aria-hidden className="text-glow-4">
-                    ·
-                  </span>
-                )}
-              </div>
-            ))}
+          {FACTS.map((fact, i) => (
+            <div key={fact.label} className="flex items-center gap-2">
+              <dt>{fact.label}</dt>
+              <dd className="text-glow-2">
+                <span className="num">{fact.value}</span> {fact.unit}
+              </dd>
+              {/* מפריד *עוקב* ולא מוביל: בשבירת שורה הנקודה נשארת בסוף השורה ולא פותחת אותה. */}
+              {i < FACTS.length - 1 && (
+                <span aria-hidden className="text-glow-4">
+                  ·
+                </span>
+              )}
+            </div>
+          ))}
         </motion.dl>
       </motion.div>
     </Spotlight>

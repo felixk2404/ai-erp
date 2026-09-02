@@ -5,12 +5,13 @@ import type { Product } from '@/lib/types';
 
 /**
  * Intent: אחרי פריט אחד באור — שישה. אותה שפה של הקטלוג, בלי להמציא כרטיס שני לחנות.
- * הצילומים על רקע בהיר, ולכן הרשת מוחשכת ב-`[&_img]` בעמוד הזה בלבד: אחרת שש תמונות
- * בהירות גוברות על ה-hero. ב-hover הכרטיס עצמו מחזיר brightness מלא — האור נדלק על מה שנוגעים בו.
- * Hierarchy: תווית מונו → כותרת 28 → משפט עריכה אחד → רשת. הקישור "כל המוצרים" הוא היציאה.
- * Palette: glow לכותרת, glow-2 למשפט, glow-3 לתווית. אין beam — הוא כבר נוצל ב-hero ובכרטיסים.
+ * הצילומים על רקע בהיר, ולכן הרשת מוחשכת ב-`[&_img]` בעמוד הזה בלבד — אחרת שש תמונות
+ * בהירות גוברות על ה-hero. ב-hover *הכרטיס שנוגעים בו* מחזיר צבע ובהירות מלאים ב-300ms:
+ * הסלקטור מכוון ל-`.group:hover` של הכרטיס ולא ל-hover של הרשת, אחרת כל השש היו נדלקות יחד.
+ * Hierarchy: תווית 11 → כותרת 28 → רשת. הקישור "כל המוצרים" הוא היציאה.
+ * Palette: glow לכותרת, glow-3 לתווית. אין beam — הוא כבר נוצל ב-hero ובכרטיסים.
  * Depth: מגיע מהכרטיסים עצמם (rule + tilt). הסקשן עצמו שטוח בכוונה.
- * Typography: תווית מונו 11, h2 28 Heebo 800, משפט 16.
+ * Typography: תווית היבו 11, h2 28 Heebo 800.
  * Spacing: כותרת → רשת 32px, פער כרטיסים 16, חשיפה בגלילה בהפרש 60ms.
  */
 export function Featured({ products }: { products: Product[] }) {
@@ -32,7 +33,7 @@ export function Featured({ products }: { products: Product[] }) {
         </Link>
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 [&_img]:saturate-[.6] [&_img]:brightness-[.75] sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-4 [&_img]:saturate-[.6] [&_img]:brightness-[.65] [&_img]:transition-[filter] [&_img]:duration-300 [&_.group:hover_img]:saturate-100 [&_.group:hover_img]:brightness-100 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p, i) => (
           <Reveal key={p.id} delay={i * 0.06}>
             <ProductCard product={p} />

@@ -15,14 +15,12 @@ const ROW = 'grid grid-cols-[minmax(0,260px)_56px_112px_16px] items-center gap-3
  */
 export function CategoryGrid({ stats }: { stats: CategoryStat[] }) {
   const total = stats.reduce((n, s) => n + s.count, 0);
-  const from = Math.min(...stats.map((s) => s.from));
+  // Math.min() על מערך ריק מחזיר Infinity — קטלוג ריק היה מדפיס "החל מ-∞ ₪".
+  const from = stats.length > 0 ? Math.min(...stats.map((s) => s.from)) : 0;
 
   return (
-    <section
-      aria-labelledby="categories-title"
-      className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16"
-    >
-      <div className="lg:pt-2">
+    <section aria-labelledby="categories-title" className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16">
+      <div className="lg:self-center">
         <p className="text-[11px] font-medium tracking-[0.08em] text-glow-3">רשת המפרט</p>
         <h2 id="categories-title" className="mt-2 text-[28px] leading-[1.15] font-extrabold tracking-[-0.02em]">
           כל הקטלוג, בשורה אחת לכל קטגוריה
@@ -31,13 +29,19 @@ export function CategoryGrid({ stats }: { stats: CategoryStat[] }) {
           אותה רשת חוזרת בקטלוג, בעמוד המוצר ובתשובות של הבוט.
         </p>
         {/* הסכומים ממלאים את החלל בעמודת הכותרת ונותנים את גודל החנות במשפט אחד. */}
-        <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] tracking-[0.08em] text-glow-3">
-          <span className="num">{stats.length}</span> קטגוריות
-          <span aria-hidden className="text-glow-4">·</span>
-          <span className="num">{total}</span> פריטים
-          <span aria-hidden className="text-glow-4">·</span>
-          החל מ-<span className="num">{ils(from)}</span>
-        </p>
+        {stats.length > 0 && (
+          <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] tracking-[0.08em] text-glow-3">
+            <span className="num">{stats.length}</span> קטגוריות
+            <span aria-hidden className="text-glow-4">
+              ·
+            </span>
+            <span className="num">{total}</span> פריטים
+            <span aria-hidden className="text-glow-4">
+              ·
+            </span>
+            החל מ-<span className="num">{ils(from)}</span>
+          </p>
+        )}
       </div>
 
       <div>
@@ -61,8 +65,12 @@ export function CategoryGrid({ stats }: { stats: CategoryStat[] }) {
             <span aria-hidden className="truncate text-[14px] text-glow-2 transition-colors group-hover:text-glow">
               {s.name}
             </span>
-            <span aria-hidden className="num text-end text-[14px] text-glow-3">{s.count}</span>
-            <span aria-hidden className="num text-end text-[14px] text-glow-2">{ils(s.from)}</span>
+            <span aria-hidden className="num text-end text-[14px] text-glow-3">
+              {s.count}
+            </span>
+            <span aria-hidden className="num text-end text-[14px] text-glow-2">
+              {ils(s.from)}
+            </span>
             <span aria-hidden className="text-[14px] text-glow-3 transition-colors group-hover:text-beam">
               ←
             </span>
