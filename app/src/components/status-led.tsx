@@ -2,10 +2,10 @@ import { statusMeta, type Led } from '@/lib/status';
 import type { TableName } from '@/lib/types';
 
 const LED: Record<Led, string> = {
-  green: 'bg-led-green shadow-[0_0_6px_var(--led-green)]',
-  amber: 'bg-led-amber shadow-[0_0_6px_var(--led-amber)]',
-  red: 'bg-led-red shadow-[0_0_6px_var(--led-red)]',
-  off: 'bg-ink-3/40',
+  green: 'bg-led-green shadow-[0_0_8px_var(--led-green)]',
+  amber: 'bg-led-amber shadow-[0_0_8px_var(--led-amber)]',
+  red: 'bg-led-red shadow-[0_0_8px_var(--led-red)]',
+  off: 'bg-readout-3/50',
 };
 
 /** נורית סטטוס: נקודה 8px עם זוהר עדין + תווית בעברית. */

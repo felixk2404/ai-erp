@@ -86,3 +86,13 @@ describe('attentionItems', () => {
     expect(attentionItems({ invoices: [inv({ Status: 'paid' })], leads: [], tasks: [], now })).toEqual([]);
   });
 });
+
+describe('monthDelta', () => {
+  it('compares the last month to the previous one; pct is null when previous is 0', async () => {
+    const { monthDelta } = await import('./insights');
+    expect(monthDelta([{ total: 1000, count: 2 }, { total: 1500, count: 3 }])).toEqual({ total: { cur: 1500, prev: 1000, pct: 50 }, count: { cur: 3, prev: 2, pct: 50 } });
+    expect(monthDelta([{ total: 0, count: 0 }, { total: 200, count: 1 }])).toEqual({ total: { cur: 200, prev: 0, pct: null }, count: { cur: 1, prev: 0, pct: null } });
+    expect(monthDelta([{ total: 5, count: 1 }])).toEqual({ total: { cur: 5, prev: 0, pct: null }, count: { cur: 1, prev: 0, pct: null } });
+    expect(monthDelta([{ total: 200, count: 4 }, { total: 150, count: 2 }]).total.pct).toBe(-25);
+  });
+});

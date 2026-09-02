@@ -80,7 +80,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         ))}
       </nav>
 
-      <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+      <div className="panel overflow-hidden">
         {leads.length === 0 ? (
           <EmptyState title="אין לידים" hint={status ? 'אין לידים בסטטוס הזה' : 'הוסף ליד ראשון'} />
         ) : (

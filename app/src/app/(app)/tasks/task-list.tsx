@@ -18,7 +18,7 @@ function TaskRow({ task }: { task: Task }) {
       <input
         id={id}
         type="checkbox"
-        className="size-4 accent-inkblue shrink-0"
+        className="size-4 accent-signal shrink-0"
         checked={done}
         aria-label={task.fields.Title}
         onChange={(e) => {
@@ -58,7 +58,7 @@ export function TaskList({ tasks }: { tasks: Task[] }) {
         <SubmitButton pendingText="מוסיף…">הוסף</SubmitButton>
       </form>
 
-      <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+      <div className="panel overflow-hidden">
         {tasks.length === 0 ? (
           <p className="text-center py-16 text-ink-2">אין משימות. הוסף את הראשונה למעלה.</p>
         ) : (

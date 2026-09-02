@@ -3,6 +3,7 @@ import type { CustomerFields, InvoiceFields, LeadFields, ProductFields, TaskFiel
 import { MobileNav, Sidebar } from '@/components/shell/sidebar';
 import { CommandMenu, type CommandItem } from '@/components/command-menu';
 import { SupportWidget } from '@/components/chat/support-widget';
+import { Hotkeys } from '@/components/shell/hotkeys';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +34,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <main className="flex-1 min-w-0 p-4 md:p-8 max-w-[1200px]">{children}</main>
       <CommandMenu items={items} />
       <SupportWidget />
+      <Hotkeys />
     </div>
   );
 }

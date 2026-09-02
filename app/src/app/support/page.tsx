@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 export default function SupportPage() {
   return (
     <main className="min-h-dvh flex flex-col">
-      <header className="border-b border-rule bg-paper/90 backdrop-blur sticky top-0 z-10">
+      <header className="border-b border-rule bg-void/80 backdrop-blur-md sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image src="/brand/logo.png" alt="" width={32} height={32} className="rounded-md mix-blend-multiply" priority />
+            <Image src="/brand/logo-mark.png" alt="" width={36} height={36} priority />
             <div className="leading-tight">
               <div className="font-display font-bold">איי.איי אלקטרוניקה</div>
               <div className="text-[11px] text-ink-3">מוצרים מקוריים · אחריות יבואן רשמי</div>
@@ -40,7 +40,7 @@ export default function SupportPage() {
       </section>
 
       <section className="max-w-3xl mx-auto w-full px-4 pb-10 flex-1">
-        <div className="bg-paper-2 border border-rule rounded-lg p-4 md:p-5 h-[560px] flex flex-col">
+        <div className="panel p-4 md:p-5 h-[560px] flex flex-col">
           <ChatPanel sendAction={sendSupport} intro={SUPPORT_INTRO} suggestions={SUPPORT_SUGGESTIONS} agentLabel="נציג שירות · איי.איי אלקטרוניקה" placeholder="כתבו שאלה… (Enter לשליחה)" />
         </div>
         <p className="text-[11px] text-ink-3 mt-3 text-center">התשובות מבוססות על מדיניות החנות וקטלוג המוצרים. אין למסור פרטי אשראי בצ׳אט.</p>

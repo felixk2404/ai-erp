@@ -57,7 +57,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
           name="status"
           defaultValue={status}
           aria-label="סטטוס"
-          className="h-9 rounded-md border border-input bg-paper-3 px-3 text-sm"
+          className="h-9 rounded-md border border-input bg-well px-3 text-sm"
         >
           <option value="">כל הסטטוסים</option>
           {INVOICE_STATUSES.map((s) => (
@@ -76,7 +76,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
         )}
       </form>
 
-      <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+      <div className="panel overflow-hidden">
         {invoices.length === 0 ? (
           <EmptyState title="אין חשבוניות" hint={q || status ? 'נסה סינון אחר' : 'צור את החשבונית הראשונה'} />
         ) : (

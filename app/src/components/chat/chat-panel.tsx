@@ -62,7 +62,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
           {messages.map((m, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, ease: EASE }} className={`flex flex-col ${m.role === 'user' ? 'items-start' : 'items-end'}`}>
               {m.role === 'agent' && agentLabel && <span className="text-[11px] text-ink-3 mb-1 me-1">{agentLabel}</span>}
-              <div className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap leading-relaxed ${m.role === 'user' ? 'bg-inkblue-soft text-ink' : 'bg-paper-3 text-ink'}`}>{m.text}</div>
+              <div className={`max-w-[85%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap leading-relaxed ${m.role === 'user' ? 'bg-signal-soft text-readout border border-signal/20' : 'bg-chassis-2 text-readout border border-rule'}`}>{m.text}</div>
               {m.products && m.products.length > 0 && (
                 <div className={`mt-2 grid gap-2 w-full max-w-[85%] ${compact ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-3'}`}>
                   {m.products.map((p) => (
@@ -88,7 +88,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
         </AnimatePresence>
         {pending && (
           <div className="flex justify-end">
-            <div className="bg-paper-3 rounded-lg px-3 py-2 text-sm text-ink-3" aria-label="חושב">
+            <div className="bg-chassis-2 border border-rule rounded-lg px-3 py-2 text-sm text-signal" aria-label="חושב">
               <span className="inline-flex gap-1">
                 <span className="animate-pulse">●</span>
                 <span className="animate-pulse [animation-delay:150ms]">●</span>
@@ -119,7 +119,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
           maxLength={500}
           placeholder={placeholder}
           aria-label="הודעה"
-          className="flex-1 resize-none rounded-md border border-input bg-paper-3 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex-1 resize-none rounded-md border border-input bg-well px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-signal focus-visible:ring-3 focus-visible:ring-signal/25"
         />
         <Button type="submit" disabled={pending || !input.trim()}>
           שלח

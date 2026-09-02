@@ -38,7 +38,7 @@ export function EntityDialog({ trigger, title, description, action, successMessa
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>{trigger}</DialogTrigger>
+      <DialogTrigger render={<Button data-hotkey="new" />}>{trigger}</DialogTrigger>
       <DialogContent dir="rtl">
         <DialogHeader className="text-start pe-8">
           <DialogTitle>{title}</DialogTitle>

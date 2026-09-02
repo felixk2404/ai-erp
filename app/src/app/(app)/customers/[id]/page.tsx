@@ -58,7 +58,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
 
       <section className="mt-8">
         <h2 className="text-lg font-bold mb-3">חשבוניות</h2>
-        <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+        <div className="panel overflow-hidden">
           {invoices.length === 0 ? (
             <EmptyState illustration="invoices" title="אין חשבוניות ללקוח" hint="צרו חשבונית ראשונה מהכפתור למעלה" />
           ) : (

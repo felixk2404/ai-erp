@@ -62,7 +62,7 @@ export function NewInvoiceDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<Button />}>חשבונית חדשה</DialogTrigger>
+      <DialogTrigger render={<Button data-hotkey="new" />}>חשבונית חדשה</DialogTrigger>
       <DialogContent dir="rtl" className="sm:max-w-2xl">
         <DialogHeader className="text-start pe-8">
           <DialogTitle>חשבונית חדשה</DialogTitle>

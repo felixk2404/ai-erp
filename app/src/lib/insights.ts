@@ -99,3 +99,15 @@ export function attentionItems({ invoices, leads, now = new Date() }: { invoices
   const rank = { red: 0, amber: 1 };
   return items.sort((a, b) => rank[a.severity] - rank[b.severity]);
 }
+
+export type Delta = { cur: number; prev: number; pct: number | null };
+export type MonthDelta = { total: Delta; count: Delta };
+
+const delta = (cur: number, prev: number): Delta => ({ cur, prev, pct: prev ? Math.round(((cur - prev) / prev) * 100) : null });
+
+/** החודש האחרון מול הקודם (מתוך revenueByMonth). pct=null כשאין בסיס להשוואה. */
+export function monthDelta(rows: { total: number; count: number }[]): MonthDelta {
+  const cur = rows[rows.length - 1] ?? { total: 0, count: 0 };
+  const prev = rows[rows.length - 2] ?? { total: 0, count: 0 };
+  return { total: delta(cur.total, prev.total), count: delta(cur.count, prev.count) };
+}

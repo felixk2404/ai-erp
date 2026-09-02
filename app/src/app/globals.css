@@ -3,69 +3,86 @@
 @import "shadcn/tailwind.css";
 
 /*
-  עולם: פנקס חשבוניות עם נייר העתקה, על שולחן העבודה של חנות אלקטרוניקה.
-  משטח נייר חם, טקסט אנתרציט, מבטא יחיד — דיו כחול של ההעתק. LED רק לסטטוסים.
-  מצב בהיר בלבד (כלי עבודה של משתמש יחיד).
+  עולם: "חדר בקרה" — חנות אלקטרוניקה בלילה. זכוכית OLED שחורה, שלדת גרפיט,
+  קו אות יחיד בציאן, נוריות LED לסטטוסים, מספרים ב-mono כמו קריאת מד.
+  כהה בלבד (כלי עבודה של משתמש יחיד). עומק = גבולות + זוהר ציאן, בלי צללים אפורים.
 */
 :root {
-  --paper: #f7f3ea;
-  --paper-2: #fdfbf6;
-  --paper-3: #efe9dc;
-  --ink: #1f2326;
-  --ink-2: #4b5157;
-  --ink-3: #7a8087;
-  --rule: rgba(31, 35, 38, 0.1);
-  --rule-strong: rgba(31, 35, 38, 0.22);
-  --inkblue: #2b4c7e;
-  --inkblue-hover: #23406b;
-  --inkblue-soft: rgba(43, 76, 126, 0.1);
-  --led-green: #2f9e5b;
-  --led-amber: #d08a1d;
-  --led-red: #c4453a;
-  --copper: #b87333;
+  color-scheme: dark;
+
+  --void: #08090c;
+  --chassis: #0f1116;
+  --chassis-2: #15181f;
+  --chassis-3: #1b1f28;
+  --well: #0a0b0f;
+  --readout: #e6e9ef;
+  --readout-2: #9aa3b2;
+  --readout-3: #707a8a;
+  --rule: rgba(255, 255, 255, 0.07);
+  --rule-strong: rgba(255, 255, 255, 0.14);
+  --signal: #5ad1ff;
+  --signal-hover: #8ee0ff;
+  --signal-soft: rgba(90, 209, 255, 0.12);
+  --signal-glow: rgba(90, 209, 255, 0.45);
+  --signal-rgb: 90 209 255;
+  --led-green: #34d17a;
+  --led-amber: #f0b429;
+  --led-red: #ff5a5f;
+  --copper: #d99a5b;
+
+  /* aliases — קוד קיים מהעולם הקודם ממשיך לעבוד; קוד חדש משתמש בשמות למעלה */
+  --paper: var(--void);
+  --paper-2: var(--chassis);
+  --paper-3: var(--chassis-2);
+  --ink: var(--readout);
+  --ink-2: var(--readout-2);
+  --ink-3: var(--readout-3);
+  --inkblue: var(--signal);
+  --inkblue-hover: var(--signal-hover);
+  --inkblue-soft: var(--signal-soft);
 
   /* shadcn semantic tokens → העולם שלנו */
-  --background: var(--paper);
-  --foreground: var(--ink);
-  --card: var(--paper-2);
-  --card-foreground: var(--ink);
-  --popover: var(--paper-2);
-  --popover-foreground: var(--ink);
-  --primary: var(--inkblue);
-  --primary-foreground: #ffffff;
-  --secondary: var(--paper-3);
-  --secondary-foreground: var(--ink);
-  --muted: var(--paper-3);
-  --muted-foreground: var(--ink-2);
-  --accent: var(--inkblue-soft);
-  --accent-foreground: var(--inkblue);
+  --background: var(--void);
+  --foreground: var(--readout);
+  --card: var(--chassis);
+  --card-foreground: var(--readout);
+  --popover: var(--chassis-3);
+  --popover-foreground: var(--readout);
+  --primary: var(--signal);
+  --primary-foreground: #06121a;
+  --secondary: var(--chassis-2);
+  --secondary-foreground: var(--readout);
+  --muted: var(--chassis-2);
+  --muted-foreground: var(--readout-2);
+  --accent: var(--signal-soft);
+  --accent-foreground: var(--signal);
   --destructive: var(--led-red);
   --border: var(--rule);
   --input: var(--rule-strong);
-  --ring: var(--inkblue);
-  --chart-1: var(--inkblue);
+  --ring: var(--signal);
+  --chart-1: var(--signal);
   --chart-2: var(--copper);
   --chart-3: var(--led-green);
   --chart-4: var(--led-amber);
-  --chart-5: var(--ink-3);
+  --chart-5: var(--readout-3);
   --radius: 0.5rem;
-  --sidebar: var(--paper);
-  --sidebar-foreground: var(--ink);
-  --sidebar-primary: var(--inkblue);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--inkblue-soft);
-  --sidebar-accent-foreground: var(--inkblue);
+  --sidebar: var(--void);
+  --sidebar-foreground: var(--readout);
+  --sidebar-primary: var(--signal);
+  --sidebar-primary-foreground: #06121a;
+  --sidebar-accent: var(--signal-soft);
+  --sidebar-accent-foreground: var(--signal);
   --sidebar-border: var(--rule);
-  --sidebar-ring: var(--inkblue);
+  --sidebar-ring: var(--signal);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-plex), system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-heading: var(--font-frank), serif;
-  --font-display: var(--font-frank), serif;
+  --font-mono: var(--font-plex-mono), var(--font-plex), ui-monospace, monospace;
+  --font-heading: var(--font-heebo), var(--font-plex), sans-serif;
+  --font-display: var(--font-heebo), var(--font-plex), sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -103,51 +120,234 @@
   --radius-3xl: calc(var(--radius) * 2.5);
   --radius-4xl: calc(var(--radius) * 3);
 
-  /* טוקני העולם — לשימוש ישיר בקומפוננטות: bg-paper text-ink border-rule bg-inkblue ... */
+  /* טוקני העולם — bg-chassis text-readout border-rule bg-signal ... */
+  --color-void: var(--void);
+  --color-chassis: var(--chassis);
+  --color-chassis-2: var(--chassis-2);
+  --color-chassis-3: var(--chassis-3);
+  --color-well: var(--well);
+  --color-readout: var(--readout);
+  --color-readout-2: var(--readout-2);
+  --color-readout-3: var(--readout-3);
+  --color-signal: var(--signal);
+  --color-signal-hover: var(--signal-hover);
+  --color-signal-soft: var(--signal-soft);
+  --color-rule: var(--rule);
+  --color-rule-strong: var(--rule-strong);
+  --color-led-green: var(--led-green);
+  --color-led-amber: var(--led-amber);
+  --color-led-red: var(--led-red);
+  --color-copper: var(--copper);
+  /* aliases (קוד קיים) */
   --color-paper: var(--paper);
   --color-paper-2: var(--paper-2);
   --color-paper-3: var(--paper-3);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-ink-3: var(--ink-3);
-  --color-rule: var(--rule);
-  --color-rule-strong: var(--rule-strong);
   --color-inkblue: var(--inkblue);
   --color-inkblue-hover: var(--inkblue-hover);
   --color-inkblue-soft: var(--inkblue-soft);
-  --color-led-green: var(--led-green);
-  --color-led-amber: var(--led-amber);
-  --color-led-red: var(--led-red);
-  --color-copper: var(--copper);
+}
+
+@property --spot {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
   }
   html {
     @apply font-sans;
+    background: var(--void);
     -webkit-font-smoothing: antialiased;
   }
   body {
     @apply bg-background text-foreground;
     font-size: 14px;
     line-height: 1.5;
+    position: relative;
+  }
+  /* רקע החדר: dot-matrix + אמביינט ציאן בפינה העליונה (start ב-RTL) */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(720px circle at 100% -10%, rgba(var(--signal-rgb) / 0.09), transparent 60%),
+      radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+    background-size:
+      100% 100%,
+      24px 24px;
   }
   h1,
   h2 {
-    font-family: var(--font-frank), serif;
-    letter-spacing: -0.01em;
+    font-family: var(--font-heebo), var(--font-plex), sans-serif;
+    letter-spacing: -0.02em;
     text-wrap: balance;
   }
   p,
   td {
     text-wrap: pretty;
   }
+  ::selection {
+    background: rgba(var(--signal-rgb) / 0.35);
+    color: var(--readout);
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--readout-3);
+  }
 }
 
+/* מספרים כקריאת מד: mono + tabular */
 @utility num {
+  font-family: var(--font-plex-mono), var(--font-plex), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
+}
+@utility mono {
+  font-family: var(--font-plex-mono), var(--font-plex), ui-monospace, monospace;
+}
+
+@layer components {
+  /*
+    .panel — משטח בסיסי. הגבול עצמו נצבע: שכבת chassis בתוך padding-box, ומעליה
+    radial ציאן ב-border-box שנע עם הסמן (--mx/--my מ-SpotlightProvider) ודוהה דרך --spot.
+    עובד גם עם overflow-hidden (הגבול לא נחתך).
+  */
+  .panel {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(var(--chassis), var(--chassis)) padding-box,
+      radial-gradient(300px circle at var(--mx, -400px) var(--my, -400px), rgba(var(--signal-rgb) / calc(0.7 * var(--spot))), transparent 62%) border-box,
+      linear-gradient(var(--rule), var(--rule)) border-box,
+      linear-gradient(var(--chassis), var(--chassis)) border-box;
+    transition: --spot 320ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .panel:hover {
+    --spot: 1;
+  }
+  /* .hud — פאנל גרף: פינה חתוכה 14px בתחתית-start (שמאל ב-RTL) + סוגריים דקים בפינה העליונה-end */
+  .hud {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  }
+  .hud::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    background: linear-gradient(to top right, transparent calc(50% - 0.5px), var(--rule-strong) calc(50% - 0.5px), var(--rule-strong) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  }
+  .hud::after {
+    content: "";
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    border-top: 1px solid var(--rule-strong);
+    border-right: 1px solid var(--rule-strong);
+    opacity: 0.9;
+  }
+  .hud-grid {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 0.8px, transparent 0.8px);
+    background-size: 14px 14px;
+  }
+  /* נורית חיה: טבעת שמתרחבת ודוהה */
+  .led-live {
+    position: relative;
+  }
+  .led-live::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: led-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  /* קו סריקה — לפאנל "הסוכן קורא נתונים" */
+  .scanline {
+    background: linear-gradient(to bottom, transparent, rgba(var(--signal-rgb) / 0.12) 50%, transparent);
+    animation: scan 2.2s linear infinite;
+  }
+  /* טקסט עם זוהר ציאן עדין (מספר גיבור) */
+  .glow-text {
+    text-shadow: 0 0 24px rgba(var(--signal-rgb) / 0.25);
+  }
+  /* ניצוץ: קרן שעוברת על טקסט בזמן טעינה */
+  .shimmer {
+    background: linear-gradient(110deg, var(--readout-3) 35%, var(--readout) 50%, var(--readout-3) 65%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 2.4s linear infinite;
+  }
+  .cursor-blink::after {
+    content: "▍";
+    color: var(--signal);
+    animation: blink 1s steps(2, start) infinite;
+    margin-inline-start: 1px;
+  }
+}
+
+@keyframes led-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -20% 0;
+  }
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@keyframes aurora-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(6%, -8%) scale(1.08);
+  }
+  66% {
+    transform: translate(-5%, 6%) scale(0.96);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
 }
 
 /* ---------- View Transitions (React <ViewTransition/>) ---------- */
@@ -177,10 +377,17 @@
   animation: var(--vt-enter) cubic-bezier(0.23, 1, 0.32, 1) var(--vt-exit) both vt-fade, var(--vt-enter) cubic-bezier(0.23, 1, 0.32, 1) var(--vt-exit) both vt-slide-in-end;
 }
 ::view-transition-group(.morph) { animation-duration: 260ms; animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),
   ::view-transition-new(*) {
+    animation: none !important;
+  }
+  .led-live::after,
+  .scanline,
+  .shimmer,
+  .aurora-blob {
     animation: none !important;
   }
 }

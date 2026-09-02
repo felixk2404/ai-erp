@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { markPaid } from '../actions';
 import { parseItems, lineTotal } from '@/lib/invoice-items';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tilt } from '@/components/motion/tilt';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,14 +59,14 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
       <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-6">
         <section className="space-y-6">
-          <div className="bg-paper-2 border border-rule rounded-lg p-6">
+          <div className="panel p-6">
             <Timeline steps={steps} />
             {status === 'error' && <p className="mt-4 text-sm text-led-red">החשבונית נכשלה באימות: סכום לא חיובי או לקוח לא קיים. תקנו ב-Airtable או צרו חשבונית חדשה.</p>}
           </div>
 
 
           {items.length > 0 && (
-            <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+            <div className="panel overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -97,9 +98,9 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </div>
           )}
 
-          <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+          <div className="panel hud overflow-hidden">
             {driveId ? (
-              <iframe title={`PDF ${f.InvoiceNumber ?? ''}`} src={`https://drive.google.com/file/d/${driveId}/preview`} className="w-full h-[720px] bg-paper-3" allow="autoplay" />
+              <iframe title={`PDF ${f.InvoiceNumber ?? ''}`} src={`https://drive.google.com/file/d/${driveId}/preview`} className="w-full h-[720px] bg-chassis-2" allow="autoplay" />
             ) : (
               <div className="h-64 grid place-items-center text-ink-3 text-sm">{status === 'validated' || status === 'new' ? 'ה-PDF מופק על ידי n8n תוך דקה…' : 'אין מסמך'}</div>
             )}
@@ -107,7 +108,8 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         </section>
 
         <aside className="space-y-4">
-          <div className="bg-paper-2 border border-rule rounded-lg p-5">
+          <Tilt max={5}>
+          <div className="panel p-5">
             <div className="text-[11px] font-medium tracking-wide text-ink-3">סטטוס</div>
             <div className="mt-1">
               <StatusLed table="Invoices" status={f.Status} />
@@ -127,14 +129,15 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
               </div>
               <div className="flex justify-between border-t border-dashed border-rule-strong pt-3 text-base font-semibold">
                 <dt>סה״כ לתשלום</dt>
-                <dd>
+                <dd className="text-signal glow-text">
                   <Money value={f.Total ?? 0} />
                 </dd>
               </div>
             </dl>
           </div>
+          </Tilt>
 
-          <div className="bg-paper-2 border border-rule rounded-lg p-5">
+          <div className="panel p-5">
             <div className="text-[11px] font-medium tracking-wide text-ink-3">לקוח</div>
             {customer ? (
               <Link href={`/customers/${customer.id}`} transitionTypes={['nav-forward']} className="block mt-1 font-medium hover:text-inkblue">

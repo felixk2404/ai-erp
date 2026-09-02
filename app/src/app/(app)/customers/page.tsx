@@ -58,7 +58,7 @@ export default async function CustomersPage() {
           </EntityDialog>
         }
       />
-      <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+      <div className="panel overflow-hidden">
         {customers.length === 0 ? (
           <EmptyState title="אין לקוחות" hint="הוסף לקוח ראשון כדי להפיק לו חשבוניות" />
         ) : (

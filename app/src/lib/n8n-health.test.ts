@@ -22,3 +22,29 @@ describe('summarizeExecutions', () => {
     expect(summarizeExecutions([], {}, now).led).toBe('off');
   });
 });
+
+describe('summarizePulse', () => {
+  it('builds a newest-first feed with Hebrew workflow names and per-node LEDs', async () => {
+    const { summarizePulse } = await import('./n8n-health');
+    const p = summarizePulse(
+      [
+        { id: '1', status: 'success', startedAt: '2026-09-02T11:50:00Z', stoppedAt: '2026-09-02T11:50:02Z', workflowId: 'kn53i73OcuCaz3SZ' },
+        { id: '2', status: 'error', startedAt: '2026-09-02T09:00:00Z', workflowId: 'wNxCRwm0N2F6Z8TS' },
+        { id: '3', status: 'success', startedAt: '2026-09-02T10:00:00Z', workflowId: 'wNxCRwm0N2F6Z8TS' },
+        { id: '4', status: 'success', startedAt: '2026-08-20T10:00:00Z', workflowId: 'unknown' },
+      ],
+      [{ id: 'kn53i73OcuCaz3SZ', name: 'WF13 API', active: true }],
+      now,
+      3,
+    );
+    expect(p.events.map((e) => e.id)).toEqual(['1', '3', '2']);
+    expect(p.events[0]).toMatchObject({ workflow: 'API לאפליקציה', status: 'success', ms: 2000 });
+    expect(p.events[2].status).toBe('error');
+    const byKey = Object.fromEntries(p.nodes.map((n) => [n['key'], n]));
+    expect(byKey.INVOICE_PDF).toMatchObject({ runs24h: 2, errors24h: 1, led: 'amber', lastRunAt: '2026-09-02T10:00:00Z' });
+    expect(byKey.API).toMatchObject({ active: true, led: 'green', runs24h: 1 });
+    expect(byKey.ERROR).toMatchObject({ led: 'off', runs24h: 0 });
+    expect(p.nodes).toHaveLength(13);
+    expect(p.health?.led).toBe('amber');
+  });
+});

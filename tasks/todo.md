@@ -1,23 +1,14 @@
-# AI-ERP — מעקב
+# Company logo — איי.איי אלקטרוניקה (2026-09-02)
 
-- [x] תוכנית 1: תשתית ונתונים — docs/superpowers/plans/2026-09-02-01-infrastructure.md
-- [x] תוכנית 2: n8n workflows
-- [x] תוכנית 3: אפליקציית Next.js
-- [x] תוכנית 4: פרמיום — docs/superpowers/plans/2026-09-02-04-premium.md (נותר: N8N_API env + שיתוף תיקיית Drive אצל הסטודנט)
-- [ ] תוכנית 5: Night Console — docs/superpowers/plans/2026-09-02-05-night-console.md
-  - [ ] T1 טוקנים/פונטים/רקע/פרימיטיבים
-  - [ ] T2 שלד (sidebar, header, ⌘K-AI, hotkeys)
-  - [ ] T3 דשבורד (KPI sparkline+delta, beams, pulse, system map, thinking brief, HUD charts)
-  - [ ] T4 מסכים (tilt, tables, cards, chat, support)
-  - [ ] T5 לוגין aurora
-  - [ ] T6 אימות + system.md + commit
+Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 
-## פתוח (אחרי 3 התוכניות)
-- [ ] אימות ידני של הסטודנט: PDF בדרייב, שני הבוטים בטלגרם, WF4 (תשובה למייל → Qualified)
-- [ ] Google OAuth Testing: Reconnect ביום הדמו
-- [ ] (רעיון) להעביר n8n ל-Render/Railway לפני ההגשה כדי שלא יהיה תלוי במק
+- [ ] 1. Concept board: 6–8 AI variations of "AI monogram as circuit trace" (fal.ai)
+- [ ] 2. Hand-build final symbol as SVG (uniform stroke, 45° corners, one junction dot); test at 16px
+- [ ] 3. Lockups: horizontal (Hebrew + EN), stacked, mono dark; bot avatar
+- [ ] 4. Preview artifact: sizes, inverse, in-context (sidebar, invoice, telegram)
+- [ ] 5. Felix picks / tweaks
+- [ ] 6. Wire: sidebar, login, support, favicon, WF8 PDF; remove old logo.png usages
+- [ ] 7. Verify in browser (Playwright) + e2e; commit
 
-## 2026-09-02 ערב — שורות חשבונית
-- [x] Invoices.Items (JSON) + טופס בחירת מוצרים + Amount מחושב בשרת + טבלת שורות בעמוד חשבונית + שורות ב-PDF (WF8). נבדק מקצה לקצה: INV-0002 → validated → generated, PDF עם 2 שורות.
-- [x] מע"מ קבוע 18% ב-WF1.
-- [x] יישור כותרות טבלאות (text-start; תאי LTR text-end).
+## Review
+(fill after done)

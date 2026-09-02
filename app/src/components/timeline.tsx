@@ -2,9 +2,9 @@ export type TimelineStep = { label: string; hint?: string; state: 'done' | 'curr
 
 const DOT: Record<TimelineStep['state'], string> = {
   done: 'bg-led-green shadow-[0_0_6px_var(--led-green)]',
-  current: 'bg-led-amber shadow-[0_0_6px_var(--led-amber)]',
+  current: 'bg-led-amber shadow-[0_0_8px_var(--led-amber)] led-live',
   error: 'bg-led-red shadow-[0_0_6px_var(--led-red)]',
-  todo: 'bg-paper-2 border border-rule-strong',
+  todo: 'bg-chassis border border-rule-strong',
 };
 
 /** ציר זמן אופקי של סטטוסים: נקודות LED מחוברות בקו דק. */

@@ -99,10 +99,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
               </div>
               <div className="space-y-2">
                 <Label htmlFor="p-desc">תיאור (מוזן לסוכן השירות)</Label>
-                <textarea id="p-desc" name="Description" rows={3} className="w-full rounded-md border border-input bg-paper-3 px-3 py-2 text-sm" />
+                <textarea id="p-desc" name="Description" rows={3} className="w-full rounded-md border border-input bg-well px-3 py-2 text-sm" />
               </div>
               <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="InStock" defaultChecked className="size-4 accent-inkblue" /> במלאי
+                <input type="checkbox" name="InStock" defaultChecked className="size-4 accent-signal" /> במלאי
               </label>
             </EntityDialog>
           </>
@@ -112,7 +112,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
       <form className="flex flex-wrap items-center gap-2 mb-5" role="search">
         <input type="hidden" name="view" value={view} />
         <Input name="q" defaultValue={q} placeholder="חיפוש בשם, מק״ט או תיאור" className="max-w-xs" aria-label="חיפוש" />
-        <select name="category" defaultValue={category} aria-label="קטגוריה" className="h-9 rounded-md border border-input bg-paper-3 px-3 text-sm">
+        <select name="category" defaultValue={category} aria-label="קטגוריה" className="h-9 rounded-md border border-input bg-well px-3 text-sm">
           <option value="">כל הקטגוריות</option>
           {categories.map((c) => (
             <option key={c} value={c}>
@@ -155,11 +155,11 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
       </form>
 
       {products.length === 0 ? (
-        <div className="bg-paper-2 border border-rule rounded-lg">
+        <div className="panel">
           <EmptyState illustration="products" title="אין מוצרים" hint={q || category ? 'נסה סינון אחר' : 'הוסף מוצר ראשון'} />
         </div>
       ) : view === 'table' ? (
-        <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+        <div className="panel overflow-hidden">
           <Table className="table-fixed">
             <TableHeader>
               <TableRow>

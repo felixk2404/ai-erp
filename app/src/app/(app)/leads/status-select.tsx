@@ -20,7 +20,7 @@ export function LeadStatusSelect({ id, status }: { id: string; status?: string }
           if (r.error) toast.error(r.error);
         });
       }}
-      className="h-8 rounded-md border border-input bg-paper-3 px-2 text-sm text-ink-2 disabled:opacity-60"
+      className="h-8 rounded-md border border-input bg-well px-2 text-sm text-ink-2 disabled:opacity-60"
     >
       {LEAD_STATUSES.map((s) => (
         <option key={s} value={s}>
