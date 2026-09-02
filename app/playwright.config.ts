@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 // קורא APP_PASSWORD מ-.env.local כדי שהבדיקות יוכלו להתחבר (בלי dotenv).
 try {
   for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
-    const m = /^([A-Z_]+)=(.*)$/.exec(line.trim());
+    const m = /^([A-Z0-9_]+)=(.*)$/.exec(line.trim());
     if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^['"]|['"]$/g, '');
   }
 } catch {
