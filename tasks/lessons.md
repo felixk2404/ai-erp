@@ -33,3 +33,10 @@
 - SVG עם `direction: rtl`: `text-anchor="end"` מעגן בקצה השמאלי (הטקסט נמשך ימינה). צומת בצד ימין → `end`, בצד שמאל → `start`.
 - dev server איטי בקומפילציה ראשונה (10–25s לעמוד). לפני `e2e/screens.mjs` מחממים את העמודים ב-curl, אחרת Playwright נופל על timeout.
 - n8n: `Aggregate` אחרי טריגר שמחזיר כמה items שובר את שיוך ה-item (`$('Node').item` → `pairedItemMultipleMatches`, "Multiple matches found"). עוטפים את גוף העיבוד ב-`Loop Over Items` (splitInBatches) כך שכל רשומה רצה לבד, ומפנים את ה-`.item` לצומת הלולאה במקום לטריגר.
+
+## 2026-09-02 — משימות כתור פעולות (SDD)
+- RTL: `dir="ltr"` עוטף רק את המזהה הלטיני (`ORD-0003`, מק"ט), אף פעם לא את המחרוזת המשולבת "תווית · מזהה" — אחרת סדר הקריאה מתהפך. הדפוס הקיים: `new-invoice-dialog.tsx` עוטף רק את ה-SKU. הסניפט בתוכנית היה שגוי; הסוקר תפס.
+- הוק `secret-guard` חוסם כל פקודת shell שמזכירה נתיב של קובץ env, גם בטקסט של heredoc או הודעת commit. סקריפטים ב-`airtable/` ו-`n8n/scripts/` טוענים env בעצמם — קוראים להם בלי להזכיר את הקובץ.
+- n8n MCP: `validate_workflow` מאמת קוד SDK, לא workflowId. תחליף: `validate_node_config` על הצמתים החדשים + `get_workflow_details` לבדיקת `connections`. `test_workflow` מצמיד (pin) צמתים עם credentials, כך שהוא לא מוכיח כתיבה ל-Airtable — לאימות אמיתי משתמשים ב-`airtable/api.sh` ובטריגרים חיים.
+- sub-workflow שמחזיר תשובה (WF10 → WF13): כל ענף חדש חייב להגיע ל-`Result`; צומת Code שמחזיר תמיד פריט אחד (`records: []` כשאין מה ליצור) + IF ששני ענפיו מחוברים ל-Result.
+- כשעובדים על אותו working tree עם סשן נוסף, commits זרים נוחתים על הענף. לבדוק `git log` לפני review package ולסנן לפי נתיבים.
