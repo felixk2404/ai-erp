@@ -1,0 +1,25 @@
+{
+  "AIRTABLE_BASE_ID": "app1jXGnS2j0tCxEM",
+  "TBL_INVOICES": "tblOaitAMK0JHqvwk",
+  "TBL_LEADS": "tblZQ6kwztOuvFSJ2",
+  "TBL_PRODUCTS": "tblIvdMYXMcGMz0dK",
+  "TBL_TASKS": "tbl02ryhflQHnoD9J",
+  "TBL_CUSTOMERS": "tblHCgrpb8ZcAJSqw",
+  "CRED_AIRTABLE": "Qjg3M9Ztcfuye68g",
+  "CRED_OPENAI": "fnDA0cEIqDSNjE0R",
+  "CRED_TELEGRAM_MANAGER": "qi4NUVHHMjzMFEdZ",
+  "CRED_TELEGRAM_CUSTOMER": "lztyzbFqwIj1rtWy",
+  "CRED_SUPABASE": "zsa5V2Dd3cmmETck",
+  "CRED_WEBHOOK": "aDFfLDBJiKImqYTe",
+  "CRED_GMAIL": "TODO_FROM_N8N_UI",
+  "CRED_DRIVE": "TODO_FROM_N8N_UI",
+  "DRIVE_FOLDER_ID": "1XADLI0r9ha9qbDHS1H5U-DvBZKvMIkjq",
+  "OWNER_CHAT_ID": "43590648",
+  "NGROK_DOMAIN": "goofy-glamour-syrup.ngrok-free.dev",
+  "MODEL": "gpt-5.4-mini",
+  "workflows": {
+    "ERROR": "WeWGjptjpf66sA7T",
+    "MANAGER_CORE": "zFz32ARQ3kedlK1f",
+    "API": "kn53i73OcuCaz3SZ"
+  }
+}

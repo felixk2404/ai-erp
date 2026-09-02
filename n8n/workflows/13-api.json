@@ -1,0 +1,51 @@
+{
+  "name": "WF13 — API לאפליקציה",
+  "settings": { "executionOrder": "v1", "errorWorkflow": "__WF_ERROR_ID__" },
+  "nodes": [
+    { "name": "Webhook", "type": "n8n-nodes-base.webhook", "typeVersion": 2.1, "position": [0, 0],
+      "parameters": { "httpMethod": "POST", "path": "erp", "authentication": "headerAuth", "responseMode": "responseNode", "options": {} },
+      "credentials": { "httpHeaderAuth": { "id": "__CRED_WEBHOOK__", "name": "ERP Webhook Secret" } } },
+    { "name": "Route", "type": "n8n-nodes-base.switch", "typeVersion": 3.4, "position": [260, 0],
+      "parameters": { "mode": "rules", "rules": { "values": [
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c1", "leftValue": "={{ $json.body.action }}", "rightValue": "create", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "create" },
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c2", "leftValue": "={{ $json.body.action }}", "rightValue": "chat", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "chat" }
+      ] }, "looseTypeValidation": true, "options": { "fallbackOutput": "extra" } } },
+    { "name": "Payload", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, -160],
+      "parameters": { "mode": "raw", "jsonOutput": "={{ $json.body.payload }}", "options": {} } },
+    { "name": "Create Record", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [780, -160],
+      "parameters": { "authentication": "airtableTokenApi", "operation": "create",
+        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" },
+        "table": { "__rl": true, "mode": "id", "value": "={{ $('Webhook').item.json.body.table }}" },
+        "columns": { "mappingMode": "autoMapInputData", "value": {}, "matchingColumns": [], "schema": [] },
+        "options": { "typecast": true } },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
+    { "name": "Respond Created", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, -160],
+      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}", "options": {} } },
+    { "name": "Chat Input", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, 0],
+      "parameters": { "assignments": { "assignments": [
+        { "id": "m", "name": "message", "value": "={{ $json.body.message }}", "type": "string" },
+        { "id": "s", "name": "sessionId", "value": "={{ $json.body.sessionId || 'app' }}", "type": "string" }
+      ] }, "options": {} } },
+    { "name": "Manager Core", "type": "n8n-nodes-base.executeWorkflow", "typeVersion": 1.2, "position": [780, 0],
+      "parameters": { "workflowId": { "__rl": true, "mode": "id", "value": "__WF_MANAGER_CORE_ID__" },
+        "workflowInputs": { "mappingMode": "defineBelow", "value": { "message": "={{ $json.message }}", "sessionId": "={{ $json.sessionId }}" }, "matchingColumns": [],
+          "schema": [ { "id": "message", "displayName": "message", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "string" }, { "id": "sessionId", "displayName": "sessionId", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "string" } ] },
+        "options": { "waitForSubWorkflow": true } } },
+    { "name": "Respond Chat", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}", "options": {} } },
+    { "name": "Respond Bad Request", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [520, 180],
+      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'unknown action: ' + ($json.body.action || '') }) }}", "options": { "responseCode": 400 } } }
+  ],
+  "connections": {
+    "Webhook": { "main": [[{ "node": "Route", "type": "main", "index": 0 }]] },
+    "Route": { "main": [
+      [{ "node": "Payload", "type": "main", "index": 0 }],
+      [{ "node": "Chat Input", "type": "main", "index": 0 }],
+      [{ "node": "Respond Bad Request", "type": "main", "index": 0 }]
+    ] },
+    "Payload": { "main": [[{ "node": "Create Record", "type": "main", "index": 0 }]] },
+    "Create Record": { "main": [[{ "node": "Respond Created", "type": "main", "index": 0 }]] },
+    "Chat Input": { "main": [[{ "node": "Manager Core", "type": "main", "index": 0 }]] },
+    "Manager Core": { "main": [[{ "node": "Respond Chat", "type": "main", "index": 0 }]] }
+  }
+}

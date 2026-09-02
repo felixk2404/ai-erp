@@ -17,6 +17,7 @@ services:
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
     volumes:
       - n8n_data:/home/node/.n8n
+      - ../docs/course:/data/course:ro
     depends_on:
       - gotenberg
     restart: unless-stopped
