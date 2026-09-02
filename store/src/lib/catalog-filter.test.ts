@@ -7,6 +7,7 @@ import {
   inStock,
   isService,
   parseCatalogParams,
+  gridPlan,
 } from './catalog-filter';
 import * as server from './catalog';
 import type { Product } from './types';
@@ -118,6 +119,20 @@ describe('parity מול catalog.ts', () => {
       expect(isService(x)).toBe(server.isService(x));
       expect(inStock(x)).toBe(server.inStock(x));
       expect(highlights(x)).toEqual(server.highlights(x));
+    }
+  });
+});
+
+describe('gridPlan', () => {
+  it('פחות מ-4 תוצאות: בלי מוביל, שלוש עמודות', () => {
+    for (const n of [0, 1, 2, 3]) {
+      expect(gridPlan(n)).toEqual({ lead: false, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' });
+    }
+  });
+
+  it('4 ומעלה: כרטיס מוביל וארבע עמודות', () => {
+    for (const n of [4, 5, 34]) {
+      expect(gridPlan(n)).toEqual({ lead: true, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' });
     }
   });
 });

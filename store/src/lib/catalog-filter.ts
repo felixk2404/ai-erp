@@ -81,3 +81,15 @@ export function catalogQuery({ c, q, sort, view }: CatalogParams): string {
   if (view !== 'grid') p.set('view', view);
   return p.toString();
 }
+
+export type GridPlan = { lead: boolean; columns: string };
+
+/**
+ * פחות מ-4 תוצאות → בלי כרטיס מוביל ובלי 4 עמודות: סינון שמחזיר 2 פריטים
+ * לא ישאיר חצי שורה שחורה, והמוביל לא ישתלט על רשת של שלושה.
+ */
+export function gridPlan(count: number): GridPlan {
+  return count >= 4
+    ? { lead: true, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' }
+    : { lead: false, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' };
+}

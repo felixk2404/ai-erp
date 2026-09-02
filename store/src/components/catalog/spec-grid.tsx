@@ -10,90 +10,130 @@ import type { Product } from '@/lib/types';
 
 const HEAD = 'px-4 py-3 text-[11px] leading-none font-medium tracking-[0.12em] text-glow-3';
 const CELL = 'px-4 py-3 align-middle';
+const ROW_MOTION = {
+  initial: { opacity: 0, y: 8 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-5%' },
+} as const;
+const springAt = (i: number) => ({ type: 'spring' as const, bounce: 0.15, visualDuration: 0.3, delay: Math.min(i * 0.04, 0.4) });
 
 /**
  * החתימה של החנות: כל פריט — גם שירות — הוא שורה באותה רשת מפרט.
  * העין סורקת עמודה אחת (מחיר, מלאי) במקום 34 כרטיסים. המק"ט והמחיר במונו עם
  * tabular-nums כדי שהעמודות לא ירקדו בהחלפת סינון; השמות בעברית נשארים בהיבו.
- * במובייל הטבלה גוללת בתוך עצמה. ה-`relative` על המעטפת הכרחי: בלעדיו גלישת
- * הטבלה ב-RTL דולפת ל-scrollWidth של הדף ומזיזה את כל העמוד הצידה.
+ * מתחת ל-md אין טבלה אלא בלוקים מוערמים — טלפון לא אמור לגלול לצדדים.
  */
 export function SpecGrid({ products }: { products: Product[] }) {
   return (
-    <div className="relative overflow-x-auto rounded-[12px] border border-rule">
-      <table className="w-full min-w-[760px] table-fixed border-collapse">
-        <colgroup>
-          <col className="w-[14%]" />
-          <col className="w-[26%]" />
-          <col className="w-[25%]" />
-          <col className="w-[10%]" />
-          <col className="w-[12%]" />
-          <col className="w-[13%]" />
-        </colgroup>
-        <thead>
-          <tr className="border-b border-rule-strong">
-            <th scope="col" className={`${HEAD} text-start`}>
-              מק&quot;ט
-            </th>
-            <th scope="col" className={`${HEAD} text-start`}>
-              שם
-            </th>
-            <th scope="col" className={`${HEAD} text-start`}>
-              מפרט
-            </th>
-            <th scope="col" className={`${HEAD} text-start`}>
-              מלאי
-            </th>
-            <th scope="col" className={`${HEAD} text-end`}>
-              מחיר
-            </th>
-            <th scope="col" className={`${HEAD} text-start`}>
-              <span className="sr-only">הוספה לסל</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((p, i) => {
-            const f = p.fields;
-            const sku = f.Sku ?? p.id;
-            return (
-              <motion.tr
-                key={sku}
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-5%' }}
-                transition={{ type: 'spring', bounce: 0.15, visualDuration: 0.3, delay: Math.min(i * 0.04, 0.4) }}
-                className="border-t border-rule transition-colors first:border-t-0 hover:bg-panel-1"
-              >
-                <td className={CELL}>
-                  <span dir="ltr" className="num text-[13px] text-glow-3">
-                    {sku}
-                  </span>
-                </td>
-                <td className={CELL}>
-                  <Link
-                    href={`/products/${sku}`}
-                    transitionTypes={['nav-forward']}
-                    className="line-clamp-2 text-[14px] font-medium text-glow underline-offset-4 hover:underline"
-                  >
-                    {f.Name}
-                  </Link>
-                </td>
-                <td className={`${CELL} text-[14px] whitespace-normal text-glow-3`}>
-                  <span className="line-clamp-2">{highlights(p)[0]}</span>
-                </td>
-                <td className={CELL}>
-                  <StockBadge ok={inStock(p)} />
-                </td>
-                <td className={`${CELL} num text-end text-[14px] text-glow`}>{ils(f.Price ?? 0)}</td>
-                <td className={`${CELL} text-end`}>
+    <>
+      <ul className="border-t border-rule md:hidden">
+        {products.map((p, i) => {
+          const f = p.fields;
+          const sku = f.Sku ?? p.id;
+          return (
+            <motion.li key={sku} {...ROW_MOTION} transition={springAt(i)} className="border-b border-rule py-3">
+              <div className="flex items-baseline gap-2">
+                <span dir="ltr" className="num shrink-0 text-[14px] text-glow-3">
+                  {sku}
+                </span>
+                <span aria-hidden className="text-glow-4">
+                  ·
+                </span>
+                <Link
+                  href={`/products/${sku}`}
+                  transitionTypes={['nav-forward']}
+                  className="line-clamp-1 text-[14px] font-medium text-glow"
+                >
+                  {f.Name}
+                </Link>
+              </div>
+              <p className="mt-1 line-clamp-2 text-[14px] text-glow-3">{highlights(p)[0]}</p>
+              <div className="mt-2 flex items-center gap-3">
+                <StockBadge ok={inStock(p)} />
+                <span className="num text-[16px] text-glow">{ils(f.Price ?? 0)}</span>
+                <span className="ms-auto">
                   <PriceButton product={p} compact />
-                </td>
-              </motion.tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+                </span>
+              </div>
+            </motion.li>
+          );
+        })}
+      </ul>
+
+      <div className="relative mx-auto hidden max-w-[980px] overflow-x-auto rounded-lg border border-rule md:block">
+        <table className="w-full min-w-[720px] table-fixed border-collapse">
+          <caption className="sr-only">רשימת מוצרים</caption>
+          <colgroup>
+            <col className="w-[8rem]" />
+            <col />
+            <col />
+            <col className="w-[7rem]" />
+            <col className="w-[8rem]" />
+            <col className="w-[6rem]" />
+          </colgroup>
+          <thead>
+            <tr className="border-b border-rule-strong">
+              <th scope="col" className={`${HEAD} text-start`}>
+                מק&quot;ט
+              </th>
+              <th scope="col" className={`${HEAD} text-start`}>
+                שם
+              </th>
+              <th scope="col" className={`${HEAD} text-start`}>
+                מפרט
+              </th>
+              <th scope="col" className={`${HEAD} text-start`}>
+                מלאי
+              </th>
+              <th scope="col" className={`${HEAD} text-end`}>
+                מחיר
+              </th>
+              <th scope="col" className={`${HEAD} text-start`}>
+                <span className="sr-only">הוספה לסל</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((p, i) => {
+              const f = p.fields;
+              const sku = f.Sku ?? p.id;
+              return (
+                <motion.tr
+                  key={sku}
+                  {...ROW_MOTION}
+                  transition={springAt(i)}
+                  className="border-t border-rule transition-colors first:border-t-0 hover:bg-panel-1"
+                >
+                  <td className={CELL}>
+                    <span dir="ltr" className="num text-[14px] text-glow-3">
+                      {sku}
+                    </span>
+                  </td>
+                  <td className={CELL}>
+                    <Link
+                      href={`/products/${sku}`}
+                      transitionTypes={['nav-forward']}
+                      className="line-clamp-2 text-[14px] text-glow-2 underline-offset-4 hover:text-glow hover:underline"
+                    >
+                      {f.Name}
+                    </Link>
+                  </td>
+                  <td className={`${CELL} text-[14px] whitespace-normal text-glow-3`}>
+                    <span className="line-clamp-2">{highlights(p)[0]}</span>
+                  </td>
+                  <td className={CELL}>
+                    <StockBadge ok={inStock(p)} />
+                  </td>
+                  <td className={`${CELL} num text-end text-[16px] text-glow`}>{ils(f.Price ?? 0)}</td>
+                  <td className={`${CELL} text-end`}>
+                    <PriceButton product={p} compact />
+                  </td>
+                </motion.tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
