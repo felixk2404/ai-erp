@@ -16,6 +16,8 @@ services:
       - N8N_RUNNERS_ENABLED=true
       - N8N_DEFAULT_BINARY_DATA_MODE=filesystem
       - N8N_RESTRICT_FILE_ACCESS_TO=/data/course
+      # WF5 שולח מקלדות inline דרך Bot API ישירות (צומת הטלגרם לא מקבל מקלדת דינמית); הטוקן נקרא ב-$env
+      - TELEGRAM_CUSTOMER_TOKEN=${TELEGRAM_CUSTOMER_TOKEN}
     volumes:
       - n8n_data:/home/node/.n8n
       - ../docs/course:/data/course:ro
