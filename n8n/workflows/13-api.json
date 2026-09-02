@@ -66,11 +66,11 @@
         "options": { "waitForSubWorkflow": true } } },
     { "name": "Respond Order", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 700],
       "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify($json) }}", "options": {} } },
-    { "name": "Find Order", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 880],
+    { "name": "Find Order", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 880], "onError": "continueRegularOutput",
       "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_ORDERS__",
         "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
         "sendQuery": true, "queryParameters": { "parameters": [
-          { "name": "filterByFormula", "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/'/g, \"\\\\'\") }}')" },
+          { "name": "filterByFormula", "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')" },
           { "name": "maxRecords", "value": "1" }
         ] },
         "options": { "timeout": 20000 } },

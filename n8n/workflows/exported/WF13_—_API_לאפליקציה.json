@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "f573bbfe-7ee0-49c8-8b32-22f42f5533bb"
+      "webhookId": "9afd31ec-f29f-49b2-8aaf-c7d3fdb3d889"
     },
     {
       "name": "Route",
@@ -569,6 +569,7 @@
         520,
         880
       ],
+      "onError": "continueRegularOutput",
       "parameters": {
         "method": "GET",
         "url": "https://api.airtable.com/v0/app1jXGnS2j0tCxEM/tblCzS6PiW046xyYj",
@@ -579,7 +580,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/'/g, \"\\\\'\") }}')"
+              "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').replace(/[^A-Z0-9-]/gi, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')"
             },
             {
               "name": "maxRecords",
