@@ -32,7 +32,8 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
   const trust = service ? TRUST_SERVICE : TRUST_GOODS;
 
   return (
-    <aside className={`rounded-lg border bg-panel-1 p-6 lg:sticky lg:top-24 ${ok ? 'border-rule' : 'border-bad/30'}`}>
+    /* div ולא aside: הכותרת הראשית של העמוד לא יושבת בציון-דרך משלים. */
+    <div className={`rounded-lg border bg-panel-1 p-6 lg:sticky lg:top-24 ${ok ? 'border-rule' : 'border-bad/30'}`}>
       {f.Category && <p className={EYEBROW}>{f.Category}</p>}
       <h1 className="mt-4 text-3xl leading-[1.15] font-extrabold tracking-[-0.02em]">{f.Name}</h1>
 
@@ -74,6 +75,6 @@ export function BuyBox({ product, install }: { product: Product; install: Instal
           <AskBotLink sku={sku} />
         </div>
       )}
-    </aside>
+    </div>
   );
 }

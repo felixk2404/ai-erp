@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { animate } from 'motion/react';
+import { animate, useReducedMotion } from 'motion/react';
 import { ils } from '@/lib/format';
 
 const int = (n: number) => String(Math.round(n));
@@ -15,10 +15,19 @@ export function CountUp({ value, money = false, className = '' }: { value: numbe
   const ref = useRef<HTMLSpanElement>(null);
   const format = money ? ils : int;
   const from = useRef(0);
+  // `MotionConfig reducedMotion="user"` חל רק על רכיבי `motion.*` — ה-API
+  // האימפרטיבי עוקף אותו, ולכן הסכומים המשיכו לרוץ גם למי שביקש בלי תנועה.
+  // אין כאן הסתעפות במארקאפ: ה-SSR ממילא מצייר את הערך הסופי.
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    if (reduced) {
+      el.textContent = format(value);
+      from.current = value;
+      return;
+    }
     const controls = animate(from.current, value, {
       duration: 0.6,
       ease: [0.23, 1, 0.32, 1],
@@ -28,7 +37,7 @@ export function CountUp({ value, money = false, className = '' }: { value: numbe
     });
     from.current = value;
     return () => controls.stop();
-  }, [value, format]);
+  }, [value, format, reduced]);
 
   return (
     <span ref={ref} className={`num ${className}`}>

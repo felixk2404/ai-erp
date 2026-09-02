@@ -34,8 +34,17 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body className="min-h-dvh bg-void text-glow">
         <MotionConfig reducedMotion="user">
           <CartProvider>
+            {/* 2.4.1: בלי זה כל מסך מתחיל בוורדמארק, שני קישורי ניווט, העגלה והתפריט. */}
+            <a
+              href="#main"
+              className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-[var(--z-skip)] focus:rounded-md focus:border focus:border-rule-strong focus:bg-panel-2 focus:px-4 focus:py-2 focus:text-glow"
+            >
+              דילוג לתוכן
+            </a>
             <Header />
-            <main className="container-x min-h-[70dvh] py-8">{children}</main>
+            <main id="main" tabIndex={-1} className="container-x min-h-[70dvh] py-8 outline-none">
+              {children}
+            </main>
             <Footer />
             <CartSheet />
             <FlyToCart />

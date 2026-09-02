@@ -212,6 +212,10 @@ export function Catalog({
         </div>
       </div>
 
+      {/* 1.3.1: העמוד קופץ מ-h1 "מוצרים" ל-h3 של כל כרטיס. הכותרת הזאת נותנת
+          לרשימה שם ברשימת הכותרות של קורא המסך בלי לשנות את הקומפוזיציה. */}
+      <h2 className="sr-only">רשימת המוצרים</h2>
+
       {results.length === 0 ? (
         <div className="flex flex-col items-center gap-4 py-20 text-center">
           <span

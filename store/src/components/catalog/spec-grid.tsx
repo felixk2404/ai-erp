@@ -54,7 +54,14 @@ export function SpecGrid({ products }: { products: ProductCardData[] }) {
         })}
       </ul>
 
-      <div className="relative mx-auto hidden max-w-[980px] overflow-x-auto rounded-lg border border-rule md:block">
+      {/* 2.1.1: `overflow-x-auto` בלי `tabIndex` הופך את העמודות שמעבר לקצה
+          לבלתי-נגישות לגמרי בלי עכבר — הטבלה היא `min-w-[720px]`. */}
+      <div
+        role="region"
+        aria-label="טבלת המוצרים"
+        tabIndex={0}
+        className="relative mx-auto hidden max-w-[980px] overflow-x-auto rounded-lg border border-rule md:block"
+      >
         <table className="w-full min-w-[720px] table-fixed border-collapse">
           <caption className="sr-only">טבלת המוצרים</caption>
           <colgroup>

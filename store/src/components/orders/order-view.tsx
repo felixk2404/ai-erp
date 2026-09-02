@@ -186,7 +186,8 @@ function OrderNumberDisplay({ value }: { value: string }) {
         aria-hidden
         className="absolute inset-0 mx-auto h-32 w-64 -translate-y-2 bg-[radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
       />
-      <span className={`relative ${EYEBROW}`}>מספר הזמנה</span>
+      {/* הכותרת היחידה ברמה 1 במצב ההצלחה — זה העמוד שהלקוח נוחת בו מהמייל. */}
+      <h1 className={`relative ${EYEBROW}`}>מספר הזמנה</h1>
       <span dir="ltr" className="num relative flex text-display leading-none font-extrabold text-glow sm:text-hero">
         {[...value].map((ch, i) => (
           <motion.span
@@ -258,8 +259,13 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
               />
             </div>
           )}
-          <span className={`row-start-2 ${DOT_COL[i]} text-center text-meta font-medium ${i <= current ? 'text-glow-2' : 'text-glow-3'}`}>
+          <span
+            aria-current={i === current ? 'step' : undefined}
+            className={`row-start-2 ${DOT_COL[i]} text-center text-meta font-medium ${i <= current ? 'text-glow-2' : 'text-glow-3'}`}
+          >
             {STATUS_LABELS[step]}
+            {/* המצב היה צבע ופעימה בלבד; קורא מסך שמע ארבע תוויות בלי לדעת איפה ההזמנה. */}
+            <span className="sr-only">{i < current ? ' הושלם' : i === current ? ' שלב נוכחי' : ' ממתין'}</span>
           </span>
         </Fragment>
       ))}
@@ -269,7 +275,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
 
 function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-rule">
+    <div role="region" aria-label="פריטי ההזמנה" tabIndex={0} className="overflow-x-auto rounded-lg border border-rule">
       {/* < sm: כרטיס דו-שורתי לכל פריט — טבלה עם 4 עמודות נחתכת ב-390px. */}
       <ul className="flex flex-col divide-y divide-rule sm:hidden">
         {items.map((item) => (
