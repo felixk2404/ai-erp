@@ -32,3 +32,4 @@
 - הידרציה: `useState(() => Date.now())` בקומפוננטת client שמרונדרת ב-SSR = mismatch בטקסט "לפני X". מאתחלים מזמן שהגיע מהשרת (`initial.at`) ומעדכנים ב-useEffect.
 - SVG עם `direction: rtl`: `text-anchor="end"` מעגן בקצה השמאלי (הטקסט נמשך ימינה). צומת בצד ימין → `end`, בצד שמאל → `start`.
 - dev server איטי בקומפילציה ראשונה (10–25s לעמוד). לפני `e2e/screens.mjs` מחממים את העמודים ב-curl, אחרת Playwright נופל על timeout.
+- n8n: `Aggregate` אחרי טריגר שמחזיר כמה items שובר את שיוך ה-item (`$('Node').item` → `pairedItemMultipleMatches`, "Multiple matches found"). עוטפים את גוף העיבוד ב-`Loop Over Items` (splitInBatches) כך שכל רשומה רצה לבד, ומפנים את ה-`.item` לצומת הלולאה במקום לטריגר.

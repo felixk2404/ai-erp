@@ -74,11 +74,24 @@
       "id": "00000000-0000-4000-8000-000000000001"
     },
     {
+      "name": "Loop Over Items",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
       "name": "Find Customer",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        520,
+        780,
         0
       ],
       "parameters": {
@@ -107,14 +120,14 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Is Valid",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        780,
+        1040,
         0
       ],
       "parameters": {
@@ -128,7 +141,7 @@
           "conditions": [
             {
               "id": "v1",
-              "leftValue": "={{ $('Airtable Trigger').item.json.fields.Amount || 0 }}",
+              "leftValue": "={{ $('Loop Over Items').item.json.fields.Amount || 0 }}",
               "rightValue": 0,
               "operator": {
                 "type": "number",
@@ -150,14 +163,14 @@
         "looseTypeValidation": true,
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Numbered Invoices",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1040,
+        1300,
         -100
       ],
       "alwaysOutputData": true,
@@ -188,14 +201,14 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "Aggregate",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
       "position": [
-        1300,
+        1560,
         -100
       ],
       "parameters": {
@@ -203,14 +216,14 @@
         "destinationFieldName": "data",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Compute",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1560,
+        1820,
         -100
       ],
       "parameters": {
@@ -219,13 +232,13 @@
             {
               "id": "a",
               "name": "id",
-              "value": "={{ $('Airtable Trigger').item.json.id }}",
+              "value": "={{ $('Loop Over Items').item.json.id }}",
               "type": "string"
             },
             {
               "id": "b",
               "name": "InvoiceNumber",
-              "value": "={{ $('Airtable Trigger').item.json.fields.InvoiceNumber || ('INV-' + String($json.data.filter(d => d.fields && d.fields.InvoiceNumber).length + 1).padStart(4, '0')) }}",
+              "value": "={{ $('Loop Over Items').item.json.fields.InvoiceNumber || ('INV-' + String($json.data.filter(d => d.fields && d.fields.InvoiceNumber).length + 1).padStart(4, '0')) }}",
               "type": "string"
             },
             {
@@ -237,27 +250,27 @@
             {
               "id": "d",
               "name": "VatAmount",
-              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * 0.18 * 100) / 100 }}",
+              "value": "={{ Math.round($('Loop Over Items').item.json.fields.Amount * 0.18 * 100) / 100 }}",
               "type": "number"
             },
             {
               "id": "e",
               "name": "Total",
-              "value": "={{ Math.round($('Airtable Trigger').item.json.fields.Amount * 1.18 * 100) / 100 }}",
+              "value": "={{ Math.round($('Loop Over Items').item.json.fields.Amount * 1.18 * 100) / 100 }}",
               "type": "number"
             }
           ]
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Mark Validated",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1820,
+        2080,
         -100
       ],
       "parameters": {
@@ -352,14 +365,14 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Mark Error",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1040,
+        1300,
         120
       ],
       "parameters": {
@@ -378,7 +391,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $('Airtable Trigger').item.json.id }}",
+            "id": "={{ $('Loop Over Items').item.json.id }}",
             "Status": "error"
           },
           "matchingColumns": [
@@ -418,7 +431,7 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000009"
     }
   ],
   "connections": {
@@ -437,7 +450,7 @@
       "main": [
         [
           {
-            "node": "Find Customer",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -501,6 +514,40 @@
         [
           {
             "node": "Mark Validated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Find Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Validated": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Error": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
