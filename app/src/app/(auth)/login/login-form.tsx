@@ -32,16 +32,30 @@ export function LoginForm() {
       <input type="hidden" name="next" value={next} />
       <div className="mt-6 space-y-2">
         <Label htmlFor="password">סיסמה</Label>
-        <Input id="password" name="password" type="password" autoFocus required autoComplete="current-password" className="h-10 text-base mono tracking-[0.2em]" />
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          autoFocus
+          required
+          autoComplete="current-password"
+          aria-invalid={state?.error ? true : undefined}
+          aria-describedby={state?.error ? 'login-error' : undefined}
+          className="h-10 text-base mono tracking-[0.2em]"
+        />
         {state?.error && (
-          <p role="alert" className="text-led-red text-sm">
+          <p id="login-error" role="alert" className="text-led-red text-sm">
             {state.error}
           </p>
         )}
       </div>
-      <Button type="submit" size="lg" className="mt-6 w-full h-10" disabled={pending}>
+      {/* aria-disabled ולא disabled: כפתור מושבת נושר מסדר ה-tab והמיקוד נופל ל-<body> באמצע האימות */}
+      <Button type="submit" size="lg" className="mt-6 w-full h-10 aria-disabled:opacity-60" aria-disabled={pending} onClick={(e) => pending && e.preventDefault()}>
         {pending ? 'מאמת…' : 'כניסה'}
       </Button>
+      <span aria-live="polite" className="sr-only">
+        {pending ? 'מאמת…' : ''}
+      </span>
       <div className="mt-5 flex items-center justify-center gap-2 text-[12px] text-readout-3">
         <span aria-hidden className="size-1.5 rounded-full bg-led-green led-live" />
         <bdi>13 תהליכי n8n</bdi> · <bdi>3 סוכני AI</bdi> · <bdi>RAG פעיל</bdi>

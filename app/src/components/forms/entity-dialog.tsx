@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useActionState, useContext, useState } from 'react';
+import { useActionState, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -8,9 +8,9 @@ import { SubmitButton } from './submit-button';
 
 export type FormState = { ok?: boolean; error?: string; errors?: Record<string, string> } | undefined;
 
-/** שגיאות שדה של הטופס הנוכחי — <FieldError name="X"/> קורא מכאן. */
-export const FormErrorsContext = createContext<Record<string, string>>({});
-export const useFormErrors = () => useContext(FormErrorsContext);
+import { FormErrorsContext } from './form-errors';
+
+export { FormErrorsContext, useFormErrors } from './form-errors';
 
 type Props = {
   trigger: string;
@@ -36,6 +36,12 @@ export function EntityDialog({ trigger, title, description, action, successMessa
     return result;
   }, undefined);
 
+  // 3.3.1 — אחרי כשל אימות המיקוד עובר לשדה הראשון שנפסל, במקום להשאיר את המשתמש בכפתור
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (state?.errors) formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+  }, [state?.errors]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button data-hotkey="new" />}>{trigger}</DialogTrigger>
@@ -44,7 +50,7 @@ export function EntityDialog({ trigger, title, description, action, successMessa
           <DialogTitle>{title}</DialogTitle>
           {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        <form action={formAction} className="space-y-4">
+        <form ref={formRef} action={formAction} className="space-y-4">
           <FormErrorsContext.Provider value={state?.errors ?? {}}>{children}</FormErrorsContext.Provider>
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="ghost" onClick={() => setOpen(false)}>
