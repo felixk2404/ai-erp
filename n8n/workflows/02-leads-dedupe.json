@@ -1,0 +1,28 @@
+{
+  "name": "WF2 — קליטת לידים וכפילויות",
+  "settings": { "executionOrder": "v1", "errorWorkflow": "__WF_ERROR_ID__" },
+  "nodes": [
+    { "name": "Airtable Trigger", "type": "n8n-nodes-base.airtableTrigger", "typeVersion": 1, "position": [0, 0],
+      "parameters": { "authentication": "airtableTokenApi", "baseId": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "tableId": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" }, "triggerField": "Created", "pollTimes": { "item": [ { "mode": "everyMinute" } ] }, "additionalFields": {} },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
+    { "name": "Same Email", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [260, 0], "alwaysOutputData": true,
+      "parameters": { "authentication": "airtableTokenApi", "operation": "search",
+        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "table": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" },
+        "filterByFormula": "={{ \"LOWER({Email})='\" + ($json.fields.Email || '').toLowerCase() + \"'\" }}", "returnAll": true, "options": { "fields": ["Email"] } },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
+    { "name": "Aggregate", "type": "n8n-nodes-base.aggregate", "typeVersion": 1, "position": [520, 0],
+      "parameters": { "aggregate": "aggregateAllItemData", "destinationFieldName": "data", "options": {} } },
+    { "name": "Set Status", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [780, 0],
+      "parameters": { "authentication": "airtableTokenApi", "operation": "update",
+        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "table": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" },
+        "columns": { "mappingMode": "defineBelow", "value": { "id": "={{ $('Airtable Trigger').item.json.id }}", "Status": "={{ $json.data.filter(d => d.id).length > 1 ? 'Duplicate' : 'New' }}" }, "matchingColumns": ["id"],
+          "schema": [ { "id": "id", "displayName": "id", "required": false, "defaultMatch": true, "display": true, "type": "string", "readOnly": true, "removed": false }, { "id": "Status", "displayName": "Status", "required": false, "defaultMatch": false, "canBeUsedToMatch": true, "display": true, "type": "string", "readOnly": false, "removed": false } ] },
+        "options": { "typecast": true } },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } }
+  ],
+  "connections": {
+    "Airtable Trigger": { "main": [[{ "node": "Same Email", "type": "main", "index": 0 }]] },
+    "Same Email": { "main": [[{ "node": "Aggregate", "type": "main", "index": 0 }]] },
+    "Aggregate": { "main": [[{ "node": "Set Status", "type": "main", "index": 0 }]] }
+  }
+}

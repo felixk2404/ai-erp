@@ -20,6 +20,9 @@
   "workflows": {
     "ERROR": "WeWGjptjpf66sA7T",
     "MANAGER_CORE": "zFz32ARQ3kedlK1f",
-    "API": "kn53i73OcuCaz3SZ"
+    "API": "kn53i73OcuCaz3SZ",
+    "MANAGER_TELEGRAM": "JnysbcC3wE84Crq5",
+    "INVOICES_VALIDATE": "ZT0p1wXRsraCrUqA",
+    "LEADS_DEDUPE": "sVCp9e8lWnx5kvrV"
   }
 }
