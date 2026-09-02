@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Command } from 'cmdk';
 import { Sparkles, CornerDownLeft } from 'lucide-react';
@@ -34,6 +34,18 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [pending, start] = useTransition();
   const router = useRouter();
+  const answerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  /**
+   * מעבר בין תצוגת החיפוש לתצוגת התשובה מחליף את כל תת-העץ, כולל האלמנט הממוקד.
+   * בלי זה המיקוד נופל ל-<body> בזמן שדיאלוג לוכד-מיקוד פתוח, ו-Tab/Esc מתנהגים לא צפוי (2.4.3).
+   */
+  useEffect(() => {
+    if (!open) return;
+    if (answer) answerRef.current?.focus();
+    else inputRef.current?.focus();
+  }, [answer, open]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -86,7 +98,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
       <DialogContent dir="rtl" showCloseButton={false} className="p-0 overflow-hidden max-w-lg top-[18%] translate-y-0 bg-chassis ring-1 ring-signal/20 shadow-[0_0_0_1px_rgba(90,209,255,.08),0_30px_60px_-30px_rgba(0,0,0,.9),0_0_80px_-30px_var(--signal-glow)]">
         <DialogTitle className="sr-only">חיפוש</DialogTitle>
         {answer ? (
-          <div className="p-4">
+          <div ref={answerRef} tabIndex={-1} className="p-4 outline-none">
             <div className="flex items-center gap-2 text-[12px] text-readout-3">
               <Sparkles className="size-3.5 text-signal" aria-hidden />
               <span>סוכן המנהל</span>
@@ -95,18 +107,25 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
               </button>
             </div>
             <div className="mt-3 rounded-md bg-signal-soft text-readout px-3 py-2 text-sm">{answer.q}</div>
-            <div className="mt-3 min-h-[72px] text-sm leading-relaxed text-readout">
+            {/* 4.1.3 — בלי זה משתמש קורא-מסך שואל שאלה ולא שומע כלום. הטקסט המוזרם מוסתר
+                ובמקומו נכנס פעם אחת הטקסט המלא, כדי לא להקריא מילה-מילה. */}
+            <div className="mt-3 min-h-[72px] text-sm leading-relaxed text-readout" role="status" aria-live="polite" aria-atomic="true">
               {pending || (!answer.reply && !answer.error) ? (
                 <span className="shimmer text-sm">הסוכן קורא את הנתונים…</span>
               ) : answer.error ? (
                 <span className="text-led-red">{answer.error}</span>
               ) : (
-                <StreamText text={answer.reply!} wordMs={26} />
+                <>
+                  <span aria-hidden>
+                    <StreamText text={answer.reply!} wordMs={26} />
+                  </span>
+                  <span className="sr-only">{answer.reply}</span>
+                </>
               )}
             </div>
             <div className="mt-3 flex items-center justify-between text-[12px] text-readout-3 border-t border-rule pt-2">
               <span>Esc סגירה</span>
-              <kbd className="mono">⌘K</kbd>
+              <kbd className="mono">⌘ K</kbd>
             </div>
           </div>
         ) : (
@@ -122,7 +141,14 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
           >
             <div className="flex items-center gap-2 px-4 border-b border-rule">
               <span aria-hidden className={`size-1.5 rounded-full ${canAsk ? 'bg-signal led-live' : 'bg-readout-3/50'}`} />
-              <Command.Input value={q} onValueChange={setQ} placeholder="חפש עמוד, לקוח, חשבונית או מוצר — או שאל את המנהל…" className="w-full h-12 bg-transparent outline-none text-sm placeholder:text-readout-3" autoFocus />
+              <Command.Input
+              ref={inputRef}
+              value={q}
+              onValueChange={setQ}
+              placeholder="חפש עמוד, לקוח, חשבונית או מוצר — או שאל את המנהל…"
+              className="w-full h-12 bg-transparent text-sm placeholder:text-readout-3 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-signal focus-visible:rounded-md"
+              autoFocus
+            />
             </div>
             <Command.List className="max-h-[380px] overflow-y-auto p-2">
               <Command.Empty className="py-6 text-center text-sm text-readout-3">{canAsk ? 'אין תוצאה בחיפוש — Enter ישאל את הסוכן' : 'לא נמצא כלום'}</Command.Empty>
@@ -164,7 +190,7 @@ export function CommandMenu({ items }: { items: CommandItem[] }) {
             </Command.List>
             <div className="flex items-center justify-between px-3 h-9 border-t border-rule text-[12px] text-readout-3">
               <span>↑↓ ניווט · Enter בחירה · Esc סגירה · ? קיצורים</span>
-              <kbd className="mono">⌘K</kbd>
+              <kbd className="mono">⌘ K</kbd>
             </div>
           </Command>
         )}
@@ -184,7 +210,7 @@ export function CommandMenuTrigger({ className = '' }: { className?: string }) {
         <Sparkles className="size-3.5 text-signal" aria-hidden />
         חיפוש / שאלה…
       </span>
-      <kbd className="mono text-[12px] text-readout-3">⌘K</kbd>
+      <kbd className="mono text-[12px] text-readout-3">⌘ K</kbd>
     </button>
   );
 }
