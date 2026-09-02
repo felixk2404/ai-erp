@@ -12,10 +12,9 @@ import { useCart } from '@/components/cart/cart-provider';
 import { OrderSummary } from '@/components/checkout/order-summary';
 import { placeOrder, type PlaceOrderState } from '@/app/checkout/actions';
 import { CHECKOUT_FIELDS } from '@/lib/order';
-import { EYEBROW } from '@/lib/ui';
+import { EYEBROW, ORDER_EMAIL_KEY } from '@/lib/ui';
 import { ils } from '@/lib/format';
 
-const EMAIL_KEY = 'aie-order-email';
 const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.28 };
 
 /**
@@ -24,8 +23,8 @@ const SPRING = { type: 'spring' as const, bounce: 0.2, visualDuration: 0.28 };
  * שנשארה פתוחה בקופה — "ואז מה". שקט בכוונה: אין beam, אין מסגרת, רק קו.
  */
 const AFTER_ORDER = [
-  ['01', 'אישור מגיע למייל'],
-  ['02', 'חשבונית PDF מצורפת'],
+  ['01', 'מקבלים אישור במייל'],
+  ['02', 'מקבלים חשבונית PDF'],
   ['03', 'עוקבים בעמוד ההזמנה'],
 ] as const;
 
@@ -144,7 +143,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
   useEffect(() => {
     if (!state.ok || !state.orderNumber) return;
     try {
-      sessionStorage.setItem(EMAIL_KEY, state.email ?? '');
+      sessionStorage.setItem(ORDER_EMAIL_KEY, state.email ?? '');
     } catch {
       // אחסון לא זמין: עמוד ההזמנה פשוט יבקש את האימייל שוב
     }
@@ -192,7 +191,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             style={{ background: 'radial-gradient(closest-side, var(--color-beam-soft), transparent)' }}
           />
           <p className="relative text-sm text-glow-2">
-            <span className="font-medium text-glow">הדגמה — לא מתבצע חיוב.</span> ההזמנה נשמרת במערכת ואישור נשלח במייל, בלי שום פרטי אשראי.
+            <span className="font-medium text-glow">הדגמה — לא מתבצע חיוב.</span> ההזמנה נשמרת במערכת ואישור נשלח במייל.
           </p>
         </div>
 

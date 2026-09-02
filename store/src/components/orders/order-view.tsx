@@ -9,11 +9,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { LookupForm, type LookupValues } from '@/components/orders/lookup-form';
 import { lookupOrder } from '@/app/orders/actions';
 import { ils } from '@/lib/format';
-import { EYEBROW } from '@/lib/ui';
+import { EYEBROW, ORDER_EMAIL_KEY } from '@/lib/ui';
 import { STATUS_LABELS, STATUS_STEPS, stepIndex, withRetryHint } from '@/lib/order-status';
 import type { OrderStatus, TrackedOrder } from '@/lib/types';
 
-const EMAIL_KEY = 'aie-order-email';
 const POLL_MS = 20_000;
 const POLL_MAX = 6;
 
@@ -62,7 +61,7 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   useEffect(() => {
     let email = '';
     try {
-      email = sessionStorage.getItem(EMAIL_KEY) ?? '';
+      email = sessionStorage.getItem(ORDER_EMAIL_KEY) ?? '';
     } catch {
       // אחסון לא זמין: נבקש אימייל בטופס
     }
@@ -90,7 +89,7 @@ export function OrderView({ orderNumber }: { orderNumber: string }) {
   const handleSubmit = useCallback(
     ({ email }: LookupValues) => {
       try {
-        sessionStorage.setItem(EMAIL_KEY, email);
+        sessionStorage.setItem(ORDER_EMAIL_KEY, email);
       } catch {
         // אחסון לא זמין: הבדיקה החד-פעמית עדיין תעבוד
       }
@@ -292,9 +291,9 @@ function ItemsTable({ items }: { items: TrackedOrder['items'] }) {
         <thead>
           <tr className="border-b border-rule bg-panel-1 text-glow-3">
             <th className="px-4 py-2 text-start font-medium">מוצר</th>
-            <th className="px-4 py-2 text-start font-medium">מק&quot;ט</th>
+            <th className="px-4 py-2 text-start font-medium">מק״ט</th>
             <th className="px-4 py-2 text-start font-medium">כמות</th>
-            <th className="px-4 py-2 text-start font-medium">סה&quot;כ</th>
+            <th className="px-4 py-2 text-start font-medium">סה״כ</th>
           </tr>
         </thead>
         <tbody>
@@ -334,7 +333,7 @@ function Totals({ order }: { order: TrackedOrder }) {
         </dd>
       </div>
       <div className="flex justify-between border-t border-rule pt-1.5 text-base font-medium">
-        <dt className="text-glow">סה&quot;כ</dt>
+        <dt className="text-glow">סה״כ</dt>
         <dd className="num text-glow">{ils(order.total)}</dd>
       </div>
     </dl>
@@ -356,7 +355,7 @@ function InvoiceBlock({ order, stalled, onRefresh }: { order: TrackedOrder; stal
           הורדת חשבונית PDF
         </a>
       ) : stalled ? (
-        <span className="text-sm text-glow-2">החשבונית עדיין מופקת. בדקו שוב בעוד דקה</span>
+        <span className="text-sm text-glow-2">החשבונית עדיין מופקת. בדקו שוב בעוד דקה.</span>
       ) : (
         <span className="inline-flex items-center gap-2 text-sm text-glow-3">
           <LoaderIcon size={16} aria-hidden className="animate-spin" />
@@ -367,7 +366,7 @@ function InvoiceBlock({ order, stalled, onRefresh }: { order: TrackedOrder; stal
         {!order.pdfUrl && stalled && (
           <Button variant="outline" onClick={onRefresh} className="h-9 gap-1.5 rounded-md px-3 text-body">
             <RefreshCwIcon size={14} aria-hidden />
-            בדיקה מחדש
+            בדקו שוב
           </Button>
         )}
         {order.invoiceNumber && (

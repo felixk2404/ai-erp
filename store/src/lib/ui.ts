@@ -8,12 +8,19 @@ import { MAX_LINES, MAX_QTY } from './cart';
 export const EYEBROW = 'text-meta font-medium tracking-[0.08em] text-glow-3';
 
 /**
+ * מפתח ה-sessionStorage של המסירה אחרי הקנייה: הקופה כותבת, טופס הבירור כותב,
+ * ועמוד ההזמנה קורא. שלושתם חייבים להסכים — כשהיה שלוש הצהרות נפרדות, שינוי
+ * שם באחת שולח את הלקוח לעמוד שמבקש אימייל שהאפליקציה בדיוק שמרה.
+ */
+export const ORDER_EMAIL_KEY = 'aie-order-email';
+
+/**
  * תוצאת `useCart().add`. הוספה מוצלחת לא מקבלת טוסט (הטיסה, המונה והמגירה הן
  * האישור) — אבל *סירוב* חייב מילה, כי אחרת שום דבר על המסך לא זז.
  */
 export const ADD_REFUSALS = {
   added: '',
   merged: '',
-  'max-lines': `הסל מלא. אפשר עד ${MAX_LINES} מוצרים שונים`,
-  'max-qty': `אי-אפשר יותר מ־${MAX_QTY} יחידות מאותו מוצר`,
+  'max-lines': `הסל מלא. אפשר עד ${MAX_LINES} מוצרים שונים.`,
+  'max-qty': `אי אפשר יותר מ־${MAX_QTY} יחידות מאותו מוצר.`,
 } as const;

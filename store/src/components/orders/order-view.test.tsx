@@ -4,6 +4,7 @@ import { act, cleanup, render, screen } from '@testing-library/react';
 import { OrderView } from './order-view';
 import type { LookupResult } from '@/app/orders/actions';
 import type { TrackedOrder } from '@/lib/types';
+import { ORDER_EMAIL_KEY } from '@/lib/ui';
 
 const lookupOrder = vi.fn<() => Promise<LookupResult>>();
 vi.mock('@/app/orders/actions', () => ({ lookupOrder: () => lookupOrder() }));
@@ -26,7 +27,7 @@ const POLL_MS = 20_000;
 
 beforeEach(() => {
   vi.useFakeTimers({ shouldAdvanceTime: true });
-  sessionStorage.setItem('aie-order-email', 'felix@example.com');
+  sessionStorage.setItem(ORDER_EMAIL_KEY, 'felix@example.com');
 });
 
 afterEach(() => {
@@ -57,7 +58,7 @@ describe('OrderView — החשבונית', () => {
     await mount();
 
     expect(screen.queryByText('החשבונית מופקת…')).toBeNull();
-    expect(screen.getByRole('button', { name: /בדיקה מחדש/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /בדקו שוב/ })).toBeTruthy();
   });
 
   it('pdfUrl קיים עוצר את הפולינג ומכריז שהחשבונית מוכנה', async () => {

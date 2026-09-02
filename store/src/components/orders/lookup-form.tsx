@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { normalizeOrderNumber } from '@/lib/order-status';
-
-const EMAIL_KEY = 'aie-order-email';
+import { ORDER_EMAIL_KEY } from '@/lib/ui';
 
 export type LookupValues = { orderNumber: string; email: string };
 
@@ -48,7 +47,7 @@ export function LookupForm({
       return;
     }
     try {
-      sessionStorage.setItem(EMAIL_KEY, em);
+      sessionStorage.setItem(ORDER_EMAIL_KEY, em);
     } catch {
       // אחסון לא זמין: עדיין ננווט, עמוד ההזמנה יבקש אימייל מחדש
     }
