@@ -1,8 +1,5 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, stagger, useReducedMotion } from 'motion/react';
 import { PackageIcon } from 'lucide-react';
 import { Spotlight } from '@/components/motion/spotlight';
 import { WordReveal } from '@/components/motion/word-reveal';
@@ -14,41 +11,6 @@ import { inStock } from '@/lib/catalog-filter';
 import { ils } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/lib/types';
-
-/** נקודת ההתחלה זהה בשני מצבי התנועה — זה מה שהשרת מרנדר, ולכן אסור שיהיה תלוי לקוח. */
-const HIDDEN = { opacity: 0, y: 20, filter: 'blur(10px)' };
-const SHOWN = { opacity: 1, y: 0, filter: 'blur(0px)' };
-
-const scene = {
-  hidden: {},
-  visible: { transition: { delayChildren: stagger(0.1) } },
-};
-const column = {
-  hidden: {},
-  visible: { transition: { delayChildren: stagger(0.07) } },
-};
-
-/** הפריט "מתמקד": יוצא מטושטש ונמוך ונוחת חד — כמו עדשה שנתפסת על האובייקט. */
-const item = {
-  hidden: HIDDEN,
-  visible: {
-    ...SHOWN,
-    transition: { type: 'spring' as const, stiffness: 100, damping: 20 },
-  },
-};
-
-/** תנועה מופחתת: אותו DOM, אותם ערכים — רק בלי המסע. הבחירה נעשית בלקוח בלבד. */
-const itemCalm = {
-  hidden: HIDDEN,
-  visible: {
-    ...SHOWN,
-    transition: {
-      opacity: { duration: 0.3, ease: 'easeOut' as const },
-      y: { duration: 0 },
-      filter: { duration: 0 },
-    },
-  },
-};
 
 /** מונו רק על הספרות; היחידה והמילים העבריות נשארות בהיבו (החלטה כלל-אתרית). */
 const FACTS = [
@@ -66,28 +28,23 @@ const FACTS = [
  * Typography: eyebrow היבו 11 (מונו רק על המספר), h1 Heebo 800 בטווח 44→96, משנה 18/1.5 glow-2,
  *   שורת העובדות היבו 14 עם ספרות במונו.
  * Spacing: מלא-רוחב עם תוכן מיושר ל-1280, min-h 80dvh, פער 40px בין שורות הרשת.
+ * Motion: הכניסה (`data-enter`) והריחוף (`data-hero-float`) הם CSS ב-globals.css ולא motion —
+ *   ה-hero הוא מועמד ה-LCP של הדף, ואנימציה שמתחילה רק אחרי הידרציה השאירה אותו ריק
+ *   ~7 שניות במכשיר איטי. כך הוא גם רץ בלי שורת JS אחת ומכבד prefers-reduced-motion נטיבית.
  */
 export function Hero({ product, count }: { product: Product; count: number }) {
-  const reduce = useReducedMotion();
-  const enter = reduce ? itemCalm : item;
   const f = product.fields;
   const sku = f.Sku ?? product.id;
 
   return (
     <Spotlight className="-mt-8 mx-[calc(50%-50vw)] border-b border-rule px-[max(20px,calc(50vw-640px))] pt-12 pb-16 lg:pt-16 lg:pb-24">
-      <motion.div
-        variants={scene}
-        initial="hidden"
-        animate="visible"
+      <div
         className="grid min-h-[80dvh] content-center items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:grid-rows-[auto_auto]"
       >
-        <motion.div
-          variants={column}
-          className="order-2 flex flex-col items-start lg:order-none lg:col-start-1 lg:row-start-1"
-        >
-          <motion.p variants={enter} className="text-[11px] font-medium tracking-[0.08em] text-glow-3">
+        <div className="order-2 flex flex-col items-start lg:order-none lg:col-start-1 lg:row-start-1">
+          <p data-enter="2" className="text-[11px] font-medium tracking-[0.08em] text-glow-3">
             חדר תצוגה · <span className="num">{count}</span> מוצרים · אחריות יבואן
-          </motion.p>
+          </p>
 
           {/* 9ch = "טכנולוגיה" ועוד ~9% אוויר: ה-ch של היבו צר מהאות העברית הממוצעת, אז זה כופה
               שבירה אחרי המילה הראשונה בלי לחתוך אותה. בלי זה הכותרת נשארת שורה אחת ונשפכת מהעמודה. */}
@@ -95,11 +52,11 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             <WordReveal text="טכנולוגיה שרואים." />
           </h1>
 
-          <motion.p variants={enter} className="mt-5 max-w-[42ch] text-[18px] leading-[1.5] text-glow-2">
+          <p data-enter="3" className="mt-5 max-w-[42ch] text-[18px] leading-[1.5] text-glow-2">
             מוצרים מקוריים. שירות AI. משלוח עד הבית.
-          </motion.p>
+          </p>
 
-          <motion.div variants={enter} className="mt-8 flex flex-wrap items-center gap-3">
+          <div data-enter="4" className="mt-8 flex flex-wrap items-center gap-3">
             <Link
               href="/products"
               transitionTypes={['nav-forward']}
@@ -110,12 +67,12 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             <AskBot className={cn(buttonVariants({ variant: 'outline' }), 'h-12 rounded-md px-6 text-[16px]')}>
               שאל את הבוט
             </AskBot>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* המוצר ראשון במובייל (`order-1`): בחדר תצוגה מסתכלים על החפץ, לא קוראים שלט. */}
-        <motion.div
-          variants={enter}
+        <div
+          data-enter="1"
           className="relative order-1 mx-auto w-full max-w-[340px] sm:max-w-[380px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-[500px]"
         >
           {/* קישור אחד על כל הדיסקה: מסתכלים על הפריט, לוחצים על הפריט. כרטיס המפרט הוא התווית שלו. */}
@@ -137,14 +94,10 @@ export function Hero({ product, count }: { product: Product; count: number }) {
                 className="absolute inset-0 rounded-full [background:radial-gradient(closest-side,var(--color-beam-soft),transparent)]"
               />
 
-              {/* הדיסקה צפה 6 שניות — הפריט "מרחף" בתוך האור. reducedMotion="user" הגלובלי מבטל transform. */}
-              <motion.div
-                animate={reduce ? undefined : { y: [-10, 10, -10] }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
+              {/* הדיסקה צפה 6 שניות — הפריט "מרחף" בתוך האור. CSS, כדי שהריחוף לא
+                  יחכה להידרציה ו-prefers-reduced-motion יכבה אותו נטיבית. */}
+              <div
+                data-hero-float
                 className="absolute inset-[10%] overflow-hidden rounded-full border border-rule bg-panel-2"
               >
                 <Shared name={`product-image-${sku}`}>
@@ -164,7 +117,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
                     </div>
                   )}
                 </Shared>
-              </motion.div>
+              </div>
             </div>
 
             <span className="absolute bottom-[2%] start-0 z-10 block w-[192px] sm:w-[208px] lg:start-[-5%] rounded-md border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
@@ -178,10 +131,10 @@ export function Hero({ product, count }: { product: Product; count: number }) {
               </span>
             </span>
           </Link>
-        </motion.div>
+        </div>
 
-        <motion.dl
-          variants={enter}
+        <dl
+          data-enter="5"
           className="order-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-[14px] tracking-[0.08em] text-glow-3 lg:col-span-2 lg:col-start-1 lg:row-start-2"
         >
           {FACTS.map((fact, i) => (
@@ -198,8 +151,8 @@ export function Hero({ product, count }: { product: Product; count: number }) {
               )}
             </div>
           ))}
-        </motion.dl>
-      </motion.div>
+        </dl>
+      </div>
     </Spotlight>
   );
 }

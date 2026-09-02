@@ -1,15 +1,15 @@
 'use client';
 
-import { useRef, type ReactNode } from 'react';
-import { motion, useMotionValue, useSpring, useReducedMotion, useMotionTemplate } from 'motion/react';
-
-const SPRING = { stiffness: 300, damping: 22, mass: 0.5 };
+import { useRef, type PointerEvent, type ReactNode } from 'react';
 
 /**
  * הכרטיס מרגיש כמו חפץ פיזי מתחת לתאורה: הטיה ≤ max מעלות לפי מיקום הסמן,
- * וברק beam שעוקב אחרי הסמן. במגע ובתנועה מופחתת פשוט לא נרשמים מאזינים,
- * והכרטיס נשאר בזווית 0 עם ברק שקוף — אותו DOM, כדי שההידרציה תתאים.
- * רק transform/opacity — בלי layout, בלי צל.
+ * וברק beam שעוקב אחריו. רק transform/opacity — בלי layout, בלי צל.
+ *
+ * המימוש הוא משתני CSS + transition, ולא motion: הקטלוג מרנדר 34 כרטיסים, וספרינג
+ * לכל אחד עלה ~300ms של TBT בטעינה (נמדד ב-Lighthouse) עבור אפקט שקיים רק תחת סמן.
+ * כאן ההידרציה היא מאזין אחד לכרטיס, וכיבוי התנועה המופחתת נעשה ב-globals.css —
+ * בלי useReducedMotion, ולכן בלי הסתעפות שתלויה בלקוח.
  */
 export function Tilt({
   children,
@@ -23,46 +23,39 @@ export function Tilt({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  const rx = useSpring(0, SPRING);
-  const ry = useSpring(0, SPRING);
-  const gx = useMotionValue(50);
-  const gy = useMotionValue(50);
-  const go = useSpring(0, { stiffness: 200, damping: 30 });
-  const glareBg = useMotionTemplate`radial-gradient(180px circle at ${gx}% ${gy}%, var(--color-beam-soft), transparent 70%)`;
 
-  const onMove = (e: React.PointerEvent) => {
-    if (e.pointerType === 'touch') return;
-    const r = ref.current!.getBoundingClientRect();
+  const onMove = (e: PointerEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el || e.pointerType === 'touch') return;
+    const r = el.getBoundingClientRect();
     const px = (e.clientX - r.left) / r.width;
     const py = (e.clientY - r.top) / r.height;
-    ry.set((px - 0.5) * 2 * max);
-    rx.set((0.5 - py) * 2 * max);
-    gx.set(px * 100);
-    gy.set(py * 100);
-    go.set(1);
+    el.style.setProperty('--tilt-y', `${(px - 0.5) * 2 * max}deg`);
+    el.style.setProperty('--tilt-x', `${(0.5 - py) * 2 * max}deg`);
+    el.style.setProperty('--glare-x', `${px * 100}%`);
+    el.style.setProperty('--glare-y', `${py * 100}%`);
+    el.style.setProperty('--glare-o', '1');
   };
+
   const reset = () => {
-    rx.set(0);
-    ry.set(0);
-    go.set(0);
+    const el = ref.current;
+    if (!el) return;
+    el.style.setProperty('--tilt-y', '0deg');
+    el.style.setProperty('--tilt-x', '0deg');
+    el.style.setProperty('--glare-o', '0');
   };
 
   return (
     <div
       ref={ref}
-      onPointerMove={reduced ? undefined : onMove}
-      onPointerLeave={reduced ? undefined : reset}
-      className={`[perspective:800px] ${className}`}
+      data-tilt
+      onPointerMove={onMove}
+      onPointerLeave={reset}
+      /* rounded-lg כאן ולא רק על הכרטיס: הברק יורש ממנו את הפינות. */
+      className={`relative rounded-lg ${className}`}
     >
-      {/* rounded-lg על העוטף עצמו: הברק יורש ממנו (`rounded-[inherit]`), ובלי זה
-          פינות ההילה יוצאות מרובעות מעל כרטיס מעוגל. */}
-      <motion.div style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }} className="relative h-full rounded-lg">
-        {children}
-        {glare && (
-          <motion.div aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit]" style={{ background: glareBg, opacity: go }} />
-        )}
-      </motion.div>
+      {children}
+      {glare && <span aria-hidden data-tilt-glare className="pointer-events-none absolute inset-0 rounded-[inherit]" />}
     </div>
   );
 }

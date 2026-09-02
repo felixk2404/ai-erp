@@ -146,6 +146,105 @@ h3 {
   }
 }
 
+/* הכותרת הראשית נכנסת מילה-מילה. CSS ולא motion, כי זו מועמדת ה-LCP של דף
+   הבית — אנימציית JS הייתה משאירה אותה שקופה עד שההידרציה מסתיימת. */
+@keyframes aie-word-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+@keyframes aie-word-reveal-calm {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+[data-word-reveal] {
+  animation: aie-word-reveal 420ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+[data-word-reveal]:nth-child(2) {
+  animation-delay: 50ms;
+}
+[data-word-reveal]:nth-child(3) {
+  animation-delay: 100ms;
+}
+[data-word-reveal]:nth-child(4) {
+  animation-delay: 150ms;
+}
+[data-word-reveal]:nth-child(n + 5) {
+  animation-delay: 200ms;
+}
+
+/* כניסת ה-hero: כל פריט "מתמקד" — יוצא נמוך ומטושטש ונוחת חד. CSS ולא motion,
+   כי ה-hero הוא מועמד ה-LCP: כניסה שמחכה להידרציה משאירה אותו ריק שניות ארוכות. */
+@keyframes aie-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+[data-enter] {
+  animation: aie-enter 560ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+[data-enter='2'] {
+  animation-delay: 70ms;
+}
+[data-enter='3'] {
+  animation-delay: 140ms;
+}
+[data-enter='4'] {
+  animation-delay: 210ms;
+}
+[data-enter='5'] {
+  animation-delay: 280ms;
+}
+
+/* הפריט מרחף בתוך האור — הלולאה היחידה בעמוד חוץ מפעימת הבוט. */
+@keyframes aie-hero-float {
+  0%,
+  100% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+[data-hero-float] {
+  animation: aie-hero-float 6s ease-in-out infinite;
+}
+
+/* הטיית הכרטיס והברק שעוקב אחרי הסמן (components/motion/tilt.tsx).
+   ה-JS רק כותב את המשתנים; המעבר, הפרספקטיבה והכיבוי במצב מופחת הם CSS. */
+[data-tilt] {
+  transform: perspective(800px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+[data-tilt-glare] {
+  background: radial-gradient(180px circle at var(--glare-x, 50%) var(--glare-y, 50%), var(--color-beam-soft), transparent 70%);
+  opacity: var(--glare-o, 0);
+  transition: opacity 220ms ease-out;
+}
+
 /* ציר ההזמנה: הילת "כאן עכשיו" סביב השלב הנוכחי. CSS ולא motion, כדי
    ש-prefers-reduced-motion יעצור אותה נטיבית בלי ענף מארקאפ נפרד. */
 @keyframes aie-timeline-pulse {
@@ -243,6 +342,32 @@ h3 {
     animation: none;
     opacity: 0.5;
     transform: scale(1);
+  }
+
+  /* אותה כניסה, בדהייה בלבד; והריחוף נעצר. */
+  [data-enter] {
+    animation-name: aie-word-reveal-calm;
+    animation-duration: 300ms;
+    animation-timing-function: ease-out;
+  }
+  [data-hero-float] {
+    animation: none;
+  }
+
+  /* הכרטיס נשאר שטוח והברק כבוי — אותו DOM, בלי הסתעפות ב-JS. */
+  [data-tilt] {
+    transform: none;
+    transition: none;
+  }
+  [data-tilt-glare] {
+    opacity: 0;
+  }
+
+  /* אותה הכרזה, בדהייה בלבד: בלי מסע ובלי טשטוש. */
+  [data-word-reveal] {
+    animation-name: aie-word-reveal-calm;
+    animation-duration: 250ms;
+    animation-timing-function: ease-out;
   }
 
   /* השלד פועם כדי לומר "עוד רגע"; במצב מופחת די בכך שהוא שם. */
