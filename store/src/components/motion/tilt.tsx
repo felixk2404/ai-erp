@@ -55,7 +55,9 @@ export function Tilt({
       onPointerLeave={reduced ? undefined : reset}
       className={`[perspective:800px] ${className}`}
     >
-      <motion.div style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }} className="relative h-full">
+      {/* rounded-lg על העוטף עצמו: הברק יורש ממנו (`rounded-[inherit]`), ובלי זה
+          פינות ההילה יוצאות מרובעות מעל כרטיס מעוגל. */}
+      <motion.div style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }} className="relative h-full rounded-lg">
         {children}
         {glare && (
           <motion.div aria-hidden className="pointer-events-none absolute inset-0 rounded-[inherit]" style={{ background: glareBg, opacity: go }} />

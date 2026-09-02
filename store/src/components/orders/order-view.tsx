@@ -16,19 +16,6 @@ const EMAIL_KEY = 'aie-order-email';
 const POLL_MS = 20_000;
 const POLL_MAX = 6;
 
-// הילת השלב הנוכחי בציר: CSS טהור (לא motion) כדי ש-prefers-reduced-motion
-// יעצור אותה ברמת הדפדפן, בלי ענף מארקאפ נפרד ל"מצב מופחת תנועה".
-const PULSE_CSS = `
-@keyframes aie-timeline-pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 0; transform: scale(1.4); }
-}
-[data-timeline-pulse] { animation: aie-timeline-pulse 3s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) {
-  [data-timeline-pulse] { animation: none; opacity: 0.5; transform: scale(1); }
-}
-`;
-
 type Phase = { kind: 'loading' } | { kind: 'form' } | { kind: 'error'; message: string } | { kind: 'success'; order: TrackedOrder };
 
 /**
@@ -203,49 +190,46 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
   const LINE_COL = ['col-start-2', 'col-start-4', 'col-start-6'] as const;
 
   return (
-    <>
-      <style>{PULSE_CSS}</style>
-      <div
-        role="group"
-        aria-label="סטטוס ההזמנה"
-        className="grid grid-cols-[auto_1fr_auto_1fr_auto_1fr_auto] items-center gap-y-2"
-      >
-        {STATUS_STEPS.map((step, i) => (
-          <Fragment key={step}>
-            <span
-              className={
-                `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-xs font-medium ` +
-                (i < current
-                  ? 'border-beam bg-beam text-void'
-                  : i === current
-                    ? 'border-beam bg-panel-1 text-beam'
-                    : 'border-rule bg-panel-1 text-glow-4')
-              }
-            >
-              {i < current ? <CheckIcon size={14} aria-hidden /> : i + 1}
-              {/* פעימה סמנטית (מתקשרת "כאן עכשיו"), לא קישוט — ראו system.md #9.
-                  CSS טהור, לא motion: כך `prefers-reduced-motion` עוצר אותה נטיבית
-                  בלי ענף מארקאפ נפרד. */}
-              {i === current && <span aria-hidden data-timeline-pulse className="absolute inset-0 rounded-full bg-beam-soft" />}
-            </span>
-            {i < LINE_COL.length && (
-              <div className={`row-start-1 ${LINE_COL[i]} relative mx-1 h-px bg-rule`}>
-                <motion.div
-                  aria-hidden
-                  className="absolute inset-0 origin-right bg-beam"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: i < current ? 1 : 0 }}
-                  transition={{ type: 'spring', bounce: 0.15, visualDuration: 0.4, delay: i * 0.08 }}
-                />
-              </div>
-            )}
-            <span className={`row-start-2 ${DOT_COL[i]} text-center text-xs font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
-              {STATUS_LABELS[step]}
-            </span>
-          </Fragment>
-        ))}
-      </div>
-    </>
+    <div
+      role="group"
+      aria-label="סטטוס ההזמנה"
+      className="grid grid-cols-[auto_1fr_auto_1fr_auto_1fr_auto] items-center gap-y-2"
+    >
+      {STATUS_STEPS.map((step, i) => (
+        <Fragment key={step}>
+          <span
+            className={
+              `row-start-1 ${DOT_COL[i]} relative grid size-8 shrink-0 justify-self-center place-items-center rounded-full border text-xs font-medium ` +
+              (i < current
+                ? 'border-beam bg-beam text-void'
+                : i === current
+                  ? 'border-beam bg-panel-1 text-beam'
+                  : 'border-rule bg-panel-1 text-glow-4')
+            }
+          >
+            {i < current ? <CheckIcon size={14} aria-hidden /> : i + 1}
+            {/* פעימה סמנטית (מתקשרת "כאן עכשיו"), לא קישוט — ראו system.md #9.
+                CSS טהור, לא motion: כך `prefers-reduced-motion` עוצר אותה נטיבית
+                בלי ענף מארקאפ נפרד. */}
+            {i === current && <span aria-hidden data-timeline-pulse className="absolute inset-0 rounded-full bg-beam-soft" />}
+          </span>
+          {i < LINE_COL.length && (
+            <div className={`row-start-1 ${LINE_COL[i]} relative mx-1 h-px bg-rule`}>
+              <motion.div
+                aria-hidden
+                className="absolute inset-0 origin-right bg-beam"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: i < current ? 1 : 0 }}
+                transition={{ type: 'spring', bounce: 0.15, visualDuration: 0.4, delay: i * 0.08 }}
+              />
+            </div>
+          )}
+          <span className={`row-start-2 ${DOT_COL[i]} text-center text-xs font-medium ${i <= current ? 'text-glow-2' : 'text-glow-4'}`}>
+            {STATUS_LABELS[step]}
+          </span>
+        </Fragment>
+      ))}
+    </div>
   );
 }
 
