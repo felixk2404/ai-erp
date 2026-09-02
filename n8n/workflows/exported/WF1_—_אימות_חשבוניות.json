@@ -238,7 +238,7 @@
             {
               "id": "b",
               "name": "InvoiceNumber",
-              "value": "={{ $('Loop Over Items').item.json.fields.InvoiceNumber || ('INV-' + String($json.data.filter(d => d.fields && d.fields.InvoiceNumber).length + 1).padStart(4, '0')) }}",
+              "value": "={{ $('Loop Over Items').item.json.fields.InvoiceNumber || ('INV-' + String(Math.max(0, ...$json.data.map(d => parseInt(String(d.fields && d.fields.InvoiceNumber || '').split('-')[1], 10) || 0)) + 1).padStart(4, '0')) }}",
               "type": "string"
             },
             {
