@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { IBM_Plex_Sans_Hebrew, IBM_Plex_Mono, Heebo } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { MotionProvider } from '@/components/motion/motion-provider';
@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   description: 'מערכת ניהול חכמה לעסק — חשבוניות, לידים, מוצרים וסוכן AI',
   icons: { icon: '/brand/logo-mark.png' },
 };
+
+/** ה-UI מחויב לכהה — כרום הדפדפן בנייד צריך להתאים ולא להבהב לבן. */
+export const viewport: Viewport = { themeColor: '#0d1017' };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (

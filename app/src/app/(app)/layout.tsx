@@ -30,9 +30,18 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="md:flex min-h-dvh">
+      {/* 2.4.1 — לפני <main> יושבים המותג, ⌘K, 6 קישורי ניווט, שירות, יציאה. זה המעקף. */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-100 focus:rounded-md focus:bg-chassis-3 focus:px-4 focus:py-2 focus:text-readout focus:outline-2 focus:outline-signal"
+      >
+        דילוג לתוכן
+      </a>
       <MobileNav counts={counts} />
       <Sidebar counts={counts} />
-      <main className="flex-1 min-w-0 p-4 md:p-8 max-w-[1200px]">{children}</main>
+      <main id="main" tabIndex={-1} className="flex-1 min-w-0 p-4 md:p-8 max-w-[1200px] outline-none">
+        {children}
+      </main>
       <CommandMenu items={items} />
       <SupportWidget />
       <Hotkeys />
