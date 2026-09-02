@@ -190,4 +190,11 @@ h3 {
   ::view-transition-new(*) {
     animation: none !important;
   }
+
+  /* הזרקור מפסיק לעקוב ונשאר הילה סטטית במרכז. media query ולא JS,
+     כי useReducedMotion מחזיר null בשרת ושובר הידרציה. */
+  [data-spotlight-glow] {
+    background: radial-gradient(320px circle at 50% 50%, var(--color-beam-soft), transparent 70%) !important;
+    opacity: 1 !important;
+  }
 }

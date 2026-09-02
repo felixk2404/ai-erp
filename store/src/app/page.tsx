@@ -8,7 +8,7 @@ export default function Home() {
       <h1 className="text-[44px] leading-[1.05] font-extrabold tracking-[-0.02em] sm:text-[64px]">
         <WordReveal text="חדר התצוגה נדלק בקרוב" />
       </h1>
-      <p className="text-glow-3">מוצרים מקוריים, אחריות יבואן, שירות AI.</p>
+      <p className="text-glow-2">מוצרים מקוריים, אחריות יבואן, שירות AI.</p>
     </Spotlight>
   );
 }

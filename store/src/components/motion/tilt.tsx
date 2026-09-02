@@ -7,7 +7,8 @@ const SPRING = { stiffness: 300, damping: 22, mass: 0.5 };
 
 /**
  * הכרטיס מרגיש כמו חפץ פיזי מתחת לתאורה: הטיה ≤ max מעלות לפי מיקום הסמן,
- * וברק beam שעוקב אחרי הסמן. כבוי במגע ובתנועה מופחתת (אז זה סתם div).
+ * וברק beam שעוקב אחרי הסמן. במגע ובתנועה מופחתת פשוט לא נרשמים מאזינים,
+ * והכרטיס נשאר בזווית 0 עם ברק שקוף — אותו DOM, כדי שההידרציה תתאים.
  * רק transform/opacity — בלי layout, בלי צל.
  */
 export function Tilt({
@@ -23,14 +24,12 @@ export function Tilt({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const rx = useSpring(useMotionValue(0), SPRING);
-  const ry = useSpring(useMotionValue(0), SPRING);
+  const rx = useSpring(0, SPRING);
+  const ry = useSpring(0, SPRING);
   const gx = useMotionValue(50);
   const gy = useMotionValue(50);
-  const go = useSpring(useMotionValue(0), { stiffness: 200, damping: 30 });
+  const go = useSpring(0, { stiffness: 200, damping: 30 });
   const glareBg = useMotionTemplate`radial-gradient(180px circle at ${gx}% ${gy}%, var(--color-beam-soft), transparent 70%)`;
-
-  if (reduced) return <div className={className}>{children}</div>;
 
   const onMove = (e: React.PointerEvent) => {
     if (e.pointerType === 'touch') return;
@@ -50,7 +49,12 @@ export function Tilt({
   };
 
   return (
-    <div ref={ref} onPointerMove={onMove} onPointerLeave={reset} className={`[perspective:800px] ${className}`}>
+    <div
+      ref={ref}
+      onPointerMove={reduced ? undefined : onMove}
+      onPointerLeave={reduced ? undefined : reset}
+      className={`[perspective:800px] ${className}`}
+    >
       <motion.div style={{ rotateX: rx, rotateY: ry, transformStyle: 'preserve-3d' }} className="relative h-full">
         {children}
         {glare && (
