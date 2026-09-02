@@ -3,6 +3,9 @@
 אפליקציית הלקוח (Next.js 16, App Router, RTL עברית, כהה בלבד).
 אחות של `app/` (הניהול) — פרויקט נפרד לגמרי: `package.json` משלו, `node_modules` משלו, פרויקט Vercel נפרד.
 
+**פרודקשן: https://ai-electronics-one.vercel.app** (פרויקט Vercel `ai-electronics`, צוות `felix-7978`).
+פריסה: `cd store && vercel --prod --yes`. סנכרון env: `./scripts/vercel-env.sh`.
+
 ## הרצה
 
 ```bash
@@ -19,6 +22,8 @@ pnpm dev        # http://localhost:3200
 | `pnpm lint` | `eslint .` |
 | `pnpm test` | Vitest (`src/**/*.test.ts`) |
 | `pnpm e2e` | Playwright מול `http://localhost:3200` (מרים `pnpm dev` לבד) |
+| `PLAYWRIGHT_BASE_URL=<url> E2E_NO_ORDER=1 pnpm e2e` | אותן בדיקות מול פרודקשן, בלי ליצור הזמנה אמיתית |
+| `OUT=<dir> node e2e/screens.mjs` | צילומי מסך של כל העמודים (desktop + mobile) |
 
 `pnpm build`, `pnpm typecheck`, `pnpm lint` ו-`pnpm test` רצים **בלי** משתני סביבה —
 `env()` הוא עצל ונקרא רק בתוך request handler. גם `/api/health` לא נוגע בו.
@@ -37,7 +42,7 @@ cp env.example .env.local
 | `AIRTABLE_BASE_ID` | כבר מלא ב-`env.example` (`app1jXGnS2j0tCxEM`) |
 | `N8N_WEBHOOK_URL` | כבר מלא — כתובת ה-ngrok של n8n המקומי |
 | `N8N_WEBHOOK_SECRET` | להעתיק מ-`app/.env.local` |
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3200` בפיתוח; כתובת ה-production ב-Vercel |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3200` בפיתוח; `https://ai-electronics-one.vercel.app` ב-Vercel |
 
 בלי הקובץ הזה כל קריאה ל-Airtable או ל-n8n תזרוק `Missing/invalid env: ...`.
 
