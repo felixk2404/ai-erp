@@ -25,6 +25,9 @@
 | Products | InStock | Checkbox | |
 | Tasks | Title | Single line text | ראשי |
 | Tasks | Status | Single line text | open / done |
+| Tasks | Source | Single line text | order / stock / lead / invoice / manual. מי יצר את המשימה |
+| Tasks | RefId | Single line text | היעד: `ORD-0003` / מק"ט / `INV-0007` / record id של ליד |
+| Tasks | Created | Created time | ידני ב-UI |
 | Customers | CustomerId | Single line text | ראשי. `CUST-0001` |
 | Customers | Name | Single line text | |
 | Customers | Email | Email | |
@@ -45,4 +48,4 @@
 
 Products.Stock (number, integer) — רק פריטים פיזיים; שירותים ריק. Products.Highlights — 3 שורות מפרט.
 
-יצירה: `airtable/create-tables.sh` (בטוח להרצה חוזרת). שדות `Created` (Created time) אינם נתמכים ב-Metadata API ומתווספים ידנית ב-UI ב-Invoices, ב-Leads וב-Orders. אימות: `airtable/verify-schema.sh`. רשומות ראשונות לבדיקה: `airtable/seed.sh`.
+יצירה: `airtable/create-tables.sh` (בטוח להרצה חוזרת). שדות `Created` (Created time) אינם נתמכים ב-Metadata API ומתווספים ידנית ב-UI ב-Invoices, ב-Leads, ב-Orders וב-Tasks. אימות: `airtable/verify-schema.sh`. רשומות ראשונות לבדיקה: `airtable/seed.sh`.

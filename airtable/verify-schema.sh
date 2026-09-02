@@ -31,6 +31,9 @@ Products.Stock:number
 Products.Highlights:multilineText
 Tasks.Title:singleLineText
 Tasks.Status:singleLineText
+Tasks.Source:singleLineText
+Tasks.RefId:singleLineText
+Tasks.Created:createdTime
 Customers.CustomerId:singleLineText
 Customers.Name:singleLineText
 Customers.Email:email
