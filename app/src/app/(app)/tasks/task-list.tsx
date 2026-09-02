@@ -1,12 +1,27 @@
 'use client';
 
+import Link from 'next/link';
 import { useActionState, useOptimistic, useRef, useTransition } from 'react';
 import { toast } from 'sonner';
 import type { Task } from '@/lib/types';
 import { addTask, toggleTask, type AddTaskState } from './actions';
+import { taskSourceMeta } from '@/lib/task-source';
 import { Input } from '@/components/ui/input';
 import { SubmitButton } from '@/components/forms/submit-button';
 import { FieldError } from '@/components/forms/field-error';
+
+/** תג מקור: לאוטומציה יש קישור למסך היעד, למשימה ידנית רק תווית. */
+function TaskSourceTag({ source, refId }: { source?: string; refId?: string }) {
+  const m = taskSourceMeta(source);
+  const text = refId ? `${m.label} · ${refId}` : m.label;
+  const cls = 'shrink-0 text-[12px] text-ink-3 whitespace-nowrap';
+  if (!m.href) return <span className={cls}>{text}</span>;
+  return (
+    <Link href={m.href} className={`${cls} underline-offset-4 hover:underline hover:text-ink`} aria-label={`${m.label} ${refId ?? ''} — פתח`}>
+      <span dir="ltr">{text}</span>
+    </Link>
+  );
+}
 
 function TaskRow({ task }: { task: Task }) {
   const [pending, start] = useTransition();
@@ -33,6 +48,7 @@ function TaskRow({ task }: { task: Task }) {
       <label htmlFor={id} className={`flex-1 py-3 text-sm cursor-pointer ${done ? 'text-ink-3 line-through' : 'text-ink'}`}>
         {task.fields.Title}
       </label>
+      <TaskSourceTag source={task.fields.Source} refId={task.fields.RefId} />
     </li>
   );
 }

@@ -13,7 +13,7 @@ export async function addTask(_prev: AddTaskState, fd: FormData): Promise<AddTas
   const Title = String(fd.get('Title') ?? '').trim();
   if (!Title) return { error: 'יש להזין כותרת למשימה' };
   try {
-    await erpCreate<TaskFields>('Tasks', { Title, Status: 'open' });
+    await erpCreate<TaskFields>('Tasks', { Title, Status: 'open', Source: 'manual' });
   } catch (e) {
     return { error: msg(e, 'הוספת המשימה נכשלה') };
   }
