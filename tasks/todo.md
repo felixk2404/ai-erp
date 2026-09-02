@@ -4,6 +4,13 @@
 - [x] תוכנית 2: n8n workflows
 - [x] תוכנית 3: אפליקציית Next.js
 - [x] תוכנית 4: פרמיום — docs/superpowers/plans/2026-09-02-04-premium.md (נותר: N8N_API env + שיתוף תיקיית Drive אצל הסטודנט)
+- [ ] תוכנית 5: Night Console — docs/superpowers/plans/2026-09-02-05-night-console.md
+  - [ ] T1 טוקנים/פונטים/רקע/פרימיטיבים
+  - [ ] T2 שלד (sidebar, header, ⌘K-AI, hotkeys)
+  - [ ] T3 דשבורד (KPI sparkline+delta, beams, pulse, system map, thinking brief, HUD charts)
+  - [ ] T4 מסכים (tilt, tables, cards, chat, support)
+  - [ ] T5 לוגין aurora
+  - [ ] T6 אימות + system.md + commit
 
 ## פתוח (אחרי 3 התוכניות)
 - [ ] אימות ידני של הסטודנט: PDF בדרייב, שני הבוטים בטלגרם, WF4 (תשובה למייל → Qualified)
