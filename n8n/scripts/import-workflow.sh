@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # import-workflow.sh n8n/workflows/NN-name.json [--activate]
 # ממלא placeholders מ-config.json (__KEY__), ממזהי workflows שכבר יובאו (__WF_KEY_ID__),
-# מקבצי prompts (__PROMPT_NAME__) ומה-env (__SUPABASE_URL__); יוצר או מעדכן לפי שם; שומר id ב-config.json.
+# מקבצי prompts (__PROMPT_NAME__), מקבצי code (`__CODE_NAME__`) ומה-env (__SUPABASE_URL__); יוצר או מעדכן לפי שם; שומר id ב-config.json.
 set -euo pipefail
 TPL=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
 ACTIVATE=${2:-}
@@ -20,6 +20,13 @@ for p in prompts/*.md; do
   name=$(basename "$p" .md | tr 'a-z-' 'A-Z_')
   JQ_ARGS+=(--rawfile "p_$name" "$p")
   FILTER="$FILTER | gsub(\"__PROMPT_${name}__\"; (\$p_$name | rtrimstr(\"\\n\") | tojson | .[1:-1]))"
+done
+for c in code/*.js; do
+  [ -e "$c" ] || continue
+  case "$c" in *.test.js) continue ;; esac
+  name=$(basename "$c" .js | tr 'a-z-' 'A-Z_')
+  JQ_ARGS+=(--rawfile "c_$name" "$c")
+  FILTER="$FILTER | gsub(\"__CODE_${name}__\"; (\$c_$name | rtrimstr(\"\\n\") | tojson | .[1:-1]))"
 done
 FILTER="$FILTER | gsub(\"__SUPABASE_URL__\"; \$supa)"
 
