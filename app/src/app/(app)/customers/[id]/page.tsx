@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { get, list, escapeFormula } from '@/lib/airtable';
 import { dateIL } from '@/lib/format';
-import type { CustomerFields, InvoiceFields } from '@/lib/types';
+import type { CustomerFields, InvoiceFields, ProductFields } from '@/lib/types';
 import { Header } from '@/components/shell/header';
 import { Money } from '@/components/money';
 import { StatusLed } from '@/components/status-led';
@@ -10,6 +10,7 @@ import { LedgerStrip } from '@/components/ledger-strip';
 import { EmptyState } from '@/components/empty-state';
 import { DirectionalTransition } from '@/components/motion/page-transition';
 import { NewInvoiceDialog } from '../../invoices/new-invoice-dialog';
+import { toProductOptions } from '@/lib/invoice-items';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export const dynamic = 'force-dynamic';
@@ -19,10 +20,10 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
   const customer = await get<CustomerFields>('Customers', id);
   if (!customer) notFound();
   const c = customer.fields;
-  const invoices = await list<InvoiceFields>('Invoices', {
-    filter: `{CustomerId}='${escapeFormula(c.CustomerId)}'`,
-    sort: [{ field: 'Created', direction: 'desc' }],
-  });
+  const [invoices, products] = await Promise.all([
+    list<InvoiceFields>('Invoices', { filter: `{CustomerId}='${escapeFormula(c.CustomerId)}'`, sort: [{ field: 'Created', direction: 'desc' }] }),
+    list<ProductFields>('Products', { sort: [{ field: 'Name' }] }),
+  ]);
   const valid = invoices.filter((i) => i.fields.Status !== 'error');
   const total = valid.reduce((s, i) => s + (i.fields.Total ?? 0), 0);
   const open = valid.filter((i) => i.fields.Status !== 'paid').reduce((s, i) => s + (i.fields.Total ?? 0), 0);
@@ -34,7 +35,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
           ← לקוחות
         </Link>
       </nav>
-      <Header title={c.Name} actions={<NewInvoiceDialog customers={[{ id: c.CustomerId, label: `${c.Name} · ${c.CustomerId}` }]} defaultCustomerId={c.CustomerId} />} />
+      <Header title={c.Name} actions={<NewInvoiceDialog customers={[{ id: c.CustomerId, label: `${c.Name} · ${c.CustomerId}` }]} products={toProductOptions(products)} defaultCustomerId={c.CustomerId} />} />
       <div className="text-sm text-ink-2 -mt-3 mb-6 flex flex-wrap gap-x-4 gap-y-1">
         <span className="num" dir="ltr">
           {c.CustomerId}

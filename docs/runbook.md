@@ -73,6 +73,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **מק"ט**: שדה `Products.Sku` (חולץ מהתיאור ב-`airtable/backfill-sku.sh`). שדות חדשים: `airtable/add-fields.sh`.
 - **דשבורד**: תקציר בוקר (סוכן המנהל, cache 6 שעות, כפתור רענן), דורש-טיפול (חשבוניות error / פתוחות > 14 יום / לידים Contacted > 7 יום), בריאות n8n (דורש `N8N_API_URL=https://goofy-glamour-syrup.ngrok-free.dev/api/v1` ו-`N8N_API_KEY` ב-.env.local וב-Vercel), גרפים בגוון יחיד.
 - **PDF בעמוד חשבונית**: iframe של Drive preview. WF8 משתף כל PDF אוטומטית כ-"כל מי שיש לו את הקישור — צופה" (צומת Share Public) — לכן ה-preview עובד גם בלי חשבון Google.
+- **שורות חשבונית**: `Invoices.Items` (JSON `[{sku,name,qty,price}]`). הטופס בוחר מוצרים מהקטלוג, השרת מחשב Amount מהשורות (`src/lib/invoice-items.ts`), WF1 מוסיף מע"מ 18%, WF8 מדפיס טבלת שורות ב-PDF. חשבוניות ישנות בלי Items מוצגות כסכום בלבד.
 - ⌘K חיפוש גלובלי, מעברי עמוד (View Transitions), עמודי פרט `/invoices/[id]`, `/customers/[id]`.
 
 ## 6. מלכודות שנתקלנו בהן

@@ -69,7 +69,7 @@ Next.js על Vercel ──────┘
 
 | טבלה | שדות |
 |---|---|
-| Invoices | InvoiceNumber, CustomerId, Amount, VatAmount, Total, Status, PdfUrl, Created |
+| Invoices | InvoiceNumber, CustomerId, Items (JSON שורות), Amount, VatAmount, Total, Status, PdfUrl, Created |
 | Leads | Name, Email, Company, Status, Created |
 | Products | Name, Category, Price, Description, InStock |
 | Tasks | Title, Status |

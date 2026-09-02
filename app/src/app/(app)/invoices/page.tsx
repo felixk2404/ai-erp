@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { list, escapeFormula } from '@/lib/airtable';
 import { dateIL } from '@/lib/format';
-import { INVOICE_STATUSES, type CustomerFields, type InvoiceFields } from '@/lib/types';
+import { INVOICE_STATUSES, type CustomerFields, type InvoiceFields, type ProductFields } from '@/lib/types';
 import { statusMeta } from '@/lib/status';
 import { Header } from '@/components/shell/header';
 import { Money } from '@/components/money';
 import { StatusLed } from '@/components/status-led';
 import { EmptyState } from '@/components/empty-state';
 import { NewInvoiceDialog } from './new-invoice-dialog';
+import { toProductOptions } from '@/lib/invoice-items';
 import { markPaid } from './actions';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
@@ -28,12 +29,13 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
     filters.push(`OR(FIND('${needle}', LOWER({InvoiceNumber})), FIND('${needle}', LOWER({CustomerId})))`);
   }
 
-  const [invoices, customers] = await Promise.all([
+  const [invoices, customers, products] = await Promise.all([
     list<InvoiceFields>('Invoices', {
       filter: filters.length ? `AND(${filters.join(',')})` : undefined,
       sort: [{ field: 'Created', direction: 'desc' }],
     }),
     list<CustomerFields>('Customers', { sort: [{ field: 'Name' }] }),
+    list<ProductFields>('Products', { sort: [{ field: 'Name' }] }),
   ]);
   const nameById = new Map(customers.map((c) => [c.fields.CustomerId, c.fields.Name]));
 
@@ -44,6 +46,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
         actions={
           <NewInvoiceDialog
             customers={customers.map((c) => ({ id: c.fields.CustomerId, label: `${c.fields.Name} · ${c.fields.CustomerId}` }))}
+            products={toProductOptions(products)}
           />
         }
       />

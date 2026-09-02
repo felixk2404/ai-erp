@@ -12,6 +12,7 @@ export type InvoiceFields = {
   InvoiceNumber?: string;
   CustomerId: string;
   Amount: number;
+  Items?: string;
   VatAmount?: number;
   Total?: number;
   Status?: InvoiceStatus;

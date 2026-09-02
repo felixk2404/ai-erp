@@ -11,6 +11,7 @@
 | Invoices | Total | Number (2) | מחושב ב-WF1 |
 | Invoices | Status | Single line text | new / validated / generated / error |
 | Invoices | PdfUrl | URL | מתמלא ב-WF8 |
+| Items | Long text | JSON של שורות החשבונית: `[{sku,name,qty,price}]`. Amount = סכום השורות (מחושב באפליקציה). |
 | Invoices | Created | Created time | טריגר WF1 |
 | Leads | Name | Single line text | ראשי |
 | Leads | Email | Email | |

@@ -10,6 +10,8 @@ import { Timeline, type TimelineStep } from '@/components/timeline';
 import { DirectionalTransition, Shared } from '@/components/motion/page-transition';
 import { Button } from '@/components/ui/button';
 import { markPaid } from '../actions';
+import { parseItems, lineTotal } from '@/lib/invoice-items';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,6 +32,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
     hint: i === 0 ? dateIL(f.Created) : undefined,
     state: status === 'error' ? (i === 0 ? 'error' : 'todo') : i < idx ? 'done' : i === idx ? (s === 'paid' ? 'done' : 'current') : 'todo',
   }));
+  const items = parseItems(f.Items);
   const driveId = f.PdfUrl ? /\/d\/([^/]+)/.exec(f.PdfUrl)?.[1] : undefined;
 
   return (
@@ -59,6 +62,40 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <Timeline steps={steps} />
             {status === 'error' && <p className="mt-4 text-sm text-led-red">החשבונית נכשלה באימות: סכום לא חיובי או לקוח לא קיים. תקנו ב-Airtable או צרו חשבונית חדשה.</p>}
           </div>
+
+
+          {items.length > 0 && (
+            <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>פריט</TableHead>
+                    <TableHead>מק״ט</TableHead>
+                    <TableHead>כמות</TableHead>
+                    <TableHead>מחיר</TableHead>
+                    <TableHead>סה״כ</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {items.map((i, n) => (
+                    <TableRow key={`${i.sku}-${n}`}>
+                      <TableCell className="font-medium">{i.name}</TableCell>
+                      <TableCell dir="ltr" className="text-end font-mono text-xs text-ink-2">
+                        {i.sku}
+                      </TableCell>
+                      <TableCell className="num">{i.qty}</TableCell>
+                      <TableCell>
+                        <Money value={i.price} />
+                      </TableCell>
+                      <TableCell>
+                        <Money value={lineTotal(i)} />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
 
           <div className="bg-paper-2 border border-rule rounded-lg overflow-hidden">
             {driveId ? (
