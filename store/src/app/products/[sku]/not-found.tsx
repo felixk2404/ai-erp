@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRightIcon } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
 
 /**
  * מק"ט שלא קיים — משפט אחד ופעולה אחת, בלי איורים ובלי התנצלויות.
@@ -8,7 +9,7 @@ import { ArrowRightIcon } from 'lucide-react';
 export default function ProductNotFound() {
   return (
     <div className="flex min-h-[50dvh] flex-col items-start justify-center gap-4">
-      <p className="num text-[11px] leading-none tracking-[0.14em] text-glow-3">404</p>
+      <p className="num text-[11px] leading-none tracking-[0.08em] text-glow-3">404</p>
       <h1 className="text-[28px] leading-[1.15] font-extrabold tracking-[-0.02em] sm:text-[44px]">
         המוצר לא נמצא
       </h1>
@@ -18,7 +19,7 @@ export default function ProductNotFound() {
       <Link
         href="/products"
         transitionTypes={['nav-back']}
-        className="mt-2 inline-flex h-11 items-center gap-1.5 rounded-[8px] bg-beam px-4 text-[14px] font-medium text-void transition-colors hover:bg-beam/80"
+        className={buttonVariants({ className: 'mt-2 h-11 gap-1.5 rounded-sm px-4 text-[14px]' })}
       >
         <ArrowRightIcon size={14} strokeWidth={2} aria-hidden />
         לכל המוצרים

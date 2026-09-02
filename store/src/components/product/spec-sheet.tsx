@@ -1,15 +1,16 @@
 import { StockBadge } from '@/components/catalog/stock-badge';
+import { SheetSection } from '@/components/product/sheet-section';
 import { inStock, isService } from '@/lib/catalog-filter';
 import { ils } from '@/lib/format';
 import type { Product } from '@/lib/types';
 
 /**
  * Intent: אותה "רשת מפרט" שהיא החתימה של החנות — כאן בגרסת פריט יחיד.
- * Hierarchy: תווית ב-glow-3 בעמודה קבועה, ערך ב-glow; המספרים במונו כדי
- * שהעין תזהה אותם כנתון ולא כטקסט.
+ * Hierarchy: תווית ב-glow-3 בעמודה קבועה, ערך ב-glow; רק המספרים והמק"ט במונו,
+ * כדי שהעין תזהה אותם כנתון ולא כטקסט.
  * שירות לא מקבל שורת זמינות — "במלאי" חסר משמעות לשירות שמתואם טלפונית.
  */
-export function DetailsTable({ product }: { product: Product }) {
+export function SpecSheet({ product }: { product: Product }) {
   const f = product.fields;
   const sku = f.Sku ?? product.id;
 
@@ -31,9 +32,8 @@ export function DetailsTable({ product }: { product: Product }) {
   ];
 
   return (
-    <section>
-      <h2 className="font-mono text-[11px] leading-none tracking-[0.14em] text-glow-3">פרטים</h2>
-      <dl className="mt-4 overflow-hidden rounded-[12px] border border-rule bg-panel-1 text-[14px]">
+    <SheetSection label="פרטים">
+      <dl className="text-[14px]">
         {rows.map((row) => (
           <div
             key={row.label}
@@ -44,6 +44,6 @@ export function DetailsTable({ product }: { product: Product }) {
           </div>
         ))}
       </dl>
-    </section>
+    </SheetSection>
   );
 }

@@ -1,16 +1,17 @@
+import { SheetSection } from '@/components/product/sheet-section';
+
 /**
  * Intent: שלוש השורות שמכריעות קנייה, בפורמט של גיליון מפרט — לא פסקה שיווקית.
- * Hierarchy: תווית מונו קטנה → שלוש שורות שוות משקל, כל אחת עם סמן beam.
- * Typography: הסמן במונו/beam (הוא ה"מספר"), הטקסט בהיבו 16 על glow.
+ * Hierarchy: תווית סקשן → שלוש שורות שוות משקל, כל אחת עם סמן beam.
+ * Typography: הטקסט בהיבו 16 על glow; הסמן הוא ה"מספר" היחיד ולכן היחיד ב-beam.
  * הסמן מצביע ◂ ולא ▸ — ב-RTL הוא נכנס אל הטקסט, לא בורח ממנו.
  */
-export function SpecList({ items }: { items: string[] }) {
+export function Highlights({ items }: { items: string[] }) {
   if (items.length === 0) return null;
 
   return (
-    <section>
-      <h2 className="font-mono text-[11px] leading-none tracking-[0.14em] text-glow-3">מפרט</h2>
-      <ul className="mt-4 overflow-hidden rounded-[12px] border border-rule bg-panel-1">
+    <SheetSection label="מפרט">
+      <ul>
         {items.map((item) => (
           <li
             key={item}
@@ -23,6 +24,6 @@ export function SpecList({ items }: { items: string[] }) {
           </li>
         ))}
       </ul>
-    </section>
+    </SheetSection>
   );
 }

@@ -8,9 +8,9 @@ import { FAQ } from '@/content/policies';
  */
 export function Faq() {
   return (
-    <section className="mt-24 grid gap-6 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-16">
+    <section className="mt-16 grid gap-6 lg:mt-24 lg:grid-cols-[180px_minmax(0,1fr)] lg:gap-16">
       <h2 className="text-[22px] leading-tight font-extrabold tracking-[-0.02em]">שאלות נפוצות</h2>
-      <div className="overflow-hidden rounded-[12px] border border-rule bg-panel-1">
+      <div className="overflow-hidden rounded-md border border-rule bg-panel-1">
         {FAQ.slice(0, 4).map((item) => (
           <details key={item.q} className="group border-t border-rule first:border-t-0">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-4 text-[16px] leading-6 font-medium text-glow [&::-webkit-details-marker]:hidden">

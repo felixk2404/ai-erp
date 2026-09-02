@@ -5,8 +5,9 @@ import { ArrowRightIcon } from 'lucide-react';
 import { DirectionalTransition } from '@/components/motion/page-transition';
 import { Stage } from '@/components/product/stage';
 import { BuyBox } from '@/components/product/buy-box';
-import { SpecList } from '@/components/product/spec-list';
-import { DetailsTable } from '@/components/product/details-table';
+import { Highlights } from '@/components/product/highlights';
+import { SpecSheet } from '@/components/product/spec-sheet';
+import { SECTION_LABEL } from '@/components/product/sheet-section';
 import { Related } from '@/components/product/related';
 import { Faq } from '@/components/product/faq';
 import { getProduct, getProducts, highlights, related } from '@/lib/catalog';
@@ -14,6 +15,9 @@ import { getProduct, getProducts, highlights, related } from '@/lib/catalog';
 /** התקנה מוצעת רק במה שבאמת מתקינים אצל הלקוח. */
 const INSTALL_CATEGORIES = ['מסכים', 'רשת', 'מקלדות'];
 const INSTALL_SKU = 'TY-SRV-01';
+
+const bySku = (sku: string) => (p: { fields: { Sku?: string } }) =>
+  p.fields.Sku?.toUpperCase() === sku.toUpperCase();
 
 type Props = { params: Promise<{ sku: string }> };
 
@@ -27,17 +31,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /**
  * Intent: חלון ראווה יחיד — התמונה היא המוקד, וההחלטה נוסעת איתה בעמודה נדבקת.
  * Hierarchy: תמונה → שם+מחיר+פעולה → מפרט → תיאור → פרטים → משלימים → שאלות.
- * Spacing: רשת 40 בין העמודות, 48 בין בלוקי המידע, 96 לפני הסקשנים התחתונים.
+ * Spacing: עמודות 640/420 עם `justify-between` — המרווח ביניהן הוא מספר אחד מוחלט
+ * בכל רוחב; 48 בין בלוקי המידע, 64/96 לפני הסקשנים התחתונים.
  * במובייל הסדר הוא תמונה → קופסת קנייה → מידע: המחיר אף פעם לא מתחת לתיאור.
  */
 export default async function ProductPage({ params }: Props) {
   const { sku } = await params;
-  const [product, all] = await Promise.all([getProduct(sku), getProducts()]);
+  const all = await getProducts();
+  const product = all.find(bySku(sku));
   if (!product) notFound();
 
   const f = product.fields;
   const installService = INSTALL_CATEGORIES.includes(f.Category ?? '')
-    ? all.find((p) => p.fields.Sku === INSTALL_SKU)
+    ? all.find(bySku(INSTALL_SKU))
     : undefined;
   const install = installService
     ? { sku: INSTALL_SKU, name: installService.fields.Name, price: installService.fields.Price ?? 0 }
@@ -70,8 +76,8 @@ export default async function ProductPage({ params }: Props) {
         )}
       </nav>
 
-      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_420px]">
-        <div className="min-w-0 max-w-[640px] lg:col-start-1 lg:row-start-1">
+      <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,640px)_420px] lg:justify-between">
+        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
           <Stage product={product} />
         </div>
 
@@ -79,12 +85,12 @@ export default async function ProductPage({ params }: Props) {
           <BuyBox product={product} install={install} />
         </div>
 
-        <div className="flex min-w-0 max-w-[640px] flex-col gap-12 lg:col-start-1 lg:row-start-2">
-          <SpecList items={highlights(product)} />
+        <div className="flex min-w-0 flex-col gap-12 lg:col-start-1 lg:row-start-2">
+          <Highlights items={highlights(product)} />
 
           {f.Description && (
             <section>
-              <h2 className="font-mono text-[11px] leading-none tracking-[0.14em] text-glow-3">תיאור</h2>
+              <h2 className={SECTION_LABEL}>תיאור</h2>
               <div className="mt-4 max-w-[68ch] text-[16px] leading-[1.7] text-glow-2">
                 {f.Description.split('\n')
                   .map((line) => line.trim())
@@ -98,7 +104,7 @@ export default async function ProductPage({ params }: Props) {
             </section>
           )}
 
-          <DetailsTable product={product} />
+          <SpecSheet product={product} />
         </div>
       </div>
 

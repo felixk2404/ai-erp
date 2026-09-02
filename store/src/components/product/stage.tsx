@@ -22,7 +22,7 @@ export function Stage({ product }: { product: Product }) {
   const sku = f.Sku ?? product.id;
 
   return (
-    <Spotlight className="rounded-[16px] border border-rule bg-panel-1">
+    <Spotlight className="rounded-lg border border-rule bg-panel-1">
       <div className="relative aspect-square">
         <div
           aria-hidden
@@ -52,7 +52,7 @@ export function Stage({ product }: { product: Product }) {
 
         <span
           dir="ltr"
-          className="num absolute start-5 top-5 rounded-[8px] border border-rule bg-panel-2/90 px-2 py-1 text-[11px] leading-none tracking-[0.06em] text-glow-3 backdrop-blur-sm"
+          className="num absolute start-5 top-5 rounded-sm border border-rule bg-panel-2/90 px-2 py-1 text-[11px] leading-none tracking-[0.06em] text-glow-3 backdrop-blur-sm"
         >
           {sku}
         </span>
