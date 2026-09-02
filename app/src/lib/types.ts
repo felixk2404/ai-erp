@@ -3,10 +3,12 @@ export type Rec<F> = { id: string; createdTime: string; fields: F };
 export const INVOICE_STATUSES = ['new', 'validated', 'generated', 'paid', 'error'] as const;
 export const LEAD_STATUSES = ['New', 'Contacted', 'Qualified', 'Dead', 'Duplicate'] as const;
 export const TASK_STATUSES = ['open', 'done'] as const;
+export const TASK_SOURCES = ['order', 'stock', 'lead', 'invoice', 'manual'] as const;
 
 export type InvoiceStatus = (typeof INVOICE_STATUSES)[number];
 export type LeadStatus = (typeof LEAD_STATUSES)[number];
 export type TaskStatus = (typeof TASK_STATUSES)[number];
+export type TaskSource = (typeof TASK_SOURCES)[number];
 
 export type InvoiceFields = {
   InvoiceNumber?: string;
@@ -30,7 +32,7 @@ export type ProductFields = {
   InStock?: boolean;
   ImageUrl?: string;
 };
-export type TaskFields = { Title: string; Status?: TaskStatus };
+export type TaskFields = { Title: string; Status?: TaskStatus; Source?: TaskSource; RefId?: string; Created?: string };
 
 export type Invoice = Rec<InvoiceFields>;
 export type Lead = Rec<LeadFields>;
