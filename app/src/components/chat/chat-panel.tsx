@@ -50,7 +50,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
 
   return (
     <div className="flex flex-col h-full min-h-0">
-      <div className="flex-1 overflow-y-auto px-1 py-2 space-y-3" aria-live="polite" aria-label="שיחה">
+      <div className="flex-1 overflow-y-auto px-1 py-2 space-y-3" role="log" aria-live="polite" aria-label="שיחה">
         {messages.length === 0 && (
           <div className="text-sm text-ink-2 space-y-3 pt-2">
             <p>{intro}</p>
@@ -93,7 +93,7 @@ export function ChatPanel({ sendAction, suggestions, intro, placeholder = 'כת�
         </AnimatePresence>
         {pending && (
           <div className="flex justify-end">
-            <div className="bg-chassis-2 border border-rule rounded-lg px-3 py-2 text-sm text-signal" aria-label="חושב">
+            <div className="bg-chassis-2 border border-rule rounded-lg px-3 py-2 text-sm text-signal" role="status" aria-label="חושב">
               <span className="inline-flex gap-1">
                 <span className="animate-pulse">●</span>
                 <span className="animate-pulse [animation-delay:150ms]">●</span>

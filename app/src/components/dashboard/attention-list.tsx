@@ -32,6 +32,7 @@ export function AttentionList({ items }: { items: AttentionItem[] }) {
               <Link href={it.href} className="group flex items-center gap-3 px-2 py-2.5 rounded-md hover:bg-chassis-2 transition-colors">
                 <span aria-hidden className={`size-2 rounded-full shrink-0 ${LED[it.severity]}`} />
                 <span className="flex-1 min-w-0">
+                  <span className="sr-only">{it.severity === 'red' ? 'קריטי: ' : 'לטיפול: '}</span>
                   <span className="block text-sm text-readout truncate">{it.title}</span>
                   {it.hint && <span className="block text-xs text-readout-3 num truncate">{it.hint}</span>}
                 </span>

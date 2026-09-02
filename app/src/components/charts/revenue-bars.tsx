@@ -14,8 +14,19 @@ export function RevenueBars({ data }: { data: MonthRow[] }) {
   const currentMonth = data[data.length - 1]?.month;
   const [hover, setHover] = useState<MonthRow | null>(null);
   const shown = hover ?? data[data.length - 1];
+  const first = data[0]?.label ?? '';
+  const last = data[data.length - 1]?.label ?? '';
   return (
-    <div className="relative h-[228px] w-full hud-grid rounded-md" dir="ltr">
+    // הרשימה נושאת את הנתונים לקורא מסך; הגרף עצמו מוסתר, אחרת recharts מקריא צמתי SVG ריקים
+    <figure className="relative h-[228px] w-full hud-grid rounded-md m-0" dir="ltr" aria-label={`הכנסות לפי חודש, מ-${first} עד ${last}`}>
+      <ul className="sr-only">
+        {data.map((d) => (
+          <li key={d.month}>
+            {d.label}: {ils(d.total)}, {d.count} חשבוניות
+          </li>
+        ))}
+      </ul>
+      <div aria-hidden className="absolute inset-0">
       {shown && (
         <div dir="rtl" className="absolute top-1 start-1 z-10 mono text-[12px] text-readout-3 pointer-events-none">
           <span className="text-signal">{shown.label}</span> · <span className="text-readout">{ils(shown.total)}</span> · {shown.count} חשבוניות
@@ -64,6 +75,7 @@ export function RevenueBars({ data }: { data: MonthRow[] }) {
           </Bar>
         </BarChart>
       </ResponsiveContainer>
-    </div>
+      </div>
+    </figure>
   );
 }

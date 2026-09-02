@@ -204,6 +204,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <h2 className="sr-only col-span-full">רשימת המוצרים</h2>
           {products.map((p) => (
             <ProductCard key={p.id} product={p} action={<StockToggle p={p} />} />
           ))}

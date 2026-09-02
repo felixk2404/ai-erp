@@ -9,9 +9,11 @@ function DeltaChip({ d }: { d: Delta }) {
   if (d.pct === null) return <span className="mono text-[12px] text-readout-3">— אין השוואה</span>;
   const up = d.pct >= 0;
   return (
-    <span className={`inline-flex items-center gap-1 mono text-[12px] ${up ? 'text-led-green' : 'text-led-red'}`} title="מול החודש הקודם">
+    <span className={`inline-flex items-center gap-1 mono text-[12px] ${up ? 'text-led-green' : 'text-led-red'}`}>
       <span aria-hidden>{up ? '▲' : '▼'}</span>
+      <span className="sr-only">{up ? 'עלייה של' : 'ירידה של'}</span>
       {Math.abs(d.pct)}%
+      <span className="sr-only">מול החודש הקודם</span>
     </span>
   );
 }
