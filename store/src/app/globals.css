@@ -15,7 +15,7 @@
   --color-panel-3: #18202b;
   --color-glow: #eef2f6;
   --color-glow-2: #aab4c0;
-  --color-glow-3: #6f7a88;
+  --color-glow-3: #828d9b;
   --color-glow-4: #46505c;
   --color-beam: #5cc8ff;
   --color-beam-soft: rgba(92, 200, 255, 0.14);
@@ -103,7 +103,10 @@
   --accent-foreground: var(--color-glow);
   --destructive: var(--color-bad);
   --border: var(--color-rule);
-  --input: var(--color-rule-strong);
+  /* גבול השדה מנותק מהקו הדקורטיבי: `rule-strong` נותן 1.51:1 מעל void, ו-1px
+     הוא הדבר היחיד שמסמן איפה השדה מתחיל. 0.42 מביא אותו ל-4.04:1 — מעל
+     הדרישה של 3:1 ל-1.4.11 — בלי להאיר את המפרידים והמסגרות שחולקים את הקו. */
+  --input: rgba(255, 255, 255, 0.42);
   --ring: var(--color-beam);
 }
 

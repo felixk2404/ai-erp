@@ -46,7 +46,7 @@ export function CartLine({
         ) : line.imageUrl ? (
           <Image src={line.imageUrl} alt={line.name} fill sizes="56px" className="object-cover" />
         ) : (
-          <span className="num text-meta text-glow-4" dir="ltr">
+          <span className="num text-meta text-glow-3" dir="ltr">
             {line.sku}
           </span>
         )}

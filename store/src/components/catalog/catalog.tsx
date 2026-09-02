@@ -117,7 +117,7 @@ export function Catalog({
               onKeyDown={(e) => e.key === 'Escape' && setQ('')}
               placeholder="חפשו לפי שם או מק״ט"
               aria-label="חיפוש מוצרים"
-              className="h-10 w-full rounded-sm border border-rule-strong bg-void ps-9 pe-9 text-body text-glow placeholder:text-glow-4 [&::-webkit-search-cancel-button]:hidden"
+              className="h-10 w-full rounded-sm border border-input bg-void ps-9 pe-9 text-body text-glow placeholder:text-glow-3 [&::-webkit-search-cancel-button]:hidden"
             />
             {q && (
               <button
@@ -136,7 +136,7 @@ export function Catalog({
               value={sort}
               onChange={(e) => setSort(e.target.value as Sort)}
               aria-label="מיון"
-              className="h-10 flex-1 rounded-sm border border-rule-strong bg-void px-3 text-body text-glow-2 sm:flex-none"
+              className="h-10 flex-1 rounded-sm border border-input bg-void px-3 text-body text-glow-2 sm:flex-none"
             >
               {(Object.keys(SORT_LABELS) as Sort[]).map((s) => (
                 <option key={s} value={s}>
@@ -145,7 +145,7 @@ export function Catalog({
               ))}
             </select>
 
-            <div className="flex h-10 shrink-0 items-center overflow-hidden rounded-sm border border-rule-strong">
+            <div className="flex h-10 shrink-0 items-center overflow-hidden rounded-sm border border-input">
               {VIEW_BUTTONS.map(({ id, Icon, label }) => (
                 <button
                   key={id}

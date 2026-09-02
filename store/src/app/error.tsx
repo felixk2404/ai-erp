@@ -30,7 +30,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
         </Link>
       </div>
       {error.digest && (
-        <p dir="ltr" className="num text-meta text-glow-4">
+        <p dir="ltr" className="num text-meta text-glow-3">
           {error.digest}
         </p>
       )}

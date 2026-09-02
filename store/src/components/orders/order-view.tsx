@@ -238,7 +238,7 @@ function OrderTimeline({ status }: { status: OrderStatus }) {
                 ? 'border-beam bg-beam text-void'
                 : i === current
                   ? 'border-beam bg-panel-1 text-beam'
-                  : 'border-rule bg-panel-1 text-glow-4')
+                  : 'border-rule bg-panel-1 text-glow-3')
             }
           >
             {i < current ? <CheckIcon size={14} aria-hidden /> : i + 1}

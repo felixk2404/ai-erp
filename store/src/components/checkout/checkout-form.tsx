@@ -327,8 +327,8 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             onClick={guardPending}
             className={
               demoted
-                ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-lg font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-4'
-                : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-lg font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/60'
+                ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-lg font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-3'
+                : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-lg font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/75'
             }
           >
             {pending ? (
