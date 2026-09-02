@@ -1,26 +1,170 @@
 {
   "name": "WF2 — קליטת לידים וכפילויות",
-  "settings": { "executionOrder": "v1", "errorWorkflow": "__WF_ERROR_ID__" },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "__WF_ERROR_ID__"
+  },
   "nodes": [
-    { "name": "Airtable Trigger", "type": "n8n-nodes-base.airtableTrigger", "typeVersion": 1, "position": [0, 0],
-      "parameters": { "authentication": "airtableTokenApi", "baseId": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "tableId": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" }, "triggerField": "Created", "pollTimes": { "item": [ { "mode": "everyMinute" } ] }, "additionalFields": {} },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Same Email Or Phone", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 0],
-      "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_LEADS__", "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
-        "sendQuery": true, "queryParameters": { "parameters": [
-          { "name": "filterByFormula", "value": "={{ (() => { const q = (s) => String(s).replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\"); const e = ($json.fields.Email || '').trim().toLowerCase(); const p = ($json.fields.Phone || '').replace(/\\D/g, ''); if (e) return \"LOWER({Email})='\" + q(e) + \"'\"; if (p) return \"REGEX_REPLACE({Phone},\\\"[^0-9]\\\",\\\"\\\")='\" + q(p) + \"'\"; return 'FALSE()'; })() }}" },
-          { "name": "fields[]", "value": "Email" } ] }, "options": {} },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Set Status", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [520, 0],
-      "parameters": { "authentication": "airtableTokenApi", "operation": "update",
-        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "table": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" },
-        "columns": { "mappingMode": "defineBelow", "value": { "id": "={{ $('Airtable Trigger').item.json.id }}", "Status": "={{ ($json.records || []).filter(r => r.id !== $('Airtable Trigger').item.json.id).length > 0 ? 'Duplicate' : 'New' }}" }, "matchingColumns": ["id"],
-          "schema": [ { "id": "id", "displayName": "id", "required": false, "defaultMatch": true, "display": true, "type": "string", "readOnly": true, "removed": false }, { "id": "Status", "displayName": "Status", "required": false, "defaultMatch": false, "canBeUsedToMatch": true, "display": true, "type": "string", "readOnly": false, "removed": false } ] },
-        "options": { "typecast": true } },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } }
+    {
+      "name": "Airtable Trigger",
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "baseId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "tableId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "triggerField": "Created",
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "Same Email Or Phone",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_LEADS__",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "={{ (() => { const q = (s) => String(s).replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\"); const e = ($json.fields.Email || '').trim().toLowerCase(); const p = ($json.fields.Phone || '').replace(/\\D/g, ''); if (e) return \"LOWER({Email})='\" + q(e) + \"'\"; if (p) return \"REGEX_REPLACE({Phone},\\\"[^0-9]\\\",\\\"\\\")='\" + q(p) + \"'\"; return 'FALSE()'; })() }}"
+            },
+            {
+              "name": "fields[]",
+              "value": "Email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "Set Status",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Airtable Trigger').item.json.id }}",
+            "Status": "={{ ($json.records || []).filter(r => r.id !== $('Airtable Trigger').item.json.id).length > 0 ? 'Duplicate' : 'New' }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    }
   ],
   "connections": {
-    "Airtable Trigger": { "main": [[{ "node": "Same Email Or Phone", "type": "main", "index": 0 }]] },
-    "Same Email Or Phone": { "main": [[{ "node": "Set Status", "type": "main", "index": 0 }]] }
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Same Email Or Phone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Same Email Or Phone": {
+      "main": [
+        [
+          {
+            "node": "Set Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   }
 }

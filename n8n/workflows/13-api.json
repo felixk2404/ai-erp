@@ -1,117 +1,867 @@
 {
   "name": "WF13 — API לאפליקציה",
-  "settings": { "executionOrder": "v1", "errorWorkflow": "__WF_ERROR_ID__" },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "__WF_ERROR_ID__"
+  },
   "nodes": [
-    { "name": "Webhook", "type": "n8n-nodes-base.webhook", "typeVersion": 2.1, "position": [0, 0],
-      "parameters": { "httpMethod": "POST", "path": "erp", "authentication": "headerAuth", "responseMode": "responseNode", "options": {} },
-      "credentials": { "httpHeaderAuth": { "id": "__CRED_WEBHOOK__", "name": "ERP Webhook Secret" } } },
-    { "name": "Route", "type": "n8n-nodes-base.switch", "typeVersion": 3.4, "position": [260, 0],
-      "parameters": { "mode": "rules", "rules": { "values": [
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c1", "leftValue": "={{ $json.body.action }}", "rightValue": "create", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "create" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c2", "leftValue": "={{ $json.body.action }}", "rightValue": "chat", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "chat" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c3", "leftValue": "={{ $json.body.action }}", "rightValue": "update", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "update" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c4", "leftValue": "={{ $json.body.action }}", "rightValue": "support", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "support" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c5", "leftValue": "={{ $json.body.action }}", "rightValue": "order", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "order" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c6", "leftValue": "={{ $json.body.action }}", "rightValue": "order_status", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "order_status" }
-      ] }, "looseTypeValidation": true, "options": { "fallbackOutput": "extra" } } },
-    { "name": "Support Input", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, 520],
-      "parameters": { "assignments": { "assignments": [
-        { "id": "m", "name": "message", "value": "={{ $json.body.message }}", "type": "string" },
-        { "id": "s", "name": "sessionId", "value": "=web-{{ $json.body.sessionId || 'anon' }}", "type": "string" }
-      ] }, "options": {} } },
-    { "name": "Support Core", "type": "n8n-nodes-base.executeWorkflow", "typeVersion": 1.2, "position": [780, 520],
-      "parameters": { "workflowId": { "__rl": true, "mode": "id", "value": "__WF_SUPPORT_CORE_ID__" },
-        "workflowInputs": { "mappingMode": "defineBelow", "value": { "message": "={{ $json.message }}", "sessionId": "={{ $json.sessionId }}" }, "matchingColumns": [],
-          "schema": [ { "id": "message", "displayName": "message", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "string" }, { "id": "sessionId", "displayName": "sessionId", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "string" } ] },
-        "options": { "waitForSubWorkflow": true } } },
-    { "name": "Respond Support", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 520],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}", "options": {} } },
-    { "name": "Update Record", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 340],
-      "parameters": { "method": "PATCH", "url": "=https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/{{ encodeURIComponent($json.body.table) }}/{{ $json.body.id }}", "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
-        "sendBody": true, "contentType": "json", "specifyBody": "json", "jsonBody": "={{ JSON.stringify({ fields: $json.body.payload, typecast: true }) }}", "options": {} },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Respond Updated", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [780, 340],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}", "options": {} } },
-    { "name": "Payload", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, -160],
-      "parameters": { "mode": "raw", "jsonOutput": "={{ $json.body.payload }}", "options": {} } },
-    { "name": "Create Record", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [780, -160],
-      "parameters": { "authentication": "airtableTokenApi", "operation": "create",
-        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" },
-        "table": { "__rl": true, "mode": "id", "value": "={{ $('Webhook').item.json.body.table }}" },
-        "columns": { "mappingMode": "autoMapInputData", "value": {}, "matchingColumns": [], "schema": [] },
-        "options": { "typecast": true } },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Respond Created", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, -160],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}", "options": {} } },
-    { "name": "Chat Input", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, 0],
-      "parameters": { "assignments": { "assignments": [
-        { "id": "m", "name": "message", "value": "={{ $json.body.message }}", "type": "string" },
-        { "id": "s", "name": "sessionId", "value": "={{ $json.body.sessionId || 'app' }}", "type": "string" }
-      ] }, "options": {} } },
-    { "name": "Manager Core", "type": "n8n-nodes-base.executeWorkflow", "typeVersion": 1.2, "position": [780, 0],
-      "parameters": { "workflowId": { "__rl": true, "mode": "id", "value": "__WF_MANAGER_CORE_ID__" },
-        "workflowInputs": { "mappingMode": "defineBelow", "value": { "message": "={{ $json.message }}", "sessionId": "={{ $json.sessionId }}" }, "matchingColumns": [],
-          "schema": [ { "id": "message", "displayName": "message", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "string" }, { "id": "sessionId", "displayName": "sessionId", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "string" } ] },
-        "options": { "waitForSubWorkflow": true } } },
-    { "name": "Respond Chat", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 0],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}", "options": {} } },
-    { "name": "Order Input", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, 700],
-      "parameters": { "assignments": { "assignments": [
-        { "id": "o", "name": "order", "value": "={{ $json.body.order }}", "type": "object" }
-      ] }, "options": {} } },
-    { "name": "Place Order", "type": "n8n-nodes-base.executeWorkflow", "typeVersion": 1.2, "position": [780, 700],
-      "parameters": { "workflowId": { "__rl": true, "mode": "id", "value": "__WF_ORDER_ID__" },
-        "workflowInputs": { "mappingMode": "defineBelow", "value": { "order": "={{ $json.order }}" }, "matchingColumns": [],
-          "schema": [ { "id": "order", "displayName": "order", "required": false, "defaultMatch": false, "display": true, "canBeUsedToMatch": true, "type": "object" } ] },
-        "options": { "waitForSubWorkflow": true } }, "onError": "continueErrorOutput" },
-    { "name": "Respond Order Error", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 1060],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל.' }) }}", "options": {} } },
-    { "name": "Respond Order", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 700],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify($json) }}", "options": {} } },
-    { "name": "Find Order", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 880], "onError": "continueRegularOutput",
-      "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_ORDERS__",
-        "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
-        "sendQuery": true, "queryParameters": { "parameters": [
-          { "name": "filterByFormula", "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').toUpperCase().replace(/[^A-Z0-9-]/g, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')" },
-          { "name": "maxRecords", "value": "1" }
-        ] },
-        "options": { "timeout": 20000 } },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Find Invoice", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [780, 880], "alwaysOutputData": true,
-      "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_INVOICES__",
-        "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
-        "sendQuery": true, "queryParameters": { "parameters": [
-          { "name": "filterByFormula", "value": "=AND({InvoiceNumber}!='', {InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}')" },
-          { "name": "maxRecords", "value": "1" }
-        ] },
-        "options": { "timeout": 20000 } },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Respond Status", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [1040, 880],
-      "parameters": { "respondWith": "json", "responseBody": "={{ (() => { const o = $('Find Order').first().json.records?.[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}", "options": {} } },
-    { "name": "Respond Bad Request", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [520, 180],
-      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: false, error: 'unknown action: ' + ($json.body.action || '') }) }}", "options": { "responseCode": 400 } } }
+    {
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "erp",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_WEBHOOK__",
+          "name": "ERP Webhook Secret"
+        }
+      }
+    },
+    {
+      "name": "Route",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c1",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "create",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "create"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c2",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "chat",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "chat"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c3",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "update"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c4",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "support"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c5",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "order",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "order"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c6",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "order_status",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "order_status"
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      }
+    },
+    {
+      "name": "Support Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        520
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "s",
+              "name": "sessionId",
+              "value": "=web-{{ $json.body.sessionId || 'anon' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Support Core",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        520
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__WF_SUPPORT_CORE_ID__"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message": "={{ $json.message }}",
+            "sessionId": "={{ $json.sessionId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "name": "Respond Support",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        520
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Update Record",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        340
+      ],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/{{ encodeURIComponent($json.body.table) }}/{{ $json.body.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ fields: $json.body.payload, typecast: true }) }}",
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "Respond Updated",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        780,
+        340
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        -160
+      ],
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={{ $json.body.payload }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Create Record",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        -160
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Webhook').item.json.body.table }}"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "Respond Created",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        -160
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Chat Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "s",
+              "name": "sessionId",
+              "value": "={{ $json.body.sessionId || 'app' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Manager Core",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__WF_MANAGER_CORE_ID__"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message": "={{ $json.message }}",
+            "sessionId": "={{ $json.sessionId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      }
+    },
+    {
+      "name": "Respond Chat",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Order Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        700
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "o",
+              "name": "order",
+              "value": "={{ $json.body.order }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Place Order",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        700
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__WF_ORDER_ID__"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "order": "={{ $json.order }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "order",
+              "displayName": "order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "object"
+            }
+          ]
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Respond Order Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        1060
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל.' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Respond Order",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        700
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Find Order",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        880
+      ],
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_ORDERS__",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "=AND({OrderNumber}='{{ String($json.body.orderNumber || '').toUpperCase().replace(/[^A-Z0-9-]/g, '') }}', LOWER({Email})='{{ String($json.body.email || '').toLowerCase().replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") }}')"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "Find Invoice",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        880
+      ],
+      "alwaysOutputData": true,
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_INVOICES__",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "=AND({InvoiceNumber}!='', {InvoiceNumber}='{{ ($json.records?.[0]?.fields?.InvoiceNumber || '').replace(/'/g, '') }}')"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "Respond Status",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        880
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ (() => { const o = $('Find Order').first().json.records?.[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Respond Bad Request",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        520,
+        180
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'unknown action: ' + ($json.body.action || '') }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      }
+    }
   ],
   "connections": {
-    "Webhook": { "main": [[{ "node": "Route", "type": "main", "index": 0 }]] },
-    "Route": { "main": [
-      [{ "node": "Payload", "type": "main", "index": 0 }],
-      [{ "node": "Chat Input", "type": "main", "index": 0 }],
-      [{ "node": "Update Record", "type": "main", "index": 0 }],
-      [{ "node": "Support Input", "type": "main", "index": 0 }],
-      [{ "node": "Order Input", "type": "main", "index": 0 }],
-      [{ "node": "Find Order", "type": "main", "index": 0 }],
-      [{ "node": "Respond Bad Request", "type": "main", "index": 0 }]
-    ] },
-    "Order Input": { "main": [[{ "node": "Place Order", "type": "main", "index": 0 }]] },
-    "Place Order": { "main": [[{ "node": "Respond Order", "type": "main", "index": 0 }], [{ "node": "Respond Order Error", "type": "main", "index": 0 }]] },
-    "Find Order": { "main": [[{ "node": "Find Invoice", "type": "main", "index": 0 }]] },
-    "Find Invoice": { "main": [[{ "node": "Respond Status", "type": "main", "index": 0 }]] },
-    "Support Input": { "main": [[{ "node": "Support Core", "type": "main", "index": 0 }]] },
-    "Support Core": { "main": [[{ "node": "Respond Support", "type": "main", "index": 0 }]] },
-    "Update Record": { "main": [[{ "node": "Respond Updated", "type": "main", "index": 0 }]] },
-    "Payload": { "main": [[{ "node": "Create Record", "type": "main", "index": 0 }]] },
-    "Create Record": { "main": [[{ "node": "Respond Created", "type": "main", "index": 0 }]] },
-    "Chat Input": { "main": [[{ "node": "Manager Core", "type": "main", "index": 0 }]] },
-    "Manager Core": { "main": [[{ "node": "Respond Chat", "type": "main", "index": 0 }]] }
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route": {
+      "main": [
+        [
+          {
+            "node": "Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Chat Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Support Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Order Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Find Order",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Bad Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Order Input": {
+      "main": [
+        [
+          {
+            "node": "Place Order",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Place Order": {
+      "main": [
+        [
+          {
+            "node": "Respond Order",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Order Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Order": {
+      "main": [
+        [
+          {
+            "node": "Find Invoice",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Invoice": {
+      "main": [
+        [
+          {
+            "node": "Respond Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support Input": {
+      "main": [
+        [
+          {
+            "node": "Support Core",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support Core": {
+      "main": [
+        [
+          {
+            "node": "Respond Support",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Record": {
+      "main": [
+        [
+          {
+            "node": "Respond Updated",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Payload": {
+      "main": [
+        [
+          {
+            "node": "Create Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Record": {
+      "main": [
+        [
+          {
+            "node": "Respond Created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Manager Core",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manager Core": {
+      "main": [
+        [
+          {
+            "node": "Respond Chat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   }
 }
