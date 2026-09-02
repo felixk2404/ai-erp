@@ -91,6 +91,9 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.5;
+  /* סקשן מלא-רוחב נבנה מ-`mx-[calc(50%-50vw)]`; עם פס גלילה קלאסי ה-vw רחב מהתוכן
+     ב-15px לכל צד. clip חותך את העודף בלי ליצור הקשר גלילה חדש (בניגוד ל-hidden). */
+  overflow-x: clip;
 }
 
 @layer base {
@@ -195,6 +198,7 @@ h3 {
      כי useReducedMotion מחזיר null בשרת ושובר הידרציה. */
   [data-spotlight-glow] {
     background: radial-gradient(320px circle at 50% 50%, var(--color-beam-soft), transparent 70%) !important;
-    opacity: 1 !important;
+    /* חצי עוצמה: בלי מעקב אחרי הסמן הכתם הוא קישוט ולא תאורה, ואסור לו להתחרות במוצר. */
+    opacity: 0.5 !important;
   }
 }

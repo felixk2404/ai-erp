@@ -37,10 +37,11 @@ const itemCalm = {
   },
 };
 
+/** מונו רק על הספרות; המילים העבריות נשארות בהיבו (החלטה כלל-אתרית). */
 const FACTS = [
   { label: 'משלוח', value: '29 ₪' },
   { label: 'חינם מעל', value: '300 ₪' },
-  { label: 'החזרה', value: '14 יום' },
+  { label: 'החזרה', value: '14', unit: 'יום' },
 ] as const;
 
 /**
@@ -63,14 +64,17 @@ export function Hero({ product, count }: { product: Product; count: number }) {
         variants={scene}
         initial="hidden"
         animate="visible"
-        className="grid min-h-[80dvh] items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16"
+        className="grid min-h-[80dvh] content-center items-center gap-x-16 gap-y-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:grid-rows-[auto_auto]"
       >
-        <motion.div variants={column} className="flex flex-col items-start">
-          <motion.p variants={enter} className="font-mono text-[11px] tracking-[0.08em] text-glow-3">
+        <motion.div
+          variants={column}
+          className="order-2 flex flex-col items-start lg:order-none lg:col-start-1 lg:row-start-1"
+        >
+          <motion.p variants={enter} className="text-[11px] font-medium tracking-[0.08em] text-glow-3">
             חדר תצוגה · <span className="num">{count}</span> מוצרים · אחריות יבואן
           </motion.p>
 
-          <h1 className="mt-5 text-[44px] leading-[1.02] font-extrabold tracking-[-0.02em] text-balance sm:text-[56px] lg:text-[64px]">
+          <h1 className="mt-5 max-w-[9ch] text-[clamp(44px,6vw,96px)] leading-[0.95] font-extrabold tracking-[-0.02em] text-balance">
             <WordReveal text="טכנולוגיה שרואים." />
           </h1>
 
@@ -82,35 +86,24 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             <Link
               href="/products"
               transitionTypes={['nav-forward']}
-              className={cn(buttonVariants(), 'h-12 rounded-[8px] px-6 text-[15px]')}
+              className={cn(buttonVariants(), 'h-12 rounded-md px-6 text-[16px]')}
             >
               לקטלוג
             </Link>
-            <AskBot className={cn(buttonVariants({ variant: 'outline' }), 'h-12 rounded-[8px] px-6 text-[15px]')}>
+            <AskBot className={cn(buttonVariants({ variant: 'outline' }), 'h-12 rounded-md px-6 text-[16px]')}>
               שאל את הבוט
             </AskBot>
           </motion.div>
 
-          <motion.dl
-            variants={enter}
-            className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[13px] text-glow-3"
-          >
-            {FACTS.map((fact, i) => (
-              <div key={fact.label} className="flex items-center gap-2">
-                <dt>{fact.label}</dt>
-                <dd className="num text-glow-2">{fact.value}</dd>
-                {/* מפריד *עוקב* ולא מוביל: בשבירת שורה הנקודה נשארת בסוף השורה ולא פותחת אותה. */}
-                {i < FACTS.length - 1 && (
-                  <span aria-hidden className="text-glow-4">
-                    ·
-                  </span>
-                )}
-              </div>
-            ))}
-          </motion.dl>
+
+
         </motion.div>
 
-        <motion.div variants={enter} className="relative mx-auto w-full max-w-[380px] lg:max-w-[500px]">
+        {/* המוצר ראשון במובייל (`order-1`): בחדר תצוגה מסתכלים על החפץ, לא קוראים שלט. */}
+        <motion.div
+          variants={enter}
+          className="relative order-1 mx-auto w-full max-w-[340px] sm:max-w-[380px] lg:order-none lg:col-start-2 lg:row-start-1 lg:max-w-[500px]"
+        >
           {/* קישור אחד על כל הדיסקה: מסתכלים על הפריט, לוחצים על הפריט. כרטיס המפרט הוא התווית שלו. */}
           <Link href={`/products/${sku}`} transitionTypes={['nav-forward']} className="group relative block aspect-square">
             {/* overflow-clip כאן ולא על הקישור: תיבת הגבול של הטבעת המסתובבת היא ריבוע מסובב (×1.41),
@@ -152,7 +145,7 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             </motion.div>
             </div>
 
-            <span className="absolute bottom-[2%] start-0 z-10 block w-[190px] sm:w-[210px] lg:start-[-5%] rounded-[12px] border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
+            <span className="absolute bottom-[2%] start-0 z-10 block w-[192px] sm:w-[208px] lg:start-[-5%] rounded-[12px] border border-rule bg-panel-2/90 p-3 backdrop-blur-sm transition-colors group-hover:border-rule-strong">
               <span dir="ltr" className="num block text-[11px] tracking-[0.06em] text-glow-3">
                 {sku}
               </span>
@@ -164,6 +157,27 @@ export function Hero({ product, count }: { product: Product; count: number }) {
             </span>
           </Link>
         </motion.div>
+
+        <motion.dl
+          variants={enter}
+          className="order-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-rule pt-6 text-[14px] tracking-[0.08em] text-glow-3 lg:col-span-2 lg:col-start-1 lg:row-start-2"
+        >
+            {FACTS.map((fact, i) => (
+              <div key={fact.label} className="flex items-center gap-2">
+                <dt>{fact.label}</dt>
+                <dd className="text-glow-2">
+                  <span className="num">{fact.value}</span>
+                  {'unit' in fact && ` ${fact.unit}`}
+                </dd>
+                {/* מפריד *עוקב* ולא מוביל: בשבירת שורה הנקודה נשארת בסוף השורה ולא פותחת אותה. */}
+                {i < FACTS.length - 1 && (
+                  <span aria-hidden className="text-glow-4">
+                    ·
+                  </span>
+                )}
+              </div>
+            ))}
+        </motion.dl>
       </motion.div>
     </Spotlight>
   );

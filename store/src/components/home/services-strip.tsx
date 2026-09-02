@@ -17,7 +17,7 @@ export function ServicesStrip({ services }: { services: Product[] }) {
     <section aria-labelledby="services-title" className="rounded-[16px] border border-rule bg-panel-1 p-6 md:p-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="font-mono text-[11px] tracking-[0.08em] text-glow-3">שירותים</p>
+          <p className="text-[11px] font-medium tracking-[0.08em] text-glow-3">שירותים</p>
           <h2 id="services-title" className="mt-2 text-[22px] leading-[1.2] font-extrabold tracking-[-0.02em]">
             טכנאי בבית הלקוח, או תמיכה מרחוק
           </h2>
@@ -41,11 +41,11 @@ export function ServicesStrip({ services }: { services: Product[] }) {
               <Link
                 href={`/products/${s.fields.Sku ?? s.id}`}
                 transitionTypes={['nav-forward']}
-                className="line-clamp-2 text-[15px] leading-[1.3] font-medium text-glow underline-offset-4 hover:underline"
+                className="line-clamp-2 text-[16px] leading-[1.3] font-medium text-glow underline-offset-4 hover:underline"
               >
                 {s.fields.Name}
               </Link>
-              <p className="num mt-1 text-[13px] text-glow-3">{ils(s.fields.Price ?? 0)}</p>
+              <p className="num mt-1 text-[14px] text-glow-3">{ils(s.fields.Price ?? 0)}</p>
             </div>
             <PriceButton product={s} compact />
           </li>
