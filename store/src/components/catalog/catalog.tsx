@@ -92,7 +92,7 @@ export function Catalog({
 
   return (
     <>
-      <div className="sticky top-16 z-30 -mx-5 flex flex-col gap-3 border-b border-rule bg-void/95 px-5 py-3 backdrop-blur-xl">
+      <div className="sticky top-16 z-20 -mx-5 flex flex-col gap-3 border-b border-rule bg-void/95 px-5 py-3 backdrop-blur-xl">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex h-10 w-full items-center sm:w-auto sm:max-w-[360px] sm:flex-1">
             <SearchIcon

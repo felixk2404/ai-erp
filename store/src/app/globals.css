@@ -61,6 +61,12 @@
 :root {
   color-scheme: dark;
   --radius: 16px;
+  /* סולם שכבות יחיד לכל האתר. כל `fixed` שמעל התוכן לוקח ערך מכאן ולא מספר מקומי,
+     כדי שהסדר יהיה החלטה אחת: כותרת < מגירה < ווידג'ט שירות < טוסט. */
+  --z-header: 30;
+  --z-sheet: 40;
+  --z-widget: 50;
+  --z-toast: 60;
   --background: var(--color-void);
   --foreground: var(--color-glow);
   --card: var(--color-panel-1);
@@ -102,9 +108,18 @@ body {
   }
 }
 
+/* JetBrains Mono לא נושא את ₪ (U+20AA), ולכן הדפדפן נופל באמצע המחיר לפונט
+   הגיבוי של next/font — הסימן יוצא בגובה ובמשקל אחרים מהספרות שלידו.
+   משפחה בת תו אחד, ראשונה בערימה, מחזירה את הסימן לגופן העברי של האתר. */
+@font-face {
+  font-family: 'Mono Shekel';
+  src: local('Heebo'), local('Arial Hebrew'), local('Arial');
+  unicode-range: U+20AA;
+}
+
 /* מספרים, מק"טים ומחירים — רוחב ספרה קבוע כדי שהעמודות לא ירקדו. */
 .num {
-  font-family: var(--font-mono);
+  font-family: 'Mono Shekel', var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
@@ -121,10 +136,32 @@ h3 {
   letter-spacing: -0.02em;
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-beam);
-  outline-offset: 2px;
-  border-radius: 4px;
+/* ב-@layer base כדי שרכיב שרוצה טבעת משלו (למשל תיבת הכתיבה של הבוט) יוכל
+   פשוט לכתוב `outline-none` בשכבת ה-utilities, בלי `!`. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-beam);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ציר ההזמנה: הילת "כאן עכשיו" סביב השלב הנוכחי. CSS ולא motion, כדי
+   ש-prefers-reduced-motion יעצור אותה נטיבית בלי ענף מארקאפ נפרד. */
+@keyframes aie-timeline-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+[data-timeline-pulse] {
+  animation: aie-timeline-pulse 3s ease-in-out infinite;
 }
 
 /* ---------- מעברי עמוד (React <ViewTransition/>) ---------- */
@@ -200,5 +237,22 @@ h3 {
     background: radial-gradient(320px circle at 50% 50%, var(--color-beam-soft), transparent 70%) !important;
     /* חצי עוצמה: בלי מעקב אחרי הסמן הכתם הוא קישוט ולא תאורה, ואסור לו להתחרות במוצר. */
     opacity: 0.5 !important;
+  }
+
+  [data-timeline-pulse] {
+    animation: none;
+    opacity: 0.5;
+    transform: scale(1);
+  }
+
+  /* השלד פועם כדי לומר "עוד רגע"; במצב מופחת די בכך שהוא שם. */
+  .animate-pulse {
+    animation: none;
+    opacity: 0.65;
+  }
+
+  /* הספינר הוא מידע (הבקשה רצה) ולכן נשאר — אבל בקצב שלא מושך את העין. */
+  .animate-spin {
+    animation-duration: 2.4s;
   }
 }

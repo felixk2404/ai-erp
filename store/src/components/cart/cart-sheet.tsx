@@ -37,7 +37,7 @@ export function CartSheet() {
         side="left"
         showCloseButton={false}
         aria-label="העגלה שלך"
-        className="flex flex-col gap-0 border-rule bg-panel-1 p-0 data-[side=left]:w-full data-[side=left]:sm:max-w-[420px]"
+        className="flex flex-col gap-0 border-rule-strong bg-panel-1 p-0 data-[side=left]:w-full data-[side=left]:sm:max-w-[420px]"
       >
         <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-rule px-4">
           <div className="flex items-baseline gap-2">

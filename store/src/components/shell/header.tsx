@@ -52,7 +52,7 @@ export function Header() {
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-rule bg-void/85 backdrop-blur-md supports-[backdrop-filter]:bg-void/65">
+    <header className="sticky top-0 z-[var(--z-header)] border-b border-rule bg-void/85 backdrop-blur-md supports-[backdrop-filter]:bg-void/65">
       <div className="container-x flex h-16 items-center justify-between gap-3">
         <div className="flex items-center">
           <Link href="/" transitionTypes={['nav-back']} className="flex h-11 items-center rounded-md px-2" aria-label="איי.איי אלקטרוניקה — לדף הבית">
@@ -98,7 +98,7 @@ export function Header() {
             >
               <MenuIcon size={20} strokeWidth={1.75} aria-hidden />
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 border-rule bg-panel-1 p-0">
+            <SheetContent side="left" className="w-72 border-rule-strong bg-panel-1 p-0">
               <SheetTitle className="flex h-16 items-center border-b border-rule px-5 text-start text-sm font-medium text-glow-3">תפריט</SheetTitle>
               <nav aria-label="ניווט ראשי" className="flex flex-col gap-1 p-2">
                 {NAV.map((item) => (

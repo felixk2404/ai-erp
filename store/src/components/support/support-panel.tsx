@@ -105,7 +105,8 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
       exit={{ opacity: 0, scale: 0.97, y: 8, transition: { duration: 0.15 } }}
       transition={SPRING}
       /* RTL: פינת ה-start היא הימנית — הפאנל "יוצא" מהכפתור שמתחתיו. */
-      className="fixed z-50 flex origin-[bottom_right] flex-col overflow-hidden border border-rule bg-panel-1 max-sm:inset-x-0 max-sm:bottom-0 max-sm:h-[80dvh] max-sm:rounded-t-lg sm:bottom-22 sm:start-5 sm:h-[560px] sm:w-[380px] sm:rounded-lg"
+      /* במובייל הגובה נגזר מהתוכן בין 60 ל-85dvh: גובה קבוע השאיר תהום ריקה מתחת למצב הריק. */
+      className="fixed z-[var(--z-widget)] flex origin-[bottom_right] flex-col overflow-hidden border border-rule bg-panel-1 max-sm:inset-x-0 max-sm:bottom-0 max-sm:max-h-[85dvh] max-sm:min-h-[60dvh] max-sm:rounded-t-lg sm:bottom-22 sm:start-5 sm:h-[560px] sm:w-[380px] sm:rounded-lg"
     >
       <div
         aria-hidden
@@ -133,7 +134,6 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
           /* מצב ריק — קומפוזיציה משלו בראש הגוף: פתיח, ברכה, ושלוש שאלות פתיחה. */
           <div className="space-y-5">
             <div className="space-y-1.5">
-              <p className="num text-[11px] tracking-wider text-glow-3">שירות לקוחות</p>
               <p className="text-[18px] leading-snug font-medium text-glow">{greetingFor(pathname)}</p>
               <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה — התשובה מגיעה מהקטלוג עצמו.</p>
             </div>
@@ -233,9 +233,9 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
             maxLength={500}
             placeholder="כתבו הודעה…"
             aria-label="הודעה"
-            /* טבעת 1px שקטה במקום ה-outline הגלובלי בן 2px — הוא לא ב-@layer ולכן צריך `!`.
-               beam/60 ולא /40 כדי לעבור את יחס הניגודיות 3:1 שנדרש לסימון פוקוס. */
-            className="max-h-24 min-h-10 flex-1 resize-none rounded-sm border-rule bg-panel-2 py-2 text-sm outline-none! focus-visible:border-rule-strong focus-visible:ring-1 focus-visible:ring-beam/60 md:text-sm"
+            /* טבעת 1px שקטה במקום ה-outline הגלובלי בן 2px (שיושב ב-@layer base ולכן
+               נדחה כאן בלי `!`). beam/60 ולא /40 כדי לעבור ניגודיות 3:1 לסימון פוקוס. */
+            className="max-h-24 min-h-10 flex-1 resize-none rounded-sm border-rule bg-panel-2 py-2 text-sm outline-none focus-visible:border-rule-strong focus-visible:ring-1 focus-visible:ring-beam/60 md:text-sm"
           />
           <button
             type="submit"
