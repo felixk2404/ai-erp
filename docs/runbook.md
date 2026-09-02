@@ -66,6 +66,15 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - כשהמק כבוי: האפליקציה עולה וקוראת מ-Airtable, אבל כל כתיבה/צ'אט (דרך n8n המקומי ב-ngrok) נכשלים עם toast "n8n 502/503". לדמו: Docker + `n8n/scripts/tunnel.sh` חייבים לרוץ.
 - ארכיטקטורה: קריאה = Server Components → Airtable REST (PAT בשרת). כתיבה = Server Actions → WF13 (`create`/`update`/`chat`) ו-webhooks `run-sales`, `reindex-products`. אימות = cookie HMAC ב-`src/proxy.ts`.
 
+## 9. פרמיום (תוכנית 4)
+- **שירות לקוחות באתר**: `https://ai-erp-rho.vercel.app/support` — ציבורי, בלי סיסמה. אותו סוכן כמו הטלגרם (WF5-core), דרך `WF13 action:"support"`. Rate limit 20 הודעות/דקה ל-IP. וידג'ט צף גם בתוך האפליקציה.
+- **RAG בשני כלים**: `products_catalog` (metadata type=product, topK 8) ו-`knowledge_base` (type=policy, topK 5). אחרי שינוי מוצרים: `n8n/scripts/webhook.sh reindex-products`.
+- **תמונות**: Supabase Storage bucket `assets` (public) → `Products.ImageUrl`. יצירה: fal.ai `fal-ai/nano-banana-2` (~$0.08/תמונה). העלאה: `n8n/scripts/upload-asset.sh <url|file> products/<SKU>.webp <recId>`. נכסי מותג ב-`app/public/brand/`.
+- **מק"ט**: שדה `Products.Sku` (חולץ מהתיאור ב-`airtable/backfill-sku.sh`). שדות חדשים: `airtable/add-fields.sh`.
+- **דשבורד**: תקציר בוקר (סוכן המנהל, cache 6 שעות, כפתור רענן), דורש-טיפול (חשבוניות error / פתוחות > 14 יום / לידים Contacted > 7 יום), בריאות n8n (דורש `N8N_API_URL=https://goofy-glamour-syrup.ngrok-free.dev/api/v1` ו-`N8N_API_KEY` ב-.env.local וב-Vercel), גרפים בגוון יחיד.
+- **PDF בעמוד חשבונית**: iframe של Drive preview — דורש שהתיקייה `AI-ERP Invoices` תהיה משותפת "כל מי שיש לו את הקישור — צופה".
+- ⌘K חיפוש גלובלי, מעברי עמוד (View Transitions), עמודי פרט `/invoices/[id]`, `/customers/[id]`.
+
 ## 6. מלכודות שנתקלנו בהן
 - הוק secret-guard חוסם כל פקודה עם `.env`; הסקריפטים טוענים דרך `scripts/load-env.sh`.
 - TextEdit מכניס תווי כיווניות נסתרים וגרשיים חכמים — load-env מנקה.

@@ -3,6 +3,7 @@
 - [x] תוכנית 1: תשתית ונתונים — docs/superpowers/plans/2026-09-02-01-infrastructure.md
 - [x] תוכנית 2: n8n workflows
 - [x] תוכנית 3: אפליקציית Next.js
+- [x] תוכנית 4: פרמיום — docs/superpowers/plans/2026-09-02-04-premium.md (נותר: N8N_API env + שיתוף תיקיית Drive אצל הסטודנט)
 
 ## פתוח (אחרי 3 התוכניות)
 - [ ] אימות ידני של הסטודנט: PDF בדרייב, שני הבוטים בטלגרם, WF4 (תשובה למייל → Qualified)

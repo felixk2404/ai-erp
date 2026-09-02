@@ -23,3 +23,9 @@
 - Dialogs/Sheets — Base UI (`render={<Button/>}`, no asChild). Close button uses logical `end-*`. Headers `pe-8` so the X never overlaps the title. Chat sheet opens `side="left"` (far side in RTL), 420px, full width < sm.
 - Forms — EntityDialog + FormErrorsContext + `<FieldError name/>`; server actions wrapped client-side in useActionState (toast + close there, never in useEffect). Optimistic toggles via useOptimistic.
 - Page header — h1 28px Frank Ruhl on the start side, actions + "שאל את המנהל" on the end side.
+- Charts (dataviz) — single hue only: `--inkblue` bars (current month opacity 1, past .55), 4px top radius, direct value labels, hidden y-axis, custom tooltip on paper-2. Status distribution = one segmented bar in LED palette with legend + counts (never color-alone). Funnel = 3 inkblue bars at 100/70/45% opacity. No categorical multi-hue palette (failed CVD validation).
+- Motion — `Reveal` (8px rise + fade, 320ms, 50ms stagger, max 8), `CountUp` 600ms ease-out for hero numbers, brief lines stagger 70ms, chat bubbles 220ms. View Transitions: `DirectionalTransition` (nav-forward/back slide 24px + fade, 150/220ms), `Shared name="invoice-<id>"` morph list→detail. `MotionConfig reducedMotion="user"` at root.
+- ProductCard — 1:1 image on paper-3, SKU chip (mono, 11px) top-start, category 11px tracked, name 14/500 clamp-2, price + stock LED row; hover -2px + ring shadow 150ms.
+- Dashboard grid — 12 cols: brief 5 / attention 4 / health 3 → revenue 7 / (status + funnel) 5 → recent 7 / top customers 5. Cards p-5, sub-label 11px tracked + h2 18/700.
+- Public support page — max-w-3xl, sticky brand bar, hero copy + small hero image (4:3), chat card h-560. Product cards inside replies: 3-up grid (desktop) / horizontal (compact).
+- Command menu — cmdk in Dialog at top 20%, groups עמודים/לקוחות/חשבוניות/מוצרים, selected = inkblue-soft, footer hints 11px.
