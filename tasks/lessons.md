@@ -40,3 +40,9 @@
 - n8n MCP: `validate_workflow` מאמת קוד SDK, לא workflowId. תחליף: `validate_node_config` על הצמתים החדשים + `get_workflow_details` לבדיקת `connections`. `test_workflow` מצמיד (pin) צמתים עם credentials, כך שהוא לא מוכיח כתיבה ל-Airtable — לאימות אמיתי משתמשים ב-`airtable/api.sh` ובטריגרים חיים.
 - sub-workflow שמחזיר תשובה (WF10 → WF13): כל ענף חדש חייב להגיע ל-`Result`; צומת Code שמחזיר תמיד פריט אחד (`records: []` כשאין מה ליצור) + IF ששני ענפיו מחוברים ל-Result.
 - כשעובדים על אותו working tree עם סשן נוסף, commits זרים נוחתים על הענף. לבדוק `git log` לפני review package ולסנן לפי נתיבים.
+
+## 2026-09-03 — תפריט טלגרם (SDD)
+- צומת Telegram של n8n לא מקבל inline keyboard דינמי בשום רמה (ביטוי על האובייקט, על rows או על row נשלח בלי reply_markup; על buttons מאבד callback_data). מקלדות דינמיות נשלחות ב-HTTP Request ל-Bot API עם `$env.TELEGRAM_CUSTOMER_TOKEN`; `$credentials` לא זמין בביטויים. הטוקן עובר לקונטיינר דרך docker-compose.
+- Airtable `phoneNumber` בתוך filterByFormula מוצג מפורמט; להשוות `REGEX_REPLACE({Phone},"[^0-9]","")` מול ספרות בלבד.
+- קוד לצמתי Code בקבצי `n8n/code/*.js` עם `node --test "n8n/code/*.test.js"` (glob מצוטט; תיקייה חשופה לא סורקת), מוזרק ב-import כ-`__CODE_NAME__`. אסור שהקובץ עצמו יכיל `__X__` — שומר ה-placeholders בסקריפט יפיל את הייבוא.
+- `onError: continueRegularOutput` על צומת שיוצר רשומה שהצמתים הבאים תלויים בה (Create Lead → RefId) יוצר "שרשרת פנטום": משימה בלי יעד והודעה על ליד שלא נוצר. במקרים כאלה נותנים לכשל לעצור את הענף.
