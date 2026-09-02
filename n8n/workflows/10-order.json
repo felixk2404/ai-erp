@@ -91,26 +91,6 @@
             {
               "name": "filterByFormula",
               "value": "={{ $json.formula }}"
-            },
-            {
-              "name": "fields[]",
-              "value": "Sku"
-            },
-            {
-              "name": "fields[]",
-              "value": "Name"
-            },
-            {
-              "name": "fields[]",
-              "value": "Price"
-            },
-            {
-              "name": "fields[]",
-              "value": "Stock"
-            },
-            {
-              "name": "fields[]",
-              "value": "Category"
             }
           ]
         },

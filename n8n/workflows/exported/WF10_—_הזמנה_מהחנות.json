@@ -90,26 +90,6 @@
             {
               "name": "filterByFormula",
               "value": "={{ $json.formula }}"
-            },
-            {
-              "name": "fields[]",
-              "value": "Sku"
-            },
-            {
-              "name": "fields[]",
-              "value": "Name"
-            },
-            {
-              "name": "fields[]",
-              "value": "Price"
-            },
-            {
-              "name": "fields[]",
-              "value": "Stock"
-            },
-            {
-              "name": "fields[]",
-              "value": "Category"
             }
           ]
         },
@@ -512,7 +492,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000017",
-      "webhookId": "ebcd6ada-d3fb-478c-a4a0-e9e63d9eff49"
+      "webhookId": "09466ed6-aa1d-407c-adbb-086b08fcb852"
     },
     {
       "name": "Notify Manager",
@@ -536,7 +516,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000018",
-      "webhookId": "7e44e776-6684-4120-bbb6-d7ad748cc491"
+      "webhookId": "29667426-96d7-493f-9d82-575e94b59400"
     },
     {
       "name": "Confirm Order",
