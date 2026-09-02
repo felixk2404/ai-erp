@@ -39,4 +39,21 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] תיקון לולאה ב-WF1 (Loop Over Items)
 - [x] גל תיקונים אחרי סקירה סופית (2026-09-02): כשל התראה לא מפיל הזמנה, תשובת שגיאה ל-`Place Order`, סה"כ החשבונית מגיע מההזמנה (בלי סטיית אגורה), `order_status` לא רגיש לאותיות, חוזה WF13 בראנבוק §7.1
 - [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי לפני ההגשה
-- [ ] STORE_DOMAIN ב-config.json → הכתובת האמיתית של החנות אחרי הפריסה (ואז import מחדש של WF10)
+- [x] STORE_DOMAIN ב-config.json → `ai-electronics-one.vercel.app` + import מחדש של WF10 (תוכנית 6, משימה 14)
+
+## תוכנית 6 — החנות (store/, 2026-09-02) — הושלם ונפרס
+- [x] 1–4: שלד Next.js 16 על 3200, טוקנים ותנועה, קטלוג מ-Airtable, מעטפת (header/footer)
+- [x] 5–8: דף הבית, קטלוג עם סינון/חיפוש/מפרט, עמוד מוצר, עגלה + מגירה
+- [x] 9–10: קופה (Server Action → WF13 `order`) ומעקב הזמנה (`/orders/[n]`, `/track`)
+- [x] 11–12: וידג'ט שירות לקוחות צף (WF13 `support`), עמודי `/about` ו-`/policies`
+- [x] 13: סבב ליטוש RTL, reduced-motion וביצועים (c65e18f)
+- [x] 14: חבילת e2e (9 בדיקות), פריסה ל-production, חיבור STORE_DOMAIN, תיעוד
+- **פרודקשן: https://ai-electronics-one.vercel.app** — פרויקט Vercel `ai-electronics` (felix-7978), 5 משתני env סונכרנו ל-production+preview.
+- ירוק: typecheck, vitest, e2e 9/9 מקומית (יצרה את ORD-0008), 8/8 מול פרודקשן עם `E2E_NO_ORDER=1`.
+- מייל האישור מפנה עכשיו לחנות: `STORE_DOMAIN` ב-`n8n/config.json`, WF10 יובא מחדש והופעל.
+- תיעוד: `docs/runbook.md` §11 (החנות), `docs/demo.md` — מסלול הלקוח, `store/README.md`.
+
+### פתוח לפני ההגשה
+- [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי; גם הזמנת ה-e2e ("בדיקת E2E", ORD-0008) — למחוק או לשנות שם.
+- [ ] Airtable: שדה `Featured` ב-Products במקום `FLAGSHIP_PREFERENCE` הקשיח ב-`store/src/lib/catalog-filter.ts` — מוצרי הדגל בדף הבית צריכים להיות נתון, לא קוד.
+- [ ] להוציא את n8n מהמק לפני ההגשה (ngrok + Docker מקומיים = החנות חיה רק כשהמחשב דולק). קופה, מעקב ובוט תלויים בזה.

@@ -146,6 +146,19 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **בדיקות**: `pnpm test` (49), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
 - **תנועה**: הכל מכבד prefers-reduced-motion (beams/aurora/led נעצרים). אם המחשב חלש בדמו — אפשר להפעיל reduced motion במערכת ההפעלה.
 
+## 11. החנות (store/)
+- פרודקשן: **https://ai-electronics-one.vercel.app** (פרויקט Vercel `ai-electronics`, צוות `felix-7978`). ציבורי לגמרי — אין סיסמה. `ai-electronics.vercel.app` תפוס גלובלית, ולכן ה-alias בפועל הוא `-one`.
+- מקומי: `cd store && pnpm dev` → http://localhost:3200 (הניהול על 3100; פורט 3000 תפוס אצל פרויקט אחר במחשב).
+- env — 5 משתנים (שמות בלבד): `AIRTABLE_PAT`, `AIRTABLE_BASE_ID`, `N8N_WEBHOOK_URL`, `N8N_WEBHOOK_SECRET`, `NEXT_PUBLIC_SITE_URL`. `cp store/env.example store/.env.local` וממלאים; `AIRTABLE_PAT` ו-`N8N_WEBHOOK_SECRET` מועתקים מהניהול.
+- סקריפטים: `store/scripts/check-env.sh` (מדפיס set/MISSING בלבד, לעולם לא ערכים), `store/scripts/vercel-env.sh` (מסנכרן ל-Vercel production+preview; מדלג על `VERCEL_*`, לא מדפיס ערכים).
+- בדיקות: `pnpm test` (Vitest), `pnpm e2e` (Playwright, 9 בדיקות — מרים dev server לבד או משתמש בקיים על 3200), ומול פרודקשן: `PLAYWRIGHT_BASE_URL=https://ai-electronics-one.vercel.app E2E_NO_ORDER=1 pnpm e2e`. **`E2E_NO_ORDER=1` מדלג על בדיקת הקופה** — היא יוצרת הזמנה אמיתית ב-Airtable ושולחת מייל, ומספיקה אחת לכל סביבה.
+- צילומי מסך של כל העמודים: `OUT=<dir> node e2e/screens.mjs` (גם `BASE_URL=` ו-`PAGES=`).
+- פריסה: `cd store && vercel --prod --yes`. אחרי הפריסה הראשונה `NEXT_PUBLIC_SITE_URL` ב-Vercel חייב להיות כתובת הפרודקשן, ואז פריסה נוספת.
+- **קישור המעקב במייל האישור**: `n8n/config.json` → `STORE_DOMAIN` (hostname בלבד, בלי סכימה). אחרי שינוי: `n8n/scripts/import-workflow.sh n8n/workflows/10-order.json --activate` ואז `n8n/scripts/export-workflows.sh`. אימות: `n8n/scripts/n8n-api.sh GET /workflows/9l2sTtJMunb5UTFE | grep -o 'https://[^/]*/orders' | head -1`.
+- ארכיטקטורה: קריאה = Server Components → Airtable REST (PAT בשרת, `unstable_cache` 60 שניות). כתיבה = Server Actions → WF13 (`order`, `order_status`, `support`). אין אימות ואין סשן — העגלה ב-`localStorage` (`aie-cart-v1`), האימייל למעקב ב-`sessionStorage`.
+- כשהמק כבוי: הקטלוג ועמודי המוצר עולים (Airtable ישירות), אבל קופה, מעקב ובוט נכשלים — כולם עוברים דרך n8n המקומי ב-ngrok. לדמו: Docker + `n8n/scripts/tunnel.sh` חייבים לרוץ.
+- **מגבלות ידועות**: (1) ה-rate limit (5 הזמנות/דקה, 20 בירורי הזמנה/דקה, 20 הודעות בוט/דקה) יושב בזיכרון התהליך — ב-Vercel כל instance סופר בנפרד, ולכן זו הגנה מפני לחיצות חוזרות ולא מפני תוקף. (2) מספור ORD/INV מחושב מהמקסימום הקיים ולא מנעילה — שתי הזמנות באותה שנייה עלולות לקבל אותו מספר (סעיף 6).
+
 ## 6. מלכודות שנתקלנו בהן
 - הוק secret-guard חוסם כל פקודה עם `.env`; הסקריפטים טוענים דרך `scripts/load-env.sh`.
 - TextEdit מכניס תווי כיווניות נסתרים וגרשיים חכמים — load-env מנקה.
