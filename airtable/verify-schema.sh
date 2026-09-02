@@ -20,6 +20,10 @@ Leads.Email:email
 Leads.Company:singleLineText
 Leads.Status:singleLineText
 Leads.Created:createdTime
+Leads.Phone:phoneNumber
+Leads.Source:singleLineText
+Leads.Note:multilineText
+Leads.TelegramChatId:singleLineText
 Products.Name:singleLineText
 Products.Category:singleLineText
 Products.Price:number

@@ -16,8 +16,12 @@
 | Leads | Name | Single line text | ראשי |
 | Leads | Email | Email | |
 | Leads | Company | Single line text | |
-| Leads | Status | Single line text | new / contacted / replied / duplicate |
+| Leads | Status | Single line text | New / Contacted / Qualified / Dead / Duplicate |
 | Leads | Created | Created time | טריגר WF2 |
+| Leads | Phone | Phone number | אופציונלי. לידים מטלגרם מקבלים אותו אחרי "שתף טלפון" |
+| Leads | Source | Single line text | manual / telegram |
+| Leads | Note | Long text | הקשר: `מתעניין ב{מוצר} ({SKU})` |
+| Leads | TelegramChatId | Single line text | chat.id בטלגרם, לחיבור הטלפון לליד |
 | Products | Name | Single line text | ראשי |
 | Products | Category | Single line text | |
 | Products | Price | Number (2) | |

@@ -17,3 +17,7 @@ add Products Stock '{"name":"Stock","type":"number","options":{"precision":0},"d
 add Products Highlights '{"name":"Highlights","type":"multilineText","description":"3 נקודות מפרט, שורה לכל נקודה"}'
 add Tasks Source '{"name":"Source","type":"singleLineText","description":"order / stock / lead / invoice / manual"}'
 add Tasks RefId '{"name":"RefId","type":"singleLineText","description":"ORD-0003 / מק\"ט / INV-0007 / record id של ליד"}'
+add Leads Phone '{"name":"Phone","type":"phoneNumber"}'
+add Leads Source '{"name":"Source","type":"singleLineText","description":"manual / telegram"}'
+add Leads Note '{"name":"Note","type":"multilineText","description":"למשל: מתעניין ב{מוצר} ({SKU})"}'
+add Leads TelegramChatId '{"name":"TelegramChatId","type":"singleLineText","description":"chat.id של הלקוח בטלגרם"}'
