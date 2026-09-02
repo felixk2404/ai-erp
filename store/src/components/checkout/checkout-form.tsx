@@ -160,9 +160,19 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
     if (first) formRef.current?.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
   }, [state]);
 
+  // `aria-disabled` הוא סימון, לא נעילה, ו-`pending` נקרא מהסגור של הרינדור:
+  // הפעלה שנייה באותו פריים *נכנסת לתור* של useActionState ורצה כשהראשונה
+  // נגמרת — שתי הזמנות אמיתיות, שתי חשבוניות, שני מיילים. התפס נסגר סינכרונית
+  // ולכן הוא זה שעוצר אותה; ה-aria נשאר כדי שהמיקוד לא יברח מהכפתור.
+  const inFlight = useRef(false);
   const guardPending = (e: MouseEvent<HTMLButtonElement>) => {
-    if (pending) e.preventDefault();
+    if (pending || inFlight.current) e.preventDefault();
+    else inFlight.current = true;
   };
+  // זהות `state` מתחלפת בכל פעם ש-action מסתיים — זה הרגע לשחרר.
+  useEffect(() => {
+    inFlight.current = false;
+  }, [state]);
 
   return (
     <form
