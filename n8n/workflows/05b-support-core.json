@@ -238,7 +238,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "=OR(FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/'/g, '') }}'), LOWER({Sku})), FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/'/g, '') }}'), LOWER({Name})))"
+              "value": "=OR(FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/['\\\\]/g, '') }}'), LOWER({Sku})), FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/['\\\\]/g, '') }}'), LOWER({Name})))"
             }
           ]
         },
