@@ -34,8 +34,94 @@
           "name": "Telegram Manager"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput",
+      "notes": "התראה היא הדבר האחרון שנשאר כשהכול נופל — לכן retry, ולכן ענף שגיאה שמנציח את הכישלון במשימה.",
       "id": "00000000-0000-4000-8000-000000000001",
-      "webhookId": "db11ef4a-5331-44a2-9e94-b62c405d7597"
+      "webhookId": "722c3c1c-df80-406f-9dc9-366a730c23cb"
+    },
+    {
+      "name": "Log Undelivered",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        520,
+        160
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "טלגרם לא ענה גם אחרי 3 ניסיונות. הכישלון נרשם כמשימה כדי שלא ייעלם בשקט; אם גם Airtable נופל, ההרצה נשארת error ב-n8n.",
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "app1jXGnS2j0tCxEM"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "tbl02ryhflQHnoD9J"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "=התראת שגיאה לא נשלחה בטלגרם — {{ $('Error Trigger').first().json.workflow.name }}: {{ ($('Error Trigger').first().json.execution?.error?.message || $('Error Trigger').first().json.trigger?.error?.message || 'שגיאה לא ידועה').toString().slice(0, 200) }}",
+            "Status": "open",
+            "Source": "error"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
     }
   ],
   "connections": {
@@ -44,6 +130,18 @@
         [
           {
             "node": "Telegram Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Owner": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Log Undelivered",
             "type": "main",
             "index": 0
           }

@@ -43,7 +43,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000001",
-      "webhookId": "73056853-a353-47d6-9abd-693fc1156468"
+      "webhookId": "f7b618d9-ede6-4c55-9435-6ceb1f7c45ae"
     },
     {
       "name": "Next New Lead",
@@ -77,7 +77,46 @@
           "name": "Airtable ERP"
         }
       },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "name": "Has Lead?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        390,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "h1",
+              "leftValue": "={{ !!$json.id }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Sales Agent",
@@ -89,13 +128,13 @@
       ],
       "parameters": {
         "promptType": "define",
-        "text": "=כתוב מייל קר ראשון לליד הבא.\nשם: {{ $json.fields.Name }}\nחברה: {{ $json.fields.Company || 'לא ידוע' }}\nמייל: {{ $json.fields.Email }}",
+        "text": "=כתוב מייל קר ראשון לליד הבא.\nשם: {{ $('Next New Lead').first().json.fields.Name }}\nחברה: {{ $('Next New Lead').first().json.fields.Company || 'לא ידוע' }}\nמייל: {{ $('Next New Lead').first().json.fields.Email }}",
         "options": {
           "systemMessage": "אתה סוכן המכירות של איי.איי אלקטרוניקה (AI Electronics), חנות אלקטרוניקה ישראלית שמספקת לעסקים מוצרים מקוריים בלבד עם אחריות יבואן רשמי. אתה כותב מייל קר ראשון לליד עסקי ישראלי.\nכללים:\n- כתוב בעברית. 4 עד 8 משפטים. פנייה אישית בשם הליד ובשם החברה אם ידועים. אם אין מידע על תחום העניין, אל תמציא אחד — כתוב על ציוד אלקטרוני לעסקים באופן כללי.\n- קריאה אחת לפעולה בלבד: לשאול על כמה יחידות מדובר, או להציע שיחה קצרה.\n- בלי הבטחות שווא: לא \"הזול בישראל\", לא דחיפות מזויפת, לא פרסים, לא אותיות גדולות. מחירים לעסקים לפני מע\"מ, הצעת מחיר בתוקף 14 יום. אל תבטיח הנחה.\n- הזדהות ברורה: החתימה \"צוות המכירות, איי.איי אלקטרוניקה\". שורה אחרונה: \"להסרה מרשימת התפוצה, השיבו למייל זה עם המילה הסר.\"\n- החזר רק את גוף המייל, טקסט רגיל, בלי שורת נושא, בלי Markdown.",
           "maxIterations": 3
         }
       },
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "OpenAI Chat Model",
@@ -119,21 +158,21 @@
           "name": "OpenAI ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "Send Email",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        780,
+        1040,
         0
       ],
       "parameters": {
-        "sendTo": "={{ $('Next New Lead').item.json.fields.Email }}",
+        "sendTo": "={{ $('Next New Lead').first().json.fields.Email }}",
         "subject": "ציוד אלקטרוני לעסק — מקורי, עם אחריות יבואן | איי.איי אלקטרוניקה",
         "emailType": "text",
-        "message": "={{ $json.output }}",
+        "message": "={{ $('Sales Agent').first().json.output }}",
         "options": {
           "appendAttribution": false
         }
@@ -144,15 +183,15 @@
           "name": "Gmail ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000005",
-      "webhookId": "314960c9-7abf-4977-9730-22d9339f8bc7"
+      "id": "00000000-0000-4000-8000-000000000006",
+      "webhookId": "05d398a1-26bf-438a-a39a-59a093c75e56"
     },
     {
       "name": "Mark Contacted",
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1040,
+        780,
         0
       ],
       "parameters": {
@@ -171,7 +210,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $('Next New Lead').item.json.id }}",
+            "id": "={{ $('Next New Lead').first().json.id }}",
             "Status": "Contacted"
           },
           "matchingColumns": [
@@ -211,7 +250,11 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000006"
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "מסמן לפני השליחה: לבטל סימון זול יותר מלבטל מייל שכבר יצא ללקוח.",
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Result",
@@ -233,14 +276,44 @@
             {
               "id": "s",
               "name": "sentTo",
-              "value": "={{ $('Next New Lead').item.json.fields.Email }}",
+              "value": "={{ $('Next New Lead').first().json.fields.Email }}",
               "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000008"
+    },
+    {
+      "name": "No Lead",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        650,
+        200
+      ],
+      "notes": "בלי זה, ריצה בלי לידים חדשים מחזירה ל-webhook את שגיאת n8n על היעדר פריט במקום תשובה אמיתית.",
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ok",
+              "name": "ok",
+              "value": "={{ true }}",
+              "type": "boolean"
+            },
+            {
+              "id": "s",
+              "name": "sent",
+              "value": "={{ 0 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000009"
     }
   ],
   "connections": {
@@ -270,7 +343,7 @@
       "main": [
         [
           {
-            "node": "Sales Agent",
+            "node": "Has Lead?",
             "type": "main",
             "index": 0
           }
@@ -281,7 +354,7 @@
       "main": [
         [
           {
-            "node": "Send Email",
+            "node": "Mark Contacted",
             "type": "main",
             "index": 0
           }
@@ -292,7 +365,7 @@
       "main": [
         [
           {
-            "node": "Mark Contacted",
+            "node": "Result",
             "type": "main",
             "index": 0
           }
@@ -303,7 +376,7 @@
       "main": [
         [
           {
-            "node": "Result",
+            "node": "Send Email",
             "type": "main",
             "index": 0
           }
@@ -316,6 +389,24 @@
           {
             "node": "Sales Agent",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Lead?": {
+      "main": [
+        [
+          {
+            "node": "Sales Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Lead",
+            "type": "main",
             "index": 0
           }
         ]

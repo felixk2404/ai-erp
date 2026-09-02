@@ -73,6 +73,10 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "אותו טעם כמו WF1 — ליד שנופל בפולינג לא נבדק שוב לעולם.",
       "id": "00000000-0000-4000-8000-000000000001"
     },
     {
@@ -139,6 +143,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000002"
     }
   ],

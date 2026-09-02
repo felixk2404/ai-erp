@@ -58,6 +58,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000001"
     },
     {
@@ -82,10 +85,9 @@
           ]
         },
         "fieldsToSplitBy": "fields.Status",
-        "options": {
-          "continueIfFieldNotFound": true
-        }
+        "options": {}
       },
+      "notes": "בלי continueIfFieldNotFound: שינוי שם עמודה ב-Airtable ייפול ברעש, ולא יגיע לסוכן כ-0 ₪ הכנסות.",
       "id": "00000000-0000-4000-8000-000000000002"
     },
     {
@@ -135,6 +137,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000004"
     },
     {
@@ -208,6 +213,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000007"
     },
     {
@@ -281,6 +289,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000010"
     },
     {
@@ -305,10 +316,9 @@
           ]
         },
         "fieldsToSplitBy": "fields.Status",
-        "options": {
-          "continueIfFieldNotFound": true
-        }
+        "options": {}
       },
+      "notes": "בלי continueIfFieldNotFound: שינוי שם עמודה ב-Airtable ייפול ברעש, ולא יגיע לסוכן כ-0 ₪ הכנסות.",
       "id": "00000000-0000-4000-8000-000000000011"
     },
     {

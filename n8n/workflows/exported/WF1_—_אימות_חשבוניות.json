@@ -121,6 +121,10 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "פולינג שנופל מזיז את lastTimeChecked בלי לראות את השורה — retry בולע ריצוד רשת במקום לאבד חשבונית.",
       "id": "00000000-0000-4000-8000-000000000003"
     },
     {
@@ -202,6 +206,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000005"
     },
     {
@@ -366,6 +373,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000008"
     },
     {
@@ -432,6 +442,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000009"
     },
     {

@@ -22,7 +22,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "e81db5ea-8629-4272-8a0f-882c23860653"
+      "webhookId": "7a2e95d6-7e4d-415d-8193-2b61486670c4"
     },
     {
       "name": "Is Owner",
@@ -133,6 +133,8 @@
           "waitForSubWorkflow": true
         }
       },
+      "onError": "continueErrorOutput",
+      "notes": "ענף השגיאה חוזר ל-Send Reply, ששולח את הנוסח החלופי במקום שתיקה.",
       "id": "00000000-0000-4000-8000-000000000003"
     },
     {
@@ -144,7 +146,7 @@
         -100
       ],
       "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "chatId": "={{ $('Telegram Trigger').first().json.message.chat.id }}",
         "text": "={{ ($json.reply || 'לא התקבלה תשובה').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}",
         "additionalFields": {
           "appendAttribution": false,
@@ -157,8 +159,11 @@
           "name": "Telegram Manager"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000004",
-      "webhookId": "abcaa0a8-e64c-4b46-b063-e1a0218885cc"
+      "webhookId": "e54a0f1b-931f-4a3f-94eb-4b6ddc18b732"
     },
     {
       "name": "Deny",
@@ -183,7 +188,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000005",
-      "webhookId": "53c9193a-34e5-4a8e-ba8e-7196e4a8930a"
+      "webhookId": "961da72f-13df-4fff-a820-1c1387d33dc9"
     }
   ],
   "connections": {
@@ -229,6 +234,13 @@
     },
     "Manager Core": {
       "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Send Reply",

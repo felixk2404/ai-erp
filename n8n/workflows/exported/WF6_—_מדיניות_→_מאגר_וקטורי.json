@@ -23,14 +23,14 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "74355b3e-2d9d-4cb8-b75e-662a11bd4aff"
+      "webhookId": "d55cf7ef-9779-4d32-b3ae-61402b1c295d"
     },
     {
       "name": "Delete Old Policies",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        260,
+        780,
         0
       ],
       "parameters": {
@@ -55,6 +55,11 @@
           "name": "Supabase ERP"
         }
       },
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "רץ רק אחרי שהקריאה הצליחה — מחיקה לפני קריאה כושלת משאירה את הסוכן בלי ידע (execution 22).",
       "id": "00000000-0000-4000-8000-000000000001"
     },
     {
@@ -62,7 +67,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        520,
+        260,
         0
       ],
       "parameters": {
@@ -76,7 +81,7 @@
       "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
       "typeVersion": 1.3,
       "position": [
-        780,
+        1300,
         0
       ],
       "parameters": {
@@ -104,7 +109,7 @@
       "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
       "typeVersion": 1.2,
       "position": [
-        700,
+        1220,
         220
       ],
       "parameters": {
@@ -124,7 +129,7 @@
       "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
       "typeVersion": 1.1,
       "position": [
-        900,
+        1420,
         220
       ],
       "parameters": {
@@ -154,7 +159,7 @@
       "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
       "typeVersion": 1,
       "position": [
-        900,
+        1420,
         420
       ],
       "parameters": {
@@ -169,7 +174,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1040,
+        1560,
         0
       ],
       "executeOnce": true,
@@ -193,10 +198,36 @@
         "options": {}
       },
       "id": "00000000-0000-4000-8000-000000000007"
+    },
+    {
+      "name": "Carry Files",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "notes": "צומת ה-HTTP מחליף את הפריטים בתשובה שלו; זה מחזיר את הקבצים (כולל binary) למאגר הווקטורי.",
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "return $('Read Policy Files').all();"
+      },
+      "id": "00000000-0000-4000-8000-000000000008"
     }
   ],
   "connections": {
     "Reindex Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Policy Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Policy Files": {
       "main": [
         [
           {
@@ -211,14 +242,14 @@
       "main": [
         [
           {
-            "node": "Read Policy Files",
+            "node": "Carry Files",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Read Policy Files": {
+    "Carry Files": {
       "main": [
         [
           {

@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "7df6286b-2490-4898-ae07-8875577736b9"
+      "webhookId": "2239c16d-d400-4ba2-8f7e-7bb5183442fe"
     },
     {
       "name": "Classify",
@@ -178,7 +178,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000003",
-      "webhookId": "0e5cefb2-9554-4f07-88ae-a8985d42d79a"
+      "webhookId": "9c6a1a2b-d33a-4ffc-9b01-f098efbe9be9"
     },
     {
       "name": "Products",
@@ -225,7 +225,7 @@
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// render-menu.js — גוף צומת Code ב-WF5 (מוזרק לצומת דרך placeholder CODE_RENDER_MENU). קלט: callback_data + כל המוצרים.\n// פלט: { action: 'menu' | 'lead', text (HTML), keyboard (צורת inlineKeyboard של צומת הטלגרם), product? }.\nconst SERVICE = 'שירותים';\nconst MAX_CAT = 30; // callback_data ≤ 64 בתים; עברית = 2 בתים לתו, 'cat:' = 4\nconst MAX_LIST = 10;\nconst esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst price = (n) => Number(n || 0).toLocaleString('he-IL') + ' ₪';\nconst btn = (text, data) => ({ text, additionalFields: { callback_data: data } });\nconst keyboard = (...lines) => ({ rows: lines.map((buttons) => ({ row: { buttons } })) });\n\nfunction renderMenu(data, products) {\n  const items = products\n    .filter((p) => p && p.Sku)\n    .map((p) => ({\n      name: p.Name, sku: p.Sku, category: p.Category || 'אחר', price: p.Price,\n      stock: Number(p.Stock) || 0, service: p.Category === SERVICE,\n      highlights: String(p.Highlights || '').split('\\n').map((s) => s.trim()).filter(Boolean).slice(0, 3),\n    }));\n  if (!items.length) return { action: 'menu', text: 'משהו השתבש, נסו שוב.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };\n  const cats = [...new Set(items.map((i) => i.category))].sort((a, b) => a.localeCompare(b, 'he'));\n  // ponytail: 30-char truncation collides on shared prefixes; disambiguate with a #index suffix, kept unique per render.\n  const catKeys = new Map();\n  const usedKeys = new Set();\n  cats.forEach((c, index) => {\n    let key = 'cat:' + String(c).slice(0, MAX_CAT);\n    if (usedKeys.has(key)) key = 'cat:' + String(c).slice(0, MAX_CAT - 3) + '#' + index;\n    usedKeys.add(key);\n    catKeys.set(c, key);\n  });\n  const home = (text) => ({ action: 'menu', text: text || 'במה תרצו להתעניין?', keyboard: keyboard(...cats.map((c) => [btn(c, catKeys.get(c))]), [btn('שאלה חופשית', 'ask')]) });\n  const d = String(data || 'home');\n  if (d === 'home') return home();\n  if (d === 'ask') return { action: 'menu', text: 'כתבו כאן כל שאלה ונענה מיד.', keyboard: keyboard([btn('תפריט ראשי', 'home')]) };\n  if (d.startsWith('cat:')) {\n    const cat = cats.find((c) => catKeys.get(c) === d);\n    if (!cat) return home('הקטגוריה כבר לא זמינה.');\n    const list = items.filter((i) => i.category === cat).slice(0, MAX_LIST);\n    const label = (i) => `${i.name} · ${price(i.price)}${!i.service && i.stock <= 0 ? ' (אזל)' : ''}`;\n    return { action: 'menu', text: `<b>${esc(cat)}</b>`, keyboard: keyboard(...list.map((i) => [btn(label(i), 'p:' + i.sku)]), [btn('חזרה', 'home')]) };\n  }\n  const sku = d.startsWith('p:') ? d.slice(2) : d.startsWith('lead:') ? d.slice(5) : null;\n  const item = sku ? items.find((i) => i.sku === sku) : null;\n  if (!item) return home('המוצר כבר לא זמין.');\n  const product = { name: item.name, sku: item.sku };\n  if (d.startsWith('lead:')) return { action: 'lead', text: `מעולה, רשמנו שאתם מתעניינים ב${esc(item.name)}.`, keyboard: keyboard([btn('תפריט ראשי', 'home')]), product };\n  const stock = item.service ? 'שירות — זמין תמיד' : item.stock > 0 ? 'במלאי' : 'אזל מהמלאי';\n  const text = [`<b>${esc(item.name)}</b>`, `${esc(item.sku)} · ${price(item.price)}`, ...item.highlights.map((h) => `• ${esc(h)}`), stock].join('\\n');\n  return { action: 'menu', text, keyboard: keyboard([btn('מעוניין', 'lead:' + item.sku)], [btn('חזרה לקטגוריה', catKeys.get(item.category)), btn('תפריט ראשי', 'home')]), product };\n}\nif (typeof $input !== 'undefined') return [{ json: renderMenu($('Classify').first().json.data, $input.all().map((i) => (i.json && i.json.fields) || i.json)) }];\nmodule.exports = { renderMenu };"
+        "jsCode": "// render-menu.js — גוף צומת Code ב-WF5 (מוזרק לצומת דרך placeholder CODE_RENDER_MENU). קלט: callback_data + כל המוצרים.\n// פלט: { action: 'menu' | 'lead', text (HTML), keyboard (צורת inlineKeyboard של צומת הטלגרם), product? }.\n\n// טבלת המחרוזות: כל מה שהמשתמש רואה, במקום אחד. צומת Code ב-n8n לא יכול לעשות require, ולכן היא יושבת כאן.\n// הכללים שמאחוריה (רבים, יציאה אחידה בשורה האחרונה, בלי שאלת נימוס): docs/superpowers/bot-conversation-map.md\nconst S = {\n  welcome: 'היי, כאן איי.איי אלקטרוניקה. אפשר לעיין בקטלוג או לשאול כל שאלה.',\n  home: 'במה נעזור?',\n  ask: 'כתבו כאן מה מחפשים ונענה.',\n  lead: (name) => `רשמנו. נחזור אליכם עם פרטים על ${name}.`,\n  catGone: 'הקטגוריה כבר לא זמינה.',\n  productGone: 'המוצר כבר לא זמין.',\n  broken: 'משהו השתבש אצלנו. אפשר לנסות שוב.',\n  inStock: 'במלאי',\n  soldOut: 'אזל מהמלאי',\n  soldOutTag: ' (אזל)',\n  serviceStock: 'שירות — זמין תמיד',\n  askBtn: 'שאלה חופשית',\n  leadBtn: 'מעוניין',\n  backBtn: 'חזרה לקטגוריה',\n  homeBtn: 'תפריט ראשי',\n};\n\nconst SERVICE = 'שירותים';\nconst MAX_CAT = 30; // callback_data ≤ 64 בתים; עברית = 2 בתים לתו, 'cat:' = 4\nconst MAX_LIST = 10;\nconst esc = (s) => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst price = (n) => Number(n || 0).toLocaleString('he-IL') + ' ₪';\nconst btn = (text, data) => ({ text, additionalFields: { callback_data: data } });\nconst keyboard = (...lines) => ({ rows: lines.map((buttons) => ({ row: { buttons } })) });\n\n// returning: המשתמש כבר בתוך השיחה (כפתור, שיתוף טלפון, דילוג) ולא צריך את שורת ההיכרות שוב.\n// רק route === 'start' (/start או /menu) הוא כניסה שעשויה להיות ראשונה. הבחנה אמיתית בין ראשונה לחוזרת דורשת זיכרון מצב, ואין כזה.\nfunction renderMenu(data, products, returning) {\n  const items = products\n    .filter((p) => p && p.Sku)\n    .map((p) => ({\n      name: p.Name, sku: p.Sku, category: p.Category || 'אחר', price: p.Price,\n      stock: Number(p.Stock) || 0, service: p.Category === SERVICE,\n      highlights: String(p.Highlights || '').split('\\n').map((s) => s.trim()).filter(Boolean).slice(0, 3),\n    }));\n  if (!items.length) return { action: 'menu', text: S.broken, keyboard: keyboard([btn(S.homeBtn, 'home')]) };\n  const cats = [...new Set(items.map((i) => i.category))].sort((a, b) => a.localeCompare(b, 'he'));\n  // ponytail: 30-char truncation collides on shared prefixes; disambiguate with a #index suffix, kept unique per render.\n  const catKeys = new Map();\n  const usedKeys = new Set();\n  cats.forEach((c, index) => {\n    let key = 'cat:' + String(c).slice(0, MAX_CAT);\n    if (usedKeys.has(key)) key = 'cat:' + String(c).slice(0, MAX_CAT - 3) + '#' + index;\n    usedKeys.add(key);\n    catKeys.set(c, key);\n  });\n  const home = (note) => ({ action: 'menu', text: note || (returning ? S.home : S.welcome), keyboard: keyboard(...cats.map((c) => [btn(c, catKeys.get(c))]), [btn(S.askBtn, 'ask')]) });\n  const d = String(data || 'home');\n  if (d === 'home') return home();\n  if (d === 'ask') return { action: 'menu', text: S.ask, keyboard: keyboard([btn(S.homeBtn, 'home')]) };\n  if (d.startsWith('cat:')) {\n    const cat = cats.find((c) => catKeys.get(c) === d);\n    if (!cat) return home(S.catGone);\n    const list = items.filter((i) => i.category === cat).slice(0, MAX_LIST);\n    const label = (i) => `${i.name} · ${price(i.price)}${!i.service && i.stock <= 0 ? S.soldOutTag : ''}`;\n    return { action: 'menu', text: `<b>${esc(cat)}</b>`, keyboard: keyboard(...list.map((i) => [btn(label(i), 'p:' + i.sku)]), [btn(S.homeBtn, 'home')]) };\n  }\n  const sku = d.startsWith('p:') ? d.slice(2) : d.startsWith('lead:') ? d.slice(5) : null;\n  const item = sku ? items.find((i) => i.sku === sku) : null;\n  if (!item) return home(S.productGone);\n  const product = { name: item.name, sku: item.sku };\n  if (d.startsWith('lead:')) return { action: 'lead', text: S.lead(esc(item.name)), keyboard: keyboard([btn(S.homeBtn, 'home')]), product };\n  const stock = item.service ? S.serviceStock : item.stock > 0 ? S.inStock : S.soldOut;\n  const text = [`<b>${esc(item.name)}</b>`, `${esc(item.sku)} · ${price(item.price)}`, ...item.highlights.map((h) => `• ${esc(h)}`), stock].join('\\n');\n  return { action: 'menu', text, keyboard: keyboard([btn(S.leadBtn, 'lead:' + item.sku)], [btn(S.backBtn, catKeys.get(item.category)), btn(S.homeBtn, 'home')]), product };\n}\nif (typeof $input !== 'undefined') { const c = $('Classify').first().json; return [{ json: renderMenu(c.data, $input.all().map((i) => (i.json && i.json.fields) || i.json), c.route !== 'start') }]; }\nmodule.exports = { renderMenu, S };"
       },
       "id": "00000000-0000-4000-8000-000000000005"
     },
@@ -415,6 +415,8 @@
           "waitForSubWorkflow": true
         }
       },
+      "onError": "continueErrorOutput",
+      "notes": "נפילה של הסוכן חייבת להגיע ל-Send Reply — אחרת הלקוח לא מקבל כלום, וההתנצלות שכתובה שם אף פעם לא רצה.",
       "id": "00000000-0000-4000-8000-000000000011"
     },
     {
@@ -439,8 +441,11 @@
           "name": "Telegram Customer"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000012",
-      "webhookId": "55a604e0-d37f-4e6c-997e-a8d89fee8d97"
+      "webhookId": "9f12e42d-df34-424a-950f-9537ee2ec926"
     },
     {
       "name": "Lead Exists?",
@@ -708,7 +713,7 @@
       ],
       "parameters": {
         "chatId": "43590648",
-        "text": "=📞 ליד חדש מטלגרם\n{{ $('Classify').first().json.from.name }}{{ $('Classify').first().json.from.username ? ' (@' + $('Classify').first().json.from.username + ')' : '' }} · {{ $('Render Menu').first().json.product.name }} {{ $('Render Menu').first().json.product.sku }}\nטלפון: יתעדכן אם ישותף",
+        "text": "=📞 ליד חדש · טלגרם\n{{ $('Classify').first().json.from.name }}{{ $('Classify').first().json.from.username ? ' (@' + $('Classify').first().json.from.username + ')' : '' }}\n{{ $('Render Menu').first().json.product.name }} {{ $('Render Menu').first().json.product.sku }}\nטלפון: ממתין",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -721,7 +726,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000017",
-      "webhookId": "bb869a74-a28d-424a-bf42-ac3d51831da7"
+      "webhookId": "670af7db-41d1-4fc8-a3f1-969386736c8b"
     },
     {
       "name": "Confirm Lead",
@@ -756,7 +761,7 @@
         "resource": "message",
         "operation": "sendMessage",
         "chatId": "={{ $('Classify').first().json.chatId }}",
-        "text": "כדי שנחזור אליכם, שתפו טלפון בלחיצה אחת או דלגו.",
+        "text": "מה הטלפון שנחזור אליו?",
         "replyMarkup": "replyKeyboard",
         "replyKeyboard": {
           "rows": [
@@ -800,7 +805,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000019",
-      "webhookId": "de5985d3-8778-4316-962a-b2a3d677c085"
+      "webhookId": "405ab768-edbd-48a9-a789-7bd5f003c139"
     },
     {
       "name": "Find Lead",
@@ -959,7 +964,7 @@
       ],
       "parameters": {
         "chatId": "43590648",
-        "text": "=📞 טלפון לליד {{ $('Classify').first().json.from.name }}: {{ $('Classify').first().json.contact.phone_number }}",
+        "text": "=📞 טלפון לליד\n{{ $('Classify').first().json.from.name }} · {{ $('Classify').first().json.contact.phone_number }}",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -972,7 +977,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000023",
-      "webhookId": "5df22350-93ab-493d-b237-1df4f6cdb7fa"
+      "webhookId": "dc4dbdbb-e286-4fcc-be6a-569c4dcf807f"
     },
     {
       "name": "Thanks",
@@ -986,7 +991,7 @@
         "resource": "message",
         "operation": "sendMessage",
         "chatId": "={{ $('Classify').first().json.chatId }}",
-        "text": "=תודה {{ $('Classify').first().json.from.name }}, נחזור אליכם בקרוב.",
+        "text": "=תודה {{ $('Classify').first().json.from.name }}. נחזור אליכם היום.",
         "replyMarkup": "replyKeyboardRemove",
         "replyKeyboardRemove": {
           "remove_keyboard": true
@@ -1003,7 +1008,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000024",
-      "webhookId": "8b1ae6de-07ed-46bb-8384-ef33f41e7611"
+      "webhookId": "2145a647-34ed-4c59-8d2d-48101f333092"
     },
     {
       "name": "Skip Ack",
@@ -1017,7 +1022,7 @@
         "resource": "message",
         "operation": "sendMessage",
         "chatId": "={{ $json.chatId }}",
-        "text": "בסדר, נחזור אליכם בטלגרם.",
+        "text": "אין בעיה. אפשר לכתוב לנו כאן בכל שלב.",
         "replyMarkup": "replyKeyboardRemove",
         "replyKeyboardRemove": {
           "remove_keyboard": true
@@ -1034,7 +1039,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000025",
-      "webhookId": "d80514af-98fb-430a-99ea-7cc4fea355c3"
+      "webhookId": "7577faba-c37c-453b-beef-fcd1a8703093"
     }
   ],
   "connections": {
@@ -1327,6 +1332,13 @@
     },
     "Support Core": {
       "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Send Reply",

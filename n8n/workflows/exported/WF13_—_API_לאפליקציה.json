@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "49a388d2-6067-429d-bd1b-dbaf42636e74"
+      "webhookId": "129008ea-266f-42dd-b3b7-c611e40e7746"
     },
     {
       "name": "Route",
@@ -53,6 +53,16 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "c1t",
+                    "leftValue": "={{ ['Tasks','Products','Invoices','Leads','Customers'].includes($json.body.table) }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
                     }
                   }
                 ],
@@ -101,6 +111,26 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "c3t",
+                    "leftValue": "={{ ['Tasks','Products','Invoices','Leads','Customers'].includes($json.body.table) }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    }
+                  },
+                  {
+                    "id": "c3f",
+                    "leftValue": "={{ Object.keys($json.body.payload || {}).length > 0 && Object.keys($json.body.payload).every(k => ['Status','InStock'].includes(k)) }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
                     }
                   }
                 ],
@@ -188,6 +218,7 @@
           "fallbackOutput": "extra"
         }
       },
+      "notes": "הטבלאות והשדות שהאפליקציה באמת כותבת אליהם, ותו לא — בלי זה הטאנל הציבורי הוא proxy כתיבה לכל הבסיס.",
       "id": "00000000-0000-4000-8000-000000000001"
     },
     {
@@ -265,6 +296,7 @@
           "waitForSubWorkflow": true
         }
       },
+      "onError": "continueErrorOutput",
       "id": "00000000-0000-4000-8000-000000000003"
     },
     {
@@ -292,7 +324,7 @@
       ],
       "parameters": {
         "method": "PATCH",
-        "url": "=https://api.airtable.com/v0/app1jXGnS2j0tCxEM/{{ encodeURIComponent($json.body.table) }}/{{ $json.body.id }}",
+        "url": "=https://api.airtable.com/v0/app1jXGnS2j0tCxEM/{{ encodeURIComponent($json.body.table) }}/{{ encodeURIComponent($json.body.id) }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "airtableTokenApi",
         "sendBody": true,
@@ -307,6 +339,10 @@
           "name": "Airtable ERP"
         }
       },
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000005"
     },
     {
@@ -376,6 +412,10 @@
           "name": "Airtable ERP"
         }
       },
+      "onError": "continueErrorOutput",
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000008"
     },
     {
@@ -468,6 +508,7 @@
           "waitForSubWorkflow": true
         }
       },
+      "onError": "continueErrorOutput",
       "id": "00000000-0000-4000-8000-000000000011"
     },
     {
@@ -558,7 +599,9 @@
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ JSON.stringify({ ok: false, error: 'שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל.' }) }}",
-        "options": {}
+        "options": {
+          "responseCode": 502
+        }
       },
       "id": "00000000-0000-4000-8000-000000000015"
     },
@@ -614,6 +657,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000017"
     },
     {
@@ -653,6 +699,9 @@
           "name": "Airtable ERP"
         }
       },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
       "id": "00000000-0000-4000-8000-000000000018"
     },
     {
@@ -665,8 +714,10 @@
       ],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ (() => { const o = $('Find Order').first().json.records?.[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}",
-        "options": {}
+        "responseBody": "={{ (() => { const fo = $('Find Order').first().json; if (fo.error || !fo.records) return JSON.stringify({ ok: false, error: 'השירות לא זמין כרגע. נסו שוב בעוד רגע.' }); const o = fo.records[0]; if (!o) return JSON.stringify({ ok: false, error: 'ההזמנה לא נמצאה' }); const f = o.fields; const inv = $json.records?.[0]?.fields || {}; let items = []; try { items = JSON.parse(f.Items || '[]'); } catch (e) {} return JSON.stringify({ ok: true, order: { orderNumber: f.OrderNumber, status: f.Status, items, subtotal: f.Subtotal, shipping: f.Shipping, total: f.Total, created: f.Created, invoiceNumber: f.InvoiceNumber || null, pdfUrl: inv.PdfUrl || null, invoiceStatus: inv.Status || null } }); })() }}",
+        "options": {
+          "responseCode": "={{ ({ down: 502, missing: 404, ok: 200 })[(() => { const fo = $('Find Order').first().json; if (fo.error || !fo.records) return 'down'; return fo.records[0] ? 'ok' : 'missing'; })()] }}"
+        }
       },
       "id": "00000000-0000-4000-8000-000000000019"
     },
@@ -680,12 +731,30 @@
       ],
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ ok: false, error: 'unknown action: ' + ($json.body.action || '') }) }}",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'unknown action, or table/fields not allowed: ' + ($json.body.action || '') + ' ' + ($json.body.table || '') }) }}",
         "options": {
           "responseCode": 400
         }
       },
       "id": "00000000-0000-4000-8000-000000000020"
+    },
+    {
+      "name": "Respond Server Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        180
+      ],
+      "notes": "ענף השגיאה של כל צומת שיכול ליפול. בלעדיו הדפדפן פשוט תלוי עד ה-timeout שלו.",
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: false, error: 'השירות לא זמין כרגע. נסו שוב בעוד רגע.' }) }}",
+        "options": {
+          "responseCode": 502
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000021"
     }
   ],
   "connections": {
@@ -823,6 +892,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Respond Server Error",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -831,6 +907,13 @@
         [
           {
             "node": "Respond Updated",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Server Error",
             "type": "main",
             "index": 0
           }
@@ -856,6 +939,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Respond Server Error",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -875,6 +965,13 @@
         [
           {
             "node": "Respond Chat",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Server Error",
             "type": "main",
             "index": 0
           }
