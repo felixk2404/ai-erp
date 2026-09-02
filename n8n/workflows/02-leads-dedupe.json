@@ -5,9 +5,11 @@
     { "name": "Airtable Trigger", "type": "n8n-nodes-base.airtableTrigger", "typeVersion": 1, "position": [0, 0],
       "parameters": { "authentication": "airtableTokenApi", "baseId": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "tableId": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" }, "triggerField": "Created", "pollTimes": { "item": [ { "mode": "everyMinute" } ] }, "additionalFields": {} },
       "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Same Email", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 0],
+    { "name": "Same Email Or Phone", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 0],
       "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_LEADS__", "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
-        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "filterByFormula", "value": "={{ \"LOWER({Email})='\" + ($json.fields.Email || '').toLowerCase() + \"'\" }}" }, { "name": "fields[]", "value": "Email" } ] }, "options": {} },
+        "sendQuery": true, "queryParameters": { "parameters": [
+          { "name": "filterByFormula", "value": "={{ (() => { const q = (s) => String(s).replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\"); const e = ($json.fields.Email || '').trim().toLowerCase(); const p = ($json.fields.Phone || '').replace(/\\D/g, ''); if (e) return \"LOWER({Email})='\" + q(e) + \"'\"; if (p) return \"REGEX_REPLACE({Phone},\\\"[^0-9]\\\",\\\"\\\")='\" + q(p) + \"'\"; return 'FALSE()'; })() }}" },
+          { "name": "fields[]", "value": "Email" } ] }, "options": {} },
       "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
     { "name": "Set Status", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [520, 0],
       "parameters": { "authentication": "airtableTokenApi", "operation": "update",
@@ -18,7 +20,7 @@
       "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } }
   ],
   "connections": {
-    "Airtable Trigger": { "main": [[{ "node": "Same Email", "type": "main", "index": 0 }]] },
-    "Same Email": { "main": [[{ "node": "Set Status", "type": "main", "index": 0 }]] }
+    "Airtable Trigger": { "main": [[{ "node": "Same Email Or Phone", "type": "main", "index": 0 }]] },
+    "Same Email Or Phone": { "main": [[{ "node": "Set Status", "type": "main", "index": 0 }]] }
   }
 }
