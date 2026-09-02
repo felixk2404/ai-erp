@@ -53,3 +53,35 @@ test('manager chat answers in hebrew with a shekel amount', async ({ page }) => 
   await page.getByRole('button', { name: 'מה ההכנסות החודש?' }).click();
   await expect(page.getByLabel('שיחה').getByText(/₪/).last()).toBeVisible({ timeout: 45_000 });
 });
+
+test('public support page answers without login and shows product cards', async ({ page }) => {
+  await page.context().clearCookies();
+  await page.goto('/support');
+  await expect(page.getByRole('heading', { name: 'איך אפשר לעזור?' })).toBeVisible();
+  await page.getByRole('button', { name: 'יש לכם אוזניות אלחוטיות?' }).click();
+  // הסוכן עונה (בועה שנייה); התוכן תלוי ב-LLM, אז בודקים שקיימת תשובה ושאין שגיאה
+  const bubbles = page.getByLabel('שיחה').locator('.whitespace-pre-wrap');
+  await expect(bubbles).toHaveCount(2, { timeout: 60_000 });
+  await expect(bubbles.nth(1)).not.toContainText('⚠');
+});
+
+test('invoice detail page opens from the list with timeline', async ({ page }) => {
+  await page.goto('/invoices');
+  await page.getByRole('link', { name: 'INV-0001' }).first().click();
+  await expect(page).toHaveURL(/\/invoices\/rec/);
+  await expect(page.getByRole('heading', { name: 'INV-0001', level: 1 })).toBeVisible();
+  await expect(page.getByLabel('ציר זמן')).toBeVisible();
+});
+
+test('command menu opens with cmd+k and navigates', async ({ page }) => {
+  await page.keyboard.press('ControlOrMeta+k');
+  await page.getByPlaceholder('חפש עמוד, לקוח, חשבונית או מוצר…').fill('לידים');
+  await page.keyboard.press('Enter');
+  await expect(page.getByRole('heading', { name: 'לידים', level: 1 })).toBeVisible();
+});
+
+test('dashboard shows charts and attention panel', async ({ page }) => {
+  await expect(page.getByRole('heading', { name: 'הכנסות לפי חודש' })).toBeVisible();
+  await expect(page.getByText('דורש טיפול')).toBeVisible();
+  await expect(page.getByText('תקציר בוקר · סוכן המנהל').first()).toBeVisible();
+});

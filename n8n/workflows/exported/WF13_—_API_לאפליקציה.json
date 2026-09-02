@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "dad3f5d5-e18a-4fce-8822-ceef9203dbfe"
+      "webhookId": "5d96ac48-369d-4ec3-a11d-e20c0f7a971a"
     },
     {
       "name": "Route",
@@ -84,6 +84,54 @@
               },
               "renameOutput": true,
               "outputKey": "chat"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c3",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "update",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "update"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c4",
+                    "leftValue": "={{ $json.body.action }}",
+                    "rightValue": "support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "support"
             }
           ]
         },
@@ -93,6 +141,140 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "name": "Support Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        520,
+        520
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "m",
+              "name": "message",
+              "value": "={{ $json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "s",
+              "name": "sessionId",
+              "value": "=web-{{ $json.body.sessionId || 'anon' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000002"
+    },
+    {
+      "name": "Support Core",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        780,
+        520
+      ],
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "BEuvek30KqE2zEM7"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message": "={{ $json.message }}",
+            "sessionId": "={{ $json.sessionId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000003"
+    },
+    {
+      "name": "Respond Support",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        520
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}",
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000004"
+    },
+    {
+      "name": "Update Record",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        340
+      ],
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://api.airtable.com/v0/app1jXGnS2j0tCxEM/{{ encodeURIComponent($json.body.table) }}/{{ $json.body.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ fields: $json.body.payload, typecast: true }) }}",
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Qjg3M9Ztcfuye68g",
+          "name": "Airtable ERP"
+        }
+      },
+      "id": "00000000-0000-4000-8000-000000000005"
+    },
+    {
+      "name": "Respond Updated",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        780,
+        340
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}",
+        "options": {}
+      },
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Payload",
@@ -107,7 +289,7 @@
         "jsonOutput": "={{ $json.body.payload }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Create Record",
@@ -146,7 +328,7 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Respond Created",
@@ -161,7 +343,7 @@
         "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "Chat Input",
@@ -190,7 +372,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000010"
     },
     {
       "name": "Manager Core",
@@ -238,7 +420,7 @@
           "waitForSubWorkflow": true
         }
       },
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000011"
     },
     {
       "name": "Respond Chat",
@@ -253,7 +435,7 @@
         "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000012"
     },
     {
       "name": "Respond Bad Request",
@@ -270,7 +452,7 @@
           "responseCode": 400
         }
       },
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000013"
     }
   ],
   "connections": {
@@ -303,7 +485,54 @@
         ],
         [
           {
+            "node": "Update Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Support Input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
             "node": "Respond Bad Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support Input": {
+      "main": [
+        [
+          {
+            "node": "Support Core",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Support Core": {
+      "main": [
+        [
+          {
+            "node": "Respond Support",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Record": {
+      "main": [
+        [
+          {
+            "node": "Respond Updated",
             "type": "main",
             "index": 0
           }
