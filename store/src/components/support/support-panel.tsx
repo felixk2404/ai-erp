@@ -61,6 +61,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
   const idRef = useRef(0);
 
   const sku = pathname.match(/^\/products\/([^/]+)/)?.[1];
+  const empty = messages.length === 0 && !pending;
 
   // prefill שהגיע מאירוע `aie:support` בזמן שהפאנל פתוח — התאמת state בזמן render,
   // הדפוס המומלץ ב-React במקום setState בתוך effect.
@@ -97,6 +98,7 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
   return (
     <motion.div
       role="dialog"
+      aria-modal="false"
       aria-label="שירות לקוחות"
       initial={{ opacity: 0, scale: 0.94, y: 16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -127,26 +129,30 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
       </header>
 
       <div role="log" aria-live="polite" aria-label="שיחה" className="relative flex flex-1 flex-col overflow-y-auto px-4 py-4">
-        {/* השיחה נצמדת לתחתית — הבועה האחרונה תמיד ליד תיבת הכתיבה. */}
-        <div className="mt-auto space-y-3">
-          {messages.length === 0 && (
-            <div className="space-y-4">
-              <p className="text-sm text-glow-2">{greetingFor(pathname)}</p>
-              <div className="flex flex-col items-start gap-2">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => ask(s)}
-                    className="min-h-10 rounded-sm border border-rule bg-panel-2 px-3 py-2 text-start text-sm text-glow-2 transition-colors hover:border-rule-strong hover:text-glow"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
+        {empty ? (
+          /* מצב ריק — קומפוזיציה משלו בראש הגוף: פתיח, ברכה, ושלוש שאלות פתיחה. */
+          <div className="space-y-5">
+            <div className="space-y-1.5">
+              <p className="num text-[11px] tracking-wider text-glow-3">שירות לקוחות</p>
+              <p className="text-[18px] leading-snug font-medium text-glow">{greetingFor(pathname)}</p>
+              <p className="text-sm text-glow-2">מלאי, מחיר, משלוח או החזרה — התשובה מגיעה מהקטלוג עצמו.</p>
             </div>
-          )}
-
+            <div className="flex flex-col items-start gap-2">
+              {SUGGESTIONS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => ask(s)}
+                  className="min-h-10 rounded-md border border-rule bg-panel-2 px-3 py-2 text-start text-sm text-glow-2 transition-colors hover:border-rule-strong hover:text-glow"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          /* יש שיחה — נצמדת לתחתית, הבועה האחרונה תמיד ליד תיבת הכתיבה. */
+          <div className="mt-auto space-y-3">
           <AnimatePresence initial={false}>
             {messages.map((m) => (
               <motion.div
@@ -201,7 +207,8 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
             </div>
           )}
           <div ref={endRef} />
-        </div>
+          </div>
+        )}
       </div>
 
       <form
@@ -226,13 +233,15 @@ export function SupportPanel({ prefill, onClose }: { prefill: { text: string; at
             maxLength={500}
             placeholder="כתבו הודעה…"
             aria-label="הודעה"
-            className="max-h-24 min-h-10 flex-1 resize-none rounded-sm border-rule bg-panel-2 py-2 text-sm md:text-sm"
+            /* טבעת 1px שקטה במקום ה-outline הגלובלי בן 2px — הוא לא ב-@layer ולכן צריך `!`.
+               beam/60 ולא /40 כדי לעבור את יחס הניגודיות 3:1 שנדרש לסימון פוקוס. */
+            className="max-h-24 min-h-10 flex-1 resize-none rounded-sm border-rule bg-panel-2 py-2 text-sm outline-none! focus-visible:border-rule-strong focus-visible:ring-1 focus-visible:ring-beam/60 md:text-sm"
           />
           <button
             type="submit"
             disabled={pending || !input.trim()}
             aria-label="שליחה"
-            className="grid size-10 shrink-0 place-items-center rounded-sm bg-beam text-void transition-opacity hover:opacity-90 disabled:opacity-35"
+            className="grid size-10 shrink-0 place-items-center rounded-md bg-beam text-void transition-opacity hover:opacity-90 disabled:opacity-35"
           >
             <ArrowUpIcon size={18} strokeWidth={2} aria-hidden />
           </button>

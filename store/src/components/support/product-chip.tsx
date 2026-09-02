@@ -39,7 +39,7 @@ export function ProductChip({ product }: { product: SupportProduct }) {
           add({ sku: product.sku, name: product.name, price: product.price, qty: 1, service: product.service, imageUrl: product.imageUrl });
           toast.success('נוסף לסל', { description: product.name });
         }}
-        className="h-10 shrink-0 rounded-sm border border-rule-strong bg-panel-3 px-3 text-sm font-medium text-glow transition-colors hover:border-beam/50 hover:text-beam disabled:pointer-events-none disabled:text-glow-4"
+        className="h-10 shrink-0 rounded-md border border-rule-strong bg-panel-3 px-3 text-sm font-medium text-glow transition-colors hover:border-beam/50 hover:text-beam disabled:pointer-events-none disabled:text-glow-4"
       >
         הוסף לסל
       </button>

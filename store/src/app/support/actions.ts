@@ -28,7 +28,7 @@ async function sessionId(): Promise<string> {
   const existing = jar.get(COOKIE)?.value;
   if (existing) return existing;
   const id = crypto.randomUUID();
-  jar.set(COOKIE, id, { httpOnly: true, sameSite: 'lax', path: '/', maxAge: WEEK });
+  jar.set(COOKIE, id, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/', maxAge: WEEK });
   return id;
 }
 
