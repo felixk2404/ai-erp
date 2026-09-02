@@ -13,3 +13,5 @@ add() { # table name json
 add Products Sku '{"name":"Sku","type":"singleLineText"}'
 add Products ImageUrl '{"name":"ImageUrl","type":"url"}'
 add Invoices Items '{"name":"Items","type":"multilineText","description":"JSON: [{sku,name,qty,price}]"}'
+add Products Stock '{"name":"Stock","type":"number","options":{"precision":0},"description":"כמות במלאי. ריק לשירותים."}'
+add Products Highlights '{"name":"Highlights","type":"multilineText","description":"3 נקודות מפרט, שורה לכל נקודה"}'

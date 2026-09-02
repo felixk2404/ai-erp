@@ -30,4 +30,19 @@
 | Customers | Email | Email | |
 | Customers | Phone | Phone number | |
 
-יצירה: `airtable/create-tables.sh` (בטוח להרצה חוזרת). שדות `Created` (Created time) אינם נתמכים ב-Metadata API ומתווספים ידנית ב-UI ב-Invoices וב-Leads. אימות: `airtable/verify-schema.sh`. רשומות ראשונות לבדיקה: `airtable/seed.sh`.
+## Orders (חנות)
+| שדה | סוג | הערות |
+|---|---|---|
+| OrderNumber | text | ORD-0001, מספור רץ ב-WF10 |
+| CustomerId | text | מפתח זר ל-Customers |
+| Name, Email, Phone, Address, City | text/email/phone | פרטי הלקוח כפי שהוקלדו בקופה |
+| Items | long text | JSON [{sku,name,qty,price}] — אותו פורמט כמו Invoices.Items |
+| Subtotal, Shipping, Vat, Total | number | מחושבים ב-WF10; מחירים כוללים מע"מ |
+| Status | text | new → confirmed → shipped → delivered / cancelled |
+| InvoiceNumber | text | INV-000N שנוצרה עבור ההזמנה |
+| Note | long text | הערת לקוח |
+| Created | created time | ידני |
+
+Products.Stock (number, integer) — רק פריטים פיזיים; שירותים ריק. Products.Highlights — 3 שורות מפרט.
+
+יצירה: `airtable/create-tables.sh` (בטוח להרצה חוזרת). שדות `Created` (Created time) אינם נתמכים ב-Metadata API ומתווספים ידנית ב-UI ב-Invoices, ב-Leads וב-Orders. אימות: `airtable/verify-schema.sh`. רשומות ראשונות לבדיקה: `airtable/seed.sh`.

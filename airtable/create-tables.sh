@@ -9,6 +9,7 @@ H=(-H "Authorization: Bearer $AIRTABLE_PAT" -H "Content-Type: application/json")
 text()     { printf '{"name":"%s","type":"singleLineText"}' "$1"; }
 longtext() { printf '{"name":"%s","type":"multilineText"}' "$1"; }
 num()      { printf '{"name":"%s","type":"number","options":{"precision":2}}' "$1"; }
+int()      { printf '{"name":"%s","type":"number","options":{"precision":0}}' "$1"; }
 email()    { printf '{"name":"%s","type":"email"}' "$1"; }
 phone()    { printf '{"name":"%s","type":"phoneNumber"}' "$1"; }
 url()      { printf '{"name":"%s","type":"url"}' "$1"; }
@@ -39,9 +40,10 @@ create Leads     "$(text Name),$(email Email),$(text Company),$(text Status)"
 create Products  "$(text Name),$(text Category),$(num Price),$(longtext Description),$(checkbox InStock)"
 create Tasks     "$(text Title),$(text Status)"
 create Customers "$(text CustomerId),$(text Name),$(email Email),$(phone Phone)"
+create Orders    "$(text OrderNumber),$(text CustomerId),$(text Name),$(email Email),$(phone Phone),$(text Address),$(text City),$(longtext Items),$(num Subtotal),$(num Shipping),$(num Vat),$(num Total),$(text Status),$(text InvoiceNumber),$(longtext Note)"
 # Metadata API אינו תומך ביצירת createdTime (UNSUPPORTED_FIELD_TYPE_FOR_CREATE), גם לא כשדה נפרד.
 # אבל שינוי שם כן נתמך: אם נוצר ידנית בשם אחר (created / Created Time), מתקנים ל-Created.
-for t in Invoices Leads; do
+for t in Invoices Leads Orders; do
   if has_field "$t" Created; then echo "$t.Created exists"; continue; fi
   fid=$(echo "$SCHEMA" | jq -r --arg t "$t" '.tables[] | select(.name==$t) | .fields[] | select(.type=="createdTime") | .id' | head -1)
   if [ -n "$fid" ]; then
