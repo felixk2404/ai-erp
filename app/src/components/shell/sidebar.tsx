@@ -4,6 +4,7 @@ import { NavLink, type NavIcon } from './nav-link';
 import { PulseDot } from './pulse-dot';
 import { logout } from '@/app/(auth)/login/actions';
 import { CommandMenuTrigger } from '@/components/command-menu';
+import { HotkeysHelpButton } from './hotkeys';
 
 export type NavCounts = { invoices: number; leads: number; tasks: number };
 
@@ -55,9 +56,7 @@ export function Sidebar({ counts }: { counts: NavCounts }) {
               יציאה
             </button>
           </form>
-          <kbd className="mono text-[10px] text-readout-3 border border-rule rounded px-1.5 py-0.5" title="קיצורי מקלדת">
-            ?
-          </kbd>
+          <HotkeysHelpButton />
         </div>
       </div>
     </aside>

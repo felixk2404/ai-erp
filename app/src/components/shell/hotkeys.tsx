@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 
@@ -20,22 +20,43 @@ const isTyping = (t: EventTarget | null) => {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable;
 };
 
+/** אירוע לפתיחת שכבת העזרה בלי לעבור דרך המקלדת — כדי שגם כשהקיצורים כבויים יש דרך פנימה. */
+export const HELP_EVENT = 'erp:hotkeys-help';
+
+const PREF = 'erp-hotkeys';
+const readPref = () => localStorage.getItem(PREF) !== 'off';
+
 /**
  * קיצורי מקלדת: `?` עזרה · `g` ואז אות = ניווט · `n` = פעולת "חדש" בעמוד (אלמנט עם data-hotkey="new") · ⌘K חיפוש (ב-CommandMenu).
  * לא פעיל בזמן הקלדה או כשדיאלוג פתוח.
+ * WCAG 2.1.4 — קיצור בתו בודד חייב מתג כיבוי; המתג יושב בשכבת העזרה ונשמר ב-localStorage.
+ * ⌘K לא נכלל: הוא דורש מקש צירוף ולכן לא נופל תחת 2.1.4.
  */
 export function Hotkeys() {
   const [help, setHelp] = useState(false);
+  const [enabled, setEnabled] = useState(true);
   const router = useRouter();
+
+  // נקרא בפתיחה ולא ב-effect: אין קפיצת הידרציה, ואין state שצריך לסנכרן עם הדפדפן
+  const openHelp = useCallback(() => {
+    setEnabled(readPref());
+    setHelp((h) => !h);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener(HELP_EVENT, openHelp);
+    return () => window.removeEventListener(HELP_EVENT, openHelp);
+  }, [openHelp]);
 
   useEffect(() => {
     let pendingG = 0;
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey || isTyping(e.target)) return;
+      if (!readPref()) return;
       const dialogOpen = !!document.querySelector('[role="dialog"][data-open], [role="dialog"][data-state="open"], [data-slot="dialog-content"], [data-slot="sheet-content"]');
       if (e.key === '?') {
         e.preventDefault();
-        setHelp((h) => !h);
+        openHelp();
         return;
       }
       if (dialogOpen) return;
@@ -57,10 +78,15 @@ export function Hotkeys() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [router]);
+  }, [router, openHelp]);
+
+  const toggle = (on: boolean) => {
+    setEnabled(on);
+    localStorage.setItem(PREF, on ? 'on' : 'off');
+  };
 
   const rows: [string, string][] = [
-    ['⌘K', 'חיפוש וניווט · שאלה לסוכן'],
+    ['⌘ K', 'חיפוש וניווט · שאלה לסוכן'],
     ['?', 'שכבת העזרה הזו'],
     ['n', 'פריט חדש בעמוד הנוכחי'],
     ...Object.entries(GO).map(([k, [, label]]) => [`g ${k}`, label] as [string, string]),
@@ -71,7 +97,11 @@ export function Hotkeys() {
     <Dialog open={help} onOpenChange={setHelp}>
       <DialogContent dir="rtl" className="max-w-sm p-5">
         <DialogTitle className="font-heading text-lg font-bold">קיצורי מקלדת</DialogTitle>
-        <DialogDescription className="text-xs text-readout-3">חדר הבקרה נשלט מהמקלדת. לחצו ? בכל עמוד.</DialogDescription>
+        <DialogDescription className="text-xs text-readout-3">חדר הבקרה נשלט מהמקלדת. לחץ ? בכל עמוד, או פתח את השכבה מכפתור ה-? בסרגל הצד.</DialogDescription>
+        <label className="mt-3 flex items-center justify-between gap-3 rounded-md border border-rule bg-well px-3 py-2 text-sm">
+          <span className="text-readout-2">קיצורי מקלדת פעילים</span>
+          <input type="checkbox" checked={enabled} onChange={(e) => toggle(e.target.checked)} className="size-4 accent-[var(--signal)]" />
+        </label>
         <ul className="mt-2 divide-y divide-rule">
           {rows.map(([k, label]) => (
             <li key={k} className="flex items-center justify-between py-2 text-sm">
@@ -84,5 +114,19 @@ export function Hotkeys() {
         </ul>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** ה-? בסרגל הצד היה <kbd title>: לא ממוקד, לא ניתן להפעלה, ו-title לא קיים במגע (4.1.2, 3.2.6). */
+export function HotkeysHelpButton({ className = '' }: { className?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => window.dispatchEvent(new Event(HELP_EVENT))}
+      aria-label="קיצורי מקלדת"
+      className={`mono text-[10px] text-readout-3 hover:text-readout border border-rule rounded px-1.5 py-0.5 transition-colors ${className}`}
+    >
+      <span aria-hidden>?</span>
+    </button>
   );
 }
