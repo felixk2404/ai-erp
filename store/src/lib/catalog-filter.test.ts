@@ -8,6 +8,7 @@ import {
   isService,
   parseCatalogParams,
   gridPlan,
+  pickLead,
 } from './catalog-filter';
 import * as server from './catalog';
 import type { Product } from './types';
@@ -134,5 +135,31 @@ describe('gridPlan', () => {
     for (const n of [4, 5, 34]) {
       expect(gridPlan(n)).toEqual({ lead: true, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' });
     }
+  });
+});
+
+describe('pickLead', () => {
+  const lead = [
+    p({ Name: 'שירות יקר', Sku: 'SV', Category: 'שירותים', Price: 9999, ImageUrl: 'x' }),
+    p({ Name: 'אזל ויקר', Sku: 'OUT', Category: 'מסכים', Price: 5000, Stock: 0, ImageUrl: 'x' }),
+    p({ Name: 'בלי תמונה', Sku: 'NOIMG', Category: 'מסכים', Price: 4000, Stock: 2 }),
+    p({ Name: 'מסך יקר', Sku: 'BIG', Category: 'מסכים', Price: 1290, Stock: 2, ImageUrl: 'x' }),
+    p({ Name: 'כבל זול', Sku: 'CHEAP', Category: 'כבלים', Price: 45, Stock: 9, ImageUrl: 'x' }),
+  ];
+
+  it('היקר שבמוצרים הפיזיים שבמלאי ועם תמונה', () => {
+    expect(pickLead(lead)?.fields.Sku).toBe('BIG');
+  });
+
+  it('שירותים, אזל ובלי תמונה לא נבחרים', () => {
+    for (const sku of ['SV', 'OUT', 'NOIMG']) {
+      expect(pickLead(lead)?.fields.Sku).not.toBe(sku);
+    }
+  });
+
+  it('כשאין מועמד — הפריט הראשון', () => {
+    const onlyServices = [p({ Name: 'א', Sku: 'S1', Category: 'שירותים', Price: 10 }), p({ Name: 'ב', Sku: 'S2', Category: 'שירותים', Price: 20 })];
+    expect(pickLead(onlyServices)?.fields.Sku).toBe('S1');
+    expect(pickLead([])).toBeNull();
   });
 });

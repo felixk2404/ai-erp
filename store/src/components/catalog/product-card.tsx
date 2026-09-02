@@ -12,8 +12,9 @@ const SIZES = '(min-width: 1280px) 300px, (min-width: 1024px) 25vw, (min-width: 
 const SIZES_LEAD = '(min-width: 1280px) 612px, (min-width: 1024px) 50vw, (min-width: 640px) 50vw, 100vw';
 
 /**
- * חפץ בחדר תצוגה: במנוחה לא מואר (אפור, brightness-90); תחת הסמן הכרטיס
- * מיטה ±6°, הילת beam עוקבת, והמוצר מקבל צבע ב-400ms.
+ * חפץ בחדר תצוגה: במנוחה המוצר בצבע מלא — האפור שמור לכניסה בגלילה בלבד
+ * (`Reveal` מריץ grayscale(1)→0), כי אפור קבוע הופך את העמוד למת.
+ * תחת הסמן הכרטיס מיטה ±6°, מקבל הילת beam ומתרומם 2px.
  * היררכיה: תמונה → שם → שורת מפרט → מלאי + מחיר. הקישור מכסה את כל הכרטיס
  * (`after:inset-0`), וכפתור ההוספה הוא תחנת טאב נפרדת מעליו.
  * `variant="lead"` הוא הפריט המוביל של הרשת — גדול פי ארבעה, שם 22, שתי שורות
@@ -41,7 +42,7 @@ export function ProductCard({ product, variant = 'default' }: { product: Product
                 sizes={lead ? SIZES_LEAD : SIZES}
                 priority={lead}
                 data-fly-src={sku}
-                className="object-cover brightness-90 grayscale transition-[filter,scale] duration-[400ms] ease-out group-hover:scale-[1.03] group-hover:brightness-100 group-hover:grayscale-0 group-focus-within:brightness-100 group-focus-within:grayscale-0"
+                className="object-cover"
               />
             ) : (
               <div data-fly-src={sku} className="grid h-full place-items-center text-glow-4">

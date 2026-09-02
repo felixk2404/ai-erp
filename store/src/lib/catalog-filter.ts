@@ -93,3 +93,17 @@ export function gridPlan(count: number): GridPlan {
     ? { lead: true, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' }
     : { lead: false, columns: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' };
 }
+
+/**
+ * המוביל של הרשת חייב להיות מוצר אמיתי, לא שירות: פיזי, במלאי, עם תמונה —
+ * והיקר שבהם, כי זה הפריט שמצדיק חלון ראווה. אם אף אחד לא עומד בתנאים
+ * (למשל סינון לקטגוריית "שירותים") נופלים לפריט הראשון כדי שתמיד יהיה מוביל.
+ */
+export function pickLead(products: Product[]): Product | null {
+  const eligible = products.filter((p) => !isService(p) && inStock(p) && p.fields.ImageUrl);
+  const dearest = eligible.reduce<Product | null>(
+    (best, p) => (best && (best.fields.Price ?? 0) >= (p.fields.Price ?? 0) ? best : p),
+    null,
+  );
+  return dearest ?? products[0] ?? null;
+}

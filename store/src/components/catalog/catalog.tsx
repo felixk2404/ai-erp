@@ -8,7 +8,7 @@ import { Reveal } from '@/components/motion/reveal';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/catalog/product-card';
 import { SpecGrid } from '@/components/catalog/spec-grid';
-import { catalogQuery, filterProducts, gridPlan, type CatalogParams, type Sort, type View } from '@/lib/catalog-filter';
+import { catalogQuery, filterProducts, gridPlan, pickLead, type CatalogParams, type Sort, type View } from '@/lib/catalog-filter';
 import type { Product } from '@/lib/types';
 
 const SORT_LABELS: Record<Sort, string> = {
@@ -48,6 +48,10 @@ export function Catalog({
 
   const results = useMemo(() => filterProducts(products, { c, q, sort }), [products, c, q, sort]);
   const plan = gridPlan(results.length);
+  // המוביל נבחר לפי ערך ולא לפי מיקום במיון, ומורם לראש הרשימה;
+  // שאר הכרטיסים נשארים בסדר שהמשתמש ביקש.
+  const lead = plan.lead ? pickLead(results) : null;
+  const ordered = lead ? [lead, ...results.filter((x) => x !== lead)] : results;
 
   const prev = useRef<CatalogParams | null>(null);
   useEffect(() => {
@@ -218,7 +222,7 @@ export function Catalog({
         </div>
       ) : (
         <div className={`grid gap-4 pt-8 ${plan.columns}`}>
-          {results.map((p, i) => (
+          {ordered.map((p, i) => (
             <Reveal key={p.fields.Sku ?? p.id} delay={Math.min(i * 0.04, 0.4)} className={`h-full ${plan.lead && i === 0 ? 'lg:col-span-2 lg:row-span-2' : ''}`}>
               <ProductCard product={p} variant={plan.lead && i === 0 ? 'lead' : 'default'} />
             </Reveal>
