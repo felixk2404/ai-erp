@@ -8,8 +8,15 @@
     { "name": "Route", "type": "n8n-nodes-base.switch", "typeVersion": 3.4, "position": [260, 0],
       "parameters": { "mode": "rules", "rules": { "values": [
         { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c1", "leftValue": "={{ $json.body.action }}", "rightValue": "create", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "create" },
-        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c2", "leftValue": "={{ $json.body.action }}", "rightValue": "chat", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "chat" }
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c2", "leftValue": "={{ $json.body.action }}", "rightValue": "chat", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "chat" },
+        { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "c3", "leftValue": "={{ $json.body.action }}", "rightValue": "update", "operator": { "type": "string", "operation": "equals" } } ], "combinator": "and" }, "renameOutput": true, "outputKey": "update" }
       ] }, "looseTypeValidation": true, "options": { "fallbackOutput": "extra" } } },
+    { "name": "Update Record", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 340],
+      "parameters": { "method": "PATCH", "url": "=https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/{{ encodeURIComponent($json.body.table) }}/{{ $json.body.id }}", "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
+        "sendBody": true, "contentType": "json", "specifyBody": "json", "jsonBody": "={{ JSON.stringify({ fields: $json.body.payload, typecast: true }) }}", "options": {} },
+      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
+    { "name": "Respond Updated", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [780, 340],
+      "parameters": { "respondWith": "json", "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}", "options": {} } },
     { "name": "Payload", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [520, -160],
       "parameters": { "mode": "raw", "jsonOutput": "={{ $json.body.payload }}", "options": {} } },
     { "name": "Create Record", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [780, -160],
@@ -41,8 +48,10 @@
     "Route": { "main": [
       [{ "node": "Payload", "type": "main", "index": 0 }],
       [{ "node": "Chat Input", "type": "main", "index": 0 }],
+      [{ "node": "Update Record", "type": "main", "index": 0 }],
       [{ "node": "Respond Bad Request", "type": "main", "index": 0 }]
     ] },
+    "Update Record": { "main": [[{ "node": "Respond Updated", "type": "main", "index": 0 }]] },
     "Payload": { "main": [[{ "node": "Create Record", "type": "main", "index": 0 }]] },
     "Create Record": { "main": [[{ "node": "Respond Created", "type": "main", "index": 0 }]] },
     "Chat Input": { "main": [[{ "node": "Manager Core", "type": "main", "index": 0 }]] },
