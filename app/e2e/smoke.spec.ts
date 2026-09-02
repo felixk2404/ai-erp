@@ -26,7 +26,7 @@ test('wrong password shows an error', async ({ page }) => {
 test('dashboard renders rtl with the ledger strip', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
   await expect(page.locator('html')).toHaveAttribute('lang', 'he');
-  await expect(page.getByText('הכנסות החודש')).toBeVisible();
+  await expect(page.getByRole('region', { name: 'סיכום' }).getByText('הכנסות החודש')).toBeVisible();
   await expect(page.getByText(/₪/).first()).toBeVisible();
 });
 
