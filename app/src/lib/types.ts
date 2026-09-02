@@ -20,7 +20,15 @@ export type InvoiceFields = {
 };
 export type LeadFields = { Name: string; Email?: string; Company?: string; Status?: LeadStatus; Created: string };
 export type CustomerFields = { CustomerId: string; Name: string; Email?: string; Phone?: string };
-export type ProductFields = { Name: string; Category?: string; Price?: number; Description?: string; InStock?: boolean };
+export type ProductFields = {
+  Name: string;
+  Sku?: string;
+  Category?: string;
+  Price?: number;
+  Description?: string;
+  InStock?: boolean;
+  ImageUrl?: string;
+};
 export type TaskFields = { Title: string; Status?: TaskStatus };
 
 export type Invoice = Rec<InvoiceFields>;
