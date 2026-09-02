@@ -47,7 +47,8 @@ export function SystemMap({ pulse }: { pulse: Pulse }) {
         <span className="mono text-[10px] text-readout-3 mt-1">{pulse.connected ? 'ONLINE' : 'OFFLINE'}</span>
       </div>
 
-      <div className="relative mt-2 -mx-2 hud-grid rounded-md">
+      {/* מתחת ל-sm ה-SVG מתכווץ אבל התוויות לא — הן נחתכות זו על זו. הרשימה שמתחת נושאת את אותו מידע. */}
+      <div className="relative mt-2 -mx-2 hud-grid rounded-md hidden sm:block">
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="מפת ה-workflows של המערכת">
           <style>{`
             .trace { stroke: var(--rule-strong); stroke-width: 1; fill: none; }
