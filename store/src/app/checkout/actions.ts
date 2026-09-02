@@ -25,6 +25,8 @@ const OFFLINE = 'לא הצלחנו לשמור את ההזמנה, נסו שוב �
 /** runbook §7.1: אחרי timeout/5xx ייתכן שההזמנה כן נשמרה — אסור להציע "נסו שוב". */
 const MAYBE_SAVED =
   'שגיאה זמנית בשמירת ההזמנה. ייתכן שההזמנה נשמרה — בדקו בעמוד מעקב ההזמנה לפי האימייל.';
+/** אותו מצב בדיוק מגיע גם כגוף `ok:false` מתועד של WF13, לא רק כחריגת תעבורה. */
+const MAYBE_SAVED_MARK = 'ייתכן שההזמנה נשמרה';
 
 /**
  * מצב הטופס. שטוח בכוונה: הטופס קורא `errors?.name` בלי לצמצם איחוד בכל שדה.
@@ -79,7 +81,12 @@ export async function placeOrder(_prev: PlaceOrderState, fd: FormData): Promise<
   try {
     const res = await erpCall<OrderResult>({ action: 'order', order: toOrderPayload(parsed.data) }, ORDER_TIMEOUT_MS);
     // HTTP 200 גם לכישלון עסקי — ההבחנה היא ב-ok, לא בסטטוס.
-    if (!res.ok) return { error: res.error, outOfStock: res.outOfStock?.map((o) => o.sku), values };
+    if (!res.ok) {
+      // WF13 מדווח "אולי נשמרה" גם בגוף תקין; הטופס חייב להתייחס אליו כמו
+      // לכישלון תעבורה — להדיח את הכפתור ולהציע מעקב, לא שליחה חוזרת.
+      if (res.error?.includes(MAYBE_SAVED_MARK)) return { error: res.error, maybeSaved: true, values };
+      return { error: res.error, outOfStock: res.outOfStock?.map((o) => o.sku), values };
+    }
     return { ok: true, orderNumber: res.orderNumber, email: parsed.data.email };
   } catch (e) {
     // timeout או 5xx: ייתכן ש-WF10 כבר כתב את ההזמנה. כל שאר התקלות — ניסיון חוזר בטוח.

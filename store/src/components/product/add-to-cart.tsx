@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Quantity } from '@/components/cart/quantity';
 import { useCart } from '@/components/cart/cart-provider';
 import { ils } from '@/lib/format';
+import { ADD_REFUSALS } from '@/lib/ui';
 
 /** השירות המשלים שהעמוד מציע (TY-SRV-01) — כבר מסונן בשרת, ולכן פשוט. */
 export type InstallOffer = { sku: string; name: string; price: number };
@@ -27,12 +28,18 @@ type Props = {
  * a11y: אזור חי אחד בלבד — זה שבתוך בורר הכמות. הכפלת ההודעה (גם הכמות וגם
  * הסכום) מקריאה פעמיים את אותו שינוי, ולכן הסכום בכפתור נשאר טקסט רגיל.
  *
- * אין טוסט על הוספה לסל: האישור הוא הטיסה לעגלה, המונה בכותרת והמגירה שנפתחת.
- * אזל מלאי — המחיר עדיין מוצג (זו עדיין החלטת קנייה), והפעולה היחידה היא הרשמה.
+ * אין טוסט על הוספה מוצלחת: האישור הוא הטיסה לעגלה, המונה בכותרת והמגירה שנפתחת.
+ * טוסט יש רק כשהעגלה סירבה (10 שורות / 99 יחידות) — שם אין שום משוב אחר.
+ * אזל מלאי — המחיר עדיין מוצג (זו עדיין החלטת קנייה), ובמקום הבטחה שאין לנו
+ * מאחוריה מנגנון, אומרים את האמת ופותחים את הבוט.
  */
 export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: Props) {
   const { add } = useCart();
   const [qty, setQty] = useState(1);
+  const put = (line: Parameters<typeof add>[0]) => {
+    const refusal = ADD_REFUSALS[add(line)];
+    if (refusal) toast(refusal);
+  };
 
   if (!ok) {
     return (
@@ -42,10 +49,10 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
         </p>
         <Button
           variant="link"
-          onClick={() => toast('נרשמת, נודיע כשיחזור למלאי')}
-          className="h-auto justify-center px-0 text-[14px] text-glow-2 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
+          onClick={() => window.dispatchEvent(new CustomEvent('aie:support', { detail: { sku } }))}
+          className="h-auto justify-center px-0 text-center text-[11px] leading-4 text-glow-3 underline decoration-rule-strong underline-offset-4 hover:text-glow hover:decoration-beam"
         >
-          הודיעו לי
+          התראות חזרה למלאי לא זמינות בהדגמה — שאלו את הבוט
         </Button>
       </div>
     );
@@ -56,7 +63,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
       <div className="flex items-center gap-3">
         <Quantity value={qty} onChange={setQty} />
         <Button
-          onClick={() => add({ sku, name, price, qty, service, imageUrl })}
+          onClick={() => put({ sku, name, price, qty, service, imageUrl })}
           className="h-11 flex-1 gap-1.5 rounded-sm px-4 text-[14px]"
         >
           הוסף לסל —<span className="num">{ils(price * qty)}</span>
@@ -68,7 +75,7 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
           variant="ghost"
           // ponytail: לשירות אין תמונה על העמוד הזה, ולכן FlyToCart (מחפש [data-fly-src="SKU"])
           // נופל למגירה בלבד — הפידבק הנכון ממילא, כי אין חפץ שיעוף.
-          onClick={() => add({ sku: install.sku, name: install.name, price: install.price, qty: 1, service: true })}
+          onClick={() => put({ sku: install.sku, name: install.name, price: install.price, qty: 1, service: true })}
           className="h-11 w-full justify-between rounded-sm px-4 text-[14px] text-glow-2 hover:text-glow"
         >
           הזמן התקנה

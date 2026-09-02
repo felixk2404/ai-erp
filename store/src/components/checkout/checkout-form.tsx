@@ -125,6 +125,9 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
   const items = JSON.stringify(lines.map(({ sku, qty, service }) => ({ sku, qty, service })));
   const missingNames = (state.outOfStock ?? []).map((sku) => lines.find((l) => l.sku === sku)?.name ?? sku);
   const blocked = missingNames.length > 0;
+  // "אולי נשמרה" (timeout/5xx או גוף WF13 מתועד) — שליחה חוזרת עלולה לכפול הזמנה,
+  // ולכן ה-CTA מודח לאותו מתאר שקט של מצב "אזל", והמעקב הוא הפעולה המוצעת.
+  const demoted = blocked || Boolean(state.maybeSaved);
   // שגיאת "העגלה ריקה" תלויה בשדה מוסתר — היא חייבת להופיע בפאנל, לא מתחת לכלום.
   const error = state.error ?? state.errors?.items;
 
@@ -305,7 +308,7 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
             aria-disabled={pending}
             onClick={guardPending}
             className={
-              blocked
+              demoted
                 ? 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md border border-rule-strong text-[16px] font-medium text-glow-2 transition-colors hover:bg-panel-2 hover:text-glow aria-disabled:text-glow-4'
                 : 'relative flex h-12 w-full items-center justify-center gap-2 rounded-md bg-beam text-[16px] font-medium text-void transition-colors hover:bg-beam/85 aria-disabled:bg-beam/60'
             }
@@ -317,8 +320,8 @@ export function CheckoutForm({ onPlaced }: { onPlaced: () => void }) {
               </>
             ) : (
               <span className="flex items-center gap-2">
-                <span>{blocked ? 'שליחה חוזרת' : 'אישור הזמנה'}</span>
-                <span aria-hidden className={blocked ? 'text-glow-4' : 'text-void/45'}>
+                <span>{demoted ? 'שליחה חוזרת' : 'אישור הזמנה'}</span>
+                <span aria-hidden className={demoted ? 'text-glow-3' : 'text-void/45'}>
                   —
                 </span>
                 <span className="num">{ils(totals.total)}</span>

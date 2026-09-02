@@ -103,11 +103,11 @@ test('וידג׳ט השירות נפתח ומחזיר תשובה מהסוכן', 
   await expect(chat.locator('p.bg-panel-3')).toHaveCount(1, { timeout: 45_000 });
 });
 
-test('מוצר שאזל: תג "אזל" וקישור להרשמה במקום כפתור קנייה', async ({ page }) => {
+test('מוצר שאזל: תג "אזל" והפניה לבוט במקום הבטחת התראה', async ({ page }) => {
   await page.goto(`/products/${OUT_OF_STOCK_SKU}`);
   const buyBox = page.locator('aside').first();
   await expect(buyBox.getByText('אזל')).toBeVisible();
-  await expect(buyBox.getByRole('button', { name: 'הודיעו לי' })).toBeVisible();
+  await expect(buyBox.getByRole('button', { name: /לא זמינות בהדגמה/ })).toBeVisible();
   await expect(buyBox.getByRole('button', { name: /הוסף לסל/ })).toHaveCount(0);
 });
 

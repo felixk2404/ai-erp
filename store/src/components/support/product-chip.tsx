@@ -5,11 +5,14 @@ import { toast } from 'sonner';
 import { PackageIcon } from 'lucide-react';
 import { useCart } from '@/components/cart/cart-provider';
 import { ils } from '@/lib/format';
+import { ADD_REFUSALS } from '@/lib/ui';
 import type { SupportProduct } from '@/app/support/actions';
 
 /**
  * כרטיס מוצר שהסוכן הזכיר בתשובה. שורת בקרה צפופה: תמונה 48, שם, מחיר ומצב מלאי,
  * וכפתור אחד — הפעולה היחידה שיש כאן. המלאי הוא "במלאי"/"אזל" בלבד, לעולם לא מספר.
+ * כמו בכל החנות: אין טוסט על הוספה מוצלחת (הטיסה, המונה והמגירה אומרות את זה),
+ * רק על סירוב של העגלה.
  */
 export function ProductChip({ product }: { product: SupportProduct }) {
   const { add } = useCart();
@@ -36,8 +39,11 @@ export function ProductChip({ product }: { product: SupportProduct }) {
         type="button"
         disabled={!product.inStock}
         onClick={() => {
-          add({ sku: product.sku, name: product.name, price: product.price, qty: 1, service: product.service, imageUrl: product.imageUrl });
-          toast.success('נוסף לסל', { description: product.name });
+          const refusal =
+            ADD_REFUSALS[
+              add({ sku: product.sku, name: product.name, price: product.price, qty: 1, service: product.service, imageUrl: product.imageUrl })
+            ];
+          if (refusal) toast(refusal);
         }}
         className="h-10 shrink-0 rounded-md border border-rule-strong bg-panel-3 px-3 text-sm font-medium text-glow transition-colors hover:border-beam/50 hover:text-beam disabled:pointer-events-none disabled:text-glow-4"
       >
