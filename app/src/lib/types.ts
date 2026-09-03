@@ -43,8 +43,12 @@ export type ProductFields = {
   Category?: string;
   Price?: number;
   Description?: string;
+  /** כמות ביחידות. לשירותים אין. `InStock` נגזר ממנה (`Stock > 0`) ונשמר בסנכרון. */
+  Stock?: number;
   InStock?: boolean;
   ImageUrl?: string;
+  /** שורות מפרט מופרדות ב-newline; החנות מציגה מהן שתיים. */
+  Highlights?: string;
 };
 /** הזמנה מהחנות. נכתבת על ידי WF10; האפליקציה קוראת אותה ומעדכנת רק את Status. */
 export type OrderFields = {

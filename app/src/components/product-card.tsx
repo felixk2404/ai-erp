@@ -1,12 +1,14 @@
 import Image from 'next/image';
-import type { ReactNode } from 'react';
 import type { Product } from '@/lib/types';
 import { Money } from './money';
+import { LED_CLASS } from './status-led';
+import { isService, stockLabel, stockLed } from '@/lib/stock';
 import { Tilt } from '@/components/motion/tilt';
 
 /** כרטיס מוצר: תמונה 1:1 כ"מסך" עם ring, מק"ט mono, מחיר mono, LED מלאי. Tilt תלת-ממדי עדין בהובר. */
-export function ProductCard({ product, action }: { product: Product; action?: ReactNode }) {
+export function ProductCard({ product }: { product: Product }) {
   const f = product.fields;
+  const service = isService(product);
   return (
     <Tilt max={5} className="h-full">
       <article className="group panel h-full overflow-hidden rounded-lg transition-transform duration-150 ease-out">
@@ -35,12 +37,10 @@ export function ProductCard({ product, action }: { product: Product; action?: Re
           <h3 className="text-sm font-medium leading-snug text-readout line-clamp-2 min-h-[2.5em]">{f.Name}</h3>
           <div className="flex items-center justify-between pt-1">
             <Money value={f.Price ?? 0} className="font-medium" />
-            {action ?? (
-              <span className="inline-flex items-center gap-1.5 text-xs text-readout-2">
-                <span aria-hidden className={`size-2 rounded-full ${f.InStock ? 'bg-led-green shadow-[0_0_8px_var(--led-green)]' : 'bg-readout-3/50'}`} />
-                {f.InStock ? 'במלאי' : 'אזל'}
-              </span>
-            )}
+            <span className="inline-flex items-center gap-1.5 text-xs text-readout-2 num">
+              <span aria-hidden className={`size-2 rounded-full shrink-0 ${LED_CLASS[stockLed(f.Stock, service)]}`} />
+              {stockLabel(f.Stock, service)}
+            </span>
           </div>
         </div>
       </article>

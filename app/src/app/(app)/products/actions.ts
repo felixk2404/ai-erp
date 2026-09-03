@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { erpCreate, erpUpdate, runWebhook, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
 import type { ProductFields } from '@/lib/types';
+import { parseStock } from '@/lib/stock';
 import type { FormState } from '@/components/forms/entity-dialog';
 import type { ActionResult } from '@/components/forms/action-button';
 import { parseProductForm } from './parse';
@@ -32,6 +33,24 @@ export async function toggleStock(id: string, inStock: boolean): Promise<ActionR
   }
   revalidatePath('/products');
   return { ok: true, message: inStock ? 'המוצר סומן במלאי' : 'המוצר סומן כאזל' };
+}
+
+/**
+ * הכמות מגיעה כמחרוזת מהשדה ונבדקת כאן — השדה בצד הלקוח הוא נוחות, לא שער.
+ * `InStock` נגזר מהכמות באותה כתיבה, אחרת החנות (`catalog-filter.inStock`) והדגל
+ * הישן מספרים שני סיפורים על אותו מוצר.
+ */
+export async function setStock(id: string, input: string): Promise<ActionResult> {
+  const parsed = parseStock(input);
+  if (!parsed.ok) return { error: parsed.error };
+  try {
+    await erpUpdate<ProductFields>('Products', id, { Stock: parsed.value, InStock: parsed.value > 0 });
+  } catch (e) {
+    logError('products.setStock', e);
+    return { error: msg(e, 'עדכון המלאי נכשל') };
+  }
+  revalidatePath('/products');
+  return { ok: true };
 }
 
 export async function reindexProducts(): Promise<ActionResult> {

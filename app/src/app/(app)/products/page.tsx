@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { list } from '@/lib/airtable';
-import type { Product, ProductFields } from '@/lib/types';
+import { isService } from '@/lib/stock';
+import type { ProductFields } from '@/lib/types';
 import { Header } from '@/components/shell/header';
 import { Money } from '@/components/money';
 import { EmptyState } from '@/components/empty-state';
@@ -12,25 +13,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { createProduct, reindexProducts, toggleStock } from './actions';
+import { createProduct, reindexProducts } from './actions';
+import { StockField } from './stock-field';
 
 export const dynamic = 'force-dynamic';
 
 type SP = { q?: string; category?: string; view?: string };
-
-function StockToggle({ p }: { p: Product }) {
-  return (
-    <ActionButton
-      action={toggleStock.bind(null, p.id, !p.fields.InStock)}
-      variant="ghost"
-      className="gap-2 text-ink-2 -ms-2"
-      aria-label={p.fields.InStock ? 'סימון כאזל' : 'סימון כזמין במלאי'}
-    >
-      <span aria-hidden className={`size-2 rounded-full ${p.fields.InStock ? 'bg-led-green shadow-[0_0_6px_var(--led-green)]' : 'bg-ink-3/40'}`} />
-      {p.fields.InStock ? 'במלאי' : 'אזל'}
-    </ActionButton>
-  );
-}
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<SP> }) {
   const { q = '', category = '', view = 'grid' } = await searchParams;
@@ -190,7 +178,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                     <Money value={p.fields.Price ?? 0} />
                   </TableCell>
                   <TableCell>
-                    <StockToggle p={p} />
+                    {isService(p) ? <span className="text-ink-3">—</span> : <StockField id={p.id} name={p.fields.Name} stock={p.fields.Stock} />}
                   </TableCell>
                   <TableCell className="text-ink-2 text-sm whitespace-normal">
                     <span className="line-clamp-2" title={p.fields.Description}>
@@ -206,7 +194,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           <h2 className="sr-only col-span-full">רשימת המוצרים</h2>
           {products.map((p) => (
-            <ProductCard key={p.id} product={p} action={<StockToggle p={p} />} />
+            <ProductCard key={p.id} product={p} />
           ))}
         </div>
       )}

@@ -115,6 +115,17 @@ test('order detail page opens from the list with its items', async ({ page }) =>
   await expect(page.getByLabel('סטטוס הזמנה')).toBeVisible();
 });
 
+// קריאה בלבד: הבדיקה לא נוגעת בכמות — שמירת מלאי כותבת ל-Airtable ומשנה נתוני דמו.
+test('products table has a stock field for a product and — for a service', async ({ page }) => {
+  await page.goto('/products?view=table');
+  // כמות אמיתית משתנה, ולכן נבדק שיש שדה עם מספר ולא מספר מסוים
+  await expect(page.getByLabel('מלאי — אוזניות אלחוטיות TY-200')).toHaveValue(/^\d+$/);
+  // שירות אין לו מלאי: מקף בתא, ובלי שדה לעריכה
+  const service = page.getByRole('row', { name: /הדרכה אישית/ });
+  await expect(service.getByRole('cell').nth(5)).toHaveText('—');
+  await expect(service.getByRole('spinbutton')).toHaveCount(0);
+});
+
 test('command menu opens with cmd+k and navigates', async ({ page }) => {
   await page.keyboard.press('ControlOrMeta+k');
   await page.getByPlaceholder(/חפש עמוד/).fill('לידים');
