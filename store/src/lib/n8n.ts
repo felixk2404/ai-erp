@@ -25,8 +25,12 @@ export async function erpCall<T>(schema: z.ZodType<T>, body: Record<string, unkn
     signal: AbortSignal.timeout(timeoutMs),
     cache: 'no-store',
   });
-  if (!res.ok) throw new ErpError(`n8n ${res.status}`);
-  const parsed = schema.safeParse(await res.json());
-  if (!parsed.success) throw new ErpShapeError('n8n response did not match the contract');
+  // 4xx עם גוף תקין הוא תשובה עסקית ולא תקלה: WF13 מחזיר 404 ל"הזמנה לא נמצאה"
+  // ו-400 לקלט פסול, ובשני המקרים ה-`error` שבגוף הוא בדיוק מה שהלקוח צריך לקרוא.
+  // רק 5xx, גוף שאינו JSON, או גוף שלא תואם את החוזה הם תקלה.
+  if (res.status >= 500) throw new ErpError(`n8n ${res.status}`);
+  const payload = await res.json().catch(() => null);
+  const parsed = schema.safeParse(payload);
+  if (!parsed.success) throw new ErpShapeError(`n8n response did not match the contract (${res.status})`);
   return parsed.data;
 }

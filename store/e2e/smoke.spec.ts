@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { POLICIES } from '../src/content/policies';
+import { modelName } from '../src/lib/format';
 
 /**
  * מסלול הלקוח מקצה לקצה. רץ מול dev (3200) או מול production
@@ -18,6 +19,7 @@ const ITEM = { sku: 'TY-CB-UC100', name: 'כבל USB-C 100W באורך 2 מטר'
 
 /** מק"ט שאזל מהמלאי בקטלוג (מסך אולטרה-רחב). */
 const OUT_OF_STOCK_SKU = 'TY-MN-34U';
+const OUT_OF_STOCK_NAME = "מסך אולטרה-רחב 34 אינץ' TY-Vision UW";
 
 /** זורע עגלה לפני ההידרציה — ה-provider קורא את המפתח הזה ב-mount. */
 async function seedCart(page: Page) {
@@ -58,10 +60,18 @@ test('קטלוג: סינון לפי קטגוריה, חיפוש HDMI ותצוגת
   await expect(page.getByRole('columnheader').first()).toBeVisible();
 });
 
+/**
+ * ה-buy box הוא div ולא aside (הכותרת הראשית לא יושבת בציון-דרך משלים), ולכן
+ * מאתרים אותו לפי הכותרת שבתוכו. שם הדגם מוצג דרך `modelName`, שמכניס word-joiner
+ * אחרי מקף לטיני — לכן משווים לשם המעוצב ולא לשם הגולמי.
+ */
+const buyBoxOf = (page: Page, name: string) =>
+  page.locator('div').filter({ has: page.getByRole('heading', { level: 1, name: modelName(name) }) }).last();
+
 test('עמוד מוצר: מחיר, מלאי, הוספה לסל ופתיחת המגירה', async ({ page }) => {
   await page.goto(`/products/${ITEM.sku}`);
-  await expect(page.getByRole('heading', { level: 1, name: ITEM.name })).toBeVisible();
-  const buyBox = page.locator('aside').first();
+  await expect(page.getByRole('heading', { level: 1, name: modelName(ITEM.name) })).toBeVisible();
+  const buyBox = buyBoxOf(page, ITEM.name);
   await expect(buyBox.getByText('₪').first()).toBeVisible();
   await expect(buyBox.getByText('במלאי')).toBeVisible();
 
@@ -70,7 +80,7 @@ test('עמוד מוצר: מחיר, מלאי, הוספה לסל ופתיחת המ
   await expect(page.getByRole('button', { name: 'פתיחת הסל. בסל מוצר אחד' })).toBeVisible();
   const drawer = page.getByRole('dialog', { name: 'הסל שלכם' });
   await expect(drawer).toBeVisible();
-  await expect(drawer.getByText(ITEM.name)).toBeVisible();
+  await expect(drawer.getByText(modelName(ITEM.name))).toBeVisible();
   await expect(drawer.getByRole('link', { name: /לקופה/ })).toBeVisible();
 });
 
@@ -106,9 +116,10 @@ test('וידג׳ט השירות נפתח ומחזיר תשובה מהסוכן', 
 
 test('מוצר שאזל: תג "אזל" והפניה לבוט במקום הבטחת התראה', async ({ page }) => {
   await page.goto(`/products/${OUT_OF_STOCK_SKU}`);
-  const buyBox = page.locator('aside').first();
+  const buyBox = buyBoxOf(page, OUT_OF_STOCK_NAME);
   await expect(buyBox.getByText('אזל')).toBeVisible();
-  await expect(buyBox.getByRole('button', { name: /התראות חזרה למלאי/ })).toBeVisible();
+  // אין כפתור "התראה כשחוזר" — אין מנגנון כזה בהדגמה, ולכן אומרים את זה במקום להבטיח.
+  await expect(buyBox.getByRole('button', { name: /שאלו את הבוט מתי חוזר/ })).toBeVisible();
   await expect(buyBox.getByRole('button', { name: /הוספה לסל/ })).toHaveCount(0);
 });
 
