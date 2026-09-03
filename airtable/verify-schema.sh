@@ -14,6 +14,7 @@ Invoices.Total:number
 Invoices.Status:singleLineText
 Invoices.PdfUrl:url
 Invoices.Items:multilineText
+Invoices.PdfLockedAt:dateTime
 Invoices.Created:createdTime
 Leads.Name:singleLineText
 Leads.Email:email
