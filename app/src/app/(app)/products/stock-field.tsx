@@ -41,6 +41,8 @@ export function StockField({ id, name, stock }: { id: string; name: string; stoc
         value={value}
         aria-label={`מלאי — ${name}`}
         aria-busy={pending}
+        // הקלדה בזמן שמירה הייתה נבלעת (ה-guard ב-save מפיל אותה) — עדיף שדה נעול מהקלדה שנעלמת
+        readOnly={pending}
         onChange={(e) => setValue(e.target.value)}
         onBlur={save}
         onKeyDown={(e) => {

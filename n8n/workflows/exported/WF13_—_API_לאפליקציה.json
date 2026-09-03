@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "129008ea-266f-42dd-b3b7-c611e40e7746"
+      "webhookId": "6ee9348d-f380-4924-a195-d52eb4b44361"
     },
     {
       "name": "Route",
@@ -115,7 +115,7 @@
                   },
                   {
                     "id": "c3t",
-                    "leftValue": "={{ ['Tasks','Products','Invoices','Leads','Customers'].includes($json.body.table) }}",
+                    "leftValue": "={{ ['Tasks','Products','Invoices','Leads','Customers','Orders'].includes($json.body.table) }}",
                     "rightValue": true,
                     "operator": {
                       "type": "boolean",
@@ -125,7 +125,7 @@
                   },
                   {
                     "id": "c3f",
-                    "leftValue": "={{ Object.keys($json.body.payload || {}).length > 0 && Object.keys($json.body.payload).every(k => ['Status','InStock'].includes(k)) }}",
+                    "leftValue": "={{ Object.keys($json.body.payload || {}).length > 0 && Object.keys($json.body.payload).every(k => ['Status','InStock','Stock'].includes(k)) }}",
                     "rightValue": true,
                     "operator": {
                       "type": "boolean",

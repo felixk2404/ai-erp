@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { list } from '@/lib/airtable';
-import { isService } from '@/lib/stock';
+import { isService, MAX_STOCK } from '@/lib/stock';
 import type { ProductFields } from '@/lib/types';
 import { Header } from '@/components/shell/header';
 import { Money } from '@/components/money';
@@ -89,9 +89,12 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                 <Label htmlFor="p-desc">תיאור (מוזן לסוכן השירות)</Label>
                 <textarea id="p-desc" name="Description" rows={3} className="w-full rounded-md border border-input bg-well px-3 py-2 text-sm" />
               </div>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" name="InStock" defaultChecked className="size-4 accent-signal" /> במלאי
-              </label>
+              <div className="space-y-2">
+                <Label htmlFor="p-stock">מלאי (יחידות)</Label>
+                <Input id="p-stock" name="Stock" type="number" min="0" max={MAX_STOCK} step="1" defaultValue={0} dir="ltr" inputMode="numeric" className="num max-w-28 text-center" />
+                <FieldError name="Stock" />
+                <p className="text-xs text-ink-3">בקטגוריית שירותים המלאי לא נשמר — שירות זמין תמיד.</p>
+              </div>
             </EntityDialog>
           </>
         }

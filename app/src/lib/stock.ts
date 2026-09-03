@@ -32,9 +32,10 @@ export type ParsedStock = { ok: true; value: number } | { ok: false; error: stri
 export function parseStock(input: string): ParsedStock {
   const s = input.trim();
   if (!s) return { ok: false, error: 'יש להזין כמות' };
+  if (s.startsWith('-')) return { ok: false, error: 'הכמות לא יכולה להיות שלילית' };
+  // ספרות בלבד, לפני Number(): '1e2' ו-'0x1f' הם מספרים תקינים ל-JS אבל לא כמות שמישהו התכוון להקליד.
+  if (!/^\d+$/.test(s)) return { ok: false, error: 'הכמות חייבת להיות מספר שלם' };
   const n = Number(s);
-  if (!Number.isInteger(n)) return { ok: false, error: 'הכמות חייבת להיות מספר שלם' };
-  if (n < 0) return { ok: false, error: 'הכמות לא יכולה להיות שלילית' };
   if (n > MAX_STOCK) return { ok: false, error: `הכמות המרבית היא ${MAX_STOCK}` };
   return { ok: true, value: n };
 }
