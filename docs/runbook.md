@@ -126,7 +126,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - פרודקשן: **https://ai-erp-rho.vercel.app** (פרויקט Vercel `ai-erp`, סיסמת כניסה ב-`APP_PASSWORD`).
 - מקומי: `cd app && pnpm dev` → http://localhost:3100 (3100 ולא 3000 — פורט 3000 תפוס אצל פרויקט אחר במחשב).
 - env: `cp app/env.example app/.env.local` וממלאים; או מייצרים מ-`n8n/.env` (הפקודה בשיחה מ-2026-09-02). `AUTH_SECRET` = `openssl rand -hex 32`.
-- בדיקות: `pnpm test` (Vitest, 98), `pnpm e2e` (Playwright, 10 — קורא APP_PASSWORD מ-.env.local), `PLAYWRIGHT_BASE_URL=https://ai-erp-rho.vercel.app pnpm e2e` מול פרודקשן.
+- בדיקות: `pnpm test` (Vitest, 118), `pnpm e2e` (Playwright, 11 — קורא APP_PASSWORD מ-.env.local), `PLAYWRIGHT_BASE_URL=https://ai-erp-rho.vercel.app pnpm e2e` מול פרודקשן.
 - צילומי מסך של כל המסכים: `OUT=<dir> node e2e/screens.mjs`.
 - פריסה: `cd app && vercel --prod --yes`. סנכרון env ל-Vercel: `./scripts/vercel-env.sh` (קורא .env.local, לא מדפיס ערכים; מדלג על VERCEL_*).
 - כשהמק כבוי: האפליקציה עולה וקוראת מ-Airtable, אבל כל כתיבה/צ'אט (דרך n8n המקומי ב-ngrok) נכשלים עם toast "n8n 502/503". לדמו: Docker + `n8n/scripts/tunnel.sh` חייבים לרוץ.
@@ -138,7 +138,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **RAG בשני כלים**: `products_catalog` (metadata type=product, topK 8) ו-`knowledge_base` (type=policy, topK 5). אחרי שינוי מוצרים: `n8n/scripts/webhook.sh reindex-products`.
 - **תמונות**: Supabase Storage bucket `assets` (public) → `Products.ImageUrl`. יצירה: fal.ai `fal-ai/nano-banana-2` (~$0.08/תמונה). העלאה: `n8n/scripts/upload-asset.sh <url|file> products/<SKU>.webp <recId>`. נכסי מותג ב-`app/public/brand/`.
 - **מק"ט**: שדה `Products.Sku` (חולץ מהתיאור ב-`airtable/backfill-sku.sh`). שדות חדשים: `airtable/add-fields.sh`.
-- **דשבורד**: תקציר בוקר (סוכן המנהל, cache 6 שעות, כפתור רענן), דורש-טיפול (חשבוניות error / פתוחות > 14 יום / לידים Contacted > 7 יום), בריאות n8n (דורש `N8N_API_URL=https://goofy-glamour-syrup.ngrok-free.dev/api/v1` ו-`N8N_API_KEY` ב-.env.local וב-Vercel), גרפים בגוון יחיד.
+- **דשבורד**: תקציר בוקר (סוכן המנהל, cache 6 שעות, כפתור רענן), דורש-טיפול (חשבוניות error / פתוחות > 14 יום / לידים Contacted > 7 יום / הזמנה עם משימת שליחה פתוחה מעל 24 שעות), בריאות n8n (דורש `N8N_API_URL=https://goofy-glamour-syrup.ngrok-free.dev/api/v1` ו-`N8N_API_KEY` ב-.env.local וב-Vercel), גרפים בגוון יחיד.
 - **PDF בעמוד חשבונית**: iframe של Drive preview. WF8 משתף כל PDF אוטומטית כ-"כל מי שיש לו את הקישור — צופה" (צומת Share Public) — לכן ה-preview עובד גם בלי חשבון Google.
 - **שורות חשבונית**: `Invoices.Items` (JSON `[{sku,name,qty,price}]`). הטופס בוחר מוצרים מהקטלוג, השרת מחשב Amount מהשורות (`src/lib/invoice-items.ts`), WF1 מוסיף מע"מ 18%, WF8 מדפיס טבלת שורות ב-PDF. חשבוניות ישנות בלי Items מוצגות כסכום בלבד.
 - ⌘K חיפוש גלובלי, מעברי עמוד (View Transitions), עמודי פרט `/invoices/[id]`, `/customers/[id]`.
@@ -149,7 +149,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **⌘K עם AI**: הקלדה של 3 תווים ומעלה בפלטה מציעה "שאל את המנהל"; Enter שולח ל-`sendChat` (WF13 chat) והתשובה מוזרמת בפלטה.
 - **קיצורי מקלדת**: `?` עזרה · `g` ואז `d/i/l/c/p/t` ניווט · `n` פריט חדש בעמוד · ⌘K חיפוש.
 - **תקציר בוקר**: נחשף מילה-מילה (StreamText); בזמן הטעינה פאנל "הסוכן קורא נתונים" עם טיימר.
-- **בדיקות**: `pnpm test` (98), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
+- **בדיקות**: `pnpm test` (118), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
 - **תנועה**: הכל מכבד prefers-reduced-motion (beams/aurora/led נעצרים). אם המחשב חלש בדמו — אפשר להפעיל reduced motion במערכת ההפעלה.
 
 ## 11. החנות (store/)
