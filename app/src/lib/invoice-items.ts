@@ -27,6 +27,10 @@ export const round2 = (n: number) => Math.round(n * 100) / 100;
 export const lineTotal = (i: InvoiceItem) => round2(i.qty * i.price);
 export const sumItems = (items: InvoiceItem[]) => round2(items.reduce((s, i) => s + i.qty * i.price, 0));
 
+const VAT_RATE = 0.18;
+/** מחירי הקטלוג כוללים מע"מ, ולכן סכום השורות הוא הסה"כ לתשלום והמע"מ מחולץ מתוכו — אותה מוסכמה כמו בחנות וב-WF10. */
+export const vatOf = (total: number) => round2(total - total / (1 + VAT_RATE));
+
 export type ProductOption = { sku: string; name: string; price: number };
 
 /** אפשרויות לטופס: רק מוצרים עם מק"ט ומחיר. מוצרים שלא במלאי נשארים (שירותים/הזמנות מיוחדות). */

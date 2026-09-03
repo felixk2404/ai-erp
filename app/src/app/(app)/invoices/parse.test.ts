@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parseInvoiceForm } from './parse';
+import { round2 } from '@/lib/invoice-items';
 
 const fd = (o: Record<string, string>) => {
   const f = new FormData();
@@ -12,9 +13,11 @@ const items = JSON.stringify([
 ]);
 
 describe('parseInvoiceForm', () => {
-  it('accepts customer + items and computes the pre-VAT amount server-side', () => {
+  it('treats the catalog prices as VAT-inclusive: rows sum to Total, VAT extracted from it', () => {
     const r = parseInvoiceForm(fd({ CustomerId: 'CUST-0001', Items: items }));
-    expect(r).toEqual({ ok: true, data: { CustomerId: 'CUST-0001', Items: items, Amount: 757.9 } });
+    expect(r).toEqual({ ok: true, data: { CustomerId: 'CUST-0001', Items: items, Amount: 642.29, VatAmount: 115.61, Total: 757.9 } });
+    // ההוכחה שהחשבונית מסתדרת: סכום השורות = Total, ולפני מע"מ + מע"מ = Total
+    if (r.ok) expect(round2(r.data.Amount + r.data.VatAmount)).toBe(r.data.Total);
   });
 
   it('rejects a missing customer and an empty item list with hebrew messages', () => {

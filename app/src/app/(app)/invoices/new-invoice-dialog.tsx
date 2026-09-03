@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { SubmitButton } from '@/components/forms/submit-button';
 import { FieldError } from '@/components/forms/field-error';
 import { Money } from '@/components/money';
-import { round2, sumItems, type InvoiceItem } from '@/lib/invoice-items';
+import { round2, sumItems, vatOf, type InvoiceItem } from '@/lib/invoice-items';
 
 export type CustomerOption = { id: string; label: string };
 export type { ProductOption } from '@/lib/invoice-items';
@@ -20,7 +20,6 @@ import type { ProductOption } from '@/lib/invoice-items';
 
 
 type Row = { id: number; sku: string; qty: number };
-const VAT = 0.18;
 const fresh = (): Row[] => [{ id: 1, sku: '', qty: 1 }];
 
 export function NewInvoiceDialog({
@@ -51,8 +50,9 @@ export function NewInvoiceDialog({
     const p = bySku.get(r.sku);
     return p ? [{ sku: p.sku, name: p.name, qty: r.qty, price: p.price }] : [];
   });
-  const subtotal = sumItems(items);
-  const vat = round2(subtotal * VAT);
+  // מחירי הקטלוג כוללים מע"מ: סכום השורות הוא הסה"כ לתשלום, והמע"מ מחולץ מתוכו.
+  const total = sumItems(items);
+  const vat = vatOf(total);
 
   const update = (id: number, patch: Partial<Row>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   const addRow = () => setRows((rs) => [...rs, { id: Date.now(), sku: '', qty: 1 }]);
@@ -145,7 +145,7 @@ export function NewInvoiceDialog({
             <div className="flex justify-between text-ink-2">
               <dt>לפני מע״מ</dt>
               <dd>
-                <Money value={subtotal} />
+                <Money value={round2(total - vat)} />
               </dd>
             </div>
             <div className="flex justify-between text-ink-2">
@@ -157,7 +157,7 @@ export function NewInvoiceDialog({
             <div className="flex justify-between border-t border-dashed border-rule-strong pt-1.5 font-semibold">
               <dt>סה״כ לתשלום</dt>
               <dd>
-                <Money value={round2(subtotal + vat)} />
+                <Money value={total} />
               </dd>
             </div>
           </dl>
