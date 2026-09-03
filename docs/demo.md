@@ -1,12 +1,14 @@
 # סקריפט דמו — AI-ERP (כ-8 דקות: 6 ניהול + 2 חנות)
 
 ## לפני שמתחילים (5 דקות לפני)
+0. המק לא נרדם: מחובר לחשמל, ובטרמינל `caffeinate -dims &` (מבטל שינה עד שסוגרים את הטרמינל). המכסה של המחשב נשאר פתוח.
 1. Docker Desktop פתוח. `cd n8n && docker compose up -d` → שני קונטיינרים `running`.
 2. טרמינל נפרד: `n8n/scripts/tunnel.sh` (ngrok). בדיקה: `curl https://goofy-glamour-syrup.ngrok-free.dev/healthz` → `{"status":"ok"}`.
 3. n8n: https://goofy-glamour-syrup.ngrok-free.dev → Overview → כל ה-workflows Active. אם Gmail/Drive אדומים (7 ימים ב-Testing) → Credentials → Reconnect.
-4. `n8n/scripts/verify-env.sh` — הכל ירוק. `n8n/scripts/rag-count.sh` — policy ~79, product 34.
+4. `n8n/scripts/verify-env.sh` — הכל ירוק. `n8n/scripts/rag-count.sh` — policy ~78, product 34.
 5. טלגרם פתוח בטלפון עם שני הבוטים. Gmail פתוח בטאב.
-6. שני טאבים פתוחים: https://ai-erp-rho.vercel.app (ניהול) ו-https://ai-electronics-one.vercel.app (חנות). בדיקה מהירה: `curl -s https://ai-electronics-one.vercel.app/api/health` → `{"ok":true,...}`.
+6. ניהול → הזמנות: 8 הזמנות דמו, ORD-0001 במצב "אושרה" (לא נשלחה) — כדי שכפתור "סמן כנשלחה" יהיה זמין להצגה.
+7. שני טאבים פתוחים: https://ai-erp-rho.vercel.app (ניהול) ו-https://ai-electronics-one.vercel.app (חנות). בדיקה מהירה: `curl -s https://ai-electronics-one.vercel.app/api/health` → `{"ok":true,...}`.
 
 ## הסיפור (מה אומרים)
 "עסק אלקטרוניקה קטן. במקום שבן אדם יקליד, יאמת ויענה — סוכני AI ו-n8n עושים את זה. מעל הכל אפליקציית ניהול שבניתי בקוד, לא ב-Lovable."
