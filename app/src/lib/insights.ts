@@ -1,5 +1,5 @@
 import { monthKey } from './format';
-import { INVOICE_STATUSES, type Customer, type Invoice, type Lead, type Task } from './types';
+import { INVOICE_STATUSES, type Customer, type Invoice, type Lead, type Order, type Task } from './types';
 
 const HEB_MONTHS = ['ינו', 'פבר', 'מרץ', 'אפר', 'מאי', 'יוני', 'יולי', 'אוג', 'ספט', 'אוק', 'נוב', 'דצמ'];
 const DAY = 24 * 60 * 60 * 1000;
@@ -77,19 +77,34 @@ export function topCustomers(invoices: Invoice[], customers: Customer[], limit =
   return [...agg.values()].sort((a, b) => b.total - a.total).slice(0, limit);
 }
 
-export type AttentionItem = { kind: 'error' | 'overdue' | 'stale-lead'; severity: 'red' | 'amber'; title: string; hint?: string; href: string };
+export type AttentionItem = { kind: 'error' | 'overdue' | 'stale-lead' | 'to-ship'; severity: 'red' | 'amber'; title: string; hint?: string; href: string };
 
 const OVERDUE_DAYS = 14;
 const STALE_LEAD_DAYS = 7;
+const TO_SHIP_HOURS = 24;
+const TO_SHIP_STATUSES = new Set<string>(['new', 'confirmed']);
 
 /** סטטוסים שאחריהם המע״מ כבר חושב — חשבונית כזו בלי Total היא כשל שקט בהכנסות. */
 const PRICED = new Set<string>(['validated', 'generated', 'paid']);
 
 /** מה דורש פעולה: חשבוניות שגויות, חשבוניות שלא שולמו מעל 14 יום, לידים שנשלח להם מייל ולא ענו מעל 7 ימים,
+ *  הזמנות מאושרות/חדשות מעל 24 שעות שעדיין לא נשלחו,
  *  ורשומות עם נתון חסר — תאריך או סכום — שאחרת פשוט נעלמות מהחישוב ומהפאנל. */
-export function attentionItems({ invoices, leads, now = new Date() }: { invoices: Invoice[]; leads: Lead[]; tasks: Task[]; now?: Date }): AttentionItem[] {
+export function attentionItems({
+  invoices,
+  leads,
+  orders = [],
+  now = new Date(),
+}: {
+  invoices: Invoice[];
+  leads: Lead[];
+  tasks: Task[];
+  orders?: Order[];
+  now?: Date;
+}): AttentionItem[] {
   const items: AttentionItem[] = [];
   const ageDays = (iso: string) => Math.floor((now.getTime() - new Date(iso).getTime()) / DAY);
+  const ageHours = (iso: string) => (now.getTime() - new Date(iso).getTime()) / (60 * 60 * 1000);
   for (const i of invoices) {
     const age = ageDays(i.fields.Created);
     const num = i.fields.InvoiceNumber ?? 'ללא מספר';
@@ -112,6 +127,11 @@ export function attentionItems({ invoices, leads, now = new Date() }: { invoices
     } else if (age >= STALE_LEAD_DAYS) {
       items.push({ kind: 'stale-lead', severity: 'amber', title: `${name} — ללא מענה ${age} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
     }
+  }
+  for (const o of orders) {
+    if (!TO_SHIP_STATUSES.has(o.fields.Status ?? 'new')) continue;
+    if (ageHours(o.fields.Created) < TO_SHIP_HOURS) continue;
+    items.push({ kind: 'to-ship', severity: 'amber', title: `לשלוח ${o.fields.OrderNumber} — ${o.fields.Name}`, href: `/orders/${o.id}` });
   }
   const rank = { red: 0, amber: 1 };
   return items.sort((a, b) => rank[a.severity] - rank[b.severity]);

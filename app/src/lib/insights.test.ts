@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { revenueByMonth, statusBreakdown, leadsFunnel, topCustomers, attentionItems } from './insights';
-import type { Customer, Invoice, Lead, Task } from './types';
+import type { Customer, Invoice, Lead, Order, Task } from './types';
 
 const inv = (o: Partial<Invoice['fields']> & { id?: string }): Invoice => ({
   id: o.id ?? Math.random().toString(36).slice(2),
@@ -11,6 +11,11 @@ const lead = (o: Partial<Lead['fields']> & { id?: string }): Lead => ({
   id: o.id ?? Math.random().toString(36).slice(2),
   createdTime: '2026-09-01T10:00:00.000Z',
   fields: { Name: 'x', Status: 'New', Created: '2026-09-01T10:00:00.000Z', ...o },
+});
+const order = (o: Partial<Order['fields']> & { id?: string }): Order => ({
+  id: o.id ?? Math.random().toString(36).slice(2),
+  createdTime: o.Created ?? '2026-09-01T10:00:00.000Z',
+  fields: { OrderNumber: 'ORD-0001', Name: 'לקוח', Status: 'confirmed', Created: '2026-09-01T10:00:00.000Z', ...o },
 });
 const now = new Date('2026-09-02T12:00:00.000Z');
 
@@ -132,6 +137,57 @@ describe('attentionItems', () => {
       now,
     });
     expect(items[0].title).not.toMatch(/undefined/);
+  });
+});
+
+describe('attentionItems — to-ship orders', () => {
+  it('does not list a fresh confirmed order', () => {
+    const items = attentionItems({
+      invoices: [],
+      leads: [],
+      tasks: [],
+      orders: [order({ id: 'fresh', Status: 'confirmed', Created: '2026-09-02T00:00:00.000Z' })],
+      now,
+    });
+    expect(items).toEqual([]);
+  });
+
+  it('lists a confirmed order older than 24h, amber, with the exact title and href', () => {
+    const items = attentionItems({
+      invoices: [],
+      leads: [],
+      tasks: [],
+      orders: [order({ id: 'ord1', OrderNumber: 'ORD-0042', Name: 'דנה כהן', Status: 'confirmed', Created: '2026-09-01T11:00:00.000Z' })],
+      now,
+    });
+    expect(items).toEqual([{ kind: 'to-ship', severity: 'amber', title: 'לשלוח ORD-0042 — דנה כהן', href: '/orders/ord1' }]);
+  });
+
+  it('lists a new order older than 24h too', () => {
+    const items = attentionItems({
+      invoices: [],
+      leads: [],
+      tasks: [],
+      orders: [order({ id: 'ord2', Status: 'new', Created: '2026-09-01T11:00:00.000Z' })],
+      now,
+    });
+    expect(items).toHaveLength(1);
+    expect(items[0].kind).toBe('to-ship');
+  });
+
+  it('does not list a shipped order regardless of age', () => {
+    const items = attentionItems({
+      invoices: [],
+      leads: [],
+      tasks: [],
+      orders: [order({ id: 'shipped', Status: 'shipped', Created: '2026-08-01T00:00:00.000Z' })],
+      now,
+    });
+    expect(items).toEqual([]);
+  });
+
+  it('still works for callers that omit orders entirely', () => {
+    expect(attentionItems({ invoices: [], leads: [], tasks: [], now })).toEqual([]);
   });
 });
 

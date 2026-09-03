@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { list } from '@/lib/airtable';
 import { monthKey, dateIL } from '@/lib/format';
-import type { CustomerFields, InvoiceFields, LeadFields, TaskFields } from '@/lib/types';
+import type { CustomerFields, InvoiceFields, LeadFields, OrderFields, TaskFields } from '@/lib/types';
 import { revenueByMonth, statusBreakdown, leadsFunnel, topCustomers, attentionItems, monthDelta } from '@/lib/insights';
 import { fetchPulse } from '@/lib/n8n-health';
 import { Header } from '@/components/shell/header';
@@ -51,11 +51,12 @@ function Panel({ title, sub, href, linkLabel, children, className = '' }: { titl
 }
 
 export default async function Dashboard() {
-  const [invoices, leads, tasks, customers, pulse] = await Promise.all([
+  const [invoices, leads, tasks, customers, orders, pulse] = await Promise.all([
     list<InvoiceFields>('Invoices', { sort: [{ field: 'Created', direction: 'desc' }] }),
     list<LeadFields>('Leads', { sort: [{ field: 'Created', direction: 'desc' }] }),
     list<TaskFields>('Tasks', { filter: "{Status}!='done'" }),
     list<CustomerFields>('Customers'),
+    list<OrderFields>('Orders'),
     fetchPulse(),
   ]);
 
@@ -67,7 +68,7 @@ export default async function Dashboard() {
   const open = valid.filter((i) => i.fields.Status !== 'paid');
   const openSum = open.reduce((s, i) => s + (i.fields.Total ?? 0), 0);
   const funnel = leadsFunnel(leads);
-  const attention = attentionItems({ invoices, leads, tasks, now });
+  const attention = attentionItems({ invoices, leads, tasks, orders, now });
   const nameById = new Map(customers.map((c) => [c.fields.CustomerId, c.fields.Name]));
   const months = revenueByMonth(invoices, 6, now);
   const delta = monthDelta(months);
