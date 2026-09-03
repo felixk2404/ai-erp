@@ -14,6 +14,10 @@ const SPRING = { type: 'spring' as const, stiffness: 400, damping: 17 };
  * בורר כמות: −/מספר/+ בתוך מסגרת אחת, כדי שהשלושה ייקראו כפקד יחיד.
  * המספר לא מתחלף בפתאומיות — הוא מתגלגל למעלה/למטה, ככה שהעין רואה *שינוי*.
  * ההודעה לקורא מסך נשארת אצל האזור החי, לא אצל הכפתורים.
+ *
+ * הלחצנים הם 44×44 (יעד המגע), והמעטפת נשארת 44 בסך הכל: `ring-inset` במקום `border`
+ * מצייר את אותו קו 1px בלי לתפוס גובה, ובלי הריפוד הפנימי — כך אין 46 מול כפתור
+ * "הוספה לסל" בן ה-44 שלצדו.
  */
 export function Quantity({
   value,
@@ -27,7 +31,7 @@ export function Quantity({
   min?: number;
 }) {
   return (
-    <div className="flex items-center rounded-sm border border-rule bg-panel-2 p-0.5">
+    <div className="flex items-center rounded-sm bg-panel-2 ring-1 ring-rule ring-inset">
       <MotionButton
         variant="ghost"
         size="icon"
@@ -37,12 +41,12 @@ export function Quantity({
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
         transition={SPRING}
-        className="size-10 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
+        className="size-11 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
       >
         <MinusIcon size={14} strokeWidth={2} aria-hidden />
       </MotionButton>
 
-      <div className="relative h-10 w-9 overflow-hidden">
+      <div className="relative h-11 w-9 overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
             key={value}
@@ -66,7 +70,7 @@ export function Quantity({
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
         transition={SPRING}
-        className="size-10 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
+        className="size-11 rounded-sm text-glow-2 hover:bg-panel-3 hover:text-glow disabled:text-glow-4"
       >
         <PlusIcon size={14} strokeWidth={2} aria-hidden />
       </MotionButton>

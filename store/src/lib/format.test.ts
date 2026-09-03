@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ils, modelName } from './format';
+import { ils, modelName, nbspShekel } from './format';
 
 describe('format', () => {
   it('מעצב שקלים עם הסימן אחרי המספר', () => {
@@ -17,5 +17,15 @@ describe('format', () => {
     expect(modelName('אוזניות על-אוזן')).toBe('אוזניות על-אוזן');
     expect(modelName('1–3 ימי עסקים')).toBe('1–3 ימי עסקים');
     expect(modelName('טווח 10 - 20')).toBe('טווח 10 - 20');
+  });
+
+  it('הופך רווח רגיל לפני ₪ לרווח קשיח בטקסט חופשי', () => {
+    expect(nbspShekel('חינם בהזמנה מעל 300 ₪.')).toBe('חינם בהזמנה מעל 300\u00A0₪.');
+    expect(nbspShekel('מחיר: 690 ₪ לחודש, מינימום 3 חודשים.')).toBe('מחיר: 690\u00A0₪ לחודש, מינימום 3 חודשים.');
+  });
+
+  it('לא נוגע בטקסט שכבר תקין או בלי ₪', () => {
+    expect(nbspShekel('החל מ-149\u00A0₪')).toBe('החל מ-149\u00A0₪');
+    expect(nbspShekel('אחריות יבואן רשמי')).toBe('אחריות יבואן רשמי');
   });
 });

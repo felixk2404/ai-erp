@@ -66,7 +66,9 @@ export function CartLine({
             type="button"
             onClick={onRemove}
             aria-label={`הסרת ${line.name} מהסל`}
-            className="-me-2 -mt-1.5 grid size-9 shrink-0 place-items-center rounded-sm text-glow-4 transition-colors hover:bg-panel-2 hover:text-bad"
+            /* 44×44 יעד מגע. הכפתור גדל ב-8px לכל כיוון, ולכן ההיסטים גדלו איתו
+               (‎-3/-2.5 במקום ‎-2/-1.5) — האיקס נשאר בדיוק באותה נקודה על המסך. */
+            className="-me-3 -mt-2.5 grid size-11 shrink-0 place-items-center rounded-sm text-glow-4 transition-colors hover:bg-panel-2 hover:text-bad"
           >
             <XIcon size={15} strokeWidth={1.75} aria-hidden />
           </button>

@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { list } from './airtable';
 import { inStock, SERVICE } from './catalog-filter';
+import { nbspShekel } from './format';
 import type { Product, ProductFields } from './types';
 
 /**
@@ -23,8 +24,21 @@ export function categories(all: Product[]): string[] {
   return seen.has(SERVICE) ? [...list, SERVICE] : list;
 }
 
+/**
+ * טקסט המוצר נכתב ב-Airtable עם רווח רגיל לפני ₪ ("מחיר: 690 ₪ לחודש"), ולכן הסימן
+ * נופל לשורה נפרדת בעמודות צרות. מנורמל כאן, בשער היחיד שדרכו נכנס הקטלוג, ולא
+ * בכל רכיב שמציג תיאור או מפרט.
+ */
 const load = unstable_cache(
-  async () => list<ProductFields>('Products', { filter: "{Sku}!=''", sort: [{ field: 'Name' }] }),
+  async () =>
+    (await list<ProductFields>('Products', { filter: "{Sku}!=''", sort: [{ field: 'Name' }] })).map((p) => ({
+      ...p,
+      fields: {
+        ...p.fields,
+        Highlights: p.fields.Highlights && nbspShekel(p.fields.Highlights),
+        Description: p.fields.Description && nbspShekel(p.fields.Description),
+      },
+    })),
   ['products'],
   { revalidate: 60, tags: ['products'] },
 );

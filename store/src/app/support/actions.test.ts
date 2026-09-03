@@ -73,7 +73,8 @@ describe('sendSupport', () => {
 
     const res = await sendSupport('משלוח?');
 
-    expect(res.reply).toBe('משלוח חינם מעל 300 ₪.');
+    // ₪ מקבל רווח קשיח בדרך החוצה — הבוט כותב רווח רגיל, והבועה צרה.
+    expect(res.reply).toBe('משלוח חינם מעל 300\u00A0₪.');
     expect(res.products).toEqual([]);
   });
 

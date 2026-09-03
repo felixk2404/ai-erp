@@ -2,7 +2,7 @@ import { MessageCircleIcon, RotateCcwIcon, ShieldCheckIcon, TruckIcon } from 'lu
 import { AskBot } from '@/components/home/ask-bot';
 
 const ITEMS = [
-  { Icon: TruckIcon, title: 'משלוח 29 ₪', note: 'חינם בהזמנה מעל 300 ₪' },
+  { Icon: TruckIcon, title: 'משלוח 29\u00A0₪', note: 'חינם בהזמנה מעל 300\u00A0₪' },
   { Icon: ShieldCheckIcon, title: 'אחריות יבואן רשמי', note: 'על כל מוצר בחנות' },
   { Icon: RotateCcwIcon, title: 'החזרה עד 14 יום', note: 'באריזה מקורית, בלי להסביר למה' },
 ] as const;

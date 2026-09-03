@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 import { PackageIcon } from 'lucide-react';
 import { useCart } from '@/components/cart/cart-provider';
-import { ils } from '@/lib/format';
+import { ils, modelName } from '@/lib/format';
 import { ADD_REFUSALS } from '@/lib/ui';
 import type { SupportProduct } from '@/app/support/actions';
 
@@ -28,7 +28,10 @@ export function ProductChip({ product }: { product: SupportProduct }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm leading-tight text-glow">{product.name}</p>
+        {/* לא `truncate`: תחת dir=rtl ה-ellipsis נופל בקצה השמאלי, שהוא *תחילת* הריצה
+            הלטינית — "מסך 27 אינץ' …ion QHD 165Hz". גלישה לשתי שורות חותכת בסוף,
+            ו-`modelName()` מחזיק את שם הדגם שלם בשבירה (אותו כלל של הכרטיס והעגלה). */}
+        <p className="line-clamp-2 text-sm leading-tight text-glow">{modelName(product.name)}</p>
         <p className="mt-1 flex items-center gap-2 text-meta leading-none">
           <span className="num text-glow-2">{ils(product.price)}</span>
           <span className={product.inStock ? 'text-ok' : 'text-glow-3'}>{product.inStock ? 'במלאי' : 'אזל'}</span>

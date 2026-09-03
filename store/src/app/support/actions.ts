@@ -3,6 +3,7 @@
 import { cookies, headers } from 'next/headers';
 import { z } from 'zod';
 import { erpCall } from '@/lib/n8n';
+import { nbspShekel } from '@/lib/format';
 import { getProducts, isService, inStock } from '@/lib/catalog';
 import { matchProducts } from '@/lib/product-match';
 import { supportLimiter } from '@/lib/rate-limit';
@@ -75,7 +76,9 @@ export async function sendSupport(
         inStock: inStock(p),
         service: isService(p),
       }));
-    return { reply: res.reply, products: matched };
+    // תשובת הסוכן היא טקסט חופשי ("עולה 1,290 ₪, במלאי") — אותה נורמליזציה של ₪
+    // שהקטלוג מקבל, כדי שהסימן לא ייפול לשורה משלו בבועה הצרה.
+    return { reply: nbspShekel(res.reply), products: matched };
   } catch {
     return { error: OFFLINE };
   }
