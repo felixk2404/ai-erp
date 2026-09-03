@@ -104,7 +104,7 @@ export default async function OrderPage({ params }: { params: Promise<{ id: stri
             <div className="mt-2">
               <OrderStatusSelect id={order.id} orderNumber={f.OrderNumber} status={f.Status} />
             </div>
-            <p className="mt-2 text-xs text-ink-3">&quot;נשלחה&quot; סוגר גם את משימת המשלוח.</p>
+            <p className="mt-2 text-xs text-ink-3">״נשלחה״ סוגר גם את משימת המשלוח.</p>
           </div>
 
           <div className="panel p-5">

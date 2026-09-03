@@ -71,7 +71,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
       <nav aria-label="סינון לפי סטטוס" className="flex flex-wrap gap-1 mb-4">
         <Link
           href="/leads"
-          className={`h-8 px-3 inline-flex items-center rounded-md text-sm ${!status ? 'bg-inkblue-soft text-inkblue font-medium' : 'text-ink-2 hover:bg-paper-3'}`}
+          className={`h-9 px-3 inline-flex items-center rounded-md text-sm ${!status ? 'bg-inkblue-soft text-inkblue font-medium' : 'text-ink-2 hover:bg-paper-3'}`}
         >
           הכל
         </Link>
@@ -79,7 +79,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
           <Link
             key={s}
             href={`/leads?status=${s}`}
-            className={`h-8 px-3 inline-flex items-center rounded-md text-sm ${status === s ? 'bg-inkblue-soft text-inkblue font-medium' : 'text-ink-2 hover:bg-paper-3'}`}
+            className={`h-9 px-3 inline-flex items-center rounded-md text-sm ${status === s ? 'bg-inkblue-soft text-inkblue font-medium' : 'text-ink-2 hover:bg-paper-3'}`}
           >
             {statusMeta('Leads', s).label}
           </Link>

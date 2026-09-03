@@ -13,7 +13,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     list<InvoiceFields>('Invoices', { sort: [{ field: 'Created', direction: 'desc' }] }),
     list<LeadFields>('Leads', { filter: "{Status}='New'" }),
     // הזמנה שעדיין לא נשלחה = משהו שמחכה למנהל; נשלחה/נמסרה/בוטלה כבר לא.
-    list<OrderFields>('Orders', { filter: "OR({Status}='new',{Status}='confirmed')" }),
+    // סטטוס ריק נספר גם הוא — statusMeta קורא אותו כ'new', ובלי זה ההזמנה נעלמת מהמונה.
+    list<OrderFields>('Orders', { filter: "OR({Status}='new',{Status}='confirmed',{Status}='')" }),
     list<TaskFields>('Tasks', { filter: "{Status}!='done'" }),
     list<CustomerFields>('Customers', { sort: [{ field: 'Name' }] }),
     list<ProductFields>('Products', { sort: [{ field: 'Name' }] }),

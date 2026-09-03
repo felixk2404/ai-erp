@@ -21,7 +21,7 @@ const MAP: Record<TableName, Record<string, StatusMeta>> = {
   },
   // הזמנה = נקבה, ובאותם שלבים שהלקוח רואה בחנות (`store/src/lib/order-status.ts`).
   Orders: {
-    new: { label: 'חדשה', led: 'amber' },
+    new: { label: 'התקבלה', led: 'amber' },
     confirmed: { label: 'אושרה', led: 'amber' },
     shipped: { label: 'נשלחה', led: 'green' },
     delivered: { label: 'נמסרה', led: 'green' },

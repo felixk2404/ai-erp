@@ -32,13 +32,13 @@ describe('statusMeta', () => {
   // הלקוח והמנהל מסתכלים על אותה הזמנה — אותם שלבים, נקבה, בלי שני מילונים שנפרדים בזמן.
   it('maps order statuses to the store steps', () => {
     expect(ORDER_STATUSES.map((s) => statusMeta('Orders', s))).toEqual([
-      { label: 'חדשה', led: 'amber' },
+      { label: 'התקבלה', led: 'amber' },
       { label: 'אושרה', led: 'amber' },
       { label: 'נשלחה', led: 'green' },
       { label: 'נמסרה', led: 'green' },
       { label: 'בוטלה', led: 'red' },
     ]);
-    expect(statusMeta('Orders', undefined)).toEqual({ label: 'חדשה', led: 'amber' });
+    expect(statusMeta('Orders', undefined)).toEqual({ label: 'התקבלה', led: 'amber' });
     expect(statusMeta('Orders', 'weird')).toEqual({ label: 'weird', led: 'off' });
   });
 

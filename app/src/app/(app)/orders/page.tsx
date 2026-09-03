@@ -13,7 +13,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 export const dynamic = 'force-dynamic';
 
 export default async function OrdersPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const { status = '' } = await searchParams;
+  const { status: requested = '' } = await searchParams;
+  const status = (ORDER_STATUSES as readonly string[]).includes(requested) ? requested : '';
   const orders = await list<OrderFields>('Orders', {
     filter: status ? `{Status}='${escapeFormula(status)}'` : undefined,
     sort: [{ field: 'Created', direction: 'desc' }],
@@ -94,7 +95,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
       </div>
       {orders.length > 0 && (
         <p className="text-xs text-ink-3 mt-3">
-          ההזמנות נוצרות בחנות (WF10) יחד עם החשבונית. סימון הזמנה כ&quot;נשלחה&quot; סוגר גם את משימת המשלוח שלה.
+          ההזמנות נוצרות בחנות (WF10) יחד עם החשבונית. סימון הזמנה כ״נשלחה״ סוגר גם את משימת המשלוח שלה.
         </p>
       )}
     </>
