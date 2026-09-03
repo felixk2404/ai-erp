@@ -146,25 +146,17 @@
     },
     {
       "name": "Reply",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         700,
         0
       ],
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "r",
-              "name": "reply",
-              "value": "={{ $json.output }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      }
+        "mode": "runOnceForAllItems",
+        "jsCode": "__CODE_FINALIZE_REPLY__"
+      },
+      "notes": "שערים על פלט המודל: שורה כפולה נמחקת, תלונת בטיחות מקבלת הוראת ניתוק. גוף הקוד: n8n/code/finalize-reply.js"
     },
     {
       "name": "products_catalog",
@@ -177,7 +169,7 @@
       "parameters": {
         "mode": "retrieve-as-tool",
         "toolName": "products_catalog",
-        "toolDescription": "קטלוג המוצרים של החנות: שם, מק\"ט, קטגוריה, מחיר בשקלים, זמינות במלאי ותיאור. חובה להשתמש בו לכל שאלה על מוצר, דגם, מחיר או מלאי. חפש לפי סוג המוצר (למשל \"אוזניות\", \"מטען\", \"מסך\").",
+        "toolDescription": "קטלוג המוצרים של החנות: שם, מק״ט, קטגוריה, מחיר בשקלים, זמינות במלאי ותיאור. חובה להשתמש בו לכל שאלה על מוצר, דגם, מחיר או מלאי. חפש לפי סוג המוצר (למשל \"אוזניות\", \"מטען\", \"מסך\").",
         "tableName": {
           "__rl": true,
           "mode": "list",
@@ -232,7 +224,7 @@
         480
       ],
       "parameters": {
-        "toolDescription": "בדיקת מלאי ומחיר חיים מהמערכת. קלט: מק\"ט (למשל TY-HP-200) או מילה מהשם (למשל אוזניות). מחזיר שם, מק\"ט, מחיר בשקלים כולל מע\"מ, כמות במלאי (Stock) וקטגוריה. שירותים (קטגוריה 'שירותים') תמיד זמינים.",
+        "toolDescription": "בדיקת מלאי ומחיר חיים מהמערכת. קלט: מק״ט (למשל TY-HP-200) או מילה מהשם (למשל אוזניות). מחזיר שם, מק״ט, מחיר בשקלים כולל מע״מ, כמות במלאי (Stock) וקטגוריה. שירותים (קטגוריה 'שירותים') תמיד זמינים.",
         "method": "GET",
         "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_PRODUCTS__?fields[]=Name&fields[]=Sku&fields[]=Price&fields[]=Stock&fields[]=Category&fields[]=InStock&maxRecords=5",
         "authentication": "predefinedCredentialType",
@@ -242,7 +234,7 @@
           "parameters": [
             {
               "name": "filterByFormula",
-              "value": "=OR(FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/['\\\\]/g, '') }}'), LOWER({Sku})), FIND(LOWER('{{ $fromAI('query', 'מק\"ט או מילה מהשם של המוצר', 'string').replace(/['\\\\]/g, '') }}'), LOWER({Name})))"
+              "value": "=OR(FIND(LOWER('{{ $fromAI('query', 'מק״ט או מילה מהשם של המוצר', 'string').replace(/['\\\\]/g, '') }}'), LOWER({Sku})), FIND(LOWER('{{ $fromAI('query', 'מק״ט או מילה מהשם של המוצר', 'string').replace(/['\\\\]/g, '') }}'), LOWER({Name})))"
             }
           ]
         },
@@ -254,6 +246,71 @@
         "airtableTokenApi": {
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
+        }
+      }
+    },
+    {
+      "name": "handoff",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        480
+      ],
+      "parameters": {
+        "description": "רישום בקשה לחזרה מנציג אנושי. תנאי מוקדם מוחלט: שם וטלפון שהלקוח כתב בעצמו בשיחה הזו. אם אחד מהם חסר — אל תקרא לכלי, שאל את הלקוח. אסור למלא ערכים כמו 'לא נמסר' או להמציא. מתי: הלקוח מבקש שיחזרו אליו, מבקש הצעת מחיר, או שהעברת אותו לנציג (סכסוך, בטיחות, כעס). יוצר ליד ומשימה לצוות ומודיע לבעל העסק. מחזיר ok ו-message; ok=false פירושו שלא נרשם, ואז message אומר מה חסר.",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__WF_HANDOFF_ID__"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name": "={{ $fromAI('name', 'שם הלקוח בדיוק כפי שכתב בשיחה. אין שם — אל תקרא לכלי', 'string') }}",
+            "phone": "={{ $fromAI('phone', 'מספר הטלפון בדיוק כפי שהלקוח כתב, לפחות 9 ספרות. אין טלפון — אל תקרא לכלי', 'string') }}",
+            "topic": "={{ $fromAI('topic', 'הנושא במשפט אחד: המוצרים, הבעיה או הבקשה, כולל כמות אם נאמרה', 'string') }}",
+            "sessionId": "={{ $('When Executed by Another Workflow').first().json.sessionId }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "phone",
+              "displayName": "phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "topic",
+              "displayName": "topic",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ]
         }
       }
     }
@@ -348,6 +405,17 @@
       ]
     },
     "check_stock": {
+      "ai_tool": [
+        [
+          {
+            "node": "Support Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "handoff": {
       "ai_tool": [
         [
           {

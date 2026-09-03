@@ -56,3 +56,10 @@
 - **בדיקות e2e נשברות מתיקוני נגישות ומעיצוב, וזה בסדר.** buy box שהפך מ-`aside` ל-`div` (כדי שה-H1 לא יישב בציון-דרך משלים) ו-word-joiner שמונע שבירת שם דגם לטיני שינו את מה שהבדיקה מאתרת. לעדכן את הבדיקה לכוונה החדשה, לא לבטל את התיקון.
 - **פרומפט שמצהיר כלל לא מבטיח שהמודל יפעיל אותו.** הכלל "לא שולמו = new/validated/generated" היה כתוב, והסוכן בכל זאת ענה "אין חשבוניות שלא שולמו" על 10 חשבוניות ב-generated. ניסוח חיובי ומפורש ("שולמה רק ב-paid, כולל 'הופק PDF' שאינו תשלום") פתר.
 - **בדיקת e2e שכותבת לעולם האמיתי חייבת לנקות אחריה.** בדיקת המשימות באפליקציה השאירה שורה ב-Airtable בכל הרצה; 17 שורות זבל הציפו את `open_tasks` והבוט ענה מהן. ניקוי ב-`finally`, לפי תחילית, כך שגם שאריות ישנות נעלמות.
+
+## 2026-09-03 — bot acceptance
+- A tool's precondition ("only call with name+phone") is enforced in the sub-workflow with an IF node, never only in the prompt: gpt-5.4-mini called `handoff` with "לא נמסר" twice despite three prompt rules.
+- The writer's own audit is not a review. The copy sweep self-scored 93/100; a separate native reviewer found 5 blockers (false shipping claim in metadata, un-swept `<title>`, broken maqaf). Always dispatch a second reviewer for copy and for bots.
+- RAG beats the prompt when they disagree: the bot quoted 39 ₪/499 ₪ from stale course policy docs while its own prompt said 29/300. Fix the indexed source and reindex; a prompt patch alone loses.
+- Fixed strings the model must reproduce (greeting, safety line, hand-off sentence) go in the prompt as exact quoted text, once. Stating a sentence in two places made the model emit it twice.
+- A test agent that creates real records must delete them and prove counts returned to baseline.

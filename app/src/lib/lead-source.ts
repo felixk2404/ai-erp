@@ -1,6 +1,6 @@
 import type { LeadSource } from './types';
 
-const LABEL: Record<LeadSource, string> = { manual: 'ידני', telegram: 'טלגרם' };
+const LABEL: Record<LeadSource, string> = { manual: 'ידני', telegram: 'טלגרם', web: 'אתר' };
 
 /** מאיפה הגיע הליד. חסר = ידני (לידים שנוצרו לפני השדה). */
 export function leadSourceLabel(source?: string): string {

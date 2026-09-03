@@ -49,6 +49,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF3 מכירות (מייל קר) | כל 3 שעות + `webhook.sh run-sales` | ליד New → מייל נשלח → Contacted |
 | WF4 מכירות (תשובות) | Gmail Trigger כל 30 דק' | תשובה מהליד → Qualified + משימת "להתקשר ל…" |
 | WF5 שירות לקוחות | Telegram @aielec_support_bot | תפריט קטלוג בכפתורים (/menu), "מעוניין" יוצר ליד + משימה + הודעה לבעלים; טקסט חופשי → סוכן; שאלה על מדיניות/מוצר → תשובה מ-RAG |
+| WF5-handoff מסירה לנציג | Execute Workflow (כלי `handoff` של WF5-core) | "תתקשרו אליי לגבי 3 מסכים" → שם+טלפון → ליד (Source web/telegram) + משימת "לחזור ל…" + הודעה לבעלים; `api-test.sh` support |
 | WF6 מדיניות → RAG | `webhook.sh reindex-policies` | `rag-count.sh` → policy: ~79 |
 | WF7 מוצרים → RAG | `webhook.sh reindex-products` | `rag-count.sh` → product: 34 |
 | WF8 PDF | כל 5 דקות, Invoices.Status=validated ולא תפוסה | PdfUrl בדרייב, Status generated |
@@ -57,7 +58,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N`; הזמנה פיזית → משימת "לשלוח ORD-…", מלאי נמוך → משימת "להזמין מלאי" |
 | WF13 API | `POST /webhook/erp` + header `x-erp-secret` | `n8n/scripts/api-test.sh '{"action":"chat","message":"..."}'` |
 
-- **משימות (Tasks)**: תור פעולות אנושיות. WF10 יוצר "לשלוח ORD-…" לכל הזמנה פיזית ו"להזמין מלאי" כשמלאי יורד מתחת ל-3 (בלי כפילות לאותו מק"ט). WF4 יוצר "להתקשר ל…" לליד שענה. WF1 יוצר "לתקן INV-…" לחשבונית שגויה. `Source` + `RefId` מקשרים למסך היעד באפליקציה. סוכן המנהל מקבל `open_tasks`.
+- **משימות (Tasks)**: תור פעולות אנושיות. WF10 יוצר "לשלוח ORD-…" לכל הזמנה פיזית ו"להזמין מלאי" כשמלאי יורד מתחת ל-3 (בלי כפילות לאותו מק"ט). WF4 יוצר "להתקשר ל…" לליד שענה. סוכן השירות יוצר "לחזור ל…" כשלקוח משאיר שם וטלפון (WF5-handoff). WF1 יוצר "לתקן INV-…" לחשבונית שגויה. `Source` + `RefId` מקשרים למסך היעד באפליקציה. סוכן המנהל מקבל `open_tasks`.
 
 פעולות WF13: `create` · `chat` · `update` · `support` · `order` (מריץ את WF10) · `order_status` (`{orderNumber,email}` → סטטוס ההזמנה + PdfUrl של החשבונית).
 

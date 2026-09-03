@@ -2,7 +2,7 @@ export type Rec<F> = { id: string; createdTime: string; fields: F };
 
 export const INVOICE_STATUSES = ['new', 'validated', 'generated', 'paid', 'error'] as const;
 export const LEAD_STATUSES = ['New', 'Contacted', 'Qualified', 'Dead', 'Duplicate'] as const;
-export const LEAD_SOURCES = ['manual', 'telegram'] as const;
+export const LEAD_SOURCES = ['manual', 'telegram', 'web'] as const;
 export const TASK_STATUSES = ['open', 'done'] as const;
 export const TASK_SOURCES = ['order', 'stock', 'lead', 'invoice', 'manual'] as const;
 

@@ -5,6 +5,7 @@ describe('leadSourceLabel', () => {
   it('maps sources to hebrew, defaults to manual', () => {
     expect(leadSourceLabel('telegram')).toBe('טלגרם');
     expect(leadSourceLabel('manual')).toBe('ידני');
+    expect(leadSourceLabel('web')).toBe('אתר');
     expect(leadSourceLabel(undefined)).toBe('ידני');
     expect(leadSourceLabel('weird')).toBe('weird');
   });

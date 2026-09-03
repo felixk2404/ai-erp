@@ -59,3 +59,11 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [ ] להוציא את n8n מהמק לפני ההגשה (ngrok + Docker מקומיים = החנות חיה רק כשהמחשב דולק). קופה, מעקב ובוט תלויים בזה.
 
 - [ ] ליטוש נדחה (2026-09-03): Reveal בגלילה (`animation-timeline: view()`), ₪ fallback באנדרואיד, אחידות צילומי מוצר (חומרה מול שירותים), ספרת שלב עתידי בציר הזמן ב-glow-4, שדה Featured ב-Airtable במקום `FLAGSHIP_PREFERENCE`
+
+## Copy sweep (2026-09-03)
+- [x] Native Hebrew selling copy across the store (5dedab2), native-speaker review, fixes (20bf197, 3b7052d): metadata, maqaf, gershayim, סל everywhere, cart aria split.
+- [x] Redeployed to production 2026-09-03 (Felix ran the CLI; e2e 8 passed, 1 skipped vs https://ai-electronics-one.vercel.app).
+- [x] Bot acceptance pass (2026-09-03): 14 live scenarios; fixed shipping numbers in policy docs (29/300), SKU in product RAG, `handoff` tool (WF5-handoff with contact guard), 8 prompt rules. Map + runbook updated.
+- [ ] Bot `order_status` tool (WF10 status path) so "איפה ההזמנה שלי" gets an answer instead of a pointer to /track.
+- [ ] Store support timeout: one call in 18 waited ~2 min for the sub-workflow to start (Mac load); `erpCall` budget is 60 s. Consider a "still thinking" retry in the widget or raising the budget.
+- [ ] Deploy admin app (lead source "אתר" label): `cd app && vercel --prod --yes` — Felix runs it.
