@@ -88,11 +88,12 @@ const TO_SHIP_STATUSES = new Set<string>(['new', 'confirmed']);
 const PRICED = new Set<string>(['validated', 'generated', 'paid']);
 
 /** מה דורש פעולה: חשבוניות שגויות, חשבוניות שלא שולמו מעל 14 יום, לידים שנשלח להם מייל ולא ענו מעל 7 ימים,
- *  הזמנות מאושרות/חדשות מעל 24 שעות שעדיין לא נשלחו,
+ *  הזמנות עם משימת שליחה פתוחה מעל 24 שעות,
  *  ורשומות עם נתון חסר — תאריך או סכום — שאחרת פשוט נעלמות מהחישוב ומהפאנל. */
 export function attentionItems({
   invoices,
   leads,
+  tasks,
   orders = [],
   now = new Date(),
 }: {
@@ -128,10 +129,21 @@ export function attentionItems({
       items.push({ kind: 'stale-lead', severity: 'amber', title: `${name} — ללא מענה ${age} ימים`, hint: l.fields.Company, href: '/leads?status=Contacted' });
     }
   }
+  // מי שמחליט שהזמנה מחכה למשלוח היא משימת המשלוח שפתח WF10, לא הסטטוס: הזמנת שירות לא מקבלת משימה
+  // ולעולם לא נשלחת, וסגירת המשימה מ-/tasks צריכה להשתיק את הפריט גם אם הסטטוס עוד לא עודכן.
+  const shipping = new Set(tasks.filter((t) => t.fields.Source === 'order').map((t) => t.fields.RefId));
   for (const o of orders) {
+    if (!shipping.has(o.fields.OrderNumber)) continue;
     if (!TO_SHIP_STATUSES.has(o.fields.Status ?? 'new')) continue;
-    if (ageHours(o.fields.Created) < TO_SHIP_HOURS) continue;
-    items.push({ kind: 'to-ship', severity: 'amber', title: `לשלוח ${o.fields.OrderNumber} — ${o.fields.Name}`, href: `/orders/${o.id}` });
+    const hours = ageHours(o.fields.Created);
+    if (!(hours >= TO_SHIP_HOURS)) continue;
+    items.push({
+      kind: 'to-ship',
+      severity: 'amber',
+      title: `לשלוח ${o.fields.OrderNumber} — ${o.fields.Name}`,
+      hint: [o.fields.City, `ממתינה ${Math.floor(hours)} שעות`].filter(Boolean).join(' · '),
+      href: `/orders/${o.id}`,
+    });
   }
   const rank = { red: 0, amber: 1 };
   return items.sort((a, b) => rank[a.severity] - rank[b.severity]);

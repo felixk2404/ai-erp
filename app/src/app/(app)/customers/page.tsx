@@ -80,7 +80,7 @@ export default async function CustomersPage() {
                   <TableRow key={c.id}>
                     <TableCell className="num text-ink-2">{c.fields.CustomerId}</TableCell>
                     <TableCell className="font-medium">
-                      <Link href={`/customers/${c.id}`} transitionTypes={['nav-forward']} className="hover:text-inkblue">
+                      <Link href={`/customers/${c.id}`} transitionTypes={['nav-forward']} className="text-signal hover:underline">
                         {c.fields.Name}
                       </Link>
                     </TableCell>

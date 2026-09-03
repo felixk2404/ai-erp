@@ -2,12 +2,14 @@
 
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
 import { LED_CLASS } from '@/components/status-led';
 import { MAX_STOCK, parseStock, stockLed } from '@/lib/stock';
 import { setStock } from './actions';
 
 /**
  * כמות המלאי בתא הטבלה: נורית + שדה מספר שנשמר ביציאה מהשדה או ב-Enter.
+ * במנוחה השדה שקוף ובלי מסגרת — עמודת מלאי היא קודם כול קריאה, והמסגרת עולה רק במגע (hover/focus).
  * הנורית נגזרת ממה שמוקלד ולא מהערך השמור, כך שהצבע מגיב לפני הכתיבה לשרת.
  * כישלון מחזיר את השדה לערך השמור — שדה שנשאר עם מספר שלא נשמר הוא שקר.
  */
@@ -24,14 +26,16 @@ export function StockField({ id, name, stock }: { id: string; name: string; stoc
       if (r.error) {
         toast.error(r.error);
         setValue(saved);
+      } else {
+        toast.success('המלאי עודכן');
       }
     });
   };
 
   return (
     <span className="inline-flex items-center gap-2">
-      <span aria-hidden className={`size-2 rounded-full shrink-0 ${LED_CLASS[stockLed(typed.ok ? typed.value : 0, false)]}`} />
-      <input
+      <span aria-hidden className={`size-2 rounded-full shrink-0 ${LED_CLASS[stockLed(typed.ok ? typed.value : 0, false)]} ${pending ? 'led-live' : ''}`} />
+      <Input
         type="number"
         inputMode="numeric"
         min={0}
@@ -49,7 +53,7 @@ export function StockField({ id, name, stock }: { id: string; name: string; stoc
           if (e.key === 'Enter') e.currentTarget.blur();
           if (e.key === 'Escape') setValue(saved);
         }}
-        className="h-11 w-16 rounded-lg border border-input bg-well px-2 text-center text-sm num text-ink outline-none transition-colors focus-visible:border-signal focus-visible:ring-3 focus-visible:ring-signal/25 aria-busy:opacity-60"
+        className="h-11 w-16 px-1 text-center text-sm num border-transparent bg-transparent hover:border-input hover:bg-well focus:bg-well aria-busy:opacity-60 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
     </span>
   );

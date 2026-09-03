@@ -42,7 +42,7 @@ export async function list<F>(table: TableName, opts: ListOpts = {}): Promise<Re
 }
 
 export async function get<F>(table: TableName, id: string): Promise<Rec<F> | null> {
-  const res = await fetch(`${base()}/${encodeURIComponent(table)}/${id}`, { headers: headers(), cache: 'no-store', signal: AbortSignal.timeout(TIMEOUT_MS) });
+  const res = await fetch(`${base()}/${encodeURIComponent(table)}/${encodeURIComponent(id)}`, { headers: headers(), cache: 'no-store', signal: AbortSignal.timeout(TIMEOUT_MS) });
   if (res.status === 404) return null;
   if (!res.ok) {
     logError(`airtable ${table}/${id}`, `${res.status} ${(await res.text()).slice(0, 500)}`);

@@ -100,7 +100,7 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
                 <TableRow key={i.id}>
                   <TableCell className="num font-medium">
                     <Shared name={`invoice-${i.id}`}>
-                      <Link href={`/invoices/${i.id}`} transitionTypes={['nav-forward']} className="hover:text-inkblue">
+                      <Link href={`/invoices/${i.id}`} transitionTypes={['nav-forward']} className="text-signal hover:underline">
                         {i.fields.InvoiceNumber ?? '—'}
                       </Link>
                     </Shared>

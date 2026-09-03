@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { list } from '@/lib/airtable';
-import { isService, MAX_STOCK } from '@/lib/stock';
+import { isService, stockLabel, MAX_STOCK } from '@/lib/stock';
 import type { ProductFields } from '@/lib/types';
 import { Header } from '@/components/shell/header';
 import { Money } from '@/components/money';
@@ -151,16 +151,18 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         </div>
       ) : view === 'table' ? (
         <div className="panel overflow-hidden">
-          <Table label="מוצרים" className="table-fixed">
+          {/* min-w קבוע: בלעדיו אחוזי table-fixed נפתרים מול 390px, ותא המלאי מצטמצם מתחת לרוחב השדה שבתוכו.
+              במסך קטן שתי עמודות מוסתרות, ולכן מספיק 560 — 880 שם היה דוחף גם את שם המוצר מחוץ למסך. */}
+          <Table label="מוצרים" className="table-fixed min-w-[560px] md:min-w-[880px]">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[64px]" />
                 <TableHead className="w-[110px]">מק״ט</TableHead>
                 <TableHead className="w-[22%]">שם</TableHead>
-                <TableHead className="w-[11%]">קטגוריה</TableHead>
+                <TableHead className="w-[11%] hidden md:table-cell">קטגוריה</TableHead>
                 <TableHead className="w-[10%]">מחיר</TableHead>
-                <TableHead className="w-[12%]">מלאי</TableHead>
-                <TableHead>תיאור</TableHead>
+                <TableHead className="w-[112px]">מלאי</TableHead>
+                <TableHead className="hidden md:table-cell">תיאור</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -176,14 +178,14 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                     {p.fields.Sku ?? '—'}
                   </TableCell>
                   <TableCell className="font-medium whitespace-normal">{p.fields.Name}</TableCell>
-                  <TableCell className="text-ink-2">{p.fields.Category ?? '—'}</TableCell>
+                  <TableCell className="text-ink-2 hidden md:table-cell">{p.fields.Category ?? '—'}</TableCell>
                   <TableCell>
                     <Money value={p.fields.Price ?? 0} />
                   </TableCell>
                   <TableCell>
-                    {isService(p) ? <span className="text-ink-3">—</span> : <StockField id={p.id} name={p.fields.Name} stock={p.fields.Stock} />}
+                    {isService(p) ? <span className="text-ink-3">{stockLabel(undefined, true)}</span> : <StockField id={p.id} name={p.fields.Name} stock={p.fields.Stock} />}
                   </TableCell>
-                  <TableCell className="text-ink-2 text-sm whitespace-normal">
+                  <TableCell className="text-ink-2 text-sm whitespace-normal hidden md:table-cell">
                     <span className="line-clamp-2" title={p.fields.Description}>
                       {p.fields.Description ?? '—'}
                     </span>

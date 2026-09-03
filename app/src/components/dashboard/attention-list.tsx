@@ -22,7 +22,7 @@ export function AttentionList({ items }: { items: AttentionItem[] }) {
             <div className="mx-auto size-24 rounded-full overflow-hidden ring-1 ring-white/10 bg-chassis-2">
               <Image src="/brand/empty-tasks.webp" alt="" width={96} height={96} className="opacity-90" />
             </div>
-            <p className="text-sm text-readout-2 mt-2">אין חשבוניות תקועות ואין לידים שנשכחו.</p>
+            <p className="text-sm text-readout-2 mt-2">אין חשבוניות תקועות, לידים שנשכחו או הזמנות שמחכות למשלוח.</p>
           </div>
         </div>
       ) : (

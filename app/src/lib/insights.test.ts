@@ -141,33 +141,40 @@ describe('attentionItems', () => {
 });
 
 describe('attentionItems — to-ship orders', () => {
+  // סמכות "מחכה למשלוח" היא משימת המשלוח של WF10, ולכן לכל מקרה חיובי יש גם משימה פתוחה.
+  const shipTask = (refId = 'ORD-0001'): Task => ({
+    id: `t-${refId}`,
+    createdTime: '2026-09-01T10:00:00.000Z',
+    fields: { Title: `לשלוח ${refId}`, Status: 'open', Source: 'order', RefId: refId },
+  });
+
   it('does not list a fresh confirmed order', () => {
     const items = attentionItems({
       invoices: [],
       leads: [],
-      tasks: [],
+      tasks: [shipTask()],
       orders: [order({ id: 'fresh', Status: 'confirmed', Created: '2026-09-02T00:00:00.000Z' })],
       now,
     });
     expect(items).toEqual([]);
   });
 
-  it('lists a confirmed order older than 24h, amber, with the exact title and href', () => {
+  it('lists a confirmed order older than 24h, amber, with the exact title, hint and href', () => {
     const items = attentionItems({
       invoices: [],
       leads: [],
-      tasks: [],
-      orders: [order({ id: 'ord1', OrderNumber: 'ORD-0042', Name: 'דנה כהן', Status: 'confirmed', Created: '2026-09-01T11:00:00.000Z' })],
+      tasks: [shipTask('ORD-0042')],
+      orders: [order({ id: 'ord1', OrderNumber: 'ORD-0042', Name: 'דנה כהן', City: 'חיפה', Status: 'confirmed', Created: '2026-09-01T11:00:00.000Z' })],
       now,
     });
-    expect(items).toEqual([{ kind: 'to-ship', severity: 'amber', title: 'לשלוח ORD-0042 — דנה כהן', href: '/orders/ord1' }]);
+    expect(items).toEqual([{ kind: 'to-ship', severity: 'amber', title: 'לשלוח ORD-0042 — דנה כהן', hint: 'חיפה · ממתינה 25 שעות', href: '/orders/ord1' }]);
   });
 
   it('lists a new order older than 24h too', () => {
     const items = attentionItems({
       invoices: [],
       leads: [],
-      tasks: [],
+      tasks: [shipTask()],
       orders: [order({ id: 'ord2', Status: 'new', Created: '2026-09-01T11:00:00.000Z' })],
       now,
     });
@@ -179,11 +186,37 @@ describe('attentionItems — to-ship orders', () => {
     const items = attentionItems({
       invoices: [],
       leads: [],
-      tasks: [],
+      tasks: [shipTask()],
       orders: [order({ id: 'shipped', Status: 'shipped', Created: '2026-08-01T00:00:00.000Z' })],
       now,
     });
     expect(items).toEqual([]);
+  });
+
+  it('does not list a services-only order — WF10 never opened a ship task for it', () => {
+    const items = attentionItems({
+      invoices: [],
+      leads: [],
+      tasks: [],
+      orders: [order({ id: 'service', OrderNumber: 'ORD-0077', Status: 'confirmed', Created: '2026-08-01T00:00:00.000Z' })],
+      now,
+    });
+    expect(items).toEqual([]);
+  });
+
+  it('stops listing an order once its ship task was closed from /tasks', () => {
+    // `tasks` מגיע כבר מסונן למשימות פתוחות, ולכן משימה שנסגרה פשוט לא נמצאת ברשימה
+    const items = attentionItems({
+      invoices: [],
+      leads: [],
+      tasks: [shipTask('ORD-0099')],
+      orders: [
+        order({ id: 'open', OrderNumber: 'ORD-0099', Status: 'confirmed', Created: '2026-09-01T11:00:00.000Z' }),
+        order({ id: 'closed', OrderNumber: 'ORD-0100', Status: 'confirmed', Created: '2026-09-01T11:00:00.000Z' }),
+      ],
+      now,
+    });
+    expect(items.map((i) => i.href)).toEqual(['/orders/open']);
   });
 
   it('still works for callers that omit orders entirely', () => {

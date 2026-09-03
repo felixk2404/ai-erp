@@ -76,7 +76,7 @@ export default async function CustomerPage({ params }: { params: Promise<{ id: s
                 {invoices.map((i) => (
                   <TableRow key={i.id}>
                     <TableCell className="num font-medium">
-                      <Link href={`/invoices/${i.id}`} transitionTypes={['nav-forward']} className="hover:text-inkblue">
+                      <Link href={`/invoices/${i.id}`} transitionTypes={['nav-forward']} className="text-signal hover:underline">
                         {i.fields.InvoiceNumber ?? '—'}
                       </Link>
                     </TableCell>
