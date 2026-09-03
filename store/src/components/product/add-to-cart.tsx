@@ -60,11 +60,15 @@ export function AddToCart({ sku, name, price, service, imageUrl, ok, install }: 
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-3">
+      {/* `flex-wrap` + basis: הכפתור הוא `whitespace-nowrap`, ולכן הרוחב המינימלי
+          שלו הוא רוחב התווית ("הוספה לסל · 1,290.00 ₪" ≈ 200px). ליד סטפר של 122
+          זה 334 בקופסה של 302 ב-390 — העמוד קיבל גלילה אופקית. עכשיו הוא פשוט
+          יורד לשורה משלו כשאין מקום, בלי media query ובלי לקצץ את המחיר. */}
+      <div className="flex flex-wrap items-center gap-3">
         <Quantity value={qty} onChange={setQty} />
         <Button
           onClick={() => put({ sku, name, price, qty, service, imageUrl })}
-          className="h-11 flex-1 gap-1.5 rounded-sm px-4 text-body"
+          className="h-11 min-w-0 flex-1 basis-48 gap-1.5 rounded-sm px-4 text-body"
         >
           הוספה לסל · <span className="num">{ils(price * qty)}</span>
         </Button>
