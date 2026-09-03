@@ -23,7 +23,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "ebccaec3-8796-483c-ab8b-3120f0aed7d7"
+      "webhookId": "748c33d4-808f-4b61-9481-8f91a114c0e7"
     },
     {
       "name": "Delete Old Products",
@@ -112,7 +112,7 @@
             {
               "id": "t",
               "name": "text",
-              "value": "=מוצר: {{ $json.fields.Name }}\nקטגוריה: {{ $json.fields.Category }}\nמחיר: {{ $json.fields.Price }} ₪ כולל מע\"מ\nתיאור: {{ $json.fields.Description }}",
+              "value": "=מוצר: {{ $json.fields.Name }}\nמק״ט: {{ $json.fields.Sku }}\nקטגוריה: {{ $json.fields.Category }}\nמחיר: {{ $json.fields.Price }} ₪ כולל מע״מ\nתיאור: {{ $json.fields.Description }}",
               "type": "string"
             },
             {
