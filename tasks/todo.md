@@ -66,4 +66,6 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] Bot acceptance pass (2026-09-03): 14 live scenarios; fixed shipping numbers in policy docs (29/300), SKU in product RAG, `handoff` tool (WF5-handoff with contact guard), 8 prompt rules. Map + runbook updated.
 - [ ] Bot `order_status` tool (WF10 status path) so "איפה ההזמנה שלי" gets an answer instead of a pointer to /track.
 - [ ] Store support timeout: one call in 18 waited ~2 min for the sub-workflow to start (Mac load); `erpCall` budget is 60 s. Consider a "still thinking" retry in the widget or raising the budget.
-- [ ] Deploy admin app (lead source "אתר" label): `cd app && vercel --prod --yes` — Felix runs it.
+- [x] Plan 7 (2026-09-03): admin Orders tab + order page (timeline, next-step button, ship-task close), stock editing in products (WF13 field allow-list gained Stock), dashboard to-ship items gated on WF10's ship task. Commits ef719f2..24742bf.
+- [ ] Deploy admin app (orders tab, stock, lead source "אתר"): `cd app && vercel --prod --yes` — Felix runs it.
+- [ ] invoices/[id] has the same min-width grid overflow at 390 that the order page had (add `min-w-0` on the items section).
