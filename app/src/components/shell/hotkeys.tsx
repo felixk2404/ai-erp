@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 
 const GO: Record<string, [string, string]> = {
   d: ['/', 'דשבורד'],
+  o: ['/orders', 'הזמנות'],
   i: ['/invoices', 'חשבוניות'],
   l: ['/leads', 'לידים'],
   c: ['/customers', 'לקוחות'],

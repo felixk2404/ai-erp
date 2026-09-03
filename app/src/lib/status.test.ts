@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { statusMeta } from './status';
-import { INVOICE_STATUSES } from './types';
+import { INVOICE_STATUSES, ORDER_STATUSES } from './types';
 
 describe('statusMeta', () => {
   // החשבונית היא ישות נקבה — כל תווית בעבר־נקבה, כמו STATUS_LABELS של החנות.
@@ -27,6 +27,19 @@ describe('statusMeta', () => {
 
   it('falls back to the raw value for unknown statuses', () => {
     expect(statusMeta('Leads', 'weird')).toEqual({ label: 'weird', led: 'off' });
+  });
+
+  // הלקוח והמנהל מסתכלים על אותה הזמנה — אותם שלבים, נקבה, בלי שני מילונים שנפרדים בזמן.
+  it('maps order statuses to the store steps', () => {
+    expect(ORDER_STATUSES.map((s) => statusMeta('Orders', s))).toEqual([
+      { label: 'חדשה', led: 'amber' },
+      { label: 'אושרה', led: 'amber' },
+      { label: 'נשלחה', led: 'green' },
+      { label: 'נמסרה', led: 'green' },
+      { label: 'בוטלה', led: 'red' },
+    ]);
+    expect(statusMeta('Orders', undefined)).toEqual({ label: 'חדשה', led: 'amber' });
+    expect(statusMeta('Orders', 'weird')).toEqual({ label: 'weird', led: 'off' });
   });
 
   it('maps tasks', () => {

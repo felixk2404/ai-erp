@@ -4,7 +4,7 @@ export type TaskSourceMeta = { label: string; href: string | null };
 
 /** מי יצר את המשימה ולאן ללכת כדי לטפל בה. `manual` וחסר = ידני, בלי קישור. */
 const MAP: Record<TaskSource, { label: string; href: string | null; q: boolean }> = {
-  order: { label: 'משלוח', href: '/customers', q: false },
+  order: { label: 'משלוח', href: '/orders', q: false },
   stock: { label: 'מלאי', href: '/products', q: true },
   lead: { label: 'ליד', href: '/leads', q: false },
   invoice: { label: 'חשבונית', href: '/invoices', q: true },

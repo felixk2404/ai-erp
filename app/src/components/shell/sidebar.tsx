@@ -6,10 +6,11 @@ import { logout } from '@/app/(auth)/login/actions';
 import { CommandMenuTrigger } from '@/components/command-menu';
 import { HotkeysHelpButton } from './hotkeys';
 
-export type NavCounts = { invoices: number; leads: number; tasks: number };
+export type NavCounts = { orders: number; invoices: number; leads: number; tasks: number };
 
 const LINKS = (c: NavCounts): { href: string; label: string; count?: number; icon: NavIcon }[] => [
   { href: '/', label: 'דשבורד', icon: 'dashboard' },
+  { href: '/orders', label: 'הזמנות', count: c.orders, icon: 'orders' },
   { href: '/invoices', label: 'חשבוניות', count: c.invoices, icon: 'invoices' },
   { href: '/leads', label: 'לידים', count: c.leads, icon: 'leads' },
   { href: '/customers', label: 'לקוחות', icon: 'customers' },

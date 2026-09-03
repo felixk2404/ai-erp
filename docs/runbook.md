@@ -61,6 +61,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **משימות (Tasks)**: תור פעולות אנושיות. WF10 יוצר "לשלוח ORD-…" לכל הזמנה פיזית ו"להזמין מלאי" כשמלאי יורד מתחת ל-3 (בלי כפילות לאותו מק"ט). WF4 יוצר "להתקשר ל…" לליד שענה. סוכן השירות יוצר "לחזור ל…" כשלקוח משאיר שם וטלפון (WF5-handoff). WF1 יוצר "לתקן INV-…" לחשבונית שגויה. `Source` + `RefId` מקשרים למסך היעד באפליקציה. סוכן המנהל מקבל `open_tasks`.
 
 פעולות WF13: `create` · `chat` · `update` · `support` · `order` (מריץ את WF10) · `order_status` (`{orderNumber,email}` → סטטוס ההזמנה + PdfUrl של החשבונית).
+`create` מותר ב-Tasks/Products/Invoices/Leads/Customers; `update` באותן טבלאות ובנוסף **Orders** (עמוד ההזמנות באפליקציה מעדכן `Status`), ורק לשדות `Status`/`InStock`. הרשימות יושבות בצומת `Route` של `n8n/workflows/13-api.json` — אחרי שינוי: `n8n/scripts/import-workflow.sh n8n/workflows/13-api.json --activate`.
 
 - **תפריט טלגרם (WF5)**: `/start` או `/menu` פותח כפתורי קטגוריות → מוצרים → מפרט → "מעוניין". הלוגיקה ב-`n8n/code/classify.js` ו-`n8n/code/render-menu.js` (בדיקות: `node --test "n8n/code/*.test.js"`), מוזרקת ל-workflow בייבוא (`__CODE_NAME__`). המצב חי ב-`callback_data`; הטלפון מתחבר לליד לפי `TelegramChatId`. ליד מטלגרם: `Source=telegram`, בלי אימייל, ולכן WF3 לא שולח לו מייל קר.
 - כפתורי התפריט (`Edit Menu`, `Send Menu`, `Confirm Lead`) נשלחים ל-Telegram Bot API ישירות מצומתי HTTP Request, כי צומת ה-Telegram של n8n לא יכול לקבל מקלדת דינמית; טוקן הבוט מגיע לצמתים האלה דרך `$env.TELEGRAM_CUSTOMER_TOKEN`, ש-`n8n/docker-compose.yml` מזריק לקונטיינר מקובץ ה-env (git-ignored).
@@ -125,11 +126,12 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - פרודקשן: **https://ai-erp-rho.vercel.app** (פרויקט Vercel `ai-erp`, סיסמת כניסה ב-`APP_PASSWORD`).
 - מקומי: `cd app && pnpm dev` → http://localhost:3100 (3100 ולא 3000 — פורט 3000 תפוס אצל פרויקט אחר במחשב).
 - env: `cp app/env.example app/.env.local` וממלאים; או מייצרים מ-`n8n/.env` (הפקודה בשיחה מ-2026-09-02). `AUTH_SECRET` = `openssl rand -hex 32`.
-- בדיקות: `pnpm test` (Vitest, 55), `pnpm e2e` (Playwright, 5 — קורא APP_PASSWORD מ-.env.local), `PLAYWRIGHT_BASE_URL=https://ai-erp-rho.vercel.app pnpm e2e` מול פרודקשן.
+- בדיקות: `pnpm test` (Vitest, 98), `pnpm e2e` (Playwright, 10 — קורא APP_PASSWORD מ-.env.local), `PLAYWRIGHT_BASE_URL=https://ai-erp-rho.vercel.app pnpm e2e` מול פרודקשן.
 - צילומי מסך של כל המסכים: `OUT=<dir> node e2e/screens.mjs`.
 - פריסה: `cd app && vercel --prod --yes`. סנכרון env ל-Vercel: `./scripts/vercel-env.sh` (קורא .env.local, לא מדפיס ערכים; מדלג על VERCEL_*).
 - כשהמק כבוי: האפליקציה עולה וקוראת מ-Airtable, אבל כל כתיבה/צ'אט (דרך n8n המקומי ב-ngrok) נכשלים עם toast "n8n 502/503". לדמו: Docker + `n8n/scripts/tunnel.sh` חייבים לרוץ.
 - ארכיטקטורה: קריאה = Server Components → Airtable REST (PAT בשרת). כתיבה = Server Actions → WF13 (`create`/`update`/`chat`) ו-webhooks `run-sales`, `reindex-products`. אימות = cookie HMAC ב-`src/proxy.ts`.
+- **הזמנות**: `/orders` (רשימה עם סינון `?status=`) ו-`/orders/[id]` (שורות, סכומים, לקוח, חשבונית). ההזמנות נוצרות בחנות (WF10); האפליקציה מעדכנת רק `Status` דרך WF13. מעבר ל-`shipped` סוגר גם את משימת "לשלוח ORD-…" (Tasks עם `Source=order` ו-`RefId`=מספר ההזמנה).
 
 ## 9. פרמיום (תוכנית 4)
 - **שירות לקוחות באתר**: `https://ai-erp-rho.vercel.app/support` — ציבורי, בלי סיסמה. אותו סוכן כמו הטלגרם (WF5-core), דרך `WF13 action:"support"`. Rate limit 20 הודעות/דקה ל-IP. וידג'ט צף גם בתוך האפליקציה.
@@ -147,7 +149,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - **⌘K עם AI**: הקלדה של 3 תווים ומעלה בפלטה מציעה "שאל את המנהל"; Enter שולח ל-`sendChat` (WF13 chat) והתשובה מוזרמת בפלטה.
 - **קיצורי מקלדת**: `?` עזרה · `g` ואז `d/i/l/c/p/t` ניווט · `n` פריט חדש בעמוד · ⌘K חיפוש.
 - **תקציר בוקר**: נחשף מילה-מילה (StreamText); בזמן הטעינה פאנל "הסוכן קורא נתונים" עם טיימר.
-- **בדיקות**: `pnpm test` (55), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
+- **בדיקות**: `pnpm test` (98), typecheck, lint, `pnpm e2e`, `PAGES=/ OUT=<dir> node e2e/screens.mjs` לצילום עמוד יחיד.
 - **תנועה**: הכל מכבד prefers-reduced-motion (beams/aurora/led נעצרים). אם המחשב חלש בדמו — אפשר להפעיל reduced motion במערכת ההפעלה.
 
 ## 11. החנות (store/)

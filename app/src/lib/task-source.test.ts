@@ -3,7 +3,7 @@ import { taskSourceMeta } from './task-source';
 
 describe('taskSourceMeta', () => {
   it('maps every automated source to a hebrew label and a target page', () => {
-    expect(taskSourceMeta('order')).toEqual({ label: 'משלוח', href: '/customers' });
+    expect(taskSourceMeta('order')).toEqual({ label: 'משלוח', href: '/orders' });
     expect(taskSourceMeta('stock')).toEqual({ label: 'מלאי', href: '/products' });
     expect(taskSourceMeta('lead')).toEqual({ label: 'ליד', href: '/leads' });
     expect(taskSourceMeta('invoice')).toEqual({ label: 'חשבונית', href: '/invoices' });
@@ -30,7 +30,7 @@ describe('taskSourceMeta', () => {
   });
 
   it('does not append ?q for sources whose screen has no search', () => {
-    expect(taskSourceMeta('order', 'ORD-0003')).toEqual({ label: 'משלוח', href: '/customers' });
+    expect(taskSourceMeta('order', 'ORD-0003')).toEqual({ label: 'משלוח', href: '/orders' });
     expect(taskSourceMeta('lead', 'recABC')).toEqual({ label: 'ליד', href: '/leads' });
   });
 });

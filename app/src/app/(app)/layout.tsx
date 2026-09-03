@@ -1,6 +1,6 @@
 import { list } from '@/lib/airtable';
 import { ils } from '@/lib/format';
-import type { CustomerFields, InvoiceFields, LeadFields, ProductFields, TaskFields } from '@/lib/types';
+import type { CustomerFields, InvoiceFields, LeadFields, OrderFields, ProductFields, TaskFields } from '@/lib/types';
 import { MobileNav, Sidebar } from '@/components/shell/sidebar';
 import { CommandMenu, type CommandItem } from '@/components/command-menu';
 import { SupportWidget } from '@/components/chat/support-widget';
@@ -9,15 +9,17 @@ import { Hotkeys } from '@/components/shell/hotkeys';
 export const dynamic = 'force-dynamic';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const [invoices, leads, tasks, customers, products] = await Promise.all([
+  const [invoices, leads, openOrders, tasks, customers, products] = await Promise.all([
     list<InvoiceFields>('Invoices', { sort: [{ field: 'Created', direction: 'desc' }] }),
     list<LeadFields>('Leads', { filter: "{Status}='New'" }),
+    // הזמנה שעדיין לא נשלחה = משהו שמחכה למנהל; נשלחה/נמסרה/בוטלה כבר לא.
+    list<OrderFields>('Orders', { filter: "OR({Status}='new',{Status}='confirmed')" }),
     list<TaskFields>('Tasks', { filter: "{Status}!='done'" }),
     list<CustomerFields>('Customers', { sort: [{ field: 'Name' }] }),
     list<ProductFields>('Products', { sort: [{ field: 'Name' }] }),
   ]);
   const openInvoices = invoices.filter((i) => i.fields.Status !== 'paid' && i.fields.Status !== 'error');
-  const counts = { invoices: openInvoices.length, leads: leads.length, tasks: tasks.length };
+  const counts = { orders: openOrders.length, invoices: openInvoices.length, leads: leads.length, tasks: tasks.length };
 
   const items: CommandItem[] = [
     ...customers.map((c) => ({ label: c.fields.Name, hint: c.fields.CustomerId, href: `/customers/${c.id}`, group: 'לקוחות' as const })),
@@ -30,7 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="md:flex min-h-dvh">
-      {/* 2.4.1 — לפני <main> יושבים המותג, ⌘K, 6 קישורי ניווט, שירות, יציאה. זה המעקף. */}
+      {/* 2.4.1 — לפני <main> יושבים המותג, ⌘K, 7 קישורי ניווט, שירות, יציאה. זה המעקף. */}
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:start-2 focus:z-100 focus:rounded-md focus:bg-chassis-3 focus:px-4 focus:py-2 focus:text-readout focus:outline-2 focus:outline-signal"

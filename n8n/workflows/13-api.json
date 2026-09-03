@@ -117,7 +117,7 @@
                   },
                   {
                     "id": "c3t",
-                    "leftValue": "={{ ['Tasks','Products','Invoices','Leads','Customers'].includes($json.body.table) }}",
+                    "leftValue": "={{ ['Tasks','Products','Invoices','Leads','Customers','Orders'].includes($json.body.table) }}",
                     "rightValue": true,
                     "operator": {
                       "type": "boolean",

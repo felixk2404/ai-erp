@@ -12,6 +12,7 @@ export type CommandItem = { label: string; hint?: string; href: string; group: '
 
 const PAGES: CommandItem[] = [
   { label: 'דשבורד', href: '/', group: 'עמודים' },
+  { label: 'הזמנות', href: '/orders', group: 'עמודים' },
   { label: 'חשבוניות', href: '/invoices', group: 'עמודים' },
   { label: 'לידים', href: '/leads', group: 'עמודים' },
   { label: 'לקוחות', href: '/customers', group: 'עמודים' },

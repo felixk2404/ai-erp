@@ -11,7 +11,7 @@ const env = Object.fromEntries(
 );
 const base = process.env.BASE_URL ?? 'http://localhost:3100';
 const out = process.env.OUT ?? '/private/tmp/claude-501/-Users-felixkreinovich-----------/5bf29461-8678-42ba-974e-ba55eb5d303b/scratchpad/shots';
-const pages = (process.env.PAGES ?? '/,/invoices,/leads,/customers,/products,/tasks').split(',');
+const pages = (process.env.PAGES ?? '/,/orders,/invoices,/leads,/customers,/products,/tasks').split(',');
 
 const browser = await chromium.launch();
 for (const [name, viewport] of [['desktop', { width: 1366, height: 860 }], ['mobile', { width: 390, height: 844 }]]) {

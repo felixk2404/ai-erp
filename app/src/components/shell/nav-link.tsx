@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
-import { LayoutDashboard, FileText, UserPlus, Users, Package, CheckSquare } from 'lucide-react';
+import { LayoutDashboard, FileText, UserPlus, Users, Package, ShoppingBag, CheckSquare } from 'lucide-react';
 
-export type NavIcon = 'dashboard' | 'invoices' | 'leads' | 'customers' | 'products' | 'tasks';
-const ICONS = { dashboard: LayoutDashboard, invoices: FileText, leads: UserPlus, customers: Users, products: Package, tasks: CheckSquare } as const;
+export type NavIcon = 'dashboard' | 'orders' | 'invoices' | 'leads' | 'customers' | 'products' | 'tasks';
+const ICONS = { dashboard: LayoutDashboard, orders: ShoppingBag, invoices: FileText, leads: UserPlus, customers: Users, products: Package, tasks: CheckSquare } as const;
 
 /** קישור ניווט: אייקון קו + תווית + ספירה. הפריט הפעיל מקבל פס ציאן קפיצי שמחליק בין הפריטים (layoutId). */
 export function NavLink({ href, label, count, icon, layoutId = 'nav-active' }: { href: string; label: string; count?: number; icon: NavIcon; layoutId?: string }) {

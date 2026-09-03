@@ -31,7 +31,7 @@ test('dashboard renders rtl with the ledger strip', async ({ page }) => {
 });
 
 test('all pages render with their heading', async ({ page }) => {
-  for (const name of ['חשבוניות', 'לידים', 'לקוחות', 'מוצרים', 'משימות']) {
+  for (const name of ['הזמנות', 'חשבוניות', 'לידים', 'לקוחות', 'מוצרים', 'משימות']) {
     await page.getByRole('navigation', { name: 'ראשי' }).getByRole('link', { name: new RegExp(`^${name}`) }).click();
     await expect(page.getByRole('heading', { name, level: 1 })).toBeVisible();
   }
@@ -101,6 +101,18 @@ test('invoice detail page opens from the list with timeline', async ({ page }) =
   await expect(page).toHaveURL(/\/invoices\/rec/);
   await expect(page.getByRole('heading', { name: 'INV-0001', level: 1 })).toBeVisible();
   await expect(page.getByLabel('ציר זמן')).toBeVisible();
+});
+
+// קריאה בלבד: הבדיקה לא נוגעת בסטטוס — שינוי סטטוס כותב ל-Airtable ומשנה נתוני דמו.
+test('order detail page opens from the list with its items', async ({ page }) => {
+  await page.goto('/orders');
+  await expect(page.getByRole('region', { name: 'הזמנות' }).getByRole('link', { name: 'ORD-0001' })).toBeVisible();
+  await page.getByRole('link', { name: 'ORD-0001' }).first().click();
+  await expect(page).toHaveURL(/\/orders\/rec/);
+  await expect(page.getByRole('heading', { name: 'ORD-0001', level: 1 })).toBeVisible();
+  const items = page.getByRole('region', { name: 'שורות ההזמנה' });
+  await expect(items.getByText('TY-HP-200')).toBeVisible();
+  await expect(page.getByLabel('סטטוס הזמנה')).toBeVisible();
 });
 
 test('command menu opens with cmd+k and navigates', async ({ page }) => {

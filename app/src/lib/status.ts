@@ -19,6 +19,14 @@ const MAP: Record<TableName, Record<string, StatusMeta>> = {
     Dead: { label: 'סגור', led: 'off' },
     Duplicate: { label: 'כפול', led: 'off' },
   },
+  // הזמנה = נקבה, ובאותם שלבים שהלקוח רואה בחנות (`store/src/lib/order-status.ts`).
+  Orders: {
+    new: { label: 'חדשה', led: 'amber' },
+    confirmed: { label: 'אושרה', led: 'amber' },
+    shipped: { label: 'נשלחה', led: 'green' },
+    delivered: { label: 'נמסרה', led: 'green' },
+    cancelled: { label: 'בוטלה', led: 'red' },
+  },
   Tasks: {
     open: { label: 'פתוחה', led: 'amber' },
     done: { label: 'בוצעה', led: 'green' },
@@ -27,7 +35,7 @@ const MAP: Record<TableName, Record<string, StatusMeta>> = {
   Products: {},
 };
 
-const DEFAULT: Record<TableName, string> = { Invoices: 'new', Leads: 'New', Tasks: 'open', Customers: '', Products: '' };
+const DEFAULT: Record<TableName, string> = { Invoices: 'new', Leads: 'New', Orders: 'new', Tasks: 'open', Customers: '', Products: '' };
 
 export function statusMeta(table: TableName, status?: string): StatusMeta {
   const key = status ?? DEFAULT[table];
