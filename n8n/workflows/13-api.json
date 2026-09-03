@@ -127,7 +127,7 @@
                   },
                   {
                     "id": "c3f",
-                    "leftValue": "={{ Object.keys($json.body.payload || {}).length > 0 && Object.keys($json.body.payload).every(k => ['Status','InStock'].includes(k)) }}",
+                    "leftValue": "={{ Object.keys($json.body.payload || {}).length > 0 && Object.keys($json.body.payload).every(k => ['Status','InStock','Stock'].includes(k)) }}",
                     "rightValue": true,
                     "operator": {
                       "type": "boolean",
