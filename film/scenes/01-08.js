@@ -28,7 +28,7 @@
     const c5 = C.build(document.querySelector(s + " .pan-5"), N.wf5, "captures/n8n-wf5-canvas.png");
     const ch = C.build(document.querySelector(s + " .pan-h"), N.wf5handoff, "captures/n8n-wf5handoff-canvas.png");
     const c3 = C.build(document.querySelector(s + " .pan-3"), N.wf3, "captures/n8n-wf3-canvas.png");
-    const panels = [s + " .p-menu", s + " .p-handoff", s + " .p-widget", s + " .p-supabase", s + " .p-cmdk", s + " .p-gmail"];
+    const panels = [s + " .p-menu", s + " .p-handoff", s + " .p-widget", s + " .p-supabase", s + " .p-cmdk", s + " .p-gmail", s + " .p-manager"];
     tl.set([s + " .rail > *", s + " .vp-5", s + " .vp-h", s + " .vp-3", ...panels, s + " .counter"], { opacity: 0 }, b.start);
     // rail
     tl.fromTo(s + " .rail .kicker", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(0.3));
@@ -91,10 +91,12 @@
     hide(s + " .p-handoff", t(q("manager", 38.4)));
     focus("manager", t(q("manager", 38.4)));
     show(s + " .p-cmdk", t(q("manager", 38.4)) + 0.2, { y: 80, scale: 0.92 });
+    show(s + " .p-manager", t(q("manager", 38.4)) + 0.5, { x: 200, rotationY: 25, transformPerspective: 2200 });
     tl.fromTo(s + " .p-cmdk .tag", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.5)", stagger: 0.6 }, t(q("revenue", 40.8)));
 
     // --- sales agent (45.4 → end): WF3 canvas, Sales Agent → Send Email → Mark Contacted
     hide(s + " .p-cmdk", t(q("sales", 45.4)));
+    hide(s + " .p-manager", t(q("sales", 45.4)));
     focus("sales", t(q("sales", 45.4)));
     show(s + " .vp-3", t(q("sales", 45.4)) + 0.2, { x: 120, rotationY: -20, transformPerspective: 2200 });
     C.cam(tl, c3, "Sales Agent", 1.5, b.start, 0);
