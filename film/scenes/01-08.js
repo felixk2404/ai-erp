@@ -46,8 +46,8 @@
     focus("support", t(q("support", 5.7)));
     // "browse the catalog with buttons": WF5 canvas, Route → Render Menu → Send Menu
     show(s + " .vp-5", t(q("support", 5.7)) + 0.2, { x: 120, rotationY: -20, transformPerspective: 2200 });
-    C.camSpan(tl, c5, "Classify", "Find Lead", 0.95, b.start, 0);
-    C.light(tl, c5, "Telegram Trigger", t(q("support", 5.7)) + 0.6, "@aielec_support_bot");
+    C.cam(tl, c5, [2156, 220, 880, 804], 0.9, b.start, 0); // trigger → route → all five branches inside the window
+    C.light(tl, c5, "Telegram Trigger", t(q("support", 5.7)) + 0.6, "@aielec_support_bot", null, "right");
     C.flow(tl, c5, "Telegram Trigger", "Classify", t(q("support", 5.7)) + 1.0, 0.3);
     C.flow(tl, c5, "Classify", "Route", t(q("support", 5.7)) + 1.3, 0.3);
     C.camSpan(tl, c5, "Products", "Send Menu", 1.0, t(q("buttons", 10.6)) - 0.5, 0.9, "power2.inOut");
