@@ -3,3 +3,4 @@ out/
 capture/.auth/
 captures/*.mov
 captures/*.webm
+captures/*.mp4

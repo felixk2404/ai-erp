@@ -75,8 +75,8 @@
     // "Ask for a discount, and it politely refuses": bracket the refusal
     tl.fromTo(s + " .p-widget .br", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("refuses", 30.6)) + 0.5);
     // "Ask for a human, and it hands you off": WF5-handoff canvas
-    hide(s + " .p-widget", t(q("humanAsk", 31.7)) + 0.7);
-    show(s + " .vp-h", t(q("humanAsk", 31.7)) + 0.2, { x: -120, rotationY: 20, transformPerspective: 2200 });
+    hide(s + " .p-widget", t(q("humanAsk", 31.7)));
+    show(s + " .vp-h", t(q("humanAsk", 31.7)) + 0.45, { x: -120, rotationY: 20, transformPerspective: 2200 });
     C.cam(tl, ch, "Has Contact?", 1.5, b.start, 0);
     C.light(tl, ch, "When Executed by Another Workflow", t(q("humanAsk", 31.7)) + 0.5, "handoff tool");
     C.flow(tl, ch, "When Executed by Another Workflow", "Has Contact?", t(q("humanAsk", 31.7)) + 0.9, 0.3);
@@ -106,9 +106,9 @@
     C.flow(tl, c3, "Has Lead?", "Sales Agent", t(q("sales", 45.4)) + 1.45, 0.25);
     C.light(tl, c3, "Sales Agent", t(q("sales", 45.4)) + 1.8, "drafts Hebrew outreach");
     C.flow(tl, c3, "Sales Agent", "Send Email", t(q("sales", 45.4)) + 2.6, 0.3);
-    C.light(tl, c3, "Send Email", t(q("sales", 45.4)) + 2.9, "Gmail", null, "right");
+    C.light(tl, c3, "Send Email", t(q("sales", 45.4)) + 2.9, "Gmail");
     C.flow(tl, c3, "Send Email", "Mark Contacted", t(q("reply", 50.2)) - 0.6, 0.3);
-    C.light(tl, c3, "Mark Contacted", t(q("reply", 50.2)) - 0.3, "status → contacted · WF4 watches replies", null, "right");
+    C.light(tl, c3, "Mark Contacted", t(q("reply", 50.2)) - 0.3, "contacted · WF4 watches replies");
     show(s + " .p-gmail", t(q("sales", 45.4)) + 3.2, { x: 200, rotationY: 25, transformPerspective: 2200 });
     // counter
     tl.fromTo(s + " .counter", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t(q("grounded", 20.0)));
