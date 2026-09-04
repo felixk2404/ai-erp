@@ -1,0 +1,5 @@
+node_modules/
+out/
+capture/.auth/
+captures/*.mov
+captures/*.webm
