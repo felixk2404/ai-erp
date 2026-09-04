@@ -1,0 +1,62 @@
+[
+  {
+    "text": "This",
+    "start": 0.08,
+    "end": 0.5
+  },
+  {
+    "text": "is",
+    "start": 0.5,
+    "end": 0.75
+  },
+  {
+    "text": "AI",
+    "start": 0.75,
+    "end": 1
+  },
+  {
+    "text": "Electronics",
+    "start": 1,
+    "end": 2.19
+  },
+  {
+    "text": "ERP.",
+    "start": 2.34,
+    "end": 2.84
+  },
+  {
+    "text": "Here's",
+    "start": 2.92,
+    "end": 3.19
+  },
+  {
+    "text": "how",
+    "start": 3.19,
+    "end": 3.37
+  },
+  {
+    "text": "it",
+    "start": 3.37,
+    "end": 3.49
+  },
+  {
+    "text": "works,",
+    "start": 3.49,
+    "end": 3.92
+  },
+  {
+    "text": "behind",
+    "start": 3.92,
+    "end": 4.56
+  },
+  {
+    "text": "the",
+    "start": 4.56,
+    "end": 4.87
+  },
+  {
+    "text": "scenes.",
+    "start": 4.87,
+    "end": 5.84
+  }
+]

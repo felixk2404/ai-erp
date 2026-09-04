@@ -1,0 +1,187 @@
+[
+  {
+    "text": "It",
+    "start": 0.05,
+    "end": 0.17
+  },
+  {
+    "text": "starts",
+    "start": 0.17,
+    "end": 0.7
+  },
+  {
+    "text": "in",
+    "start": 0.7,
+    "end": 0.87
+  },
+  {
+    "text": "the",
+    "start": 0.87,
+    "end": 1.13
+  },
+  {
+    "text": "showroom.",
+    "start": 1.13,
+    "end": 1.92
+  },
+  {
+    "text": "A",
+    "start": 1.97,
+    "end": 2.01
+  },
+  {
+    "text": "storefront",
+    "start": 2.01,
+    "end": 2.99
+  },
+  {
+    "text": "I",
+    "start": 2.99,
+    "end": 3.08
+  },
+  {
+    "text": "built",
+    "start": 3.08,
+    "end": 3.25
+  },
+  {
+    "text": "in",
+    "start": 3.25,
+    "end": 3.88
+  },
+  {
+    "text": "Next.js.",
+    "start": 3.88,
+    "end": 4.68
+  },
+  {
+    "text": "34",
+    "start": 4.73,
+    "end": 5.21
+  },
+  {
+    "text": "products,",
+    "start": 5.21,
+    "end": 6.02
+  },
+  {
+    "text": "live",
+    "start": 6.02,
+    "end": 6.64
+  },
+  {
+    "text": "search,",
+    "start": 6.64,
+    "end": 7.35
+  },
+  {
+    "text": "real",
+    "start": 7.35,
+    "end": 7.76
+  },
+  {
+    "text": "stock.",
+    "start": 7.76,
+    "end": 8.54
+  },
+  {
+    "text": "When",
+    "start": 8.65,
+    "end": 8.84
+  },
+  {
+    "text": "the",
+    "start": 8.84,
+    "end": 9.02
+  },
+  {
+    "text": "customer",
+    "start": 9.02,
+    "end": 9.49
+  },
+  {
+    "text": "checks",
+    "start": 9.49,
+    "end": 9.8
+  },
+  {
+    "text": "out,",
+    "start": 9.8,
+    "end": 10.16
+  },
+  {
+    "text": "the",
+    "start": 10.16,
+    "end": 10.56
+  },
+  {
+    "text": "browser",
+    "start": 10.56,
+    "end": 10.95
+  },
+  {
+    "text": "does",
+    "start": 11.04,
+    "end": 11.32
+  },
+  {
+    "text": "one",
+    "start": 11.38,
+    "end": 11.58
+  },
+  {
+    "text": "thing.",
+    "start": 11.6,
+    "end": 12.32
+  },
+  {
+    "text": "It",
+    "start": 12.37,
+    "end": 12.48
+  },
+  {
+    "text": "sends",
+    "start": 12.48,
+    "end": 12.87
+  },
+  {
+    "text": "a",
+    "start": 12.87,
+    "end": 12.95
+  },
+  {
+    "text": "single",
+    "start": 12.95,
+    "end": 13.42
+  },
+  {
+    "text": "JSON",
+    "start": 13.42,
+    "end": 13.64
+  },
+  {
+    "text": "payload",
+    "start": 14.25,
+    "end": 14.32
+  },
+  {
+    "text": "to",
+    "start": 14.32,
+    "end": 14.43
+  },
+  {
+    "text": "a",
+    "start": 14.48,
+    "end": 14.56
+  },
+  {
+    "text": "single",
+    "start": 14.56,
+    "end": 15.04
+  },
+  {
+    "text": "endpoint.",
+    "start": 15.1,
+    "end": 15.82
+  }
+]

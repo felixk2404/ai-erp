@@ -1,0 +1,50 @@
+/* Beat 05 — Airtable, six real tables */
+#s-05 .head { left: 80px; top: 44px; display: flex; align-items: baseline; gap: 26px; z-index: 6; }
+#s-05 .head .title { font-size: 56px; color: var(--readout); }
+#s-05 .grid { left: 0; top: 0; width: 1920px; height: 1080px; perspective: 2600px; }
+#s-05 .tcard { position: absolute; width: 560px; height: 280px; transform-style: preserve-3d; }
+#s-05 .tcard .device { position: absolute; inset: 0; }
+#s-05 .tcard .device img { width: 175%; height: 175%; object-position: 0 0; }
+#s-05 .tcard .chip { position: absolute; left: 18px; top: -22px; z-index: 3; font-size: 24px; padding: 6px 14px; }
+#s-05 .tcard .rowflash { position: absolute; left: 0; width: 100%; height: 20px; background: rgba(255,255,255,.85); mix-blend-mode: screen; opacity: 0; z-index: 2; }
+#s-05 .tcard .rowring { position: absolute; left: 0; width: 100%; height: 20px; border: 3px solid var(--signal); box-shadow: 0 0 24px var(--signal-glow); opacity: 0; z-index: 2; border-radius: 6px; }
+#s-05 .links { left: 0; top: 0; z-index: 4; pointer-events: none; }
+#s-05 .links path { fill: none; stroke: var(--signal); stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 0 12px var(--signal-glow)); }
+#s-05 .idchip { z-index: 5; font-size: 24px; }
+#s-05 .note { left: 80px; top: 860px; z-index: 6; font-size: 30px; color: var(--readout-2); }
+#s-05 .note b { color: var(--signal); font-weight: 600; }
+
+/* Beat 06 — invoice pipeline */
+#s-06 .vp-1, #s-06 .vp-8 { }
+#s-06 .docs { left: 0; top: 0; width: 1920px; height: 1080px; z-index: 4; }
+#s-06 .doc { position: absolute; left: 140px; top: 130px; width: 640px; height: 700px; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 40px 120px rgba(0,0,0,.7), 0 0 0 2px rgba(255,255,255,.12); }
+#s-06 .doc img { position: absolute; left: -940px; top: -360px; width: 1920px; height: 1080px; }
+#s-06 .doc .fold { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.25) 50%, rgba(0,0,0,0) 100%); }
+#s-06 .doclabel { position: absolute; left: 140px; top: 850px; font-size: 24px; }
+#s-06 .trk { position: absolute; left: 860px; top: 130px; width: 900px; height: 560px; }
+#s-06 .trk img { object-position: top center; }
+#s-06 .trk-br { position: absolute; left: 1360px; top: 560px; width: 330px; height: 64px; border: 4px solid var(--signal); border-radius: 12px; box-shadow: 0 0 30px var(--signal-glow); }
+#s-06 .phone { position: absolute; left: 1420px; top: 300px; width: 360px; height: 740px; border-radius: 52px; background: var(--chassis); border: 4px solid var(--rule-strong); box-shadow: 0 40px 120px rgba(0,0,0,.7), 0 0 60px rgba(90,209,255,.15); overflow: hidden; }
+#s-06 .phone img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+#s-06 .phone .pending { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; font-family: var(--font-mono); font-size: 22px; color: var(--readout-3); }
+
+/* Beat 07 — admin orders */
+#s-07 .stage { left: 80px; top: 60px; width: 1760px; height: 860px; perspective: 2600px; }
+#s-07 .device { position: absolute; inset: 0; transform-style: preserve-3d; }
+#s-07 .device .layer { position: absolute; inset: 0; }
+#s-07 .device img, #s-07 .device video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top right; }
+#s-07 .br { position: absolute; border: 4px solid var(--signal); border-radius: 12px; box-shadow: 0 0 30px var(--signal-glow); z-index: 3; }
+#s-07 .br.amber { border-color: var(--amber); box-shadow: 0 0 30px rgba(240,180,41,.5); }
+#s-07 .side { position: absolute; left: 60px; top: 520px; width: 760px; height: 380px; z-index: 4; }
+#s-07 .side img { object-position: top right; }
+#s-07 .side .tag { position: absolute; left: 20px; top: -24px; }
+
+/* Beat 09 — morning */
+#s-09 .stage { left: 60px; top: 50px; width: 1800px; height: 880px; perspective: 2600px; }
+#s-09 .device { position: absolute; inset: 0; transform-style: preserve-3d; }
+#s-09 .device video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top right; }
+#s-09 .feed { position: absolute; left: 1080px; top: 600px; width: 700px; height: 300px; z-index: 4; }
+#s-09 .feed img { width: 280%; height: 280%; object-position: 100% 100%; }
+#s-09 .head { left: 80px; top: 950px; z-index: 6; display: flex; gap: 24px; align-items: center; }
+
+#s-06 .doc .redact { position: absolute; left: 0; top: 268px; width: 100%; height: 30px; background: #fff; }

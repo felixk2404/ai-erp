@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="styles/base.css" />
     <link rel="stylesheet" href="styles/10-architecture.css" />
     <link rel="stylesheet" href="styles/02-03-11.css" />
+    <link rel="stylesheet" href="styles/canvas.css" />
+    <link rel="stylesheet" href="styles/05-09.css" />
   </head>
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-duration="236" data-width="1920" data-height="1080">
@@ -44,12 +46,68 @@
           <div class="tags"><span class="tag">live search</span><span class="tag">real stock</span><span class="tag">no accounts</span></div>
         </div>
       </div>
-      <div id="s-04" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 04</span><h1 class="title">n8n · the order</h1></div></div>
-      <div id="s-05" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 05</span><h1 class="title">airtable</h1></div></div>
-      <div id="s-06" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 06</span><h1 class="title">invoice</h1></div></div>
-      <div id="s-07" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 07</span><h1 class="title">admin · orders</h1></div></div>
+      <div id="s-04" class="scene" data-hidden>
+        <div class="viewport vp-13"><div class="pan pan-13" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="viewport vp-10"><div class="pan pan-10" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="viewport vp-exec"><img class="exec" src="captures/n8n-wf10-execution.png" alt="" /></div>
+        <div class="proof"></div><div class="tag proof-tag">Succeeded · 11.8 s · ID 2034</div>
+        <div class="chrome"></div>
+        <div class="wfname"><span class="kicker">n8n · self-hosted</span><span class="title t13">WF13 — the front door</span><span class="title t10">WF10 — the order</span></div>
+        <div class="payload4 payload"><div class="hdr">POST /webhook/erp · x-erp-secret</div>{ "action": "order", "city": "חיפה", "items": [{ "sku": "TY-HP-200", "qty": 1 }] }</div>
+      </div>
+      <div id="s-05" class="scene" data-hidden>
+        <div class="head"><span class="kicker">airtable · source of truth</span><h1 class="title">Six tables. Plain words. IDs.</h1></div>
+        <div class="grid">
+          <div class="tcard" data-t="orders" style="left: 120px; top: 140px"><div class="device"><img src="captures/airtable-orders.png" alt="" /></div><span class="tag chip">Orders</span><div class="rowflash" style="top: 222px"></div><div class="rowring" style="top: 222px"></div></div>
+          <div class="tcard" data-t="invoices" style="left: 700px; top: 140px"><div class="device"><img src="captures/airtable-invoices.png" alt="" /></div><span class="tag chip">Invoices</span><div class="rowflash" style="top: 222px"></div><div class="rowring" style="top: 222px"></div></div>
+          <div class="tcard" data-t="customers" style="left: 1280px; top: 140px"><div class="device"><img src="captures/airtable-customers.png" alt="" /></div><span class="tag chip">Customers</span><div class="rowflash" style="top: 222px"></div><div class="rowring" style="top: 222px"></div></div>
+          <div class="tcard" data-t="products" style="left: 120px; top: 470px"><div class="device"><img src="captures/airtable-products-stock.png" alt="" /></div><span class="tag chip">Products</span><div class="rowflash" style="top: 222px"></div><div class="rowring" style="top: 222px"></div></div>
+          <div class="tcard" data-t="leads" style="left: 700px; top: 470px"><div class="device"><img src="captures/airtable-leads.png" alt="" /></div><span class="tag chip">Leads</span><div class="rowflash" style="top: 222px"></div><div class="rowring" style="top: 222px"></div></div>
+          <div class="tcard" data-t="tasks" style="left: 1280px; top: 470px"><div class="device"><img src="captures/airtable-tasks.png" alt="" /></div><span class="tag chip">Tasks</span><div class="rowflash" style="top: 158px"></div><div class="rowring" style="top: 158px"></div></div>
+        </div>
+        <svg class="links" width="1920" height="1080" viewBox="0 0 1920 1080">
+          <path d="M 680 270 C 700 270, 700 270, 700 270" /><path d="M 680 270 C 690 270, 690 270, 700 270" />
+          <path d="M 680 268 L 700 268" /><path d="M 1260 268 L 1280 268" /><path d="M 1560 440 C 1560 470, 1560 470, 1560 500" /><path d="M 400 440 C 400 470, 1500 470, 1560 500" />
+        </svg>
+        <span class="tag idchip" style="left: 600px; top: 236px">ORD-0009 → INV-0011</span>
+        <span class="tag idchip" style="left: 1180px; top: 236px">CUST-0003</span>
+        <span class="tag idchip amber" style="left: 1330px; top: 418px">RefId · ORD-0009</span>
+        <div class="note">Every status is a <b>plain word</b>. Every relation is an <b>ID</b>. Fifteen workflows share this, and none of them step on each other.</div>
+      </div>
+      <div id="s-06" class="scene" data-hidden>
+        <div class="viewport vp-1"><div class="pan pan-1" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="viewport vp-8"><div class="pan pan-8" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="docs">
+          <div class="doc"><img src="captures/admin-invoice-detail.png" alt="" /><div class="redact"></div><div class="fold"></div></div>
+          <span class="tag doclabel">INV-0011 · tax invoice · RTL · PDF</span>
+          <div class="device trk"><img src="captures/store-tracking.png" alt="" /></div>
+          <div class="trk-br"></div>
+          <div class="phone"><div class="pending">telegram capture pending</div></div>
+        </div>
+        <div class="chrome"></div>
+        <div class="wfname"><span class="kicker">n8n · self-hosted</span><span class="title t1">WF1 — validate</span><span class="title t8">WF8 — the PDF</span></div>
+      </div>
+      <div id="s-07" class="scene" data-hidden>
+        <div class="stage"><div class="device">
+          <div class="layer l-attn"><img src="captures/admin-attention.png" alt="" /></div>
+          <div class="layer l-video"><video class="clip" id="v-order" data-start="132.4" data-duration="8.9" data-media-start="4.5" data-track-index="3" src="captures/admin-order-detail.mp4" muted playsinline></video></div>
+          <div class="layer l-stock"><img src="captures/admin-products-stock.png" alt="" /></div>
+          <div class="br brief" style="left: 1080px; top: 385px; width: 470px; height: 44px"></div>
+          <div class="br attn amber" style="left: 725px; top: 210px; width: 360px; height: 330px"></div>
+          <div class="br status" style="left: 1320px; top: 463px; width: 200px; height: 66px"></div>
+          <div class="br led amber" style="left: 1280px; top: 300px; width: 420px; height: 60px"></div>
+        </div></div>
+        <div class="side tasks device"><img src="captures/admin-tasks-after.png" alt="" /><span class="tag">task closed · ORD-0009</span><div class="br" style="left: 460px; top: 128px; width: 290px; height: 34px"></div></div>
+      </div>
       <div id="s-08" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 08</span><h1 class="title">three agents</h1></div></div>
-      <div id="s-09" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 09</span><h1 class="title">morning</h1></div></div>
+      <div id="s-09" class="scene" data-hidden>
+        <div class="stage"><div class="device">
+          <div class="layer l-dash"><video class="clip" id="v-dash" data-start="193.8" data-duration="9.4" data-media-start="6.0" data-track-index="3" src="captures/admin-dashboard.mp4" muted playsinline></video></div>
+          <div class="layer l-cmdk" style="opacity: 0"><video class="clip" id="v-cmdk" data-start="202.7" data-duration="3.9" data-media-start="9.5" data-track-index="4" src="captures/admin-cmdk.mp4" muted playsinline></video></div>
+        </div></div>
+        <div class="feed device"><img src="captures/admin-attention.png" alt="" /></div>
+        <div class="head"><span class="kicker">every morning</span><span class="tag">live revenue</span><span class="tag">open invoices</span><span class="tag">n8n feed</span><span class="tag">⌘K · ask the manager</span></div>
+      </div>
 
       <!-- Beat 10: architecture -->
       <div id="s-10" class="scene" data-hidden>
@@ -134,8 +192,13 @@
     </div>
 
     <script src="scenes/beats.js"></script>
+    <script src="scenes/data.js"></script>
+    <script src="scenes/cues.js"></script>
+    <script src="lib/canvas.js"></script>
     <script src="scenes/10-architecture.js"></script>
     <script src="scenes/02-03-11.js"></script>
+    <script src="scenes/04-n8n-order.js"></script>
+    <script src="scenes/05-09.js"></script>
     <script>
       window.__timelines = window.__timelines || {};
       gsap.registerPlugin(MotionPathPlugin);

@@ -101,6 +101,7 @@ await target("airtable-invoices", (p) => airtableTable(p, "Invoices", "INV-0011"
 await target("airtable-customers", (p) => airtableTable(p, "Customers", hero.customer.name));
 await target("airtable-tasks", (p) => airtableTable(p, "Tasks", ORD));
 await target("airtable-products-stock", (p) => airtableTable(p, "Products", hero.sku));
+await target("airtable-leads", (p) => airtableTable(p, "Leads", null));
 
 // ---------------- Supabase vector table --------------------------------------
 await target("supabase-embeddings", async (p) => {

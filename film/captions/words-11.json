@@ -1,0 +1,87 @@
+[
+  {
+    "text": "One",
+    "start": 0,
+    "end": 0.3
+  },
+  {
+    "text": "order,",
+    "start": 0.3,
+    "end": 1
+  },
+  {
+    "text": "15",
+    "start": 1.04,
+    "end": 1.67
+  },
+  {
+    "text": "workflows.",
+    "start": 1.67,
+    "end": 2.68
+  },
+  {
+    "text": "Zero",
+    "start": 2.68,
+    "end": 2.93
+  },
+  {
+    "text": "manual",
+    "start": 2.93,
+    "end": 3.2
+  },
+  {
+    "text": "steps",
+    "start": 3.2,
+    "end": 3.33
+  },
+  {
+    "text": "that",
+    "start": 3.71,
+    "end": 3.86
+  },
+  {
+    "text": "the",
+    "start": 3.92,
+    "end": 4.07
+  },
+  {
+    "text": "system",
+    "start": 4.07,
+    "end": 4.39
+  },
+  {
+    "text": "didn't",
+    "start": 4.43,
+    "end": 4.93
+  },
+  {
+    "text": "ask",
+    "start": 5.34,
+    "end": 5.46
+  },
+  {
+    "text": "for.",
+    "start": 5.46,
+    "end": 5.8
+  },
+  {
+    "text": "Built",
+    "start": 5.8,
+    "end": 6.16
+  },
+  {
+    "text": "by",
+    "start": 6.2,
+    "end": 6.37
+  },
+  {
+    "text": "Felix",
+    "start": 6.37,
+    "end": 6.44
+  },
+  {
+    "text": "Kranovich.",
+    "start": 6.83,
+    "end": 7.59
+  }
+]
