@@ -12,7 +12,7 @@ const captures = resolve(root, "captures");
 mkdirSync(captures, { recursive: true });
 const BASE = process.env.STORE_URL || "https://ai-electronics-one.vercel.app";
 const SKU = process.env.HERO_SKU || "TY-HP-200"; // אוזניות אלחוטיות TY-200
-const customer = { name: "דניאל כהן", email: "felixk4302@gmail.com", phone: "052-6400123", address: "שדרות מוריה 42", city: "חיפה" };
+const customer = { name: "דניאל כהן", email: "felixk2404@gmail.com", phone: "052-6400123", address: "שדרות מוריה 42", city: "חיפה" };
 
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({

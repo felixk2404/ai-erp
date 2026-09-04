@@ -37,7 +37,13 @@ for o in test_orders:
     for t in find("Tasks", f"{{RefId}}='{o['fields'].get('OrderNumber','')}'"):
         api("DELETE", f"Tasks/{t['id']}"); print("deleted task", t["fields"].get("Title"))
 
-# 4. תמונת מצב: שמות לקוחות + הזמנות אחרונות
+# 4. הזמנות ישנות שנושאות את השם האמיתי של פליקס -> השם הדמו (Name בהזמנה הוא עותק, לא lookup)
+for o in find("Orders", "{Name}='פליקס קריינוביץ'"):
+    api("PATCH", "Orders", {"records": [{"id": o["id"], "fields": {"Name": "יוסי לוי"}}]}); print("renamed order", o["fields"].get("OrderNumber"))
+for i in find("Invoices", "{CustomerId}='CUST-0002'"):
+    pass  # invoices reference CustomerId only; nothing to patch
+
+# 5. תמונת מצב: שמות לקוחות + הזמנות אחרונות
 print("customers:", [r["fields"].get("Name") for r in api("GET", "Customers?pageSize=50")["records"]])
 print("orders:", [(r["fields"].get("OrderNumber"), r["fields"].get("Name"), r["fields"].get("Status")) for r in api("GET", "Orders?pageSize=50&sort%5B0%5D%5Bfield%5D=OrderNumber")["records"]])
 PY
