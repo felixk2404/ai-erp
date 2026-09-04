@@ -75,7 +75,7 @@
     // "Ask for a human, and it hands you off": WF5-handoff canvas
     hide(s + " .p-widget", t(q("humanAsk", 31.7)));
     show(s + " .vp-h", t(q("humanAsk", 31.7)) + 0.45, { x: -120, rotationY: 20, transformPerspective: 2200 });
-    C.cam(tl, ch, "Has Contact?", 1.5, b.start, 0);
+    C.camSpan(tl, ch, "When Executed by Another Workflow", "Create Lead", 1.2, b.start, 0);
     C.light(tl, ch, "When Executed by Another Workflow", t(q("humanAsk", 31.7)) + 0.5, "handoff tool");
     C.flow(tl, ch, "When Executed by Another Workflow", "Has Contact?", t(q("humanAsk", 31.7)) + 0.9, 0.3);
     C.camSpan(tl, ch, "Create Lead", "Notify Owner", 1.25, t(q("hands", 33.4)) - 0.4, 0.9, "power2.inOut");

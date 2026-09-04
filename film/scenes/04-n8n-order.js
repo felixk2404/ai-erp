@@ -30,6 +30,7 @@ window.SCENES["04"] = function (tl, b) {
   C.cam(tl, c13, [3459, 148, 900, 840], 1.15, t(q("everyAction", 5.2)), 1.6, "power2.inOut");
   // "routed by name": the five branches fan out
   const branches = [["Support Input", "support"], ["Update Record", "update"], ["Payload", "create"], ["Chat Input", "chat"], ["Order Input", "order"], ["Find Order", "order_status"]];
+  tl.to(c13.hits["Route"].querySelector(".ntag"), { opacity: 0, duration: 0.3 }, t(q("routedByName", 8.6)));
   branches.forEach(([n, label], i) => {
     const at = t(q("routedByName", 8.6) + i * 0.22);
     C.flow(tl, c13, "Route", n, at, 0.45);
