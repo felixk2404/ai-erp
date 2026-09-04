@@ -1,87 +1,97 @@
 [
   {
     "text": "One",
-    "start": 0,
-    "end": 0.3
+    "start": 0.03,
+    "end": 0.29
   },
   {
     "text": "order,",
-    "start": 0.3,
-    "end": 1
+    "start": 0.29,
+    "end": 0.89
   },
   {
     "text": "15",
-    "start": 1.04,
-    "end": 1.67
+    "start": 0.96,
+    "end": 1.54
   },
   {
     "text": "workflows.",
-    "start": 1.67,
-    "end": 2.68
+    "start": 1.54,
+    "end": 2.46
   },
   {
-    "text": "Zero",
-    "start": 2.68,
-    "end": 2.93
+    "text": "The",
+    "start": 2.49,
+    "end": 2.63
+  },
+  {
+    "text": "only",
+    "start": 2.63,
+    "end": 2.84
   },
   {
     "text": "manual",
-    "start": 2.93,
-    "end": 3.2
+    "start": 2.85,
+    "end": 2.96
   },
   {
-    "text": "steps",
-    "start": 3.2,
-    "end": 3.33
+    "text": "step",
+    "start": 3.26,
+    "end": 3.45
   },
   {
-    "text": "that",
-    "start": 3.71,
-    "end": 3.86
+    "text": "was",
+    "start": 3.46,
+    "end": 3.6
   },
   {
     "text": "the",
-    "start": 3.92,
-    "end": 4.07
+    "start": 3.6,
+    "end": 3.74
+  },
+  {
+    "text": "one",
+    "start": 3.74,
+    "end": 3.81
+  },
+  {
+    "text": "the",
+    "start": 3.88,
+    "end": 4.05
   },
   {
     "text": "system",
-    "start": 4.07,
-    "end": 4.39
+    "start": 4.05,
+    "end": 4.27
   },
   {
-    "text": "didn't",
-    "start": 4.43,
-    "end": 4.93
+    "text": "asked",
+    "start": 4.95,
+    "end": 4.97
   },
   {
-    "text": "ask",
-    "start": 5.34,
-    "end": 5.46
+    "text": "for,",
+    "start": 4.97,
+    "end": 5.34
   },
   {
-    "text": "for.",
-    "start": 5.46,
-    "end": 5.8
-  },
-  {
-    "text": "Built",
-    "start": 5.8,
-    "end": 6.16
+    "text": "built",
+    "start": 5.37,
+    "end": 5.63
   },
   {
     "text": "by",
-    "start": 6.2,
-    "end": 6.37
+    "start": 5.67,
+    "end": 5.74
   },
   {
     "text": "Felix",
-    "start": 6.37,
-    "end": 6.44
+    "start": 5.8,
+    "end": 6.13
   },
   {
     "text": "Kranovich.",
-    "start": 6.83,
-    "end": 7.59
+    "start": 6.13,
+    "end": 6.95
   }
 ]

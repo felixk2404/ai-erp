@@ -38,8 +38,6 @@ window.SCENES["03"] = function (tl, b) {
   tl.fromTo(s + " .tags", { opacity: 0 }, { opacity: 1, duration: 0.2 }, t(4.8));
   tl.fromTo(s + " .tags .tag", { opacity: 0, scale: 0.4, y: 20 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "elastic.out(1.1, 0.5)", stagger: 0.55 }, t(4.9));
   // "real stock": bracket on the במלאי badge (product page coordinates inside the device: ~ (700,290) of 1920x1080 → scaled to 1060x700)
-  tl.fromTo(s + " .bracket", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power4.out" }, t(6.0));
-  tl.to(s + " .bracket", { opacity: 0, duration: 0.3 }, t(7.8));
   // device slow drift while product shows
   tl.to(s + " .device", { rotationY: -8, y: -10, duration: 7, ease: "sine.inOut" }, t(0.6));
   // "checks out": cart video, then the checkout form

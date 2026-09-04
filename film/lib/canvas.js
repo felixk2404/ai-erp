@@ -44,10 +44,10 @@ window.Canvas = (function () {
   }
 
   // Light a node: glow + pop; optional tag text; color "cyan" | "amber".
-  function light(tl, c, name, at, text, color, side) {
+  function light(tl, c, name, at, text, color, side, keep) {
     const el = c.hits[name]; if (!el) return;
     // only one tag at a time per canvas: fade every other tag out
-    for (const [n, h] of Object.entries(c.hits)) { if (n !== name) tl.to(h.querySelector(".ntag"), { opacity: 0, duration: 0.25 }, at); }
+    if (!keep) for (const [n, h] of Object.entries(c.hits)) { if (n !== name) tl.to(h.querySelector(".ntag"), { opacity: 0, duration: 0.25 }, at); }
     const glow = color === "amber" ? "rgba(240,180,41,.7)" : "rgba(90,209,255,.75)";
     const stroke = color === "amber" ? "#f0b429" : "#5ad1ff";
     tl.fromTo(el, { boxShadow: `0 0 0 0px ${stroke}, 0 0 0px ${glow}`, scale: 1 },

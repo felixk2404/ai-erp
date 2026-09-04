@@ -1,172 +1,172 @@
 [
   {
     "text": "It's",
-    "start": 0.06,
+    "start": 0.07,
     "end": 0.26
   },
   {
-    "text": "12.21",
+    "text": "1221",
     "start": 0.26,
-    "end": 1.28
+    "end": 1.08
   },
   {
     "text": "on",
-    "start": 1.28,
-    "end": 1.41
+    "start": 1.08,
+    "end": 1.12
   },
   {
     "text": "a",
-    "start": 1.41,
-    "end": 1.46
+    "start": 1.22,
+    "end": 1.27
   },
   {
-    "text": "Thursday.",
-    "start": 1.46,
-    "end": 2.08
-  },
-  {
-    "text": "A",
-    "start": 2.08,
+    "text": "Friday.",
+    "start": 1.27,
     "end": 2.14
   },
   {
-    "text": "customer",
+    "text": "A",
     "start": 2.14,
-    "end": 2.55
+    "end": 2.21
+  },
+  {
+    "text": "customer",
+    "start": 2.21,
+    "end": 2.59
   },
   {
     "text": "in",
-    "start": 2.63,
-    "end": 2.64
+    "start": 2.67,
+    "end": 2.76
   },
   {
     "text": "Haifa",
-    "start": 2.69,
-    "end": 2.95
+    "start": 2.76,
+    "end": 3.08
   },
   {
     "text": "just",
-    "start": 2.95,
-    "end": 3.17
+    "start": 3.08,
+    "end": 3.24
   },
   {
     "text": "ordered",
-    "start": 3.17,
-    "end": 3.54
+    "start": 3.24,
+    "end": 3.55
   },
   {
     "text": "a",
-    "start": 3.6,
-    "end": 3.67
+    "start": 3.57,
+    "end": 3.64
   },
   {
     "text": "pair",
-    "start": 3.67,
-    "end": 3.88
+    "start": 3.64,
+    "end": 3.83
   },
   {
     "text": "of",
-    "start": 3.88,
-    "end": 4.19
+    "start": 3.94,
+    "end": 4.15
   },
   {
     "text": "headphones.",
-    "start": 4.19,
-    "end": 5.16
+    "start": 4.32,
+    "end": 5.28
   },
   {
     "text": "Nobody",
-    "start": 5.22,
-    "end": 5.6
+    "start": 5.35,
+    "end": 5.73
   },
   {
     "text": "on",
-    "start": 5.6,
-    "end": 5.71
+    "start": 5.84,
+    "end": 5.89
   },
   {
     "text": "my",
-    "start": 5.77,
-    "end": 5.88
+    "start": 5.89,
+    "end": 6.04
   },
   {
     "text": "team",
-    "start": 5.88,
-    "end": 6.16
+    "start": 6.04,
+    "end": 6.34
   },
   {
     "text": "touched",
-    "start": 6.16,
-    "end": 6.62
+    "start": 6.34,
+    "end": 6.83
   },
   {
     "text": "anything.",
-    "start": 6.67,
-    "end": 7.52
+    "start": 6.86,
+    "end": 7.73
   },
   {
     "text": "Let",
-    "start": 7.58,
-    "end": 7.65
+    "start": 7.81,
+    "end": 7.87
   },
   {
     "text": "me",
-    "start": 7.65,
-    "end": 7.71
+    "start": 7.87,
+    "end": 7.94
   },
   {
     "text": "show",
-    "start": 7.76,
-    "end": 7.9
+    "start": 7.99,
+    "end": 8.14
   },
   {
     "text": "you",
-    "start": 7.9,
-    "end": 7.99
+    "start": 8.14,
+    "end": 8.19
   },
   {
     "text": "what",
-    "start": 8.07,
-    "end": 8.2
+    "start": 8.27,
+    "end": 8.45
   },
   {
     "text": "happened",
-    "start": 8.2,
-    "end": 8.56
+    "start": 8.45,
+    "end": 8.84
   },
   {
     "text": "in",
-    "start": 8.62,
-    "end": 8.66
+    "start": 8.91,
+    "end": 8.94
   },
   {
     "text": "the",
-    "start": 8.66,
-    "end": 8.82
+    "start": 8.94,
+    "end": 9.04
   },
   {
     "text": "12",
-    "start": 8.82,
-    "end": 9.12
+    "start": 9.09,
+    "end": 9.4
   },
   {
     "text": "seconds",
-    "start": 9.17,
-    "end": 9.51
+    "start": 9.4,
+    "end": 9.76
   },
   {
     "text": "before",
-    "start": 9.51,
-    "end": 9.83
+    "start": 9.76,
+    "end": 10.06
   },
   {
     "text": "that",
-    "start": 9.83,
-    "end": 10.02
+    "start": 10.06,
+    "end": 10.28
   },
   {
     "text": "message.",
-    "start": 10.06,
-    "end": 10.62
+    "start": 10.28,
+    "end": 10.84
   }
 ]

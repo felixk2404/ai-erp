@@ -12,10 +12,11 @@
     // "Six tables": the grid tilts in as one plane, then each card lands on its name
     tl.set(s + " .grid", { transformPerspective: 2600, rotationX: 14, rotationY: -8 }, b.start);
     tl.to(s + " .grid", { rotationX: 6, rotationY: -3, duration: 6, ease: "sine.inOut" }, t(2));
+    // the six cards are already there, dimmed; each one pops to full on its name
+    tl.fromTo(s + " .tcard", { opacity: 0, y: 40 }, { opacity: 0.28, y: 0, duration: 0.6, ease: "power3.out", stagger: 0.07 }, t(1.0));
     cards.forEach((name, i) => {
       const at = t(q(name, 3.8 + i * 0.6));
-      const from = [{ y: 160, rotationX: 40 }, { x: 200, rotationY: -35 }, { y: -160, rotationX: -40 }, { x: -220, rotationY: 35 }, { y: 180, scale: 0.6 }, { scale: 0.4, rotation: -8 }][i];
-      tl.fromTo(s + ` .tcard[data-t='${name}']`, Object.assign({ opacity: 0 }, from), { opacity: 1, x: 0, y: 0, rotationX: 0, rotationY: 0, rotation: 0, scale: 1, duration: 0.7, ease: "back.out(1.9)" }, at);
+      tl.fromTo(s + ` .tcard[data-t='${name}']`, { opacity: 0.28, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.6, ease: "back.out(2.2)" }, at);
       tl.fromTo(s + ` .tcard[data-t='${name}'] .chip`, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(3)" }, at + 0.25);
     });
     // "Every status is a plain word": rings around the status cells (rowring), "Every relation is an ID": flashes + links

@@ -2,186 +2,186 @@
   {
     "text": "It",
     "start": 0.05,
-    "end": 0.17
+    "end": 0.14
   },
   {
     "text": "starts",
-    "start": 0.17,
+    "start": 0.14,
+    "end": 0.58
+  },
+  {
+    "text": "in",
+    "start": 0.58,
     "end": 0.7
   },
   {
-    "text": "in",
-    "start": 0.7,
-    "end": 0.87
-  },
-  {
     "text": "the",
-    "start": 0.87,
-    "end": 1.13
+    "start": 0.72,
+    "end": 0.93
   },
   {
-    "text": "showroom.",
-    "start": 1.13,
-    "end": 1.92
+    "text": "showroom,",
+    "start": 0.93,
+    "end": 1.7
   },
   {
-    "text": "A",
-    "start": 1.97,
-    "end": 2.01
+    "text": "a",
+    "start": 1.73,
+    "end": 1.75
   },
   {
     "text": "storefront",
-    "start": 2.01,
-    "end": 2.99
+    "start": 1.75,
+    "end": 2.33
   },
   {
     "text": "I",
-    "start": 2.99,
-    "end": 3.08
+    "start": 2.34,
+    "end": 2.41
   },
   {
     "text": "built",
-    "start": 3.08,
-    "end": 3.25
+    "start": 2.41,
+    "end": 2.76
   },
   {
     "text": "in",
-    "start": 3.25,
-    "end": 3.88
+    "start": 2.76,
+    "end": 2.98
   },
   {
     "text": "Next.js.",
-    "start": 3.88,
-    "end": 4.68
+    "start": 2.98,
+    "end": 4
   },
   {
     "text": "34",
-    "start": 4.73,
-    "end": 5.21
+    "start": 4.05,
+    "end": 4.54
   },
   {
     "text": "products,",
-    "start": 5.21,
-    "end": 6.02
+    "start": 4.54,
+    "end": 5.33
   },
   {
     "text": "live",
-    "start": 6.02,
-    "end": 6.64
+    "start": 5.73,
+    "end": 5.85
   },
   {
     "text": "search,",
-    "start": 6.64,
-    "end": 7.35
+    "start": 5.85,
+    "end": 6.66
   },
   {
     "text": "real",
-    "start": 7.35,
-    "end": 7.76
+    "start": 6.71,
+    "end": 7.07
   },
   {
     "text": "stock.",
-    "start": 7.76,
-    "end": 8.54
+    "start": 7.07,
+    "end": 7.63
   },
   {
     "text": "When",
-    "start": 8.65,
-    "end": 8.84
+    "start": 7.98,
+    "end": 8.14
   },
   {
     "text": "the",
-    "start": 8.84,
-    "end": 9.02
+    "start": 8.18,
+    "end": 8.32
   },
   {
     "text": "customer",
-    "start": 9.02,
-    "end": 9.49
+    "start": 8.37,
+    "end": 8.83
   },
   {
     "text": "checks",
-    "start": 9.49,
-    "end": 9.8
+    "start": 8.83,
+    "end": 9.07
   },
   {
     "text": "out,",
-    "start": 9.8,
-    "end": 10.16
+    "start": 9.07,
+    "end": 9.51
   },
   {
     "text": "the",
-    "start": 10.16,
-    "end": 10.56
+    "start": 9.65,
+    "end": 9.79
   },
   {
-    "text": "browser",
-    "start": 10.56,
-    "end": 10.95
+    "text": "store",
+    "start": 9.84,
+    "end": 10.29
   },
   {
     "text": "does",
-    "start": 11.04,
-    "end": 11.32
+    "start": 10.29,
+    "end": 10.67
   },
   {
     "text": "one",
-    "start": 11.38,
-    "end": 11.58
+    "start": 10.67,
+    "end": 10.96
   },
   {
     "text": "thing.",
-    "start": 11.6,
-    "end": 12.32
+    "start": 10.96,
+    "end": 11.55
   },
   {
     "text": "It",
-    "start": 12.37,
-    "end": 12.48
+    "start": 11.81,
+    "end": 11.9
   },
   {
     "text": "sends",
-    "start": 12.48,
-    "end": 12.87
+    "start": 11.9,
+    "end": 12.23
   },
   {
     "text": "a",
-    "start": 12.87,
-    "end": 12.95
+    "start": 12.26,
+    "end": 12.32
   },
   {
     "text": "single",
-    "start": 12.95,
-    "end": 13.42
+    "start": 12.32,
+    "end": 12.75
   },
   {
     "text": "JSON",
-    "start": 13.42,
-    "end": 13.64
+    "start": 12.75,
+    "end": 13.01
   },
   {
     "text": "payload",
-    "start": 14.25,
-    "end": 14.32
+    "start": 13.02,
+    "end": 13.53
   },
   {
     "text": "to",
-    "start": 14.32,
-    "end": 14.43
+    "start": 13.53,
+    "end": 13.63
   },
   {
     "text": "a",
-    "start": 14.48,
-    "end": 14.56
+    "start": 13.68,
+    "end": 13.74
   },
   {
     "text": "single",
-    "start": 14.56,
-    "end": 15.04
+    "start": 13.74,
+    "end": 14.17
   },
   {
     "text": "endpoint.",
-    "start": 15.1,
-    "end": 15.82
+    "start": 14.17,
+    "end": 15
   }
 ]

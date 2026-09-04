@@ -1,6 +1,6 @@
 # AI Electronics ERP — Brand Film Script (v2)
 
-Status: v1 approved by Felix 2026-09-02. v2 re-synced to the system as of 2026-09-03 (plans 6 and 7 shipped, Telegram catalog menu, human task queue, support handoff). Production not started.
+Status: v1 approved by Felix 2026-09-02. v2.1 (2026-09-04): cold open matches the real order timestamp (12:21, Friday), "the store does one thing" (the Server Action sends, not the browser), and a plainer closing line. v2 re-synced to the system as of 2026-09-03 (plans 6 and 7 shipped, Telegram catalog menu, human task queue, support handoff). Production not started.
 
 ## Brief
 
@@ -53,11 +53,11 @@ All numbers (order number, amount, city, test counts) are placeholders until cap
 
 ## Narration (v2, ~560 words)
 
-**[1]** It's 9:14 on a Tuesday morning. A customer in Haifa just ordered a pair of headphones. Nobody on my team touched anything. Let me show you what happened in the four seconds before that message.
+**[1]** It's 12:21 on a Friday. A customer in Haifa just ordered a pair of headphones. Nobody on my team touched anything. Let me show you what happened in the twelve seconds before that message.
 
 **[2]** This is AI Electronics ERP. Here's how it works, behind the scenes.
 
-**[3]** It starts in the showroom. A storefront I built in Next.js: thirty-four products, live search, real stock. When the customer checks out, the browser does one thing. It sends a single JSON payload to a single endpoint.
+**[3]** It starts in the showroom. A storefront I built in Next.js: thirty-four products, live search, real stock. When the customer checks out, the store does one thing. It sends a single JSON payload to a single endpoint.
 
 **[4]** That endpoint is an n8n workflow. Workflow thirteen is the front door. Every action from every app passes through it, authenticated by a shared secret and routed by name. "Order" hands off to workflow ten. It validates the cart, decrements stock, creates the customer if they're new, and writes the order and its invoice. Then it does something I care about: it opens a task. "Ship this order to Haifa." The system knows what it can't do, and it puts that on a list for a human. Send the same checkout twice, and it returns the order it already created. No duplicates.
 
@@ -73,7 +73,7 @@ All numbers (order number, amount, city, test counts) are placeholders until cap
 
 **[10]** Under the hood: fifteen n8n workflows. Six Airtable tables. Three agents, two Telegram bots, two Next.js apps on Vercel, a vector store, a PDF engine, and a test suite that runs before anything ships.
 
-**[11]** One order. Fifteen workflows. Zero manual steps that the system didn't ask for. Built by Felix Kreinovich.
+**[11]** One order. Fifteen workflows. The only manual step was the one the system asked for. Built by Felix Kreinovich.
 
 ## Changes from v1
 

@@ -106,8 +106,8 @@
     C.light(tl, c3, "Mark Contacted", t(q("reply", 50.2)) - 0.3, "contacted · WF4 watches");
     show(s + " .p-gmail", t(q("sales", 45.4)) + 3.2, { y: -100, scale: 0.9 });
     // counter
-    tl.fromTo(s + " .counter", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t(q("grounded", 20.0)));
+    tl.fromTo(s + " .counter", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, t(q("grounded", 20.0)) + 0.15);
     const obj = { v: 0 }; const el = document.querySelector(s + " .counter .num");
-    tl.to(obj, { v: 34, duration: 1.0, ease: "power2.out", snap: { v: 1 }, onUpdate: () => { el.textContent = Math.round(obj.v); } }, t(q("grounded", 20.0)) + 0.2);
+    tl.to(obj, { v: 34, duration: 1.0, ease: "power2.out", snap: { v: 1 }, onUpdate: () => { el.textContent = Math.round(obj.v); } }, t(q("grounded", 20.0)));
   };
 })();

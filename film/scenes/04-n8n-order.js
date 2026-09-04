@@ -33,7 +33,7 @@ window.SCENES["04"] = function (tl, b) {
   branches.forEach(([n, label], i) => {
     const at = t(q("routedByName", 8.6) + i * 0.22);
     C.flow(tl, c13, "Route", n, at, 0.45);
-    C.light(tl, c13, n, at + 0.35, label, null, "right");
+    C.light(tl, c13, n, at + 0.35, label, null, "right", true);
   });
   // "Order hands off to workflow ten" ≈ 11.2 → zoom onto the order branch, Place Order lit amber-ish cyan
   branches.forEach(([n]) => { if (n !== "Order Input") C.dim(tl, c13, n, t(q("handsOff", 11.4))); });
@@ -88,6 +88,8 @@ window.SCENES["04"] = function (tl, b) {
   // ≈ 37.5 execution proof: cut to the executions capture, bracket on "Succeeded"
   const tEx = t(q("noDuplicates", 39.6));
   tl.to(s + " .vp-10", { scale: 1.25, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, tEx);
+  tl.to(s + " .wfname", { opacity: 0, y: -20, duration: 0.3 }, tEx);
+  tl.set(s + " .wfname", { opacity: 0, visibility: "hidden" }, tEx + 0.35);
   tl.fromTo(s + " .vp-exec", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, tEx + 0.2);
   tl.fromTo(s + " .proof", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, tEx + 0.7);
   tl.fromTo(s + " .proof-tag", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: "back.out(2)" }, tEx + 0.95);

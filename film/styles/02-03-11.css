@@ -12,7 +12,8 @@
 #s-02 .ring-lite { left: 460px; top: -60px; width: 1000px; height: 1000px; border-radius: 50%; border: 2px solid var(--rule-strong); }
 
 /* Beat 03 — storefront */
-#s-03 .col { left: 1240px; top: 150px; width: 600px; display: flex; flex-direction: column; gap: 22px; }
+#s-03 .col { left: 1240px; top: 150px; width: 640px; display: flex; flex-direction: column; gap: 22px; }
+#s-03 .col .kicker { font-size: 20px; white-space: nowrap; }
 #s-03 .big { font-size: 96px; color: var(--readout); }
 #s-03 .big .mono { color: var(--signal); }
 #s-03 .tags { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; }

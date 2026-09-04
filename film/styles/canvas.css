@@ -22,9 +22,9 @@
 .wfname .title { font-size: 44px; color: var(--readout); }
 .bracket-note { z-index: 6; }
 /* Beat 04 — n8n canvases */
-#s-04 .vp-exec .exec { position: absolute; left: -300px; top: 0; width: 7600px; height: 1100px; transform: scale(0.72); transform-origin: 0 0; }
-#s-04 .proof { left: 60px; top: 40px; width: 560px; height: 120px; border: 4px solid var(--signal); border-radius: 16px; box-shadow: 0 0 40px var(--signal-glow); z-index: 6; }
-#s-04 .proof-tag { left: 60px; top: 176px; z-index: 6; }
+#s-04 .vp-exec .exec { position: absolute; left: -180px; top: 0; width: 7600px; height: 1100px; transform: scale(0.9); transform-origin: 0 0; }
+#s-04 .proof { left: 276px; top: 90px; width: 350px; height: 48px; border: 4px solid var(--signal); border-radius: 16px; box-shadow: 0 0 40px var(--signal-glow); z-index: 6; }
+#s-04 .proof-tag { left: 276px; top: 152px; z-index: 6; }
 #s-04 .payload4 { left: 640px; top: 300px; width: 700px; padding: 22px 26px; background: var(--chassis-3); border: 3px solid var(--signal); border-radius: 18px; box-shadow: 0 0 60px var(--signal-glow); font-family: var(--font-mono); font-size: 24px; line-height: 1.45; color: var(--readout-2); white-space: pre-wrap; z-index: 7; }
 #s-04 .payload4 .hdr { font-size: 20px; color: var(--readout-3); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 8px; }
 .pan .hdr-mask { position: absolute; left: 0; top: 0; width: 100%; height: 112px; background: linear-gradient(180deg, var(--void) 0%, var(--void) 78%, transparent 100%); z-index: 2; }

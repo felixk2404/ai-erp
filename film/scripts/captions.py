@@ -11,7 +11,7 @@ for b in beats:
 MAXW, MAXCH = 7, 42
 FIX = [("air table","Airtable"),("Air table","Airtable"),("Gothenburg","Gotenberg"),("market shipped","mark it shipped"),
        ("Superbase's","Supabase's"),("superbase","Supabase"),("Versal","Vercel"),("versal","Vercel"),("Kranovich","Kreinovich"),
-       ("12.21","12:21"),("lands an Airtable","lands in Airtable"),("Vercel","Vercel"),("ersal","ercel"),("ersaL","ercel"),("VersaL","Vercel"),("N8N","n8n"),("n-eight-n","n8n"),("N-eight-N","n8n"),("Next JS","Next.js"),("JSON","JSON")]
+       ("12.21","12:21"),("1221","12:21"),("12 21","12:21"),("lands an Airtable","lands in Airtable"),("Vercel","Vercel"),("ersal","ercel"),("ersaL","ercel"),("VersaL","Vercel"),("N8N","n8n"),("n-eight-n","n8n"),("N-eight-N","n8n"),("Next JS","Next.js"),("JSON","JSON")]
 def fixtext(t):
     for a,b in FIX: t = t.replace(a,b)
     return t
