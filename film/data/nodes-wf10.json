@@ -1,0 +1,184 @@
+[
+ {
+  "name": "When Executed by Another Workflow",
+  "x": 816,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Validate",
+  "x": 1081,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Valid?",
+  "x": 1330,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Products",
+  "x": 1579,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Customer",
+  "x": 1828,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Last Customer",
+  "x": 2093,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Last Order",
+  "x": 2342,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Last Invoice",
+  "x": 2592,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Compute",
+  "x": 2841,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "In Stock?",
+  "x": 3106,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "New Customer?",
+  "x": 3355,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Create Customer",
+  "x": 3604,
+  "y": 284,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Carry",
+  "x": 3853,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Create Order",
+  "x": 4118,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Create Invoice",
+  "x": 4367,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Has Stock Updates?",
+  "x": 4616,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Decrement Stock",
+  "x": 4866,
+  "y": 284,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Email Customer",
+  "x": 5130,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Notify Manager",
+  "x": 5380,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Confirm Order",
+  "x": 4866,
+  "y": 595,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Open Stock Tasks",
+  "x": 5878,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Build Tasks",
+  "x": 6143,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Has Tasks?",
+  "x": 6392,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Create Tasks",
+  "x": 6641,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Result",
+  "x": 6891,
+  "y": 439,
+  "w": 93,
+  "h": 93
+ },
+ {
+  "name": "Result Error",
+  "x": 5878,
+  "y": 751,
+  "w": 93,
+  "h": 93
+ }
+]

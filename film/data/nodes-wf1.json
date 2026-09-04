@@ -1,0 +1,79 @@
+[
+ {
+  "name": "Airtable Trigger",
+  "x": 2812,
+  "y": 500,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Is New",
+  "x": 3084,
+  "y": 500,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Loop Over Items",
+  "x": 3340,
+  "y": 500,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Find Customer",
+  "x": 3596,
+  "y": 500,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Is Valid",
+  "x": 3852,
+  "y": 500,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Numbered Invoices",
+  "x": 4124,
+  "y": 404,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Aggregate",
+  "x": 4380,
+  "y": 404,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Compute",
+  "x": 4636,
+  "y": 404,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Mark Validated",
+  "x": 4892,
+  "y": 404,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Mark Error",
+  "x": 4124,
+  "y": 628,
+  "w": 96,
+  "h": 96
+ },
+ {
+  "name": "Create Fix Task",
+  "x": 4380,
+  "y": 628,
+  "w": 96,
+  "h": 96
+ }
+]

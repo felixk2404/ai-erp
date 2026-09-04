@@ -45,10 +45,11 @@ function stopRec() {
   execFileSync("ffmpeg", ["-v", "error", "-y", "-framerate", "8", "-i", `${rec.dir}/f%05d.jpg`, "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30", `${captures}/${rec.name}.mp4`]);
   rmSync(rec.dir, { recursive: true, force: true }); rec = null;
 }
-async function target(name, fn, { video = false } = {}) {
+async function target(name, fn, { video = false, wide = false } = {}) {
   if (only && !only.includes(name)) return;
   const page = await ctx.newPage(); await nocursor(page);
-  await page.setViewportSize({ width: 1920, height: 1080 });
+  if (wide) await page.addInitScript(() => { try { localStorage.setItem("N8N_THEME", "dark"); } catch {} });
+  await page.setViewportSize(wide ? { width: 7600, height: 1100 } : { width: 1920, height: 1080 });
   try {
     if (video) startRec(page, name);
     await fn(page);
@@ -68,10 +69,14 @@ for (const [key, id] of Object.entries(WF)) {
   await target(`n8n-${key}-canvas`, async (p) => {
     await p.goto(`${N8N}/workflow/${id}`, { waitUntil: "networkidle" });
     await settle(p, 2500);
-    await p.keyboard.press("1"); await settle(p, 800);
-    // dismiss any callout/tooltip
     await p.keyboard.press("Escape").catch(() => {});
-  });
+    await p.locator("[data-test-id='main-sidebar'] button, .sidebar-collapse, button[aria-label*='Collapse']").first().click({ timeout: 2000 }).catch(() => {});
+    await settle(p, 500);
+    await p.keyboard.press("1"); await settle(p, 1200);
+    // dump node boxes (viewport px) so the film can light nodes precisely
+    const nodes = await p.evaluate(() => [...document.querySelectorAll("[data-node-name]")].map((el) => { const r = el.getBoundingClientRect(); return { name: el.getAttribute("data-node-name"), x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) }; }).filter((n) => n.w > 20 && n.w < 400));
+    writeFileSync(`${root}/data/nodes-${key}.json`, JSON.stringify(nodes, null, 1));
+  }, { wide: true });
 }
 // executions: the latest run of each workflow the hero order touched
 for (const key of ["wf13", "wf10", "wf1", "wf8"]) {
@@ -80,13 +85,13 @@ for (const key of ["wf13", "wf10", "wf1", "wf8"]) {
     await settle(p, 2500);
     const first = p.locator("[data-test-id='execution-list-item'], .execution-card, a[href*='/executions/']").first();
     await first.click({ timeout: 15000 }); await settle(p, 2500);
-    await p.keyboard.press("1"); await settle(p, 800);
-  });
+    await p.keyboard.press("1"); await settle(p, 1200);
+  }, { wide: true });
 }
 
 // ---------------- Airtable tables, hero row selected ---------------------------
 async function airtableTable(p, table, filter) {
-  await p.goto(AIRTABLE, { waitUntil: "networkidle" }); await settle(p, 3000);
+  await p.goto(AIRTABLE, { waitUntil: "load", timeout: 60000 }); await settle(p, 6000);
   await p.getByRole("link", { name: table, exact: true }).first().click({ timeout: 15000 }).catch(async () => { await p.getByText(table, { exact: true }).first().click({ timeout: 15000 }); });
   await settle(p, 3000);
   if (filter) { const cell = p.getByText(filter, { exact: false }).first(); await cell.click({ timeout: 10000 }).catch(() => {}); await settle(p, 800); }
@@ -134,7 +139,7 @@ await target("admin-invoice-detail", async (p) => {
 // ---------------- Drive PDF (public link from the tracking page) ---------------
 await target("drive-pdf", async (p) => {
   await p.goto(hero.trackingUrl, { waitUntil: "networkidle" }); await settle(p, 2000);
-  const href = await p.locator("a:has-text('PDF')").first().getAttribute("href");
+  const href = await p.locator("a[href*='drive.google'], a[href*='docs.google'], a[href$='.pdf'], a:has-text('PDF'), a:has-text('חשבונית')").first().getAttribute("href", { timeout: 15000 });
   if (!href) throw new Error("no PDF link on tracking page");
   await p.goto(href, { waitUntil: "networkidle" }); await settle(p, 5000);
 });
