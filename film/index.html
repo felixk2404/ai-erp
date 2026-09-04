@@ -212,7 +212,7 @@
       <audio id="music" data-start="0" data-duration="234.5" data-track-index="11" src="audio/music.mp3" data-volume="0.32"></audio>
       <audio id="sfx-notify" data-start="1.5" data-duration="1.2" data-track-index="12" src="audio/sfx/notify.mp3" data-volume="0.9"></audio>
 
-      <div id="captions">
+      <div id="captions"><!-- captions:start -->
         <div class="clip line" data-start="0.06" data-duration="1.97" data-track-index="20">It's 12.21 on a Thursday.</div>
         <div class="clip line" data-start="2.08" data-duration="1.54" data-track-index="20">A customer in Haifa just ordered a</div>
         <div class="clip line" data-start="3.67" data-duration="1.5" data-track-index="20">pair of headphones.</div>
@@ -317,111 +317,7 @@
         <div class="clip line" data-start="226.08" data-duration="2.5" data-track-index="20">Zero manual steps that the system didn't</div>
         <div class="clip line" data-start="228.74" data-duration="0.41" data-track-index="20">ask for.</div>
         <div class="clip line" data-start="229.2" data-duration="2.04" data-track-index="20">Built by Felix Kranovich.</div>
-      </div>
-        <div class="clip line" data-start="2.08" data-duration="1.54" data-track-index="20">A customer in Haifa just ordered a</div>
-        <div class="clip line" data-start="3.67" data-duration="1.5" data-track-index="20">pair of headphones.</div>
-        <div class="clip line" data-start="5.22" data-duration="2.31" data-track-index="20">Nobody on my team touched anything.</div>
-        <div class="clip line" data-start="7.58" data-duration="1.03" data-track-index="20">Let me show you what happened in</div>
-        <div class="clip line" data-start="8.66" data-duration="2.21" data-track-index="20">the 12 seconds before that message.</div>
-        <div class="clip line" data-start="11.68" data-duration="2.79" data-track-index="20">This is AI Electronics ERP.</div>
-        <div class="clip line" data-start="14.52" data-duration="3.17" data-track-index="20">Here's how it works, behind the scenes.</div>
-        <div class="clip line" data-start="19.35" data-duration="1.87" data-track-index="20">It starts in the showroom.</div>
-        <div class="clip line" data-start="21.27" data-duration="2.71" data-track-index="20">A storefront I built in Next.js.</div>
-        <div class="clip line" data-start="24.03" data-duration="3.87" data-track-index="20">34 products, live search, real stock.</div>
-        <div class="clip line" data-start="27.95" data-duration="2.34" data-track-index="20">When the customer checks out, the browser</div>
-        <div class="clip line" data-start="30.34" data-duration="1.28" data-track-index="20">does one thing.</div>
-        <div class="clip line" data-start="31.67" data-duration="2.06" data-track-index="20">It sends a single JSON payload to</div>
-        <div class="clip line" data-start="33.78" data-duration="1.59" data-track-index="20">a single endpoint.</div>
-        <div class="clip line" data-start="36.2" data-duration="3.47" data-track-index="20">That endpoint is an n8n workflow.</div>
-        <div class="clip line" data-start="39.72" data-duration="2.51" data-track-index="20">Workflow 13 is the front door.</div>
-        <div class="clip line" data-start="42.28" data-duration="2.45" data-track-index="20">Every action from every app passes through</div>
-        <div class="clip line" data-start="44.78" data-duration="2.4" data-track-index="20">it, authenticated by a shared secret and</div>
-        <div class="clip line" data-start="47.23" data-duration="1.72" data-track-index="20">routed by name.</div>
-        <div class="clip line" data-start="49.0" data-duration="2.75" data-track-index="20">Order hands off to Workflow 10.</div>
-        <div class="clip line" data-start="51.8" data-duration="3.23" data-track-index="20">It validates the cart, decrements stock, creates</div>
-        <div class="clip line" data-start="55.08" data-duration="2.04" data-track-index="20">the customer if they're new, and writes</div>
-        <div class="clip line" data-start="57.17" data-duration="2.1" data-track-index="20">the order and its invoice.</div>
-        <div class="clip line" data-start="59.32" data-duration="2.23" data-track-index="20">Then it does something I care about.</div>
-        <div class="clip line" data-start="61.6" data-duration="1.91" data-track-index="20">It opens a task.</div>
-        <div class="clip line" data-start="63.56" data-duration="2.39" data-track-index="20">Ship this order to Haifa.</div>
-        <div class="clip line" data-start="66.0" data-duration="2.39" data-track-index="20">The system knows what it can't do,</div>
-        <div class="clip line" data-start="68.44" data-duration="1.69" data-track-index="20">and it puts that on a list</div>
-        <div class="clip line" data-start="70.18" data-duration="1.05" data-track-index="20">for a human.</div>
-        <div class="clip line" data-start="71.28" data-duration="1.98" data-track-index="20">Send the same checkout twice, and it</div>
-        <div class="clip line" data-start="73.31" data-duration="2.4" data-track-index="20">returns the order it already created.</div>
-        <div class="clip line" data-start="75.76" data-duration="1.19" data-track-index="20">No duplicates.</div>
-        <div class="clip line" data-start="77.63" data-duration="2.35" data-track-index="20">Everything lands in Airtable.</div>
-        <div class="clip line" data-start="80.03" data-duration="1.39" data-track-index="20">Six tables.</div>
-        <div class="clip line" data-start="81.47" data-duration="3.02" data-track-index="20">Orders, invoices, customers, products, leads,</div>
-        <div class="clip line" data-start="84.54" data-duration="0.8" data-track-index="20">tasks.</div>
-        <div class="clip line" data-start="85.39" data-duration="2.41" data-track-index="20">Every status is a plain word.</div>
-        <div class="clip line" data-start="87.85" data-duration="2.37" data-track-index="20">Every relation is an ID.</div>
-        <div class="clip line" data-start="90.27" data-duration="2.27" data-track-index="20">That's boring on purpose.</div>
-        <div class="clip line" data-start="92.59" data-duration="2.52" data-track-index="20">15 workflows read and write these tables</div>
-        <div class="clip line" data-start="95.16" data-duration="1.4" data-track-index="20">all day and none of them step</div>
-        <div class="clip line" data-start="96.61" data-duration="1.08" data-track-index="20">on each other.</div>
-        <div class="clip line" data-start="98.51" data-duration="2.3" data-track-index="20">The new invoice row wakes up Workflow</div>
-        <div class="clip line" data-start="100.86" data-duration="1.89" data-track-index="20">1, which checks the numbers and confirms</div>
-        <div class="clip line" data-start="102.8" data-duration="2.07" data-track-index="20">the 18% VAT.</div>
-        <div class="clip line" data-start="105.33" data-duration="3.23" data-track-index="20">Workflow 8 then renders a Hebrew right-to-left</div>
-        <div class="clip line" data-start="108.61" data-duration="2.06" data-track-index="20">tax invoice as HTML, ships it to</div>
-        <div class="clip line" data-start="110.72" data-duration="2.95" data-track-index="20">Gothenburg, and files the PDF in Google</div>
-        <div class="clip line" data-start="113.72" data-duration="0.9" data-track-index="20">Drive.</div>
-        <div class="clip line" data-start="114.67" data-duration="1.45" data-track-index="20">The customer gets an email with a</div>
-        <div class="clip line" data-start="116.17" data-duration="2.0" data-track-index="20">tracking link, and the PDF shows up</div>
-        <div class="clip line" data-start="118.22" data-duration="1.41" data-track-index="20">on their order page.</div>
-        <div class="clip line" data-start="119.68" data-duration="1.65" data-track-index="20">I get a telegram.</div>
-        <div class="clip line" data-start="121.38" data-duration="1.63" data-track-index="20">That's the message you saw.</div>
-        <div class="clip line" data-start="123.88" data-duration="1.92" data-track-index="20">In the Admin app, that order is</div>
-        <div class="clip line" data-start="125.85" data-duration="1.66" data-track-index="20">already waiting for me.</div>
-        <div class="clip line" data-start="127.56" data-duration="1.99" data-track-index="20">The dashboard flags anything unshipped for</div>
-        <div class="clip line" data-start="129.6" data-duration="1.71" data-track-index="20">more than a day.</div>
-        <div class="clip line" data-start="131.36" data-duration="2.07" data-track-index="20">I open the order, market shipped, and</div>
-        <div class="clip line" data-start="133.48" data-duration="2.35" data-track-index="20">the task closes itself.</div>
-        <div class="clip line" data-start="135.88" data-duration="1.78" data-track-index="20">Stock is live in the same place,</div>
-        <div class="clip line" data-start="137.71" data-duration="1.22" data-track-index="20">with a warning light when a product</div>
-        <div class="clip line" data-start="138.98" data-duration="0.91" data-track-index="20">runs low.</div>
-        <div class="clip line" data-start="140.9" data-duration="2.41" data-track-index="20">But the order was the easy part.</div>
-        <div class="clip line" data-start="143.36" data-duration="3.03" data-track-index="20">Three AI agents work the same data.</div>
-        <div class="clip line" data-start="146.44" data-duration="1.73" data-track-index="20">The support agent lives on Telegram and</div>
-        <div class="clip line" data-start="148.22" data-duration="1.65" data-track-index="20">on the website.</div>
-        <div class="clip line" data-start="149.92" data-duration="2.37" data-track-index="20">Customers can browse the catalog with buttons,</div>
-        <div class="clip line" data-start="152.34" data-duration="2.83" data-track-index="20">tap Interested, leave a phone number, and</div>
-        <div class="clip line" data-start="155.22" data-duration="1.83" data-track-index="20">a lead lands an air table with</div>
-        <div class="clip line" data-start="157.1" data-duration="1.55" data-track-index="20">an alert to me.</div>
-        <div class="clip line" data-start="158.7" data-duration="1.89" data-track-index="20">Or they can just talk to it.</div>
-        <div class="clip line" data-start="160.64" data-duration="2.51" data-track-index="20">It's grounded in the full product catalog,</div>
-        <div class="clip line" data-start="163.2" data-duration="2.38" data-track-index="20">embedded into Superbase's vector store, so</div>
-        <div class="clip line" data-start="165.63" data-duration="2.0" data-track-index="20">it knows what's in stock and what</div>
-        <div class="clip line" data-start="167.68" data-duration="0.95" data-track-index="20">it costs.</div>
-        <div class="clip line" data-start="168.68" data-duration="2.68" data-track-index="20">Ask for a discount, and it politely</div>
-        <div class="clip line" data-start="171.41" data-duration="1.06" data-track-index="20">refuses.</div>
-        <div class="clip line" data-start="172.52" data-duration="2.1" data-track-index="20">Ask for a human, and it hands</div>
-        <div class="clip line" data-start="174.67" data-duration="0.92" data-track-index="20">you off.</div>
-        <div class="clip line" data-start="175.64" data-duration="2.63" data-track-index="20">A lead, a task, a message to</div>
-        <div class="clip line" data-start="178.32" data-duration="0.69" data-track-index="20">me.</div>
-        <div class="clip line" data-start="179.06" data-duration="2.53" data-track-index="20">The manager agent answers my questions.</div>
-        <div class="clip line" data-start="181.64" data-duration="1.29" data-track-index="20">Revenue this month?</div>
-        <div class="clip line" data-start="182.98" data-duration="1.23" data-track-index="20">What's unpaid?</div>
-        <div class="clip line" data-start="184.26" data-duration="1.61" data-track-index="20">What needs attention?</div>
-        <div class="clip line" data-start="185.92" data-duration="2.03" data-track-index="20">And the sales agent drafts Hebrew outreach</div>
-        <div class="clip line" data-start="188.0" data-duration="2.61" data-track-index="20">to new leads, sends it, and notices</div>
-        <div class="clip line" data-start="190.66" data-duration="1.27" data-track-index="20">when they reply.</div>
-        <div class="clip line" data-start="192.8" data-duration="1.05" data-track-index="20">When I open the app in the</div>
-        <div class="clip line" data-start="193.9" data-duration="3.11" data-track-index="20">morning, the brief is already writing itself.</div>
-        <div class="clip line" data-start="197.06" data-duration="2.94" data-track-index="20">Live revenue, open invoices, a feed of</div>
-        <div class="clip line" data-start="200.05" data-duration="2.1" data-track-index="20">every workflow run, and a chat with</div>
-        <div class="clip line" data-start="202.2" data-duration="2.39" data-track-index="20">the manager agent one keystroke away.</div>
-        <div class="clip line" data-start="205.56" data-duration="4.13" data-track-index="20">Under the hood, 15 N8N workflows, six</div>
-        <div class="clip line" data-start="209.74" data-duration="3.37" data-track-index="20">air table tables, three agents, two telegram</div>
-        <div class="clip line" data-start="213.16" data-duration="2.73" data-track-index="20">bots, two Next.js apps on VersaL, a</div>
-        <div class="clip line" data-start="215.94" data-duration="2.5" data-track-index="20">vector store, a PDF engine, and a</div>
-        <div class="clip line" data-start="218.49" data-duration="2.82" data-track-index="20">test suite that runs before anything ships.</div>
-        <div class="clip line" data-start="223.4" data-duration="2.63" data-track-index="20">One order, 15 workflows.</div>
-        <div class="clip line" data-start="226.08" data-duration="2.5" data-track-index="20">Zero manual steps that the system didn't</div>
-        <div class="clip line" data-start="228.74" data-duration="0.41" data-track-index="20">ask for.</div>
-        <div class="clip line" data-start="229.2" data-duration="2.04" data-track-index="20">Built by Felix Kranovich.</div>
-      </div>
+      <!-- captions:end --></div>
     </div>
 
     <script src="scenes/beats.js"></script>

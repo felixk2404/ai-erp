@@ -30,6 +30,6 @@ for i in range(len(lines) - 1):
     if s + d > ns - 0.05: lines[i] = (s, round(ns - 0.05 - s, 2), txt)
 html = "".join(f'\n        <div class="clip line" data-start="{s}" data-duration="{d}" data-track-index="20">{txt}</div>' for s, d, txt in lines)
 src = (root / "index.html").read_text()
-src = re.sub(r'<div id="captions">.*?</div>\n', f'<div id="captions">{html}\n      </div>\n', src, count=1, flags=re.S)
+src = re.sub(r'<!-- captions:start -->.*?<!-- captions:end -->', f'<!-- captions:start -->{html}\n      <!-- captions:end -->', src, count=1, flags=re.S)
 (root / "index.html").write_text(src)
 print(f"captions: {len(lines)} lines")
