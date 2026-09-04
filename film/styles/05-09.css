@@ -23,7 +23,7 @@
 #s-06 .doclabel { position: absolute; left: 140px; top: 850px; font-size: 24px; }
 #s-06 .trk { position: absolute; left: 860px; top: 130px; width: 900px; height: 560px; }
 #s-06 .trk img { object-position: top center; }
-#s-06 .trk-br { position: absolute; left: 1360px; top: 560px; width: 330px; height: 64px; border: 4px solid var(--signal); border-radius: 12px; box-shadow: 0 0 30px var(--signal-glow); }
+#s-06 .trk-br { position: absolute; left: 1076px; top: 392px; width: 166px; height: 36px; border: 4px solid var(--signal); border-radius: 12px; box-shadow: 0 0 30px var(--signal-glow); }
 #s-06 .phone { position: absolute; left: 1420px; top: 300px; width: 360px; height: 740px; border-radius: 52px; background: var(--chassis); border: 4px solid var(--rule-strong); box-shadow: 0 40px 120px rgba(0,0,0,.7), 0 0 60px rgba(90,209,255,.15); overflow: hidden; }
 #s-06 .phone img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
 #s-06 .phone .pending { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; font-family: var(--font-mono); font-size: 22px; color: var(--readout-3); }

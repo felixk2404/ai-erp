@@ -12,6 +12,7 @@ window.Canvas = (function () {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", `0 0 ${w} ${h}`); svg.setAttribute("width", w); svg.setAttribute("height", h); svg.classList.add("flows");
     pan.appendChild(svg);
+    const mask = document.createElement("div"); mask.className = "hdr-mask"; pan.appendChild(mask);
     const hits = {};
     for (const [name, [x, y, bw, bh]] of Object.entries(nodes)) {
       const d = document.createElement("div"); d.className = "hit"; d.dataset.name = name;
@@ -30,7 +31,7 @@ window.Canvas = (function () {
     const VW = c.vw || W, VH = c.vh || H;
     let tx = VW / 2 - scale * cx, ty = VH / 2 - scale * cy;
     tx = Math.min(tx, 0); tx = Math.max(tx, VW - c.w * scale);
-    ty = Math.min(ty, -120 * scale); ty = Math.max(ty, VH - c.h * scale);
+    ty = Math.min(ty, -95 * scale); ty = Math.max(ty, VH - (c.h - 90) * scale);
     const vars = { x: tx, y: ty, scale, duration: dur == null ? 1.2 : dur, ease: ease || "power3.inOut" };
     if (dur === 0) tl.set(c.pan, vars, at); else tl.to(c.pan, vars, at);
   }

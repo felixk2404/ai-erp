@@ -9,13 +9,19 @@ starts, t = {}, 0.0
 for b in beats:
     starts[b["id"]] = t; t += b["dur"]
 MAXW, MAXCH = 7, 42
+FIX = [("air table","Airtable"),("Air table","Airtable"),("Gothenburg","Gotenberg"),("market shipped","mark it shipped"),
+       ("Superbase's","Supabase's"),("superbase","Supabase"),("Versal","Vercel"),("versal","Vercel"),("Kranovich","Kreinovich"),
+       ("12.21","12:21"),("lands an Airtable","lands in Airtable"),("Vercel","Vercel"),("ersal","ercel"),("ersaL","ercel"),("VersaL","Vercel"),("N8N","n8n"),("n-eight-n","n8n"),("N-eight-N","n8n"),("Next JS","Next.js"),("JSON","JSON")]
+def fixtext(t):
+    for a,b in FIX: t = t.replace(a,b)
+    return t
 lines = []
 for b in beats:
     words = json.load(open(root / "captions" / f"words-{b['id']}.json"))
     cur = []
     def flush():
         if not cur: return
-        text = " ".join(w["text"] for w in cur)
+        text = fixtext(" ".join(w["text"] for w in cur))
         s = starts[b["id"]] + cur[0]["start"]; e = starts[b["id"]] + cur[-1]["end"]
         lines.append((round(s, 2), round(max(0.6, e - s + 0.25), 2), text)); cur.clear()
     for w in words:
