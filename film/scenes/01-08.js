@@ -46,22 +46,20 @@
     focus("support", t(q("support", 5.7)));
     // "browse the catalog with buttons": WF5 canvas, Route → Render Menu → Send Menu
     show(s + " .vp-5", t(q("support", 5.7)) + 0.2, { x: 120, rotationY: -20, transformPerspective: 2200 });
-    C.cam(tl, c5, "Route", 1.2, b.start, 0);
+    C.camSpan(tl, c5, "Classify", "Find Lead", 0.95, b.start, 0);
     C.light(tl, c5, "Telegram Trigger", t(q("support", 5.7)) + 0.6, "@aielec_support_bot");
     C.flow(tl, c5, "Telegram Trigger", "Classify", t(q("support", 5.7)) + 1.0, 0.3);
     C.flow(tl, c5, "Classify", "Route", t(q("support", 5.7)) + 1.3, 0.3);
-    C.cam(tl, c5, "Render Menu", 1.2, t(q("buttons", 10.6)) - 0.5, 0.9, "power2.inOut");
+    C.camSpan(tl, c5, "Products", "Send Menu", 1.0, t(q("buttons", 10.6)) - 0.5, 0.9, "power2.inOut");
     C.flow(tl, c5, "Route", "Products", t(q("buttons", 10.6)) - 0.2, 0.3);
     C.flow(tl, c5, "Products", "Render Menu", t(q("buttons", 10.6)) + 0.1, 0.3);
     C.light(tl, c5, "Render Menu", t(q("buttons", 10.6)) + 0.3, "category → product → מעוניין");
     // "tap interested, leave a phone number, a lead lands": Create Lead → Ask Phone → Notify Owner
     C.camSpan(tl, c5, "Is Lead?", "Notify Owner", 1.0, t(q("interested", 11.7)) - 0.3, 0.9, "power2.inOut");
-    C.flow(tl, c5, "Is Lead?", "Lead Exists?", t(q("interested", 11.7)), 0.3);
-    C.flow(tl, c5, "Lead Exists?", "Create Lead", t(q("interested", 11.7)) + 0.3, 0.3);
+    C.chain(tl, c5, ["Is Lead?", "Lead Exists?", "Has Lead?", "Create Lead"], t(q("interested", 11.7)) - 0.2, 0.22);
     C.light(tl, c5, "Create Lead", t(q("interested", 11.7)) + 0.5, "Leads · Source = telegram");
-    C.flow(tl, c5, "Create Lead", "Ask Phone", t(q("phone", 13.4)), 0.3);
+    C.chain(tl, c5, ["Create Lead", "Create Task", "Notify Owner", "Confirm Lead", "Ask Phone"], t(q("phone", 13.4)) - 0.5, 0.2);
     C.light(tl, c5, "Ask Phone", t(q("phone", 13.4)) + 0.3, "one-tap phone share");
-    C.flow(tl, c5, "Ask Phone", "Notify Owner", t(q("lead", 14.4)), 0.3);
     C.light(tl, c5, "Notify Owner", t(q("lead", 14.4)) + 0.3, "alert → owner", "amber");
     show(s + " .p-menu", t(q("buttons", 10.6)) + 0.4, { x: 200, scale: 0.9 });
     // "Or they can just talk to it": the website widget conversation
@@ -99,16 +97,12 @@
     hide(s + " .p-manager", t(q("sales", 45.4)));
     focus("sales", t(q("sales", 45.4)));
     show(s + " .vp-3", t(q("sales", 45.4)) + 0.2, { x: 120, rotationY: -20, transformPerspective: 2200 });
-    C.cam(tl, c3, "Sales Agent", 1.5, b.start, 0);
+    C.camSpan(tl, c3, "Next New Lead", "Send Email", 1.0, b.start, 0);
     C.light(tl, c3, "Every 3 Hours", t(q("sales", 45.4)) + 0.5, "every 3 hours");
-    C.flow(tl, c3, "Every 3 Hours", "Next New Lead", t(q("sales", 45.4)) + 0.9, 0.3);
-    C.flow(tl, c3, "Next New Lead", "Has Lead?", t(q("sales", 45.4)) + 1.2, 0.25);
-    C.flow(tl, c3, "Has Lead?", "Sales Agent", t(q("sales", 45.4)) + 1.45, 0.25);
+    C.chain(tl, c3, ["Every 3 Hours", "Next New Lead", "Has Lead?", "Sales Agent"], t(q("sales", 45.4)) + 0.9, 0.25);
     C.light(tl, c3, "Sales Agent", t(q("sales", 45.4)) + 1.8, "drafts Hebrew outreach");
-    C.flow(tl, c3, "Sales Agent", "Send Email", t(q("sales", 45.4)) + 2.6, 0.3);
-    C.light(tl, c3, "Send Email", t(q("sales", 45.4)) + 2.9, "Gmail");
-    C.camSpan(tl, c3, "Sales Agent", "Mark Contacted", 1.35, t(q("reply", 50.2)) - 0.9, 0.8, "power2.inOut");
-    C.flow(tl, c3, "Send Email", "Mark Contacted", t(q("reply", 50.2)) - 0.6, 0.3);
+    C.chain(tl, c3, ["Sales Agent", "Mark Contacted", "Send Email"], t(q("sales", 45.4)) + 2.7, 0.3);
+    C.light(tl, c3, "Send Email", t(q("sales", 45.4)) + 3.4, "Gmail");
     C.light(tl, c3, "Mark Contacted", t(q("reply", 50.2)) - 0.3, "contacted · WF4 watches");
     show(s + " .p-gmail", t(q("sales", 45.4)) + 3.2, { y: -100, scale: 0.9 });
     // counter

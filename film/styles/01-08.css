@@ -23,7 +23,7 @@
 #s-08 .agent .name { font-family: var(--font-body); font-weight: 600; font-size: 30px; color: var(--readout); }
 #s-08 .agent .sub { font-family: var(--font-mono); font-size: 20px; color: var(--readout-3); margin-inline-start: auto; }
 #s-08 .stage8 { left: 560px; top: 0; width: 1360px; height: 1080px; }
-#s-08 .viewport { left: 560px; width: 900px; }
+#s-08 .viewport { left: 580px; top: 80px; width: 880px; height: 810px; border-radius: 22px; border: 3px solid rgba(255,255,255,.14); box-shadow: 0 30px 90px rgba(0,0,0,.6), inset 0 0 80px rgba(90,209,255,.06); background: var(--void); }
 #s-08 .panel { position: absolute; z-index: 6; }
 #s-08 .panel .tag { position: absolute; left: 16px; top: -26px; }
 #s-08 .panel .br { position: absolute; border: 4px solid var(--signal); border-radius: 12px; box-shadow: 0 0 30px var(--signal-glow); }

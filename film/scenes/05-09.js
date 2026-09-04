@@ -67,11 +67,11 @@
     C.cam(tl, c8, "Gotenberg PDF", 1.55, t(q("gotenberg", 11.9)) - 0.3, 0.8, "power2.inOut");
     C.light(tl, c8, "Gotenberg PDF", t(q("gotenberg", 11.9)) + 0.2, "HTML → PDF · container");
     C.flow(tl, c8, "Gotenberg PDF", "Upload to Drive", t(q("drive", 14.7)) - 0.4, 0.3);
-    C.cam(tl, c8, "Upload to Drive", 1.5, t(q("drive", 14.7)) - 0.5, 0.8, "power2.inOut");
+    C.camSpan(tl, c8, "Upload to Drive", "Mark Generated", 1.4, t(q("drive", 14.7)) - 0.5, 0.8, "power2.inOut");
     C.light(tl, c8, "Upload to Drive", t(q("drive", 14.7)), "Google Drive");
-    C.flow(tl, c8, "Upload to Drive", "Mark Generated", t(q("drive", 14.7)) + 0.5, 0.25);
-    C.flow(tl, c8, "Mark Generated", "Share Public", t(q("drive", 14.7)) + 0.8, 0.25);
-    C.light(tl, c8, "Share Public", t(q("drive", 14.7)) + 1.0, "public link", null, "right");
+    C.flow(tl, c8, "Upload to Drive", "Share Public", t(q("drive", 14.7)) + 0.5, 0.25);
+    C.flow(tl, c8, "Share Public", "Mark Generated", t(q("drive", 14.7)) + 0.8, 0.25);
+    C.light(tl, c8, "Mark Generated", t(q("drive", 14.7)) + 1.0, "status → generated · public link");
     // "The customer gets an email with a tracking link" → the document folds out, tracking page, phone
     const TD = t(q("email", 16.8));
     tl.to(s + " .vp-8", { opacity: 0.18, filter: "blur(6px)", scale: 1.04, duration: 0.6, ease: "power2.inOut" }, TD);
