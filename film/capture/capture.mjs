@@ -1,9 +1,12 @@
-// Authenticated, READ-ONLY captures (screenshots + screen recordings) using the profile
-// saved by login.mjs. Nothing here writes to any system except the admin "mark shipped"
-// step, which is opt-in via --ship.
-// Usage: node film/capture/capture.mjs [--only name,name] [--ship]
+// Authenticated, READ-ONLY captures (screenshots + frame-sequence recordings) driven through
+// Felix's REAL Chrome (already logged in everywhere) over the DevTools protocol.
+// Before running, quit Chrome fully and relaunch it with a debugging port:
+//   open -a "Google Chrome" --args --remote-debugging-port=9222
+// Nothing here writes to any system except the admin "mark shipped" step (opt-in via --ship).
+// Usage: node film/capture/capture.mjs [--only=name,name] [--ship]
 import { chromium } from "../../store/node_modules/.pnpm/playwright@1.62.1/node_modules/playwright/index.mjs";
-import { mkdirSync, readdirSync, renameSync, readFileSync, existsSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -23,28 +26,40 @@ const AIRTABLE = "https://airtable.com/app1jXGnS2j0tCxEM";
 const SUPABASE = "https://supabase.com/dashboard/project/kwlskuaqwjamlnoaqknw/editor";
 const ADMIN = "https://ai-erp-rho.vercel.app";
 
-const ctx = await chromium.launchPersistentContext(resolve(here, ".auth"), {
-  headless: true, viewport: { width: 1920, height: 1080 }, locale: "he-IL",
-  recordVideo: { dir: captures, size: { width: 1920, height: 1080 } },
+const browser = await chromium.connectOverCDP("http://localhost:9222").catch(() => {
+  console.error('Chrome is not listening on :9222. Quit Chrome, then run:\n  open -a "Google Chrome" --args --remote-debugging-port=9222');
+  process.exit(1);
 });
+const ctx = browser.contexts()[0]; // Felix's real profile: cookies for n8n, Airtable, Supabase, Vercel
 const nocursor = (p) => p.addInitScript(() => { const s = document.createElement("style"); s.textContent = "*{cursor:none!important} html{scroll-behavior:auto!important}"; document.documentElement.appendChild(s); });
 const results = [];
 
+// frame-sequence recorder (CDP contexts cannot use recordVideo): 8 fps JPEG frames → mp4
+let rec = null;
+function startRec(page, name) {
+  const dir = `${captures}/_frames-${name}`; rmSync(dir, { recursive: true, force: true }); mkdirSync(dir);
+  let i = 0; rec = { dir, name, timer: setInterval(() => { page.screenshot({ type: "jpeg", quality: 85, path: `${dir}/f${String(i++).padStart(5, "0")}.jpg` }).catch(() => {}); }, 125) };
+}
+function stopRec() {
+  if (!rec) return; clearInterval(rec.timer);
+  execFileSync("ffmpeg", ["-v", "error", "-y", "-framerate", "8", "-i", `${rec.dir}/f%05d.jpg`, "-c:v", "libx264", "-crf", "18", "-pix_fmt", "yuv420p", "-r", "30", `${captures}/${rec.name}.mp4`]);
+  rmSync(rec.dir, { recursive: true, force: true }); rec = null;
+}
 async function target(name, fn, { video = false } = {}) {
   if (only && !only.includes(name)) return;
   const page = await ctx.newPage(); await nocursor(page);
+  await page.setViewportSize({ width: 1920, height: 1080 });
   try {
+    if (video) startRec(page, name);
     await fn(page);
-    if (!video) await page.screenshot({ path: `${captures}/${name}.png` });
+    if (video) stopRec(); else await page.screenshot({ path: `${captures}/${name}.png` });
     results.push([name, "ok"]);
   } catch (e) {
+    if (video) { try { stopRec(); } catch {} }
     results.push([name, "FAIL " + e.message.split("\n")[0]]);
     await page.screenshot({ path: `${captures}/_fail-${name}.png` }).catch(() => {});
   }
-  const v = page.video();
   await page.close();
-  if (video && v) { const path = await v.path(); renameSync(path, `${captures}/${name}.webm`); }
-  else if (v) { try { const path = await v.path(); const { unlinkSync } = await import("node:fs"); unlinkSync(path); } catch {} }
 }
 const settle = (p, ms = 1500) => p.waitForTimeout(ms);
 
@@ -124,6 +139,6 @@ await target("drive-pdf", async (p) => {
   await p.goto(href, { waitUntil: "networkidle" }); await settle(p, 5000);
 });
 
-await ctx.close();
+await browser.close().catch(() => {});
 for (const [n, r] of results) console.log(r === "ok" ? "✓" : "✗", n, r === "ok" ? "" : r);
 console.log(`\ncaptures in ${captures}`);
