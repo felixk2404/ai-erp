@@ -4,3 +4,5 @@ capture/.auth/
 captures/*.mov
 captures/*.webm
 captures/*.mp4
+out/*.mp4
+out/frames*/

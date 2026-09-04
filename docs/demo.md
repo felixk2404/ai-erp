@@ -59,3 +59,7 @@
 - חדר בקרה: פיד הרצות n8n חי ומפת מערכת (n8n Public API), ⌘K שמדבר עם הסוכן, קיצורי מקלדת (`?`), הכל בעברית RTL עם תנועה שמכבדת reduced-motion.
 - שני אתרים, מערכת אחת: הניהול (`app/`) והחנות (`store/`) — פרויקטי Vercel נפרדים שמדברים עם אותו WF13.
 - הכל בריפו: תבניות workflow עם placeholders, סקריפטי ייבוא/ייצוא/אימות, בדיקות יחידה + e2e לשני האתרים, runbook.
+
+## סרט התדמית
+
+`film/out/ai-electronics-erp-film.mp4` (3:54, 1080p, אנגלית עם כתוביות) — פתיח לפרזנטציה. מקור ב-`film/`, רינדור מחדש: `cd film && npx hyperframes render --quality high --output out/ai-electronics-erp-film.mp4`.
