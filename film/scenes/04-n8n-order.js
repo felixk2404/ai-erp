@@ -50,43 +50,43 @@ window.SCENES["04"] = function (tl, b) {
   C.cam(tl, c10, "Validate", 1.5, b.start, 0);
   C.light(tl, c10, "When Executed by Another Workflow", T10 + 0.5, "order payload");
 
-  // the chain, each on its phrase; the camera glides right as it goes
-  const steps = [
-    ["validates", 14.0, "Validate", "validate", "Valid?"],
-    ["decrements", 15.6, "Decrement Stock", "stock −1", null],
-    ["customer", 17.3, "Create Customer", "new customer", null],
-    ["order", 19.6, "Create Order", `${HERO.orderNumber}`, null],
-    ["invoice", 20.8, "Create Invoice", `${HERO.invoiceNumber}`, null],
-  ];
-  let prev = "When Executed by Another Workflow";
-  for (const [key, def, node, label, extra] of steps) {
+  // the chain follows the REAL graph edges; tags land on the narration phrases
+  const G = ["When Executed by Another Workflow", "Validate", "Valid?", "Products", "Customer", "Last Customer", "Last Order", "Last Invoice", "Compute", "In Stock?", "New Customer?", "Create Customer", "Carry", "Create Order", "Create Invoice", "Has Stock Updates?", "Decrement Stock", "Email Customer", "Notify Manager", "Open Stock Tasks", "Build Tasks", "Has Tasks?", "Create Tasks"];
+  const upTo = (name) => G.slice(0, G.indexOf(name) + 1);
+  let drawn = 1; // how many nodes of G already have their incoming edge drawn
+  const advance = (name, at) => { const idx = G.indexOf(name); if (idx > drawn - 1) { C.chain(tl, c10, G.slice(drawn - 1, idx + 1), at - 0.45, 0.16); drawn = idx + 1; } };
+  const step = (key, def, node, label, scale, color) => {
     const at = t(q(key, def));
-    C.cam(tl, c10, node, 1.5, at - 0.5, 0.9, "power2.inOut");
-    C.flow(tl, c10, prev, node, at - 0.25, 0.45);
-    C.light(tl, c10, node, at, label);
-    if (extra) { C.flow(tl, c10, node, extra, at + 0.4, 0.3); C.light(tl, c10, extra, at + 0.6); }
-    prev = node;
-  }
-  // "it opens a task" ≈ 23.5 → amber
-  const tTask = t(q("task", 23.6));
+    C.cam(tl, c10, node, scale || 1.5, at - 0.55, 0.9, "power2.inOut");
+    advance(node, at);
+    C.light(tl, c10, node, at, label, color);
+    return at;
+  };
+  step("validates", 15.7, "Validate", "validate the cart");
+  step("decrements", 17.1, "In Stock?", "stock check");
+  step("customer", 18.7, "Create Customer", "new customer → Customers");
+  step("order", 20.5, "Create Order", `Orders · ${HERO.orderNumber}`);
+  step("invoice", 22.0, "Create Invoice", `Invoices · ${HERO.invoiceNumber}`);
+  step("invoice", 23.6, "Decrement Stock", "stock −1 · Products");
+  // "it opens a task" → amber
+  const tTask = t(q("task", 25.6));
   C.camSpan(tl, c10, "Build Tasks", "Create Tasks", 1.45, tTask - 0.6, 1.0, "power2.inOut");
-  C.flow(tl, c10, "Create Invoice", "Open Stock Tasks", tTask - 0.5, 0.5);
-  C.flow(tl, c10, "Open Stock Tasks", "Build Tasks", tTask - 0.1, 0.3);
-  C.flow(tl, c10, "Build Tasks", "Has Tasks?", tTask + 0.15, 0.25);
-  C.flow(tl, c10, "Has Tasks?", "Create Tasks", tTask + 0.35, 0.25, "amber");
-  C.light(tl, c10, "Create Tasks", tTask + 0.6, `human task · לשלוח ${HERO.orderNumber} ל${HERO.city}`, "amber");
-  // "on a list for a human" ≈ 29 → push in on the amber node, breathe
-  C.cam(tl, c10, "Create Tasks", 1.9, t(q("human", 29.0)), 1.4, "power2.inOut");
-  tl.to(c10.hits["Create Tasks"], { scale: 1.14, duration: 0.9, yoyo: true, repeat: 3, ease: "sine.inOut" }, t(q("human", 29.0)));
+  C.chain(tl, c10, G.slice(G.indexOf("Decrement Stock"), G.indexOf("Has Tasks?") + 1), tTask - 0.7, 0.16);
+  C.flow(tl, c10, "Has Tasks?", "Create Tasks", tTask + 0.1, 0.3, "amber");
+  C.light(tl, c10, "Create Tasks", tTask + 0.4, `human task · לשלוח ${HERO.orderNumber} ל${HERO.city}`, "amber");
+  // "on a list for a human" → push in on the amber node, breathe
+  C.cam(tl, c10, "Create Tasks", 1.9, t(q("human", 34.0)), 1.4, "power2.inOut");
+  tl.to(c10.hits["Create Tasks"], { scale: 1.14, duration: 0.9, yoyo: true, repeat: 1, ease: "sine.inOut" }, t(q("human", 34.0)));
 
   // "Send the same checkout twice ... No duplicates" ≈ 32.5 → back to Last Order / Compute
-  const tDup = t(q("twice", 32.6));
+  const tDup = t(q("twice", 35.2));
+  C.fadeFlows(tl, c10, tDup - 0.4);
   C.camSpan(tl, c10, "Last Order", "Compute", 1.6, tDup - 0.4, 1.1, "power2.inOut");
   C.light(tl, c10, "Last Order", tDup + 0.5, "same email · same cart · < 5 min");
   C.light(tl, c10, "Compute", tDup + 1.3, "→ existing order");
 
   // ≈ 37.5 execution proof: cut to the executions capture, bracket on "Succeeded"
-  const tEx = t(q("noDuplicates", 37.6));
+  const tEx = t(q("noDuplicates", 39.6));
   tl.to(s + " .vp-10", { scale: 1.25, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, tEx);
   tl.fromTo(s + " .vp-exec", { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, tEx + 0.2);
   tl.fromTo(s + " .proof", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, tEx + 0.7);

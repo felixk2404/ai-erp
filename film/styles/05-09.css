@@ -40,12 +40,12 @@
 #s-07 .side .tag { position: absolute; left: 20px; top: -24px; }
 
 /* Beat 09 — morning */
-#s-09 .stage { left: 60px; top: 50px; width: 1800px; height: 880px; perspective: 2600px; }
+#s-09 .stage { left: 60px; top: 110px; width: 1800px; height: 790px; perspective: 2600px; }
 #s-09 .device { position: absolute; inset: 0; transform-style: preserve-3d; }
 #s-09 .device video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top right; }
 #s-09 .feed { position: absolute; left: 1180px; top: 180px; width: 560px; height: 680px; z-index: 4; overflow: hidden; }
 #s-09 .feed img { position: absolute; width: 3840px; height: 2160px; left: -1022px; top: -478px; object-fit: fill; }
-#s-09 .head { left: 80px; top: 950px; z-index: 6; display: flex; gap: 24px; align-items: center; }
+#s-09 .head { left: 80px; top: 34px; z-index: 6; display: flex; gap: 24px; align-items: center; }
 
 #s-06 .doc .redact { position: absolute; left: 0; top: 268px; width: 100%; height: 30px; background: #fff; }
 #s-07 .redact { position: absolute; left: 585px; top: 645px; width: 170px; height: 28px; background: var(--chassis); z-index: 3; opacity: 0; }

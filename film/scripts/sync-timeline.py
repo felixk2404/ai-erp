@@ -48,4 +48,5 @@ def fix_video(m):
     return re.sub(r'data-start="[0-9.]+"', f'data-start="{start}"', tag)
 html = re.sub(r"<video [^>]*data-beat=\"\d\d\"[^>]*>", fix_video, html)
 (root / "index.html").write_text(html)
+subprocess.run([sys.executable, str(root / "scripts/captions.py")], check=True)
 print("total", total, "| beats:", ", ".join(f'{b["id"]}@{b["start"]}' for b in beats))

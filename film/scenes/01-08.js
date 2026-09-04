@@ -73,9 +73,9 @@
     tl.fromTo(s + " .p-supabase .tag", { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(2.5)" }, t(q("vector", 23.9)) + 0.5);
     hide(s + " .p-supabase", t(q("discount", 28.4)));
     // "Ask for a discount, and it politely refuses": bracket the refusal
-    tl.fromTo(s + " .p-widget .br", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("refuses", 30.6)));
+    tl.fromTo(s + " .p-widget .br", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("refuses", 30.6)) + 0.5);
     // "Ask for a human, and it hands you off": WF5-handoff canvas
-    hide(s + " .p-widget", t(q("humanAsk", 31.7)));
+    hide(s + " .p-widget", t(q("humanAsk", 31.7)) + 0.7);
     show(s + " .vp-h", t(q("humanAsk", 31.7)) + 0.2, { x: -120, rotationY: 20, transformPerspective: 2200 });
     C.cam(tl, ch, "Has Contact?", 1.5, b.start, 0);
     C.light(tl, ch, "When Executed by Another Workflow", t(q("humanAsk", 31.7)) + 0.5, "handoff tool");

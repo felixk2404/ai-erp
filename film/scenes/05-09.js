@@ -6,7 +6,7 @@
   window.SCENES["05"] = function (tl, b) {
     const s = "#s-05", t = (x) => b.start + x, q = Q("05"), HERO = window.HERO;
     const cards = ["orders", "invoices", "customers", "products", "leads", "tasks"];
-    tl.set([s + " .head > *", s + " .tcard", s + " .links path", s + " .idchip", s + " .note"], { opacity: 0 }, b.start);
+    tl.set([s + " .head > *", s + " .tcard", s + " .idchip", s + " .note"], { opacity: 0 }, b.start);
     tl.fromTo(s + " .head .kicker", { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, t(0.3));
     tl.fromTo(s + " .head .title", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" }, t(q("lands", 0.8)));
     // "Six tables": the grid tilts in as one plane, then each card lands on its name
@@ -24,8 +24,6 @@
     ["orders", "invoices", "customers", "tasks"].forEach((name, i) => {
       tl.fromTo(s + ` .tcard[data-t='${name}'] .rowflash`, { opacity: 0 }, { opacity: 1, duration: 0.12, yoyo: true, repeat: 1 }, t(q("relation", 10.2) + 0.3 + i * 0.35));
     });
-    tl.set(s + " .links path", { strokeDasharray: 1400, strokeDashoffset: 1400, opacity: 1 }, t(q("relation", 10.2)));
-    tl.to(s + " .links path", { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut", stagger: 0.25 }, t(q("relation", 10.2) + 0.4));
     tl.fromTo(s + " .idchip", { opacity: 0, scale: 0.5, y: 10 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: "back.out(2.5)", stagger: 0.25 }, t(q("relation", 10.2) + 0.9));
     // "boring on purpose"
     tl.fromTo(s + " .note", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, t(q("boring", 13.2)));
@@ -121,8 +119,8 @@
     tl.set(s + " .layer.l-video", { opacity: 0 }, t(q("stock", 12.0)) + 0.2);
     tl.set(s + " .redact", { opacity: 0 }, t(q("stock", 12.0)) + 0.2);
     tl.fromTo(s + " .device", { rotationY: -6, scale: 1.03 }, { rotationY: 6, scale: 1, duration: 1.0, ease: "power2.inOut" }, t(q("stock", 12.0)));
-    tl.fromTo(s + " .br.led", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("warning", 14.0)));
-    tl.to(s + " .br.led", { boxShadow: "0 0 60px rgba(240,180,41,.9)", duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut" }, t(q("warning", 14.0)) + 0.4);
+    tl.fromTo(s + " .br.stock", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("warning", 14.0)));
+    tl.to(s + " .br.stock", { boxShadow: "0 0 60px rgba(240,180,41,.9)", duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut" }, t(q("warning", 14.0)) + 0.4);
   };
 
   // ---- Beat 09: the morning brief writes itself, live feed, ⌘K ------------------
