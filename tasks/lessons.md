@@ -63,3 +63,11 @@
 - RAG beats the prompt when they disagree: the bot quoted 39 ₪/499 ₪ from stale course policy docs while its own prompt said 29/300. Fix the indexed source and reindex; a prompt patch alone loses.
 - Fixed strings the model must reproduce (greeting, safety line, hand-off sentence) go in the prompt as exact quoted text, once. Stating a sentence in two places made the model emit it twice.
 - A test agent that creates real records must delete them and prove counts returned to baseline.
+
+## 2026-09-04 — brand film (HyperFrames)
+- Snapshots are not proof for video: `hyperframes snapshot` shows video clips frozen. Verify from the rendered MP4 (`ffmpeg -ss T -frames:v 1`), one frame every 2 s over the whole film plus one frame at every bracket/tag/panel cue, at full resolution when the element is small.
+- Every "flow" line on an n8n capture must follow a real edge of the graph. Drawing a line between two nodes the narration mentions in sequence is wrong when they are not neighbours; use the node x-order from `film/data/nodes-*.json` and chain through the real path.
+- Any capture shown inside a partial window needs a framed device (border + radius). A raw crop reads as "the screen is cut".
+- Captions come from whisper timings but the TEXT must be reconciled with the script (dictionary of known misrecognitions, then a word diff that reports only numerals).
+- Narration facts must be checked against the real captures (weekday of the order, who sends the payload). Rewrite the line, re-record, resync — cheaper than a wrong claim in front of a grader.
+- Video clips used by HyperFrames must be intra-only (`-g 1`) or seeking freezes on the first frame; and confirm the composition actually references the re-encoded file (a failed sed left the old path once).
