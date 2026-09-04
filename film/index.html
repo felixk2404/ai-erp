@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="styles/10-architecture.css" />
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="233" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="236" data-width="1920" data-height="1080">
 
       <!-- Scenes. Scene 01 visible by default; the rest start hidden and are revealed by transitions. -->
       <div id="s-01" class="scene">
@@ -82,6 +82,21 @@
       </div>
 
       <div id="s-11" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 11</span><h1 class="title">end</h1></div></div>
+
+      <!-- audio: narration (track 10), music (11), sfx (12) -->
+      <audio id="vo-01" data-start="0.0" data-duration="11.94" data-track-index="10" src="audio/narration/beat-01.mp3" data-volume="1"></audio>
+      <audio id="vo-02" data-start="12.7" data-duration="5.20" data-track-index="10" src="audio/narration/beat-02.mp3" data-volume="1"></audio>
+      <audio id="vo-03" data-start="20.4" data-duration="15.98" data-track-index="10" src="audio/narration/beat-03.mp3" data-volume="1"></audio>
+      <audio id="vo-04" data-start="37.2" data-duration="40.73" data-track-index="10" src="audio/narration/beat-04.mp3" data-volume="1"></audio>
+      <audio id="vo-05" data-start="78.8" data-duration="19.97" data-track-index="10" src="audio/narration/beat-05.mp3" data-volume="1"></audio>
+      <audio id="vo-06" data-start="99.5" data-duration="24.43" data-track-index="10" src="audio/narration/beat-06.mp3" data-volume="1"></audio>
+      <audio id="vo-07" data-start="124.9" data-duration="16.16" data-track-index="10" src="audio/narration/beat-07.mp3" data-volume="1"></audio>
+      <audio id="vo-08" data-start="141.9" data-duration="51.08" data-track-index="10" src="audio/narration/beat-08.mp3" data-volume="1"></audio>
+      <audio id="vo-09" data-start="193.8" data-duration="12.03" data-track-index="10" src="audio/narration/beat-09.mp3" data-volume="1"></audio>
+      <audio id="vo-10" data-start="206.6" data-duration="15.88" data-track-index="10" src="audio/narration/beat-10.mp3" data-volume="1"></audio>
+      <audio id="vo-11" data-start="224.5" data-duration="7.66" data-track-index="10" src="audio/narration/beat-11.mp3" data-volume="1"></audio>
+      <audio id="music" data-start="0" data-duration="235.7" data-track-index="11" src="audio/music.mp3" data-volume="0.32"></audio>
+      <audio id="sfx-notify" data-start="1.5" data-duration="1.2" data-track-index="12" src="audio/sfx/notify.mp3" data-volume="0.9"></audio>
 
       <div id="captions"></div>
     </div>

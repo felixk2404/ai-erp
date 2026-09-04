@@ -1,0 +1,73 @@
+{
+  "voiceId": "bIHbv24MWmeRgasZH58o",
+  "voiceName": "Will - Relaxed Optimist",
+  "model": "eleven_multilingual_v2",
+  "beats": [
+    {
+      "beat": 1,
+      "file": "audio/narration/beat-01.mp3",
+      "duration": 11.94,
+      "text": "It's 9:14 on a Tuesday morning. A customer in Haifa just ordered a pair of headphones. Nobody on my team touched anything. Let me show you what happened in the four seconds before that message."
+    },
+    {
+      "beat": 2,
+      "file": "audio/narration/beat-02.mp3",
+      "duration": 5.2,
+      "text": "This is AI Electronics ERP. Here's how it works, behind the scenes."
+    },
+    {
+      "beat": 3,
+      "file": "audio/narration/beat-03.mp3",
+      "duration": 15.98,
+      "text": "It starts in the showroom. A storefront I built in Next.js: thirty-four products, live search, real stock. When the customer checks out, the browser does one thing. It sends a single JSON payload to a single endpoint."
+    },
+    {
+      "beat": 4,
+      "file": "audio/narration/beat-04.mp3",
+      "duration": 40.73,
+      "text": "That endpoint is an n8n workflow. Workflow thirteen is the front door. Every action from every app passes through it, authenticated by a shared secret and routed by name. \"Order\" hands off to workflow ten. It validates the cart, decrements stock, creates the customer if they're new, and writes the order and its invoice. Then it does something I care about: it opens a task. \"Ship this order to Haifa.\" The system knows what it can't do, and it puts that on a list for a human. Send the same checkout twice, and it returns the order it already created. No duplicates."
+    },
+    {
+      "beat": 5,
+      "file": "audio/narration/beat-05.mp3",
+      "duration": 19.97,
+      "text": "Everything lands in Airtable. Six tables. Orders, invoices, customers, products, leads, tasks. Every status is a plain word. Every relation is an ID. That's boring on purpose. Fifteen workflows read and write these tables all day, and none of them step on each other."
+    },
+    {
+      "beat": 6,
+      "file": "audio/narration/beat-06.mp3",
+      "duration": 24.43,
+      "text": "The new invoice row wakes up workflow one, which checks the numbers and confirms the eighteen percent VAT. Workflow eight then renders a Hebrew, right-to-left tax invoice as HTML, ships it to Gotenberg, and files the PDF in Google Drive. The customer gets an email with a tracking link, and the PDF shows up on their order page. I get a Telegram. That's the message you saw."
+    },
+    {
+      "beat": 7,
+      "file": "audio/narration/beat-07.mp3",
+      "duration": 16.16,
+      "text": "In the admin app, that order is already waiting for me. The dashboard flags anything unshipped for more than a day. I open the order, mark it shipped, and the task closes itself. Stock is live in the same place, with a warning light when a product runs low."
+    },
+    {
+      "beat": 8,
+      "file": "audio/narration/beat-08.mp3",
+      "duration": 51.08,
+      "text": "But the order was the easy part. Three AI agents work the same data. The support agent lives on Telegram and on the website. Customers can browse the catalog with buttons, tap \"interested\", leave a phone number, and a lead lands in Airtable with an alert to me. Or they can just talk to it. It's grounded in the full product catalog, embedded into Supabase's vector store, so it knows what's in stock and what it costs. Ask for a discount, and it politely refuses. Ask for a human, and it hands you off: a lead, a task, a message to me. The manager agent answers my questions: revenue this month, what's unpaid, what needs attention. And the sales agent drafts Hebrew outreach to new leads, sends it, and notices when they reply."
+    },
+    {
+      "beat": 9,
+      "file": "audio/narration/beat-09.mp3",
+      "duration": 12.03,
+      "text": "When I open the app in the morning, the brief is already writing itself. Live revenue, open invoices, a feed of every workflow run, and a chat with the manager agent one keystroke away."
+    },
+    {
+      "beat": 10,
+      "file": "audio/narration/beat-10.mp3",
+      "duration": 15.88,
+      "text": "Under the hood: fifteen n8n workflows. Six Airtable tables. Three agents, two Telegram bots, two Next.js apps on Vercel, a vector store, a PDF engine, and a test suite that runs before anything ships."
+    },
+    {
+      "beat": 11,
+      "file": "audio/narration/beat-11.mp3",
+      "duration": 7.66,
+      "text": "One order. Fifteen workflows. Zero manual steps that the system didn't ask for. Built by Felix Kreinovich."
+    }
+  ]
+}
