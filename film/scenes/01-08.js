@@ -74,7 +74,7 @@
     tl.fromTo(s + " .p-widget .br", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("refuses", 30.6)) + 0.5);
     // "Ask for a human, and it hands you off": WF5-handoff canvas
     hide(s + " .p-widget", t(q("humanAsk", 31.7)));
-    show(s + " .vp-h", t(q("humanAsk", 31.7)) + 0.45, { x: -120, rotationY: 20, transformPerspective: 2200 });
+    show(s + " .vp-h", t(q("humanAsk", 31.7)) + 0.2, { x: -120, rotationY: 20, transformPerspective: 2200 });
     C.camSpan(tl, ch, "When Executed by Another Workflow", "Create Lead", 1.2, b.start, 0);
     C.light(tl, ch, "When Executed by Another Workflow", t(q("humanAsk", 31.7)) + 0.5, "handoff tool", null, "right");
     C.flow(tl, ch, "When Executed by Another Workflow", "Has Contact?", t(q("humanAsk", 31.7)) + 0.9, 0.3);

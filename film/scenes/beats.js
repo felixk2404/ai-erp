@@ -11,7 +11,7 @@ window.BEATS = [
   { id: "08", name: "agents", dur: 51.9, narration: "audio/narration/beat-08.mp3" },
   { id: "09", name: "morning", dur: 12.8, narration: "audio/narration/beat-09.mp3" },
   { id: "10", name: "architecture", dur: 17.9, narration: "audio/narration/beat-10.mp3" },
-  { id: "11", name: "end", dur: 10.6, narration: "audio/narration/beat-11.mp3" },
+  { id: "11", name: "end", dur: 11.3, narration: "audio/narration/beat-11.mp3" },
 ];
 (function () {
   let t = 0;

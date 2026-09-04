@@ -1,97 +1,72 @@
 [
   {
     "text": "One",
-    "start": 0.03,
+    "start": 0.02,
     "end": 0.29
   },
   {
     "text": "order,",
     "start": 0.29,
-    "end": 0.89
+    "end": 1.04
   },
   {
     "text": "15",
-    "start": 0.96,
-    "end": 1.54
+    "start": 1.06,
+    "end": 1.69
   },
   {
     "text": "workflows.",
-    "start": 1.54,
-    "end": 2.46
+    "start": 1.69,
+    "end": 2.68
   },
   {
-    "text": "The",
-    "start": 2.49,
-    "end": 2.63
-  },
-  {
-    "text": "only",
-    "start": 2.63,
-    "end": 2.84
-  },
-  {
-    "text": "manual",
-    "start": 2.85,
-    "end": 2.96
+    "text": "Every",
+    "start": 2.7,
+    "end": 2.97
   },
   {
     "text": "step",
-    "start": 3.26,
-    "end": 3.45
+    "start": 3,
+    "end": 3.17
   },
   {
-    "text": "was",
-    "start": 3.46,
-    "end": 3.6
+    "text": "automated,",
+    "start": 3.73,
+    "end": 3.96
   },
   {
-    "text": "the",
-    "start": 3.6,
-    "end": 3.74
+    "text": "every",
+    "start": 3.96,
+    "end": 4.39
   },
   {
-    "text": "one",
-    "start": 3.74,
-    "end": 3.81
+    "text": "decision",
+    "start": 4.46,
+    "end": 4.89
   },
   {
-    "text": "the",
-    "start": 3.88,
-    "end": 4.05
+    "text": "visible.",
+    "start": 5.38,
+    "end": 5.82
   },
   {
-    "text": "system",
-    "start": 4.05,
-    "end": 4.27
-  },
-  {
-    "text": "asked",
-    "start": 4.95,
-    "end": 4.97
-  },
-  {
-    "text": "for,",
-    "start": 4.97,
-    "end": 5.34
-  },
-  {
-    "text": "built",
-    "start": 5.37,
-    "end": 5.63
+    "text": "Built",
+    "start": 5.84,
+    "end": 6.22
   },
   {
     "text": "by",
-    "start": 5.67,
-    "end": 5.74
+    "start": 6.22,
+    "end": 6.35
   },
   {
     "text": "Felix",
-    "start": 5.8,
-    "end": 6.13
+    "start": 6.35,
+    "end": 6.88
   },
   {
-    "text": "Kranovich.",
-    "start": 6.13,
-    "end": 6.95
+    "text": "Krinovich.",
+    "start": 6.88,
+    "end": 7.68
   }
 ]

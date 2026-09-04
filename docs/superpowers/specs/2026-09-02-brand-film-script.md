@@ -73,7 +73,7 @@ All numbers (order number, amount, city, test counts) are placeholders until cap
 
 **[10]** Under the hood: fifteen n8n workflows. Six Airtable tables. Three agents, two Telegram bots, two Next.js apps on Vercel, a vector store, a PDF engine, and a test suite that runs before anything ships.
 
-**[11]** One order. Fifteen workflows. The only manual step was the one the system asked for. Built by Felix Kreinovich.
+**[11]** One order. Fifteen workflows. Every step automated, every decision visible. Built by Felix Kreinovich.
 
 ## Changes from v1
 
