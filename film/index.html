@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
     <link rel="stylesheet" href="styles/base.css" />
     <link rel="stylesheet" href="styles/10-architecture.css" />
+    <link rel="stylesheet" href="styles/02-03-11.css" />
   </head>
   <body>
     <div id="root" data-composition-id="main" data-start="0" data-duration="236" data-width="1920" data-height="1080">
@@ -15,8 +16,34 @@
       <div id="s-01" class="scene">
         <div class="placeholder"><span class="kicker">beat 01</span><h1 class="title">cold open</h1></div>
       </div>
-      <div id="s-02" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 02</span><h1 class="title">logo</h1></div></div>
-      <div id="s-03" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 03</span><h1 class="title">storefront</h1></div></div>
+      <div id="s-02" class="scene" data-hidden>
+        <div class="ring-lite"></div>
+        <div class="bloom"></div>
+        <div class="shards"><div class="shard" style="background-image: url(assets/logo-mark.png)"></div><div class="shard" style="background-image: url(assets/logo-mark.png)"></div><div class="shard" style="background-image: url(assets/logo-mark.png)"></div><div class="shard" style="background-image: url(assets/logo-mark.png)"></div></div>
+        <h1 class="title wordmark">AI ELECTRONICS ERP</h1>
+        <div class="kicker kicker2">behind the scenes</div>
+      </div>
+      <div id="s-03" class="scene" data-hidden>
+        <div class="floor"></div>
+        <div class="stage">
+          <div class="device">
+            <div class="layer l-product"><img src="captures/store-product.png" alt="" /></div>
+            <div class="layer l-cart"><video class="clip" id="v-cart" data-start="28.4" data-duration="2.2" data-media-start="2.6" data-track-index="3" src="captures/store-cart.mp4" muted playsinline></video></div>
+            <div class="layer l-checkout"><img src="captures/store-checkout-empty.png" alt="" /></div>
+          </div>
+        </div>
+        <div class="bracket" style="left: 470px; top: 300px"></div>
+        <div class="payload"><div class="hdr">POST /webhook/erp · x-erp-secret</div>{
+  <span class="k">"action"</span>: "order",
+  <span class="k">"city"</span>: "חיפה",
+  <span class="k">"items"</span>: [{ "sku": "TY-HP-200", "qty": 1 }]
+}</div>
+        <div class="col">
+          <span class="kicker">the showroom · next.js on vercel</span>
+          <h1 class="title big"><span class="mono">34</span> products.<br />One endpoint.</h1>
+          <div class="tags"><span class="tag">live search</span><span class="tag">real stock</span><span class="tag">no accounts</span></div>
+        </div>
+      </div>
       <div id="s-04" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 04</span><h1 class="title">n8n · the order</h1></div></div>
       <div id="s-05" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 05</span><h1 class="title">airtable</h1></div></div>
       <div id="s-06" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 06</span><h1 class="title">invoice</h1></div></div>
@@ -81,7 +108,12 @@
         <div class="node card svc" data-node="openai" style="left: 1510px; top: 820px"><div class="label">OpenAI</div><div class="sub">LLM · vectors</div></div>
       </div>
 
-      <div id="s-11" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 11</span><h1 class="title">end</h1></div></div>
+      <div id="s-11" class="scene" data-hidden>
+        <img class="lockup" src="assets/logo-mark.png" alt="" />
+        <div class="title built">Built by Felix Kreinovich</div>
+        <div class="links mono"><span>ai-electronics-one.vercel.app</span><span>ai-erp-rho.vercel.app</span><span>github.com/felixk2404</span></div>
+        <div class="fade"></div>
+      </div>
 
       <!-- audio: narration (track 10), music (11), sfx (12) -->
       <audio id="vo-01" data-start="0.0" data-duration="11.94" data-track-index="10" src="audio/narration/beat-01.mp3" data-volume="1"></audio>
@@ -103,6 +135,7 @@
 
     <script src="scenes/beats.js"></script>
     <script src="scenes/10-architecture.js"></script>
+    <script src="scenes/02-03-11.js"></script>
     <script>
       window.__timelines = window.__timelines || {};
       gsap.registerPlugin(MotionPathPlugin);
