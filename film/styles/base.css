@@ -1,0 +1,89 @@
+/* AI Electronics ERP film — shared styles. Tokens from design.md. */
+:root {
+  --void: #0d1017;
+  --chassis: #161a23;
+  --chassis-2: #1e2330;
+  --chassis-3: #252b3a;
+  --readout: #f3f5f9;
+  --readout-2: #bcc4d1;
+  --readout-3: #94a0b2;
+  --signal: #5ad1ff;
+  --signal-hover: #8ee0ff;
+  --signal-glow: rgba(90, 209, 255, 0.45);
+  --signal-soft: rgba(90, 209, 255, 0.12);
+  --amber: #f0b429;
+  --green: #34d17a;
+  --red: #ff5a5f;
+  --rule: rgba(255, 255, 255, 0.1);
+  --rule-strong: rgba(255, 255, 255, 0.2);
+  --font-title: "Heebo", "IBM Plex Sans", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 1920px; height: 1080px; overflow: hidden;
+  background: var(--void); color: var(--readout);
+  font-family: var(--font-body);
+}
+.scene {
+  position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden;
+  background: var(--void);
+}
+.scene[data-hidden] { opacity: 0; }
+/* background texture: radial glow + faint grid, every scene */
+.scene::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(900px 600px at 70% 30%, rgba(90, 209, 255, 0.14), transparent 70%),
+    radial-gradient(700px 500px at 15% 85%, rgba(90, 209, 255, 0.08), transparent 70%);
+}
+.scene::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.16;
+  background-image:
+    linear-gradient(var(--rule) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 96px 96px;
+}
+.scene > * { position: absolute; z-index: 1; }
+
+.kicker { font-family: var(--font-mono); font-size: 24px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--signal); }
+.title { font-family: var(--font-title); font-weight: 800; letter-spacing: -0.02em; line-height: 1; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+.card {
+  background: var(--chassis); border: 2px solid var(--rule-strong); border-radius: 20px;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.4), inset 0 0 40px rgba(90,209,255,.06);
+}
+.card.lit { border-color: var(--signal); box-shadow: 0 0 48px var(--signal-glow), inset 0 0 40px rgba(90,209,255,.10); }
+.card .label { font-family: var(--font-body); font-weight: 600; font-size: 30px; color: var(--readout); }
+.card .sub { font-family: var(--font-mono); font-size: 22px; color: var(--readout-3); margin-top: 6px; }
+
+.tag {
+  display: inline-block; font-family: var(--font-mono); font-size: 26px; font-weight: 500;
+  color: var(--signal); background: var(--chassis-3); border: 2px solid var(--signal);
+  border-radius: 10px; padding: 8px 16px; box-shadow: 0 0 24px var(--signal-glow); white-space: nowrap;
+}
+.tag.amber { color: var(--amber); border-color: var(--amber); box-shadow: 0 0 24px rgba(240,180,41,.45); }
+
+.led { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); }
+.led.amber { background: var(--amber); box-shadow: 0 0 12px var(--amber); }
+.led.cyan { background: var(--signal); box-shadow: 0 0 12px var(--signal); }
+
+/* device frame for real captures */
+.device {
+  background: var(--chassis); border: 3px solid var(--rule-strong); border-radius: 24px; overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(90,209,255,.15), inset 0 0 60px rgba(90,209,255,.05);
+}
+.device > img, .device > video { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+
+/* caption bar: bottom 160px reserved */
+#captions {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 160px; z-index: 50;
+  display: flex; align-items: center; justify-content: center; padding: 0 200px; pointer-events: none;
+}
+#captions .line {
+  font-family: var(--font-body); font-weight: 500; font-size: 36px; line-height: 1.3; text-align: center;
+  color: var(--readout); background: rgba(13, 16, 23, 0.82); padding: 10px 28px; border-radius: 12px;
+  max-width: 1500px;
+}

@@ -1,0 +1,30 @@
+/* Beat 10 — architecture diagram */
+.placeholder { left: 160px; top: 420px; display: flex; flex-direction: column; gap: 20px; }
+.placeholder .title { font-size: 120px; color: var(--readout); }
+
+#s-10 .arch-left { left: 80px; top: 110px; width: 400px; display: flex; flex-direction: column; gap: 22px; }
+#s-10 .arch-title { font-size: 72px; color: var(--readout); }
+#s-10 .counters { list-style: none; margin-top: 18px; display: flex; flex-direction: column; gap: 14px; border-left: 3px solid var(--rule-strong); padding-left: 24px; }
+#s-10 .counters li { display: flex; align-items: baseline; gap: 16px; }
+#s-10 .counters .num { font-size: 52px; font-weight: 500; color: var(--signal); min-width: 96px; text-shadow: 0 0 18px var(--signal-glow); }
+#s-10 .counters .lbl { font-size: 26px; color: var(--readout-2); }
+
+#s-10 .arch-edges { left: 0; top: 0; z-index: 0; }
+#s-10 #ring { stroke: var(--chassis-3); stroke-width: 10; fill: none; }
+#s-10 .edge { stroke: var(--signal); stroke-width: 5; stroke-linecap: round; filter: drop-shadow(0 0 10px var(--signal-glow)); }
+#s-10 .packet { fill: var(--signal); filter: drop-shadow(0 0 12px var(--signal)); }
+
+#s-10 .ring-label { left: 850px; top: 262px; font-size: 26px; color: var(--signal); display: flex; align-items: center; gap: 12px; background: var(--void); padding: 6px 14px; border-radius: 10px; }
+#s-10 .node-dots { left: 0; top: 0; }
+#s-10 .node-dots .dot { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 14px var(--signal); transform: translate(-50%, -50%); }
+
+#s-10 .airtable { left: 900px; top: 380px; width: 560px; height: 310px; padding: 28px 32px; }
+#s-10 .airtable .label { font-size: 40px; }
+#s-10 .airtable .chips { margin-top: 26px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+#s-10 .chip { font-size: 24px; color: var(--readout); background: var(--chassis-2); border: 2px solid var(--rule-strong); border-radius: 12px; padding: 12px 10px; text-align: center; }
+#s-10 .chip.amber { color: var(--amber); border-color: var(--amber); }
+
+#s-10 .iface { width: 280px; height: 130px; padding: 22px 26px; }
+#s-10 .svc { width: 200px; height: 80px; padding: 12px 18px; }
+#s-10 .svc .label { font-size: 24px; }
+#s-10 .svc .sub { font-size: 18px; margin-top: 2px; }

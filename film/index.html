@@ -4,55 +4,114 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        width: 1920px;
-        height: 1080px;
-        overflow: hidden;
-        background: #000;
-      }
-      body {
-        font-family: "Inter", sans-serif;
-      }
-      code,
-      pre,
-      .monospace {
-        font-family: "JetBrains Mono", monospace;
-      }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/10-architecture.css" />
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="main"
-      data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
-    >
-      
-      
+    <div id="root" data-composition-id="main" data-start="0" data-duration="233" data-width="1920" data-height="1080">
 
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
+      <!-- Scenes. Scene 01 visible by default; the rest start hidden and are revealed by transitions. -->
+      <div id="s-01" class="scene">
+        <div class="placeholder"><span class="kicker">beat 01</span><h1 class="title">cold open</h1></div>
+      </div>
+      <div id="s-02" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 02</span><h1 class="title">logo</h1></div></div>
+      <div id="s-03" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 03</span><h1 class="title">storefront</h1></div></div>
+      <div id="s-04" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 04</span><h1 class="title">n8n · the order</h1></div></div>
+      <div id="s-05" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 05</span><h1 class="title">airtable</h1></div></div>
+      <div id="s-06" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 06</span><h1 class="title">invoice</h1></div></div>
+      <div id="s-07" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 07</span><h1 class="title">admin · orders</h1></div></div>
+      <div id="s-08" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 08</span><h1 class="title">three agents</h1></div></div>
+      <div id="s-09" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 09</span><h1 class="title">morning</h1></div></div>
+
+      <!-- Beat 10: architecture -->
+      <div id="s-10" class="scene" data-hidden>
+        <div class="arch-left">
+          <span class="kicker">under the hood</span>
+          <h1 class="title arch-title">One order.<br />Every layer.</h1>
+          <ul class="counters">
+            <li data-counter="workflows"><span class="mono num">0</span><span class="lbl">n8n workflows</span></li>
+            <li data-counter="tables"><span class="mono num">0</span><span class="lbl">Airtable tables</span></li>
+            <li data-counter="agents"><span class="mono num">0</span><span class="lbl">AI agents</span></li>
+            <li data-counter="bots"><span class="mono num">0</span><span class="lbl">Telegram bots</span></li>
+            <li data-counter="apps"><span class="mono num">0</span><span class="lbl">Next.js apps</span></li>
+            <li data-counter="tests"><span class="mono num">0</span><span class="lbl">tests before ship</span></li>
+          </ul>
         </div>
-      -->
+
+        <svg class="arch-edges" data-layout-allow-overflow width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" aria-hidden="true">
+          <!-- ring around Airtable -->
+          <path id="ring" d="M 880 300 H 1480 A 60 60 0 0 1 1540 360 V 710 A 60 60 0 0 1 1480 770 H 880 A 60 60 0 0 1 820 710 V 360 A 60 60 0 0 1 880 300 Z" />
+          <!-- interface → ring -->
+          <path class="edge" data-edge="store" d="M 700 250 C 700 300, 760 300, 820 330" />
+          <path class="edge" data-edge="admin" d="M 1000 250 C 1000 280, 1000 280, 1000 300" />
+          <path class="edge" data-edge="bot-support" d="M 1600 440 C 1570 440, 1560 440, 1540 440" />
+          <path class="edge" data-edge="bot-manager" d="M 1600 620 C 1570 620, 1560 620, 1540 620" />
+          <!-- services → ring -->
+          <path class="edge" data-edge="supabase" d="M 700 820 C 700 790, 760 780, 820 740" />
+          <path class="edge" data-edge="gotenberg" d="M 960 820 C 960 800, 960 790, 960 770" />
+          <path class="edge" data-edge="drive" d="M 1180 820 C 1180 800, 1180 790, 1180 770" />
+          <path class="edge" data-edge="gmail" d="M 1400 820 C 1400 800, 1400 790, 1400 770" />
+          <path class="edge" data-edge="openai" d="M 1620 820 C 1620 790, 1580 780, 1540 740" />
+          <!-- packets travel the ring -->
+          <circle class="packet" r="9" /><circle class="packet" r="9" /><circle class="packet" r="9" /><circle class="packet" r="9" />
+        </svg>
+
+        <div class="node ring-label mono" data-node="n8n"><span class="led cyan"></span> n8n · 15 workflows</div>
+        <div class="node-dots" data-node="n8n-dots"></div>
+
+        <div class="node card airtable" data-node="airtable">
+          <div class="label">Airtable</div>
+          <div class="sub">source of truth · 6 tables</div>
+          <div class="chips">
+            <span class="chip mono">Orders</span><span class="chip mono">Invoices</span><span class="chip mono">Customers</span>
+            <span class="chip mono">Products</span><span class="chip mono">Leads</span><span class="chip mono amber">Tasks</span>
+          </div>
+        </div>
+
+        <div class="node card iface" data-node="store" style="left: 560px; top: 120px"><div class="label">Storefront</div><div class="sub">Next.js · Vercel</div></div>
+        <div class="node card iface" data-node="admin" style="left: 860px; top: 120px"><div class="label">Admin app</div><div class="sub">Next.js · Vercel</div></div>
+        <div class="node card iface" data-node="bot-support" style="left: 1600px; top: 380px"><div class="label">Support bot</div><div class="sub">Telegram · RAG</div></div>
+        <div class="node card iface" data-node="bot-manager" style="left: 1600px; top: 560px"><div class="label">Manager bot</div><div class="sub">Telegram · owner</div></div>
+
+        <div class="node card svc" data-node="supabase" style="left: 590px; top: 820px"><div class="label">Supabase</div><div class="sub">pgvector</div></div>
+        <div class="node card svc" data-node="gotenberg" style="left: 850px; top: 820px"><div class="label">Gotenberg</div><div class="sub">HTML → PDF</div></div>
+        <div class="node card svc" data-node="drive" style="left: 1070px; top: 820px"><div class="label">Google Drive</div><div class="sub">invoice files</div></div>
+        <div class="node card svc" data-node="gmail" style="left: 1290px; top: 820px"><div class="label">Gmail</div><div class="sub">email out</div></div>
+        <div class="node card svc" data-node="openai" style="left: 1510px; top: 820px"><div class="label">OpenAI</div><div class="sub">LLM · vectors</div></div>
+      </div>
+
+      <div id="s-11" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 11</span><h1 class="title">end</h1></div></div>
+
+      <div id="captions"></div>
     </div>
 
+    <script src="scenes/beats.js"></script>
+    <script src="scenes/10-architecture.js"></script>
     <script>
       window.__timelines = window.__timelines || {};
+      gsap.registerPlugin(MotionPathPlugin);
       const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
+
+      // Placeholder scenes: title pops so the timeline is never empty. Replaced beat by beat.
+      for (const b of window.BEATS) {
+        const scene = document.getElementById("s-" + b.id);
+        const ph = scene.querySelector(".placeholder");
+        if (ph) {
+          tl.fromTo(ph.querySelector(".kicker"), { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "expo.out" }, b.start + 0.2);
+          tl.fromTo(ph.querySelector(".title"), { opacity: 0, scale: 0.85 }, { opacity: 1, scale: 1, duration: 0.7, ease: "back.out(1.8)" }, b.start + 0.35);
+        }
+        if (window.SCENES[b.id]) window.SCENES[b.id](tl, b);
+      }
+
+      // Transitions between scenes (placeholder set: blur crossfade). Final mapping lives in plan Task 10.
+      for (let i = 1; i < window.BEATS.length; i++) {
+        const prev = "#s-" + window.BEATS[i - 1].id, next = "#s-" + window.BEATS[i].id, T = window.BEATS[i].start - 0.4;
+        tl.to(prev, { filter: "blur(10px)", scale: 1.03, opacity: 0, duration: 0.5, ease: "power2.inOut" }, T);
+        tl.fromTo(next, { filter: "blur(10px)", scale: 0.97, opacity: 0 }, { filter: "blur(0px)", scale: 1, opacity: 1, duration: 0.5, ease: "power2.inOut" }, T + 0.1);
+        tl.set(prev, { visibility: "hidden" }, T + 0.6);
+      }
+
       window.__timelines["main"] = tl;
     </script>
   </body>
