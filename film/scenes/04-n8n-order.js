@@ -26,7 +26,7 @@ window.SCENES["04"] = function (tl, b) {
   // "Workflow thirteen is the front door" ≈ 2.5 → Route lights, camera widens over all branches
   C.flow(tl, c13, "Webhook", "Route", t(q("route", 2.6)), 0.5);
   C.dim(tl, c13, "Webhook", t(q("route", 2.6) + 0.3));
-  C.light(tl, c13, "Route", t(q("route", 2.6) + 0.4), "front door · x-erp-secret");
+  C.light(tl, c13, "Route", t(q("route", 2.6) + 0.4), "front door · x-erp-secret", null, "right");
   C.cam(tl, c13, [3459, 148, 900, 840], 1.15, t(q("everyAction", 5.2)), 1.6, "power2.inOut");
   // "routed by name": the five branches fan out
   const branches = [["Support Input", "support"], ["Update Record", "update"], ["Payload", "create"], ["Chat Input", "chat"], ["Order Input", "order"], ["Find Order", "order_status"]];

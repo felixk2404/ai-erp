@@ -50,7 +50,7 @@
     C.cam(tl, c1, "Compute", 1.5, t(q("vat", 4.6) - 0.6, ), 0.9, "power2.inOut");
     C.light(tl, c1, "Compute", t(q("vat", 4.6)), "VAT 18% · 295.76 + 53.24 = 349.00");
     C.flow(tl, c1, "Compute", "Mark Validated", t(q("vat", 4.6) + 0.8), 0.3);
-    C.light(tl, c1, "Mark Validated", t(q("vat", 4.6) + 1.1), "status → validated");
+    C.light(tl, c1, "Mark Validated", t(q("vat", 4.6) + 1.1), "status → validated", null, "right");
     // "Workflow eight then renders" → zoom-through to WF8
     const T8 = t(q("wf8", 6.9));
     tl.to(s + " .vp-1", { scale: 2.2, opacity: 0, filter: "blur(10px)", duration: 0.45, ease: "power3.in" }, T8);
@@ -58,7 +58,7 @@
     tl.to(s + " .wfname .t1", { opacity: 0, y: -16, duration: 0.3 }, T8);
     tl.fromTo(s + " .wfname .t8", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, T8 + 0.4);
     C.cam(tl, c8, "Claim Invoice", 1.45, b.start, 0);
-    C.light(tl, c8, "Validated Invoices", T8 + 0.6, "validated → claim");
+    C.light(tl, c8, "Validated Invoices", T8 + 0.6, "validated → claim", null, "right");
     C.flow(tl, c8, "Validated Invoices", "Claim Invoice", T8 + 0.9, 0.3);
     C.flow(tl, c8, "Claim Invoice", "Customer", T8 + 1.2, 0.3);
     C.flow(tl, c8, "Customer", "Build HTML", T8 + 1.5, 0.3);
@@ -73,7 +73,7 @@
     C.light(tl, c8, "Upload to Drive", t(q("drive", 14.7)), "Google Drive");
     C.flow(tl, c8, "Upload to Drive", "Mark Generated", t(q("drive", 14.7)) + 0.5, 0.25);
     C.flow(tl, c8, "Mark Generated", "Share Public", t(q("drive", 14.7)) + 0.8, 0.25);
-    C.light(tl, c8, "Share Public", t(q("drive", 14.7)) + 1.0, "public link");
+    C.light(tl, c8, "Share Public", t(q("drive", 14.7)) + 1.0, "public link", null, "right");
     // "The customer gets an email with a tracking link" → the document folds out, tracking page, phone
     const TD = t(q("email", 16.8));
     tl.to(s + " .vp-8", { opacity: 0.18, filter: "blur(6px)", scale: 1.04, duration: 0.6, ease: "power2.inOut" }, TD);
@@ -107,6 +107,7 @@
     const TV = t(q("open", 7.5));
     tl.to(s + " .br.attn", { opacity: 0, duration: 0.3 }, TV);
     tl.set(s + " .layer.l-video", { opacity: 1 }, TV);
+    tl.set(s + " .redact", { opacity: 1 }, TV);
     tl.set(s + " .layer.l-attn", { opacity: 0 }, TV);
     tl.fromTo(s + " .device", { rotationY: 4 }, { rotationY: -6, scale: 1.03, duration: 1.2, ease: "power2.inOut" }, TV);
     tl.fromTo(s + " .br.status", { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.4, ease: "power4.out" }, t(q("shipped", 9.0)));
@@ -118,6 +119,7 @@
     tl.to(s + " .side.tasks", { opacity: 0, x: -200, duration: 0.4, ease: "power2.in" }, t(q("stock", 12.0)));
     tl.set(s + " .layer.l-stock", { opacity: 1 }, t(q("stock", 12.0)) + 0.2);
     tl.set(s + " .layer.l-video", { opacity: 0 }, t(q("stock", 12.0)) + 0.2);
+    tl.set(s + " .redact", { opacity: 0 }, t(q("stock", 12.0)) + 0.2);
     tl.fromTo(s + " .device", { rotationY: -6, scale: 1.03 }, { rotationY: 6, scale: 1, duration: 1.0, ease: "power2.inOut" }, t(q("stock", 12.0)));
     tl.fromTo(s + " .br.led", { opacity: 0, scale: 2 }, { opacity: 1, scale: 1, duration: 0.45, ease: "power4.out" }, t(q("warning", 14.0)));
     tl.to(s + " .br.led", { boxShadow: "0 0 60px rgba(240,180,41,.9)", duration: 0.45, yoyo: true, repeat: 3, ease: "sine.inOut" }, t(q("warning", 14.0)) + 0.4);

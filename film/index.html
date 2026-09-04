@@ -10,13 +10,23 @@
     <link rel="stylesheet" href="styles/02-03-11.css" />
     <link rel="stylesheet" href="styles/canvas.css" />
     <link rel="stylesheet" href="styles/05-09.css" />
+    <link rel="stylesheet" href="styles/01-08.css" />
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-duration="236" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="234.5" data-width="1920" data-height="1080">
 
       <!-- Scenes. Scene 01 visible by default; the rest start hidden and are revealed by transitions. -->
       <div id="s-01" class="scene">
-        <div class="placeholder"><span class="kicker">beat 01</span><h1 class="title">cold open</h1></div>
+        <div class="glow1"></div>
+        <div class="readouts">
+          <div class="r1">THU · 04 SEP 2026 · 12:21</div>
+          <div class="r2">One order.</div>
+          <div class="r3">ORD-0009 · ₪349 · חיפה</div>
+          <div class="r4">nobody touched anything</div>
+          <div class="r5"><span class="num">12</span><span>seconds, behind the scenes</span></div>
+        </div>
+        <div class="phone1"><div class="pending">telegram capture pending</div></div>
+        <div class="flash"></div>
       </div>
       <div id="s-02" class="scene" data-hidden>
         <div class="ring-lite"></div>
@@ -30,7 +40,7 @@
         <div class="stage">
           <div class="device">
             <div class="layer l-product"><img src="captures/store-product.png" alt="" /></div>
-            <div class="layer l-cart"><video class="clip" id="v-cart" data-start="28.4" data-duration="2.2" data-media-start="2.6" data-track-index="3" src="captures/store-cart.mp4" muted playsinline></video></div>
+            <div class="layer l-cart"><video class="clip" id="v-cart" data-beat="03" data-cue-offset="8.0" data-start="27.28" data-duration="2.2" data-media-start="2.6" data-track-index="3" src="captures/store-cart.mp4" muted playsinline></video></div>
             <div class="layer l-checkout"><img src="captures/store-checkout-filled.png" alt="" /></div>
           </div>
         </div>
@@ -90,20 +100,38 @@
       <div id="s-07" class="scene" data-hidden>
         <div class="stage"><div class="device">
           <div class="layer l-attn"><img src="captures/admin-attention.png" alt="" /></div>
-          <div class="layer l-video"><video class="clip" id="v-order" data-start="132.4" data-duration="8.9" data-media-start="4.5" data-track-index="3" src="captures/admin-order-detail.mp4" muted playsinline></video></div>
+          <div class="layer l-video"><video class="clip" id="v-order" data-beat="07" data-cue="open" data-start="131.34" data-duration="8.9" data-media-start="4.5" data-track-index="3" src="captures/admin-order-detail.mp4" muted playsinline></video></div>
           <div class="layer l-stock"><img src="captures/admin-products-stock.png" alt="" /></div>
           <div class="br brief" style="left: 1080px; top: 385px; width: 470px; height: 44px"></div>
           <div class="br attn amber" style="left: 725px; top: 210px; width: 360px; height: 330px"></div>
-          <div class="br status" style="left: 1320px; top: 463px; width: 200px; height: 66px"></div>
+          <div class="br status" style="left: 596px; top: 468px; width: 190px; height: 62px"></div><div class="redact"></div>
           <div class="br led amber" style="left: 1280px; top: 300px; width: 420px; height: 60px"></div>
         </div></div>
         <div class="side tasks device"><img src="captures/admin-tasks-after.png" alt="" /><span class="tag">task closed · ORD-0009</span><div class="br" style="left: 460px; top: 128px; width: 290px; height: 34px"></div></div>
       </div>
-      <div id="s-08" class="scene" data-hidden><div class="placeholder"><span class="kicker">beat 08</span><h1 class="title">three agents</h1></div></div>
+      <div id="s-08" class="scene" data-hidden>
+        <div class="rail">
+          <span class="kicker">three agents · same data</span>
+          <h1 class="title">The order was the easy part.</h1>
+          <div class="agent" data-a="support"><span class="led"></span><span class="name">Support agent</span><span class="sub">WF5 · RAG</span></div>
+          <div class="agent" data-a="manager"><span class="led"></span><span class="name">Manager agent</span><span class="sub">WF9</span></div>
+          <div class="agent" data-a="sales"><span class="led"></span><span class="name">Sales agent</span><span class="sub">WF3 · WF4</span></div>
+        </div>
+        <div class="counter"><span class="num">0</span><span class="lbl">products in the vector store</span></div>
+        <div class="viewport vp-5"><div class="pan pan-5" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="viewport vp-h"><div class="pan pan-h" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="viewport vp-3"><div class="pan pan-3" data-w="7600" data-h="1100"></div><div class="veil"></div></div>
+        <div class="panel phone8 p-menu"><div class="pending">telegram capture pending · catalog menu</div></div>
+        <div class="panel phone8 p-handoff"><div class="pending">telegram capture pending · handoff</div></div>
+        <div class="panel device p-widget"><video class="clip" id="v-widget" data-beat="08" data-cue="talk" data-start="159.26" data-duration="13.2" data-media-start="2.0" data-track-index="3" src="captures/support-widget.mp4" muted playsinline></video><div class="br" style="left: 200px; top: 620px; width: 190px; height: 44px"></div></div>
+        <div class="panel device p-supabase"><img src="captures/supabase-embeddings.png" alt="" /><span class="tag">Supabase · pgvector · documents</span></div>
+        <div class="panel device p-cmdk"><video class="clip" id="v-cmdk8" data-beat="08" data-cue="manager" data-start="179.12" data-duration="7.0" data-media-start="8.0" data-track-index="4" src="captures/admin-cmdk.mp4" muted playsinline></video><div class="tags"><span class="tag">revenue this month</span><span class="tag">what's unpaid</span><span class="tag">what needs attention</span></div></div>
+        <div class="panel device p-gmail"><div class="pending">gmail capture pending · outreach email</div></div>
+      </div>
       <div id="s-09" class="scene" data-hidden>
         <div class="stage"><div class="device">
-          <div class="layer l-dash"><video class="clip" id="v-dash" data-start="193.8" data-duration="9.4" data-media-start="6.0" data-track-index="3" src="captures/admin-dashboard.mp4" muted playsinline></video></div>
-          <div class="layer l-cmdk" style="opacity: 0"><video class="clip" id="v-cmdk" data-start="202.7" data-duration="3.9" data-media-start="9.5" data-track-index="4" src="captures/admin-cmdk.mp4" muted playsinline></video></div>
+          <div class="layer l-dash"><video class="clip" id="v-dash" data-beat="09" data-cue-offset="0" data-start="192.62" data-duration="9.4" data-media-start="6.0" data-track-index="3" src="captures/admin-dashboard.mp4" muted playsinline></video></div>
+          <div class="layer l-cmdk" style="opacity: 0"><video class="clip" id="v-cmdk" data-beat="09" data-cue="chat" data-start="201.56" data-duration="3.9" data-media-start="9.5" data-track-index="4" src="captures/admin-cmdk.mp4" muted playsinline></video></div>
         </div></div>
         <div class="feed device"><img src="captures/admin-attention.png" alt="" /></div>
         <div class="head"><span class="kicker">every morning</span><span class="tag">live revenue</span><span class="tag">open invoices</span><span class="tag">n8n feed</span><span class="tag">⌘K · ask the manager</span></div>
@@ -174,18 +202,18 @@
       </div>
 
       <!-- audio: narration (track 10), music (11), sfx (12) -->
-      <audio id="vo-01" data-start="0.0" data-duration="11.94" data-track-index="10" src="audio/narration/beat-01.mp3" data-volume="1"></audio>
-      <audio id="vo-02" data-start="12.7" data-duration="5.20" data-track-index="10" src="audio/narration/beat-02.mp3" data-volume="1"></audio>
-      <audio id="vo-03" data-start="20.4" data-duration="15.98" data-track-index="10" src="audio/narration/beat-03.mp3" data-volume="1"></audio>
-      <audio id="vo-04" data-start="37.2" data-duration="40.73" data-track-index="10" src="audio/narration/beat-04.mp3" data-volume="1"></audio>
-      <audio id="vo-05" data-start="78.8" data-duration="19.97" data-track-index="10" src="audio/narration/beat-05.mp3" data-volume="1"></audio>
-      <audio id="vo-06" data-start="99.5" data-duration="24.43" data-track-index="10" src="audio/narration/beat-06.mp3" data-volume="1"></audio>
-      <audio id="vo-07" data-start="124.9" data-duration="16.16" data-track-index="10" src="audio/narration/beat-07.mp3" data-volume="1"></audio>
-      <audio id="vo-08" data-start="141.9" data-duration="51.08" data-track-index="10" src="audio/narration/beat-08.mp3" data-volume="1"></audio>
-      <audio id="vo-09" data-start="193.8" data-duration="12.03" data-track-index="10" src="audio/narration/beat-09.mp3" data-volume="1"></audio>
-      <audio id="vo-10" data-start="206.6" data-duration="15.88" data-track-index="10" src="audio/narration/beat-10.mp3" data-volume="1"></audio>
-      <audio id="vo-11" data-start="224.5" data-duration="7.66" data-track-index="10" src="audio/narration/beat-11.mp3" data-volume="1"></audio>
-      <audio id="music" data-start="0" data-duration="235.7" data-track-index="11" src="audio/music.mp3" data-volume="0.32"></audio>
+      <audio id="vo-01" data-start="0.0" data-duration="10.77" data-track-index="10" src="audio/narration/beat-01.mp3" data-volume="1"></audio>
+      <audio id="vo-02" data-start="11.57" data-duration="5.2" data-track-index="10" src="audio/narration/beat-02.mp3" data-volume="1"></audio>
+      <audio id="vo-03" data-start="19.28" data-duration="15.98" data-track-index="10" src="audio/narration/beat-03.mp3" data-volume="1"></audio>
+      <audio id="vo-04" data-start="36.05" data-duration="40.73" data-track-index="10" src="audio/narration/beat-04.mp3" data-volume="1"></audio>
+      <audio id="vo-05" data-start="77.58" data-duration="19.97" data-track-index="10" src="audio/narration/beat-05.mp3" data-volume="1"></audio>
+      <audio id="vo-06" data-start="98.35" data-duration="24.43" data-track-index="10" src="audio/narration/beat-06.mp3" data-volume="1"></audio>
+      <audio id="vo-07" data-start="123.78" data-duration="16.16" data-track-index="10" src="audio/narration/beat-07.mp3" data-volume="1"></audio>
+      <audio id="vo-08" data-start="140.74" data-duration="51.08" data-track-index="10" src="audio/narration/beat-08.mp3" data-volume="1"></audio>
+      <audio id="vo-09" data-start="192.62" data-duration="12.03" data-track-index="10" src="audio/narration/beat-09.mp3" data-volume="1"></audio>
+      <audio id="vo-10" data-start="205.45" data-duration="15.88" data-track-index="10" src="audio/narration/beat-10.mp3" data-volume="1"></audio>
+      <audio id="vo-11" data-start="223.33" data-duration="7.66" data-track-index="10" src="audio/narration/beat-11.mp3" data-volume="1"></audio>
+      <audio id="music" data-start="0" data-duration="234.5" data-track-index="11" src="audio/music.mp3" data-volume="0.32"></audio>
       <audio id="sfx-notify" data-start="1.5" data-duration="1.2" data-track-index="12" src="audio/sfx/notify.mp3" data-volume="0.9"></audio>
 
       <div id="captions"></div>
@@ -199,6 +227,7 @@
     <script src="scenes/02-03-11.js"></script>
     <script src="scenes/04-n8n-order.js"></script>
     <script src="scenes/05-09.js"></script>
+    <script src="scenes/01-08.js"></script>
     <script>
       window.__timelines = window.__timelines || {};
       gsap.registerPlugin(MotionPathPlugin);

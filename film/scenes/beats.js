@@ -1,7 +1,7 @@
 // Beat table. dur = measured narration length (script/narration.json) + a tail.
 // Keep ids in sync with the scene <div id="s-NN"> containers in index.html.
 window.BEATS = [
-  { id: "01", name: "cold-open", dur: 12.7, narration: "audio/narration/beat-01.mp3" },
+  { id: "01", name: "cold-open", dur: 11.6, narration: "audio/narration/beat-01.mp3" },
   { id: "02", name: "logo", dur: 7.7, narration: "audio/narration/beat-02.mp3" },
   { id: "03", name: "storefront", dur: 16.8, narration: "audio/narration/beat-03.mp3" },
   { id: "04", name: "n8n-order", dur: 41.5, narration: "audio/narration/beat-04.mp3" },

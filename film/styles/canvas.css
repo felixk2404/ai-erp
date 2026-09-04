@@ -10,8 +10,8 @@
 .pan .hit { position: absolute; z-index: 3; border-radius: 16px; box-shadow: 0 0 0 0 transparent; transform-origin: 50% 50%; }
 .pan .hit .ntag { position: absolute; left: 50%; bottom: calc(100% + 14px); transform: translateX(-50%); opacity: 0; font-size: 22px; padding: 6px 12px; }
 .pan .hit .ntag.side { left: calc(100% + 16px); bottom: auto; top: 50%; transform: translateY(-50%); }
-.wfname .title { position: absolute; left: 292px; top: 10px; white-space: nowrap; }
-.wfname { min-width: 720px; height: 76px; }
+.wfname .title { position: absolute; left: 340px; top: 10px; white-space: nowrap; }
+.wfname { min-width: 800px; height: 76px; }
 /* darken the capture except when lit: a full-frame void veil at 45% under the hits */
 .veil { position: absolute; inset: 0; background: rgba(13,16,23,.42); z-index: 1; pointer-events: none; }
 /* device chrome around the viewport */

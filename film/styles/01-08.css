@@ -1,0 +1,47 @@
+/* Beat 01 — cold open */
+#s-01 { background: #05070b; }
+#s-01::before, #s-01::after { opacity: 0.35; }
+#s-01 .glow1 { left: 1010px; top: 60px; width: 900px; height: 900px; border-radius: 50%; background: radial-gradient(circle, rgba(90,209,255,.28), transparent 65%); filter: blur(20px); }
+#s-01 .phone1 { left: 1180px; top: 120px; width: 400px; height: 820px; border-radius: 58px; background: #0b0e14; border: 5px solid #262c39; box-shadow: 0 60px 140px rgba(0,0,0,.8), inset 0 0 0 2px rgba(255,255,255,.06); overflow: hidden; transform-origin: 50% 50%; }
+#s-01 .phone1 img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+#s-01 .phone1 .pending { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; font-family: var(--font-mono); font-size: 22px; color: var(--readout-3); }
+#s-01 .flash { left: 1180px; top: 120px; width: 400px; height: 820px; border-radius: 58px; background: #fff; }
+#s-01 .readouts { left: 120px; top: 300px; display: flex; flex-direction: column; gap: 26px; }
+#s-01 .readouts .r1 { font-family: var(--font-mono); font-size: 30px; color: var(--readout-3); letter-spacing: .18em; }
+#s-01 .readouts .r2 { font-family: var(--font-title); font-weight: 800; font-size: 96px; line-height: 1; color: var(--readout); letter-spacing: -0.02em; }
+#s-01 .readouts .r3 { font-family: var(--font-mono); font-size: 40px; color: var(--signal); }
+#s-01 .readouts .r4 { font-family: var(--font-mono); font-size: 26px; color: var(--readout-2); letter-spacing: .18em; text-transform: uppercase; margin-top: 20px; }
+#s-01 .readouts .r5 { display: flex; align-items: baseline; gap: 18px; font-family: var(--font-body); font-size: 34px; color: var(--readout-2); }
+#s-01 .readouts .r5 .num { font-family: var(--font-mono); font-size: 84px; color: var(--signal); line-height: 1; }
+
+/* Beat 08 — three agents */
+#s-08 .rail { left: 60px; top: 90px; width: 460px; display: flex; flex-direction: column; gap: 18px; z-index: 8; }
+#s-08 .rail .kicker { font-size: 20px; white-space: nowrap; }
+#s-08 .rail .title { font-size: 64px; color: var(--readout); margin-bottom: 14px; }
+#s-08 .agent { display: flex; align-items: center; gap: 16px; padding: 16px 22px; background: var(--chassis); border: 2px solid var(--rule-strong); border-radius: 16px; transform-origin: 0 50%; }
+#s-08 .agent .led { background: var(--readout-3); box-shadow: none; }
+#s-08 .agent .name { font-family: var(--font-body); font-weight: 600; font-size: 30px; color: var(--readout); }
+#s-08 .agent .sub { font-family: var(--font-mono); font-size: 20px; color: var(--readout-3); margin-inline-start: auto; }
+#s-08 .stage8 { left: 560px; top: 0; width: 1360px; height: 1080px; }
+#s-08 .viewport { left: 560px; width: 900px; }
+#s-08 .panel { position: absolute; z-index: 6; }
+#s-08 .panel .tag { position: absolute; left: 16px; top: -26px; }
+#s-08 .panel .br { position: absolute; border: 4px solid var(--signal); border-radius: 12px; box-shadow: 0 0 30px var(--signal-glow); }
+#s-08 .p-widget { left: 600px; top: 80px; width: 1260px; height: 780px; }
+#s-08 .p-widget video { width: 100%; height: 100%; object-fit: cover; object-position: left bottom; }
+#s-08 .p-supabase { left: 1180px; top: 120px; width: 700px; height: 520px; z-index: 5; }
+#s-08 .p-supabase img { object-position: top left; }
+#s-08 .p-cmdk { left: 600px; top: 80px; width: 1260px; height: 780px; }
+#s-08 .p-cmdk video { width: 100%; height: 100%; object-fit: cover; object-position: top right; }
+#s-08 .p-cmdk .tags { position: absolute; left: 20px; bottom: 20px; display: flex; gap: 14px; }
+#s-08 .p-cmdk .tags .tag { position: static; }
+#s-08 .phone8 { width: 360px; height: 740px; border-radius: 52px; background: var(--chassis); border: 4px solid var(--rule-strong); box-shadow: 0 40px 120px rgba(0,0,0,.7); overflow: hidden; }
+#s-08 .phone8 img, #s-08 .phone8 video { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+#s-08 .phone8 .pending { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; font-family: var(--font-mono); font-size: 22px; color: var(--readout-3); }
+#s-08 .p-menu { left: 1500px; top: 130px; }
+#s-08 .p-handoff { left: 1500px; top: 130px; }
+#s-08 .p-gmail { left: 1440px; top: 120px; width: 420px; height: 600px; }
+#s-08 .p-gmail .pending { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px; font-family: var(--font-mono); font-size: 22px; color: var(--readout-3); }
+#s-08 .counter { left: 60px; top: 720px; display: flex; align-items: baseline; gap: 16px; z-index: 8; }
+#s-08 .counter .num { font-family: var(--font-mono); font-size: 84px; color: var(--signal); line-height: 1; text-shadow: 0 0 24px var(--signal-glow); }
+#s-08 .counter .lbl { font-size: 28px; color: var(--readout-2); }

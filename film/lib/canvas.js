@@ -19,16 +19,18 @@ window.Canvas = (function () {
       const tag = document.createElement("div"); tag.className = "tag ntag"; d.appendChild(tag);
       pan.appendChild(d); hits[name] = d;
     }
-    return { pan, svg, hits, nodes, w, h };
+    const vp = pan.parentElement; const vw = (vp && vp.offsetWidth) || W, vh = (vp && vp.offsetHeight) || H;
+    return { pan, svg, hits, nodes, w, h, vw, vh };
   }
 
   // Camera: move/scale the pan so that box (x,y,w,h in capture px) is centered at `scale`.
   function cam(tl, c, box, scale, at, dur, ease) {
     const [x, y, w, h] = Array.isArray(box) ? box : c.nodes[box];
     const cx = x + w / 2, cy = y + h / 2;
-    let tx = W / 2 - scale * cx, ty = H / 2 - scale * cy;
-    tx = Math.min(tx, 0); tx = Math.max(tx, W - c.w * scale);
-    ty = Math.min(ty, -120 * scale); ty = Math.max(ty, H - c.h * scale);
+    const VW = c.vw || W, VH = c.vh || H;
+    let tx = VW / 2 - scale * cx, ty = VH / 2 - scale * cy;
+    tx = Math.min(tx, 0); tx = Math.max(tx, VW - c.w * scale);
+    ty = Math.min(ty, -120 * scale); ty = Math.max(ty, VH - c.h * scale);
     const vars = { x: tx, y: ty, scale, duration: dur == null ? 1.2 : dur, ease: ease || "power3.inOut" };
     if (dur === 0) tl.set(c.pan, vars, at); else tl.to(c.pan, vars, at);
   }
