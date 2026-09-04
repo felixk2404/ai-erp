@@ -18,6 +18,8 @@ services:
       - N8N_RESTRICT_FILE_ACCESS_TO=/data/course
       # WF5 שולח מקלדות inline דרך Bot API ישירות (צומת הטלגרם לא מקבל מקלדת דינמית); הטוקן נקרא ב-$env
       - TELEGRAM_CUSTOMER_TOKEN=${TELEGRAM_CUSTOMER_TOKEN}
+      # WF5 "Send Menu" reads $env.TELEGRAM_CUSTOMER_TOKEN; n8n 2.x blocks $env by default ("access to env vars denied")
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=false
     volumes:
       - n8n_data:/home/node/.n8n
       - ../docs/course:/data/course:ro
