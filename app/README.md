@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# app — חדר הבקרה של איי.איי אלקטרוניקה
 
-## Getting Started
+אפליקציית הניהול (Next.js 16, App Router, RTL עברית, כהה בלבד).
+אחות של `store/` (החנות) — פרויקט נפרד לגמרי: `package.json` משלו, `node_modules` משלו, פרויקט Vercel נפרד.
 
-First, run the development server:
+**פרודקשן: https://ai-erp-rho.vercel.app** (פרויקט Vercel `ai-erp`). הכניסה מוגנת בסיסמה.
+פריסה: `cd app && vercel --prod --yes`. סנכרון env: `./scripts/vercel-env.sh`.
+
+## מה יש בה
+
+דשבורד "חדר בקרה" (הכנסות החודש, תקציר סוכן מוזרם, פיד הרצות n8n חי, מפת 13 ה-workflows),
+ומסכי ניהול לחשבוניות, הזמנות, לקוחות, לידים, מוצרים ומשימות. `⌘K` פותח פלטת פקודות
+שגם מדברת עם סוכן המנהל. `?` מציג את קיצורי המקלדת.
+
+**קריאות** הולכות ישירות ל-Airtable. **כתיבות אף פעם לא** — כל שינוי עובר דרך WF13
+(`POST /webhook/erp` עם `x-erp-secret`), וזה הגבול היחיד שהאפליקציה לא שולטת בו.
+
+## הרצה
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd app
+pnpm install
+pnpm dev        # http://localhost:3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| סקריפט | מה עושה |
+|---|---|
+| `pnpm dev` | שרת פיתוח על **3100** (החנות על 3200) |
+| `pnpm build` / `pnpm start` | בנייה ל-production / הרצה על 3100 |
+| `pnpm typecheck` | `tsc --noEmit` |
+| `pnpm lint` | `eslint` |
+| `pnpm test` | Vitest (`src/**/*.test.ts`) |
+| `pnpm e2e` | Playwright מול `http://localhost:3100` |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`pnpm build`, `pnpm typecheck`, `pnpm lint` ו-`pnpm test` רצים **בלי** משתני סביבה —
+`env()` הוא עצל ונקרא רק בתוך request handler.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## משתני סביבה
 
-## Learn More
+```bash
+cp env.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+| משתנה | מאיפה | חובה |
+|---|---|---|
+| `AIRTABLE_PAT` | Airtable → Developer hub, scopes של data + schema | כן |
+| `AIRTABLE_BASE_ID` | כבר מלא ב-`env.example` | כן |
+| `N8N_WEBHOOK_URL` | כבר מלא — כתובת ה-ngrok של n8n המקומי | כן |
+| `N8N_WEBHOOK_SECRET` | אותו ערך שב-`n8n/.env` | כן |
+| `APP_PASSWORD` | הסיסמה למסך הכניסה | כן |
+| `AUTH_SECRET` | `openssl rand -hex 32` — לפחות 32 תווים | כן |
+| `N8N_API_URL` | `https://<ngrok>/api/v1` — לפיד ההרצות ומפת המערכת | לא |
+| `N8N_API_KEY` | n8n → Settings → API | לא |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+בלי השניים האחרונים האפליקציה עולה כרגיל, ופאנלי ה-n8n מציגים "לא מוגדר" במקום ליפול.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## מבנה
 
-## Deploy on Vercel
+```
+src/proxy.ts        אימות (Next 16 middleware) — עוגייה חתומה ב-HMAC
+src/app/(app)/      המסכים המוגנים בסיסמה
+src/app/(auth)/     מסך הכניסה
+src/app/support/    צ'אט השירות הציבורי (אותו WF5-core של הבוט)
+src/app/api/pulse/  פיד בריאות n8n
+src/lib/            env, airtable, n8n, auth, insights, format, types
+src/components/ui/  shadcn base-nova (Base UI — prop `render`, לא `asChild`)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+CSS לוגי בלבד (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`) — האתר RTL.
+נגישות: דילוג לתוכן, `aria-disabled` במקום `disabled` בכפתורי פעולה, מיקוד לשדה השגוי
+הראשון, ו-`prefers-reduced-motion` מכובד גלובלית.

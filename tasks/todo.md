@@ -38,7 +38,7 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] הזמנות בעמוד המנהל
 - [x] תיקון לולאה ב-WF1 (Loop Over Items)
 - [x] גל תיקונים אחרי סקירה סופית (2026-09-02): כשל התראה לא מפיל הזמנה, תשובת שגיאה ל-`Place Order`, סה"כ החשבונית מגיע מההזמנה (בלי סטיית אגורה), `order_status` לא רגיש לאותיות, חוזה WF13 בראנבוק §7.1
-- [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי לפני ההגשה
+- [x] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי לפני ההגשה — בוצע, ראו §תוכנית 6
 - [x] STORE_DOMAIN ב-config.json → `ai-electronics-one.vercel.app` + import מחדש של WF10 (תוכנית 6, משימה 14)
 
 ## תוכנית 6 — החנות (store/, 2026-09-02) — הושלם ונפרס
@@ -54,7 +54,8 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - תיעוד: `docs/runbook.md` §11 (החנות), `docs/demo.md` — מסלול הלקוח, `store/README.md`.
 
 ### פתוח לפני ההגשה
-- [ ] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי; גם הזמנת ה-e2e ("בדיקת E2E", ORD-0008) — למחוק או לשנות שם.
+- [x] לשנות שם ללקוח CUST-0002 ("בדיקה חנות") לשם דמו אמיתי; גם הזמנת ה-e2e ("בדיקת E2E", ORD-0008) — למחוק או לשנות שם.
+  אומת 2026-09-08 ב-`DRY_RUN=1 bash airtable/film-cleanup.sh`: CUST-0002 הוא "יוסי לוי", ORD-0008 נושא את אותו שם, ואין הזמנות בדיקה שנותרו. הבסיס נקי להגשה.
 - [ ] Airtable: שדה `Featured` ב-Products במקום `FLAGSHIP_PREFERENCE` הקשיח ב-`store/src/lib/catalog-filter.ts` — מוצרי הדגל בדף הבית צריכים להיות נתון, לא קוד.
 - [x] הוחלט 2026-09-03: n8n נשאר על המק (Render חינמי נרדם אחרי 15 דקות ובלי דיסק קבוע). צ'ק-ליסט ליום ההצגה ב-`docs/demo.md` (caffeinate, Docker, tunnel).
 
@@ -69,3 +70,36 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] Plan 7 (2026-09-03): admin Orders tab + order page (timeline, next-step button, ship-task close), stock editing in products (WF13 field allow-list gained Stock), dashboard to-ship items gated on WF10's ship task. Commits ef719f2..24742bf.
 - [ ] Deploy admin app (orders tab, stock, lead source "אתר"): `cd app && vercel --prod --yes` — Felix runs it.
 - [ ] invoices/[id] has the same min-width grid overflow at 390 that the order page had (add `min-w-0` on the items section).
+
+## סקירת פרויקט מלאה (2026-09-08)
+
+ארבע סקירות מקבילות (app, n8n, store+airtable, תיעוד) ואימות ידני של כל ממצא.
+
+### תוקן
+- [x] **WF3 שלח אחרי שסימן.** הסדר היה `Sales Agent → Mark Contacted → Send Email`, כך שכשל ב-Gmail
+      הוציא את הליד מ-`New` בלי לשלוח כלום ואיבד אותו לצמיתות. הוחלף ל-`Send Email → Mark Contacted`,
+      עם `retryOnFail` על השליחה והערה בצומת שמסבירה את הבחירה. יובא ל-n8n (נשאר לא פעיל).
+- [x] **קריסה על שם מוצר ריק ב-`store/src/lib/product-match.ts`.** התיקון כבר היה ב-`app/` מאז הביקורת
+      הלילית ולא הועבר לחנות. הועבר, עם הבדיקה המקבילה.
+- [x] **`store/src/lib/airtable.ts`**: גוף שגיאת Airtable דלף להודעת ה-Error; נוסף `AbortSignal.timeout`
+      של 8 שניות שהיה חסר. עכשיו זהה להתנהגות של `app/`.
+- [x] **מפתח זיכרון של סוכן המנהל.** `Chat Input` ב-WF13 העביר `sessionId` בלי קידומת בזמן ש-`Support Input`
+      כן מקדים `web-`; מי שמחזיק בסוד יכול היה להעביר את ה-chat id של הבעלים ולהמשיך את שיחתו.
+      הקידומת `app-` נוספה. WF13 יובא ואומת בקריאה חיה לפני ואחרי — אותה תשובה.
+- [x] **ארבע גישות למילון דרך `in`/סוגריים** (`insights.ts`, `status.ts`, `lead-source.ts`, `task-source.ts`)
+      החזירו ערכים מה-prototype עבור סטטוס בשם `toString`/`constructor`. הוחלף ב-`Object.hasOwn`.
+- [x] **`airtable/film-cleanup.sh` מחק בלי שאלות.** נוספו `DRY_RUN=1`, אישור מפורש, ו-`FORCE=1` לסקריפטים.
+- [x] **README בשורש** (ארכיטקטורה, מפת ריפו, טבלת workflows, מגבלות ידועות) ו-**`app/README.md`** שהיה
+      עדיין ה-boilerplate של `create-next-app`. `N8N_API_URL`/`N8N_API_KEY` נוספו ל-`app/env.example`.
+- [x] **`.gitignore`**: `.playwright-mcp/`, `.superpowers/`, `test-results/`, `*.tsbuildinfo`. 226 קבצים
+      לא מנוטרים ירדו ל-0.
+
+### נמצא ולא תוקן — החלטה מודעת
+- מרוצי מספור ומלאי ב-WF10, והגבלת קצב בזיכרון: מתועדים כמגבלות ידועות בראנבוק וב-README.
+  מגבלה מתועדת מראה שיפוט; תיקון חפוז לפני הגשה מסכן מסלול שעובד.
+- WF4 מסמן `Qualified` על כל תשובה, כולל אוטו-רספונדר ובקשת "הסר". תיקון אמיתי דורש סיווג כוונה.
+- WF6/WF7 מוחקים לפני שמטמיעים בלי rollback — חלון קצר שבו ה-RAG ריק.
+- סוד webhook יחיד לארבע רשויות (`/erp`, `/run-sales`, `/reindex-*`). הפרדה לשני סודות היא השיפור הנכון.
+- כפילות שכבת ה-lib בין `app/` ל-`store/` — השורש של שניים מהבאגים שתוקנו כאן.
+- `next/image` על `ImageUrl` שרירותי מול whitelist של supabase בלבד. כל 34 המוצרים תקינים היום; רדום.
+
