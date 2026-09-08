@@ -7,3 +7,9 @@ node_modules/
 n8n/.env
 n8n/data/
 .DS_Store
+
+# פלט של כלי בדיקה — נוצר מחדש בכל הרצה
+.playwright-mcp/
+.superpowers/
+test-results/
+*.tsbuildinfo
