@@ -8,9 +8,10 @@ export function matchProducts(reply: string, products: Product[], max = 3): Prod
   const found: { idx: number; p: Product }[] = [];
   for (const p of products) {
     const keys = new Set<string>();
+    const name = p.fields.Name ?? ''; // איירטייבל משמיט שדות ריקים — שורת קטלוג בלי שם לא מפילה את סוכן השירות
     if (p.fields.Sku) keys.add(norm(p.fields.Sku));
-    keys.add(norm(p.fields.Name));
-    const model = p.fields.Name.match(/[A-Za-z][A-Za-z0-9-]*(?:\s+[A-Za-z0-9][A-Za-z0-9-]*)*/g)?.map(norm).filter((m) => m.length >= 4) ?? [];
+    if (name) keys.add(norm(name));
+    const model = name.match(/[A-Za-z][A-Za-z0-9-]*(?:\s+[A-Za-z0-9][A-Za-z0-9-]*)*/g)?.map(norm).filter((m) => m.length >= 4) ?? [];
     for (const m of model) keys.add(m);
     let idx = -1;
     for (const k of keys) {

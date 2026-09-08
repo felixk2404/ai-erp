@@ -39,5 +39,6 @@ const DEFAULT: Record<TableName, string> = { Invoices: 'new', Leads: 'New', Orde
 
 export function statusMeta(table: TableName, status?: string): StatusMeta {
   const key = status ?? DEFAULT[table];
-  return MAP[table][key] ?? { label: key, led: 'off' };
+  // hasOwn ולא גישה ישירה: סטטוס בשם "constructor" מחזיר פונקציה מה-prototype ומרנדר label ריק
+  return (Object.hasOwn(MAP[table], key) && MAP[table][key]) || { label: key, led: 'off' };
 }

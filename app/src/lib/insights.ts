@@ -50,7 +50,8 @@ export function leadsFunnel(leads: Lead[]): Funnel {
   const other: Record<string, number> = {};
   for (const l of leads) {
     const s = l.fields.Status ?? 'New';
-    if (s in count) count[s as keyof typeof count] += 1;
+    // hasOwn ולא in: סטטוס בשם "toString" יימצא על ה-prototype ויהפוך את המונה ל-NaN
+    if (Object.hasOwn(count, s)) count[s as keyof typeof count] += 1;
     else other[s] = (other[s] ?? 0) + 1;
   }
   const inFunnel = count.New + count.Contacted + count.Qualified;
