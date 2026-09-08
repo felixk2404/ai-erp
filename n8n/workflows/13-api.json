@@ -446,7 +446,7 @@
             {
               "id": "s",
               "name": "sessionId",
-              "value": "={{ $json.body.sessionId || 'app' }}",
+              "value": "=app-{{ $json.body.sessionId || 'anon' }}",
               "type": "string"
             }
           ]

@@ -159,6 +159,7 @@
     },
     {
       "name": "Send Email",
+      "notes": "שולח לפני Mark Contacted בכוונה: כשל ב-Gmail משאיר את הליד New והוא ייבחר שוב בהרצה הבאה. הסדר ההפוך היה מאבד אותו לצמיתות. בלי retryOnFail במכוון — שליחת מייל אינה אידמפוטנטית, וניסיון חוזר אחרי כשל שקרה אחרי השליחה היה שולח מייל שני לאותו ליד.",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
@@ -248,7 +249,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "notes": "מסמן לפני השליחה: לבטל סימון זול יותר מלבטל מייל שכבר יצא ללקוח."
+      "notes": "רץ אחרי השליחה. אם דווקא הוא נכשל, הליד נשאר New וייבחר שוב — כלומר מייל שני לאותו נמען. לכן retryOnFail כאן, ולא על השליחה עצמה."
     },
     {
       "name": "Result",
@@ -346,7 +347,7 @@
       "main": [
         [
           {
-            "node": "Mark Contacted",
+            "node": "Send Email",
             "type": "main",
             "index": 0
           }
@@ -357,7 +358,7 @@
       "main": [
         [
           {
-            "node": "Result",
+            "node": "Mark Contacted",
             "type": "main",
             "index": 0
           }
@@ -368,7 +369,7 @@
       "main": [
         [
           {
-            "node": "Send Email",
+            "node": "Result",
             "type": "main",
             "index": 0
           }

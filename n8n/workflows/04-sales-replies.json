@@ -1,48 +1,344 @@
 {
   "name": "WF4 — סוכן מכירות (תשובות)",
-  "settings": { "executionOrder": "v1", "errorWorkflow": "__WF_ERROR_ID__" },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "__WF_ERROR_ID__"
+  },
   "nodes": [
-    { "name": "Gmail Trigger", "type": "n8n-nodes-base.gmailTrigger", "typeVersion": 1.2, "position": [0, 0],
-      "parameters": { "pollTimes": { "item": [ { "mode": "everyX", "value": 30, "unit": "minutes" } ] }, "simple": true, "filters": { "q": "in:inbox newer_than:2d" }, "options": {} },
-      "credentials": { "gmailOAuth2": { "id": "__CRED_GMAIL__", "name": "Gmail ERP" } } },
-    { "name": "Sender Email", "type": "n8n-nodes-base.set", "typeVersion": 3.4, "position": [260, 0],
-      "parameters": { "assignments": { "assignments": [ { "id": "e", "name": "email", "value": "={{ (((($json.From ?? $json.from?.text ?? $json.from?.value?.[0]?.address ?? '') + '').match(/[\\w.+-]+@[\\w.-]+\\.\\w+/)) || [''])[0].toLowerCase() }}", "type": "string" } ] }, "options": {} } },
-    { "name": "Contacted Lead", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [520, 0],
-      "parameters": { "method": "GET", "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_LEADS__", "authentication": "predefinedCredentialType", "nodeCredentialType": "airtableTokenApi",
-        "sendQuery": true, "queryParameters": { "parameters": [ { "name": "filterByFormula", "value": "={{ \"AND(LOWER({Email})='\" + $json.email + \"', {Status}='Contacted')\" }}" }, { "name": "maxRecords", "value": "1" } ] }, "options": {} },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Has Lead", "type": "n8n-nodes-base.if", "typeVersion": 2.3, "position": [780, 0],
-      "parameters": { "conditions": { "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 2 }, "conditions": [ { "id": "h1", "leftValue": "={{ ($json.records || []).length }}", "rightValue": 0, "operator": { "type": "number", "operation": "gt" } } ], "combinator": "and" }, "looseTypeValidation": true, "options": {} } },
-    { "name": "Mark Qualified", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [1040, -100],
-      "parameters": { "authentication": "airtableTokenApi", "operation": "update",
-        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" }, "table": { "__rl": true, "mode": "id", "value": "__TBL_LEADS__" },
-        "columns": { "mappingMode": "defineBelow", "value": { "id": "={{ $json.records[0].id }}", "Status": "Qualified" }, "matchingColumns": ["id"],
-          "schema": [ { "id": "id", "displayName": "id", "required": false, "defaultMatch": true, "display": true, "type": "string", "readOnly": true, "removed": false }, { "id": "Status", "displayName": "Status", "required": false, "defaultMatch": false, "canBeUsedToMatch": true, "display": true, "type": "string", "readOnly": false, "removed": false } ] },
-        "options": { "typecast": true } },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } } },
-    { "name": "Create Call Task", "type": "n8n-nodes-base.airtable", "typeVersion": 2.2, "position": [1300, -100],
-      "parameters": { "authentication": "airtableTokenApi", "operation": "create",
-        "base": { "__rl": true, "mode": "id", "value": "__AIRTABLE_BASE_ID__" },
-        "table": { "__rl": true, "mode": "id", "value": "__TBL_TASKS__" },
-        "columns": { "mappingMode": "defineBelow", "value": {
+    {
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 30,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "simple": true,
+        "filters": {
+          "q": "in:inbox newer_than:2d"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "__CRED_GMAIL__",
+          "name": "Gmail ERP"
+        }
+      }
+    },
+    {
+      "name": "Sender Email",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e",
+              "name": "email",
+              "value": "={{ (((($json.From ?? $json.from?.text ?? $json.from?.value?.[0]?.address ?? '') + '').match(/[\\w.+-]+@[\\w.-]+\\.\\w+/)) || [''])[0].toLowerCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Contacted Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.airtable.com/v0/__AIRTABLE_BASE_ID__/__TBL_LEADS__",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "airtableTokenApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "filterByFormula",
+              "value": "={{ \"AND(LOWER({Email})='\" + $json.email + \"', {Status}='Contacted')\" }}"
+            },
+            {
+              "name": "maxRecords",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "name": "Has Lead",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "h1",
+              "leftValue": "={{ ($json.records || []).length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "Mark Qualified",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -100
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.records[0].id }}",
+            "Status": "Qualified"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "name": "Create Call Task",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        -100
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_TASKS__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
             "Title": "=להתקשר ל{{ $('Contacted Lead').first().json.records[0].fields.Name }} ({{ $('Contacted Lead').first().json.records[0].fields.Company || 'ללא חברה' }})",
             "Status": "open",
             "Source": "lead",
-            "RefId": "={{ $('Contacted Lead').first().json.records[0].id }}" },
-          "matchingColumns": [], "schema": [
-            { "id": "Title", "displayName": "Title", "required": false, "defaultMatch": false, "display": true, "type": "string", "readOnly": false, "removed": false },
-            { "id": "Status", "displayName": "Status", "required": false, "defaultMatch": false, "display": true, "type": "string", "readOnly": false, "removed": false },
-            { "id": "Source", "displayName": "Source", "required": false, "defaultMatch": false, "display": true, "type": "string", "readOnly": false, "removed": false },
-            { "id": "RefId", "displayName": "RefId", "required": false, "defaultMatch": false, "display": true, "type": "string", "readOnly": false, "removed": false } ] },
-        "options": { "typecast": true } },
-      "credentials": { "airtableTokenApi": { "id": "__CRED_AIRTABLE__", "name": "Airtable ERP" } },
-      "onError": "continueRegularOutput" }
+            "RefId": "={{ $('Contacted Lead').first().json.records[0].id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "RefId",
+              "displayName": "RefId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
   ],
   "connections": {
-    "Gmail Trigger": { "main": [[{ "node": "Sender Email", "type": "main", "index": 0 }]] },
-    "Sender Email": { "main": [[{ "node": "Contacted Lead", "type": "main", "index": 0 }]] },
-    "Contacted Lead": { "main": [[{ "node": "Has Lead", "type": "main", "index": 0 }]] },
-    "Has Lead": { "main": [ [{ "node": "Mark Qualified", "type": "main", "index": 0 }], [] ] },
-    "Mark Qualified": { "main": [[{ "node": "Create Call Task", "type": "main", "index": 0 }]] }
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sender Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sender Email": {
+      "main": [
+        [
+          {
+            "node": "Contacted Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contacted Lead": {
+      "main": [
+        [
+          {
+            "node": "Has Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Lead": {
+      "main": [
+        [
+          {
+            "node": "Mark Qualified",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Mark Qualified": {
+      "main": [
+        [
+          {
+            "node": "Create Call Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   }
 }

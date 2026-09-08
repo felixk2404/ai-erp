@@ -15,12 +15,70 @@
       "parameters": {}
     },
     {
+      "name": "Classify Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ],
+      "notes": "מסמן שגיאות רשת חולפות (ניתוק סוקט בזמן שינה/יקיצה של המק) כדי שלא יגיעו לטלגרם. הקוד והבדיקות ב-n8n/code/transient-error.js.",
+      "parameters": {
+        "jsCode": "__CODE_TRANSIENT_ERROR__"
+      }
+    },
+    {
+      "name": "Transient?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "t1",
+              "leftValue": "={{ $json.transient }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "Ignored — רעש רשת",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        640,
+        -140
+      ],
+      "notes": "מכאן לא יוצאת התראה. ההרצה הכושלת עצמה נשמרת ב-Executions של n8n, ולכן אפשר תמיד לבדוק בדיעבד כמה רעש רשת היה.",
+      "parameters": {}
+    },
+    {
       "name": "Telegram Owner",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        260,
-        0
+        640,
+        60
       ],
       "parameters": {
         "chatId": "__OWNER_CHAT_ID__",
@@ -126,6 +184,35 @@
   "connections": {
     "Error Trigger": {
       "main": [
+        [
+          {
+            "node": "Classify Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Error": {
+      "main": [
+        [
+          {
+            "node": "Transient?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transient?": {
+      "main": [
+        [
+          {
+            "node": "Ignored — רעש רשת",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Telegram Owner",

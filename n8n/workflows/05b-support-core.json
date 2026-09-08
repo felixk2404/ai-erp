@@ -247,7 +247,10 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "handoff",

@@ -1,14 +1,30 @@
 #!/usr/bin/env bash
 # ניקוי נתוני דמו לפני צילום סרט התדמית: שם אמיתי ללקוח הבדיקה, מחיקת הזמנת ה-e2e והחשבונית שלה.
 # בטוח להרצה חוזרת. מדפיס מה עשה.
+#
+# הסקריפט מוחק רשומות מ-Orders, Invoices ו-Tasks לפי FIND('בדיקה', {Name}) — כלומר לקוח אמיתי
+# ששמו מכיל "בדיקה" יימחק גם הוא, ואין גיבוי. לכן:
+#   DRY_RUN=1 bash film-cleanup.sh   מדפיס מה היה נמחק ולא נוגע בכלום  (התחל תמיד מכאן)
+#   bash film-cleanup.sh             מבקש אישור מפורש לפני מחיקה
+#   FORCE=1 bash film-cleanup.sh     בלי אישור, לשימוש בסקריפטים
 set -euo pipefail
 cd "$(dirname "$0")/../n8n" && source scripts/load-env.sh
-export AIRTABLE_PAT AIRTABLE_BASE_ID
+export AIRTABLE_PAT AIRTABLE_BASE_ID DRY_RUN="${DRY_RUN:-0}"
+
+if [ "$DRY_RUN" != 1 ] && [ "${FORCE:-0}" != 1 ]; then
+  echo "מוחק נתוני דמו מהבסיס $AIRTABLE_BASE_ID (Orders, Invoices, Tasks). אין גיבוי."
+  read -r -p 'להמשיך? הקלד yes: ' ans
+  [ "$ans" = yes ] || { echo "בוטל."; exit 1; }
+fi
 python3 - <<'PY'
 import json, os, urllib.request, urllib.parse
 pat, base = os.environ["AIRTABLE_PAT"], os.environ["AIRTABLE_BASE_ID"]
+DRY = os.environ.get("DRY_RUN") == "1"
 H = {"Authorization": f"Bearer {pat}", "Content-Type": "application/json"}
 def api(method, path, body=None):
+    if DRY and method != "GET":
+        print(f"[dry-run] {method} {path}")
+        return {"records": []}
     req = urllib.request.Request(f"https://api.airtable.com/v0/{base}/{path}", data=json.dumps(body).encode() if body else None, headers=H, method=method)
     with urllib.request.urlopen(req) as r: return json.load(r)
 def find(table, formula):

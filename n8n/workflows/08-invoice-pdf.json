@@ -368,7 +368,10 @@
           "id": "__CRED_AIRTABLE__",
           "name": "Airtable ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     },
     {
       "name": "Share Public",
@@ -400,7 +403,10 @@
           "id": "__CRED_DRIVE__",
           "name": "Google Drive ERP"
         }
-      }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000
     }
   ],
   "connections": {
