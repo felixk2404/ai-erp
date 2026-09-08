@@ -26,7 +26,9 @@ const heebo = Heebo({
 export const metadata: Metadata = {
   title: 'AI-ERP · איי.איי אלקטרוניקה',
   description: 'מערכת ניהול חכמה לעסק — חשבוניות, לידים, מוצרים וסוכן AI',
-  icons: { icon: '/brand/logo-mark.png' },
+  icons: { icon: '/brand/logo-mark.png', apple: '/apple-touch-icon.png' },
+  // מאפשר "הוספה למסך הבית" באייפון: פותח במסך מלא בלי כרום הדפדפן
+  appleWebApp: { capable: true, title: 'AI-ERP', statusBarStyle: 'black' },
 };
 
 /** ה-UI מחויב לכהה — כרום הדפדפן בנייד צריך להתאים ולא להבהב לבן. */

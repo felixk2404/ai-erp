@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Heebo, JetBrains_Mono } from 'next/font/google';
 import { MotionConfig } from 'motion/react';
 import { Toaster } from '@/components/ui/sonner';
@@ -25,7 +25,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl ?? 'http://localhost:3200'),
   title: { default: 'איי.איי אלקטרוניקה', template: '%s · איי.איי אלקטרוניקה' },
   description: 'מוצרים מקוריים עם אחריות יבואן רשמי. משלוח 29 ₪, חינם מעל 300 ₪.',
+  icons: { apple: '/apple-touch-icon.png' },
+  // מאפשר "הוספה למסך הבית" באייפון: פותח במסך מלא בלי כרום הדפדפן
+  appleWebApp: { capable: true, title: 'איי.איי', statusBarStyle: 'black' },
 };
+
+/** כהה בלבד — כרום הדפדפן בנייד צריך להתאים ולא להבהב לבן. */
+export const viewport: Viewport = { themeColor: '#07090c' };
 
 // מגירת העגלה (משימה 8) והבוט (משימה 11) נתלים בתוך CartProvider.
 export default function RootLayout({ children }: LayoutProps<'/'>) {

@@ -10,7 +10,7 @@ const PUBLIC = ['/login', '/support', '/brand', '/favicon.ico'];
  * נשלח כ-POST לכתובת הנוכחית ומנותב לפי כותרת ולא לפי הנתיב — כלומר `POST /customers/x.png`
  * היה מריץ פעולות שרת בלי אימות.
  */
-const STATIC_FILE = /\.(?:png|jpe?g|svg|ico|webp|avif|gif|woff2?|txt|xml)$/i;
+const STATIC_FILE = /\.(?:png|jpe?g|svg|ico|webp|avif|gif|woff2?|txt|xml|webmanifest)$/i;
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;

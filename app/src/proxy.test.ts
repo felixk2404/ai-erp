@@ -22,6 +22,13 @@ describe('proxy', () => {
   it('does NOT let a static-looking path through on POST — that is how a server action would slip past auth', async () => {
     expect(await redirectedToLogin('/customers/x.png', 'POST')).toBe(true);
     expect(await redirectedToLogin('/invoices/anything.svg', 'POST')).toBe(true);
+    expect(await redirectedToLogin('/customers/x.webmanifest', 'POST')).toBe(true);
+  });
+
+  // בלי זה המניפסט חוזר כהפניה ל-/login, הדפדפן לא מצליח לפרסר אותו,
+  // ו"הוספה למסך הבית" מאבדת שם, אייקון ומצב standalone.
+  it('serves the PWA manifest without a session', async () => {
+    expect(await redirectedToLogin('/manifest.webmanifest')).toBe(false);
   });
 
   it('keeps the public pages public and everything else gated', async () => {
