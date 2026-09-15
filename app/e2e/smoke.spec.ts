@@ -192,3 +192,26 @@ test('orders: "הזמנה חדשה" opens and validates before anything is sent 
   await expect(dialog.getByText('מספר טלפון לא תקין')).toBeVisible();
   await expect(dialog.getByText('יש להוסיף לפחות מוצר אחד')).toBeVisible();
 });
+
+/**
+ * הזמנה אמיתית דרך הטופס — כותבת ל-Airtable, שולחת מייל ללקוח והתראה לבעלים, ולכן רצה רק עם E2E_REAL_ORDER=1.
+ * הלקוח הוא לקוח דמו קיים (CUST-0002) כדי שלא ייווצר לקוח חדש; השם מתחיל ב"בדיקה" כדי ש-airtable/film-cleanup.sh ינקה
+ * את ההזמנה, החשבונית והמשימה, ו-airtable/seed-stock.sh יחזיר את המלאי.
+ */
+test('orders: a real order through the admin form reaches WF10 @real-order', async ({ page }) => {
+  test.skip(process.env.E2E_REAL_ORDER !== '1', 'E2E_REAL_ORDER=1 כדי ליצור הזמנה אמיתית');
+  test.setTimeout(120_000);
+  await page.goto('/orders');
+  await page.getByRole('button', { name: 'הזמנה חדשה' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByLabel('שם הלקוח').fill('בדיקה - טופס ניהול');
+  await dialog.getByLabel('אימייל').fill('felixk2404@gmail.com');
+  await dialog.getByLabel('טלפון').fill('050-1234567');
+  await dialog.getByLabel('עיר').fill('תל אביב');
+  await dialog.getByLabel('כתובת למשלוח').fill('הרצל 1');
+  await dialog.getByRole('combobox', { name: 'מוצר' }).click();
+  await page.getByRole('option', { name: /TY-PB-20/ }).click();
+  await dialog.getByRole('button', { name: 'יצירה' }).click();
+  await expect(page.getByText('ההזמנה נוצרה')).toBeVisible({ timeout: 90_000 });
+  await expect(page.getByRole('table', { name: 'הזמנות' }).getByText('בדיקה - טופס ניהול')).toBeVisible();
+});
