@@ -9,7 +9,10 @@ services:
       - N8N_PROTOCOL=https
       - N8N_PORT=5678
       - WEBHOOK_URL=https://${NGROK_DOMAIN}/
-      - N8N_EDITOR_BASE_URL=https://${NGROK_DOMAIN}/
+      # ה-OAuth callback נגזר מכאן. דרך ngrok החינמי גוגל נחסם במסך האזהרה שלו (ERR_NGROK_6024)
+      # והקוד לא מגיע ל-n8n, ולכן החיבור מחדש ל-Gmail/Drive נכשל בשקט. localhost עוקף את זה.
+      # WEBHOOK_URL נשאר על ngrok — הבוטים והאפליקציה לא מושפעים.
+      - N8N_EDITOR_BASE_URL=http://localhost:5678/
       - N8N_SECURE_COOKIE=false
       - GENERIC_TIMEZONE=Asia/Jerusalem
       - TZ=Asia/Jerusalem
