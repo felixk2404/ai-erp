@@ -249,25 +249,26 @@
             {
               "id": "c",
               "name": "VatRate",
-              "value": "={{ 0.18 }}",
+              "value": "={{ ((String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10) < '2025-01-01' && /^\\d{4}-\\d{2}-\\d{2}$/.test(String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10))) ? 0.17 : 0.18) }}",
               "type": "number"
             },
             {
               "id": "d",
               "name": "VatAmount",
-              "value": "={{ $('Loop Over Items').first().json.fields.VatAmount || Math.round($('Loop Over Items').first().json.fields.Amount * 0.18 * 100) / 100 }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.VatAmount || Math.round($('Loop Over Items').first().json.fields.Amount * ((String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10) < '2025-01-01' && /^\\d{4}-\\d{2}-\\d{2}$/.test(String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10))) ? 0.17 : 0.18) * 100) / 100 }}",
               "type": "number"
             },
             {
               "id": "e",
               "name": "Total",
-              "value": "={{ $('Loop Over Items').first().json.fields.Total || Math.round($('Loop Over Items').first().json.fields.Amount * 1.18 * 100) / 100 }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.Total || Math.round($('Loop Over Items').first().json.fields.Amount * (1 + ((String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10) < '2025-01-01' && /^\\d{4}-\\d{2}-\\d{2}$/.test(String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10))) ? 0.17 : 0.18)) * 100) / 100 }}",
               "type": "number"
             }
           ]
         },
         "options": {}
-      }
+      },
+      "notes": "מע\"מ לפי תאריך המסמך (מסמך הקורס §10): 17% לפני 1.1.2025, 18% אחריו. ההגדרה הנבדקת ב-n8n/code/vat-rate.js."
     },
     {
       "name": "Mark Validated",
