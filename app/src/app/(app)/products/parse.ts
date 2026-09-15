@@ -4,7 +4,7 @@ import { parseStock } from '@/lib/stock';
 
 const schema = z.object({
   Name: z.string().trim().min(1, 'יש להזין שם מוצר'),
-  Sku: z.unknown().transform((v) => optionalText(v)?.toUpperCase()),
+  Sku: z.string().trim().toUpperCase().regex(/^[A-Z0-9-]{3,20}$/, 'מק״ט חייב להכיל 3–20 אותיות באנגלית, ספרות או מקפים'),
   Category: z.string().trim().min(1, 'יש להזין קטגוריה'),
   Price: z.coerce.number({ error: 'יש להזין מחיר' }).min(0, 'המחיר לא יכול להיות שלילי'),
   Description: z.unknown().transform((v) => optionalText(v) ?? ''),

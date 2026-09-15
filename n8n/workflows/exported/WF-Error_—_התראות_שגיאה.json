@@ -38,7 +38,7 @@
       ],
       "notes": "מסמן שגיאות רשת חולפות (ניתוק סוקט בזמן שינה/יקיצה של המק) כדי שלא יגיעו לטלגרם. הקוד והבדיקות ב-n8n/code/transient-error.js.",
       "parameters": {
-        "jsCode": "// transient-error.js — גוף צומת Code ב-WF-Error (מוזרק דרך placeholder CODE_TRANSIENT_ERROR).\n// מסווג כל שגיאה שמגיעה ל-Error Trigger: רעש רשת חולף, או תקלה אמיתית שצריך לדעת עליה.\n//\n// למה זה קיים: n8n מקומי על מק חי מאחורי ngrok. כשהמחשב נרדם, מתעורר, או מחליף רשת,\n// הסוקט אל api.airtable.com נסגר באמצע וכל טריגר פולינג נכשל. ב-24 שעות נמדדו 12 כשלים\n// כאלה מתוך ~2,880 קריאות — 0.4%. כל אחד מהם ירה התראה לטלגרם, וכולן היו רעש.\n// שכבת הרשת בלבד: 4xx/5xx מהשרת, credentials פגים ושגיאות עסקיות *לא* נחשבים חולפים,\n// כי הם לא מתקנים את עצמם והם בדיוק מה שההתראה נועדה לתפוס.\n//\n// ההרצה הכושלת נשמרת ב-Executions של n8n בכל מקרה, ולכן שום מידע לא הולך לאיבוד — רק ההודעה.\nconst TRANSIENT_RE = new RegExp(\n  [\n    'socket hang up',\n    'closed unexpectedly',\n    'network socket disconnected',\n    'fetch failed',\n    'getaddrinfo',\n    'ECONNRESET',\n    'ECONNREFUSED',\n    'ETIMEDOUT',\n    'ESOCKETTIMEDOUT',\n    'EAI_AGAIN',\n    'ENOTFOUND',\n    'EHOSTUNREACH',\n    'ENETUNREACH',\n    'EPIPE',\n  ].join('|'),\n  'i',\n);\n\n/** ההודעה שמוצגת למשתמש נבנית משלושה מקומות שונים לפי סוג הכשל — אותו סדר כמו בצומת הטלגרם. */\nfunction errorMessage(json) {\n  const j = json || {};\n  return String(\n    (j.execution && j.execution.error && j.execution.error.message) ||\n      (j.trigger && j.trigger.error && j.trigger.error.message) ||\n      (j.trigger && j.trigger.error && j.trigger.error.description) ||\n      '',\n  );\n}\n\nfunction isTransient(json) {\n  return TRANSIENT_RE.test(errorMessage(json));\n}\n\nif (typeof $input !== 'undefined') {\n  const json = $input.first().json;\n  return [{ json: { ...json, transient: isTransient(json) } }];\n}\nmodule.exports = { isTransient, errorMessage, TRANSIENT_RE };"
+        "jsCode": "// transient-error.js — גוף צומת Code ב-WF-Error (מוזרק דרך placeholder CODE_TRANSIENT_ERROR).\n// מסווג כל שגיאה שמגיעה ל-Error Trigger: רעש רשת חולף, או תקלה אמיתית שצריך לדעת עליה.\n//\n// למה זה קיים: n8n מקומי על מק חי מאחורי ngrok. כשהמחשב נרדם, מתעורר, או מחליף רשת,\n// הסוקט אל api.airtable.com נסגר באמצע וכל טריגר פולינג נכשל. ב-24 שעות נמדדו 12 כשלים\n// כאלה מתוך ~2,880 קריאות — 0.4%. כל אחד מהם ירה התראה לטלגרם, וכולן היו רעש.\n// 'No bridge acquired' הוא שיהוק פנימי של ה-task runner של n8n בזמן יקיצה — נעלם בהרצה הבאה.\n// שכבת הרשת בלבד: 4xx/5xx מהשרת, credentials פגים ושגיאות עסקיות *לא* נחשבים חולפים,\n// כי הם לא מתקנים את עצמם והם בדיוק מה שההתראה נועדה לתפוס.\n//\n// ההרצה הכושלת נשמרת ב-Executions של n8n בכל מקרה, ולכן שום מידע לא הולך לאיבוד — רק ההודעה.\nconst TRANSIENT_RE = new RegExp(\n  [\n    'socket hang up',\n    'closed unexpectedly',\n    'connection cannot be established',\n    'DNS server returned an error',\n    'No bridge acquired',\n    'network socket disconnected',\n    'fetch failed',\n    'getaddrinfo',\n    'ECONNRESET',\n    'ECONNREFUSED',\n    'ETIMEDOUT',\n    'ESOCKETTIMEDOUT',\n    'EAI_AGAIN',\n    'ENOTFOUND',\n    'EHOSTUNREACH',\n    'ENETUNREACH',\n    'EPIPE',\n  ].join('|'),\n  'i',\n);\n\n/** ההודעה שמוצגת למשתמש נבנית משלושה מקומות שונים לפי סוג הכשל — אותו סדר כמו בצומת הטלגרם. */\nfunction errorMessage(json) {\n  const j = json || {};\n  return String(\n    (j.execution && j.execution.error && j.execution.error.message) ||\n      (j.trigger && j.trigger.error && j.trigger.error.message) ||\n      (j.trigger && j.trigger.error && j.trigger.error.description) ||\n      '',\n  );\n}\n\nfunction isTransient(json) {\n  return TRANSIENT_RE.test(errorMessage(json));\n}\n\nif (typeof $input !== 'undefined') {\n  const json = $input.first().json;\n  return [{ json: { ...json, transient: isTransient(json) } }];\n}\nmodule.exports = { isTransient, errorMessage, TRANSIENT_RE };"
       },
       "id": "00000000-0000-4000-8000-000000000002"
     },
@@ -99,7 +99,7 @@
       ],
       "parameters": {
         "chatId": "43590648",
-        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution?.lastNodeExecuted || ($json.trigger ? 'טריגר (polling)' : '—') }}\nשגיאה: {{ (($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || JSON.stringify($json.trigger?.error || {}).slice(0, 300)) + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution?.url || '' }}",
+        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution?.lastNodeExecuted || ($json.trigger ? 'טריגר (polling)' : '—') }}\nשגיאה: {{ (($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || JSON.stringify($json.trigger?.error || {}).slice(0, 300)) + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution?.url || '' }}{{ /Access could not be refreshed|reconnect/i.test($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || '') ? '\\n🔑 טוקן Google פג. n8n → Credentials → Gmail ERP / Google Drive ERP → Reconnect.' : '' }}",
         "additionalFields": {
           "appendAttribution": false,
           "parse_mode": "HTML"
@@ -111,13 +111,10 @@
           "name": "Telegram Manager"
         }
       },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000,
       "onError": "continueErrorOutput",
-      "notes": "התראה היא הדבר האחרון שנשאר כשהכול נופל — לכן retry, ולכן ענף שגיאה שמנציח את הכישלון במשימה.",
+      "notes": "ניסיון שליחה אחד בלבד כדי לא להכפיל הודעה אחרי ניתוק. כשל עובר לענף המשימה ב-Airtable כדי שלא ייעלם.",
       "id": "00000000-0000-4000-8000-000000000005",
-      "webhookId": "b12b7d52-ce19-44d1-ad51-43408c42f284"
+      "webhookId": "7008c0f8-34dd-4d51-9bd3-df63423145df"
     },
     {
       "name": "Log Undelivered",
@@ -127,10 +124,7 @@
         520,
         160
       ],
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000,
-      "notes": "טלגרם לא ענה גם אחרי 3 ניסיונות. הכישלון נרשם כמשימה כדי שלא ייעלם בשקט; אם גם Airtable נופל, ההרצה נשארת error ב-n8n.",
+      "notes": "טלגרם נכשל. יוצרים משימה פעם אחת בלבד כדי להימנע מכפילות; כשל ב-Airtable משאיר את ההרצה במצב error.",
       "parameters": {
         "authentication": "airtableTokenApi",
         "operation": "create",

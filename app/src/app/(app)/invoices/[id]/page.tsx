@@ -58,7 +58,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       </Shared>
 
       <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-6">
-        <section className="space-y-6">
+        <section className="min-w-0 space-y-6">
           <div className="panel p-6">
             <Timeline steps={steps} />
             {status === 'error' && <p className="mt-4 text-sm text-led-red">החשבונית נכשלה באימות: סכום לא חיובי או לקוח לא קיים. תקן ב-Airtable או צור חשבונית חדשה.</p>}

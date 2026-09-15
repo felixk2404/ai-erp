@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { revalidatePath } from 'next/cache';
 import { list } from '@/lib/airtable';
 import { erpCreate, ErpError } from '@/lib/n8n';
@@ -9,6 +11,7 @@ import type { FormState } from '@/components/forms/entity-dialog';
 import { parseCustomerForm, nextCustomerId } from './parse';
 
 export async function createCustomer(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireSession();
   const parsed = parseCustomerForm(fd);
   if (!parsed.ok) return { errors: parsed.errors };
   // שתי פעולות, שתי הודעות: קריאה שנכשלה דיווחה עד עכשיו שהיצירה נכשלה — לפני שהיא בכלל נוסתה

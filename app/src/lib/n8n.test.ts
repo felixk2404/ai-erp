@@ -105,3 +105,34 @@ describe('erpOrder', () => {
     await expect(erpOrder(order)).rejects.toThrow(ErpError);
   });
 });
+
+describe('גבולות תשובות ומשך בקשות', () => {
+  beforeEach(() => vi.restoreAllMocks());
+
+  it.each([null, [], 42, { ok: true }, { ok: true, reply: '' }, { ok: true, reply: 42 }])('צ׳אט דוחה תשובה לא תקינה: %j', async (body) => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(json(body));
+    await expect(erpChat('שאלה', 'sess')).rejects.toBeInstanceOf(ErpError);
+  });
+
+  it('כשל בקריאת גוף התשובה נשאר שגיאה מטופלת', async () => {
+    const response = new Response('partial');
+    vi.spyOn(response, 'text').mockRejectedValue(new TypeError('terminated'));
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(response);
+    await expect(erpChat('שאלה', 'sess')).rejects.toBeInstanceOf(ErpError);
+  });
+
+  it('צ׳אט מקבל דקה והזמנה 90 שניות לפני ביטול הבקשה', async () => {
+    const timeout = vi.spyOn(AbortSignal, 'timeout');
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(json({ ok: true, reply: 'תשובה' }));
+    await erpChat('שאלה', 'sess');
+    expect(timeout).toHaveBeenLastCalledWith(60_000);
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(json({ ok: true, orderNumber: 'ORD-1', total: 10 }));
+    await erpOrder({ customer: { name: 'שם', email: 'x@y.co', phone: '0501234567' }, items: [{ sku: 'SKU', qty: 1 }] });
+    expect(timeout).toHaveBeenLastCalledWith(90_000);
+  });
+
+  it('ניתוק אחרי שליחת הזמנה מפנה לבדיקת ההזמנות ולא לניסיון חוזר', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('fetch failed'));
+    await expect(erpOrder({ customer: { name: 'שם', email: 'x@y.co', phone: '0501234567' }, items: [{ sku: 'SKU', qty: 1 }] })).rejects.toThrow('ייתכן שההזמנה נשמרה');
+  });
+});

@@ -41,7 +41,9 @@ export function parseStoredCart(raw: string | null): CartLine[] {
   return lines.filter((l): l is CartLine => {
     const c = l as Partial<CartLine> | null;
     return (
-      typeof c?.sku === 'string' && c.sku !== '' && typeof c.name === 'string' && Number.isFinite(c.price) && Number.isFinite(c.qty)
+      typeof c?.sku === 'string' && c.sku.trim() !== '' && typeof c.name === 'string' &&
+      typeof c.price === 'number' && Number.isFinite(c.price) && c.price >= 0 &&
+      typeof c.qty === 'number' && Number.isInteger(c.qty) && c.qty > 0 && typeof c.service === 'boolean'
     );
   });
 }

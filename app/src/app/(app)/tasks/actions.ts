@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { revalidatePath } from 'next/cache';
 import { erpCreate, erpUpdate, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
@@ -11,6 +13,7 @@ const msg = (e: unknown, fallback: string) => (e instanceof ErpError ? e.message
 export type AddTaskState = { error?: string; ok?: boolean } | undefined;
 
 export async function addTask(_prev: AddTaskState, fd: FormData): Promise<AddTaskState> {
+  await requireSession();
   const Title = String(fd.get('Title') ?? '').trim();
   if (!Title) return { error: 'יש להזין כותרת למשימה' };
   try {
@@ -25,6 +28,7 @@ export async function addTask(_prev: AddTaskState, fd: FormData): Promise<AddTas
 }
 
 export async function toggleTask(id: string, done: boolean): Promise<ActionResult> {
+  await requireSession();
   try {
     await erpUpdate<TaskFields>('Tasks', id, { Status: done ? 'done' : 'open' });
   } catch (e) {

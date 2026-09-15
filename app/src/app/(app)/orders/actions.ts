@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { revalidatePath } from 'next/cache';
 import { list, escapeFormula } from '@/lib/airtable';
 import { erpOrder, erpUpdate, ErpError } from '@/lib/n8n';
@@ -16,6 +18,7 @@ const msg = (e: unknown, fallback: string) => (e instanceof ErpError ? e.message
  * מלאי, חשבונית, מייל אישור ללקוח והתראה לבעלים. שגיאה עסקית מ-WF13 (מלאי, ולידציה) חוזרת כמו שהיא.
  */
 export async function createOrder(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireSession();
   const parsed = parseOrderForm(fd);
   if (!parsed.ok) return { errors: parsed.errors };
   try {
@@ -49,6 +52,7 @@ async function closeShipTask(orderNumber: string) {
  * כשל בסגירת המשימה לא מבטל את שינוי הסטטוס שכבר נשמר — הוא נאמר למשתמש כמו שהוא.
  */
 export async function setOrderStatus(id: string, orderNumber: string, status: string): Promise<ActionResult> {
+  await requireSession();
   if (!(ORDER_STATUSES as readonly string[]).includes(status)) return { error: 'סטטוס לא חוקי' };
   try {
     await erpUpdate<OrderFields>('Orders', id, { Status: status as OrderStatus });

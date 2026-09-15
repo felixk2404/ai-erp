@@ -1,3 +1,4 @@
+vi.mock('@/lib/require-session', () => ({ requireSession: async () => {} }));
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('server-only', () => ({}));
@@ -53,22 +54,22 @@ describe('setStock', () => {
 
 describe('createProduct', () => {
   it('derives InStock from the entered quantity instead of a checkbox', async () => {
-    await createProduct({}, fd({ Name: 'מטען 65W', Category: 'מטענים', Price: '129', Description: '', Stock: '3' }));
+    await createProduct({}, fd({ Sku: 'TY-TEST-1', Name: 'מטען 65W', Category: 'מטענים', Price: '129', Description: '', Stock: '3' }));
     expect(erpCreate).toHaveBeenCalledWith('Products', expect.objectContaining({ Stock: 3, InStock: true }));
 
-    await createProduct({}, fd({ Name: 'כבל', Category: 'כבלים', Price: '29', Description: '', Stock: '0' }));
+    await createProduct({}, fd({ Sku: 'TY-TEST-1', Name: 'כבל', Category: 'כבלים', Price: '29', Description: '', Stock: '0' }));
     expect(erpCreate).toHaveBeenLastCalledWith('Products', expect.objectContaining({ Stock: 0, InStock: false }));
   });
 
   it('gives a service no quantity at all — it is always available', async () => {
-    await createProduct({}, fd({ Name: 'תיקון מעבדה', Category: 'שירותים', Price: '149', Description: '', Stock: '7' }));
+    await createProduct({}, fd({ Sku: 'TY-TEST-1', Name: 'תיקון מעבדה', Category: 'שירותים', Price: '149', Description: '', Stock: '7' }));
     const fields = erpCreate.mock.lastCall![1] as Record<string, unknown>;
     expect(fields.InStock).toBe(true);
     expect(fields).not.toHaveProperty('Stock');
   });
 
   it('reports a bad quantity on the Stock field and writes nothing', async () => {
-    const r = await createProduct({}, fd({ Name: 'מטען', Category: 'מטענים', Price: '129', Description: '', Stock: '-4' }));
+    const r = await createProduct({}, fd({ Sku: 'TY-TEST-1', Name: 'מטען', Category: 'מטענים', Price: '129', Description: '', Stock: '-4' }));
     expect(r?.errors?.Stock).toBe('הכמות לא יכולה להיות שלילית');
     expect(erpCreate).not.toHaveBeenCalled();
   });

@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { revalidatePath } from 'next/cache';
 import { erpCreate, erpUpdate, runWebhook, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
@@ -12,6 +14,7 @@ import { parseProductForm } from './parse';
 const msg = (e: unknown, fallback: string) => (e instanceof ErpError ? e.message : fallback);
 
 export async function createProduct(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireSession();
   const parsed = parseProductForm(fd);
   if (!parsed.ok) return { errors: parsed.errors };
   const { Stock, ...rest } = parsed.data;
@@ -33,6 +36,7 @@ export async function createProduct(_prev: FormState, fd: FormData): Promise<For
  * הישן מספרים שני סיפורים על אותו מוצר.
  */
 export async function setStock(id: string, input: string): Promise<ActionResult> {
+  await requireSession();
   const parsed = parseStock(input);
   if (!parsed.ok) return { error: parsed.error };
   try {
@@ -46,6 +50,7 @@ export async function setStock(id: string, input: string): Promise<ActionResult>
 }
 
 export async function reindexProducts(): Promise<ActionResult> {
+  await requireSession();
   try {
     const r = await runWebhook<{ products?: number }>('reindex-products');
     // "0 מוצרים נטענו" מתחת לוי ירוק זה דיווח הצלחה על כלום

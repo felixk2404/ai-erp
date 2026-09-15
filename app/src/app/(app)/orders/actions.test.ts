@@ -1,3 +1,4 @@
+vi.mock('@/lib/require-session', () => ({ requireSession: async () => {} }));
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 vi.mock('server-only', () => ({}));

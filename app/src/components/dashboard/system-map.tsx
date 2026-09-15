@@ -22,7 +22,7 @@ const ago = (iso?: string) => {
 };
 
 /**
- * מפת מערכת: ה-API במרכז, 12 workflows על אליפסה סביבו. קו מסלול לכל צומת;
+ * מפת מערכת: ה-API במרכז, שאר ה-workflows על אליפסה סביבו. קו מסלול לכל צומת;
  * צמתים שרצו ב-24h מקבלים "פקטה" שנעה על המסלול (stroke-dash). LED = סטטוס. רשימה מתחת = זהות לא רק בצבע.
  */
 export function SystemMap({ pulse }: { pulse: Pulse }) {
@@ -41,7 +41,7 @@ export function SystemMap({ pulse }: { pulse: Pulse }) {
     <section className="panel hud p-5 h-full flex flex-col">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-[12px] font-medium tracking-wide text-readout-3">מפת המערכת · 13 workflows</div>
+          <div className="text-[12px] font-medium tracking-wide text-readout-3">מפת המערכת · {pulse.nodes.length} workflows</div>
           <h2 className="text-lg font-bold leading-tight mt-0.5">{pulse.connected ? `${live} פעילים ב-24 השעות האחרונות` : 'המערכת לא מחוברת ל-n8n'}</h2>
         </div>
         <span className="mono text-[10px] text-readout-3 mt-1">{pulse.connected ? 'ONLINE' : 'OFFLINE'}</span>

@@ -173,3 +173,11 @@ describe('placeOrder — מונה הקצב', () => {
     expect(mocks.erpCall).toHaveBeenCalledTimes(5);
   });
 });
+
+it('ניתוק רשת אחרי שליחה עלול להסתיר הזמנה שנשמרה', async () => {
+  mocks.erpCall.mockRejectedValue(new TypeError('fetch failed'));
+  const res = await placeOrder({}, form());
+  expect(res.maybeSaved).toBe(true);
+  expect(res.error).toMatch('ייתכן שההזמנה נשמרה');
+  expect(res.error).not.toMatch('נסו שוב');
+});

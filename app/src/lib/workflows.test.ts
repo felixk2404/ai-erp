@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { WORKFLOWS, workflowById } from './workflows';
 
 describe('workflows manifest', () => {
-  it('has 13 workflows with unique ids, keys and Hebrew names', () => {
-    expect(WORKFLOWS).toHaveLength(13);
-    expect(new Set(WORKFLOWS.map((w) => w.id)).size).toBe(13);
-    expect(new Set(WORKFLOWS.map((w) => w.key)).size).toBe(13);
-    expect(new Set(WORKFLOWS.map((w) => w.name)).size).toBe(13);
+  it('has 14 workflows with unique ids, keys and Hebrew names', () => {
+    expect(WORKFLOWS).toHaveLength(14);
+    expect(new Set(WORKFLOWS.map((w) => w.id)).size).toBe(14);
+    expect(new Set(WORKFLOWS.map((w) => w.key)).size).toBe(14);
+    expect(new Set(WORKFLOWS.map((w) => w.name)).size).toBe(14);
     for (const w of WORKFLOWS) expect(w.name).toMatch(/[֐-׿]/);
   });
   it('has exactly one hub', () => {

@@ -69,7 +69,7 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [ ] Store support timeout: one call in 18 waited ~2 min for the sub-workflow to start (Mac load); `erpCall` budget is 60 s. Consider a "still thinking" retry in the widget or raising the budget.
 - [x] Plan 7 (2026-09-03): admin Orders tab + order page (timeline, next-step button, ship-task close), stock editing in products (WF13 field allow-list gained Stock), dashboard to-ship items gated on WF10's ship task. Commits ef719f2..24742bf.
 - [ ] Deploy admin app (orders tab, stock, lead source "אתר"): `cd app && vercel --prod --yes` — Felix runs it.
-- [ ] invoices/[id] has the same min-width grid overflow at 390 that the order page had (add `min-w-0` on the items section).
+- [x] invoices/[id]: נוסף `min-w-0` לעמודת הפריטים בסקירת 15.9; בדיקת פרטי החשבונית בדפדפן עברה.
 
 ## סקירת פרויקט מלאה (2026-09-08)
 
@@ -126,3 +126,30 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 ### נשאר בכוונה (מתועד ב-README, טבלת הסטיות)
 סוג מסמך יחיד (אין `DocType` בסכימת הקורס) · "משימות להיום" (אין תאריך יעד) · זיכרון שיחה ב-`memoryBufferWindow` · `returnAll` אצל המנהל.
 
+
+## Google watchdog — WF-Health (2026-09-15)
+
+- [x] תבנית `11-google-health.json`: כל שעה, שתי קריאות עם retry פעמיים, עצירה בכשל ו-`alwaysOutputData` לתוצאות ריקות; פתק דביק אחד.
+- [x] WF-Error: הוראת Reconnect מותנית; יובא לפני הפעלת הבדיקה.
+- [x] ייבוא חי: `WF-Health — בריאות Google  id=xLVghmOle8B4SWuo  active=true`; WF-Error `id=WeWGjptjpf66sA7T active=true`.
+- [x] **בדיקה שלילית אמיתית:** הרצה **4318**, `mode=trigger`, `status=error`, צומת `Gmail Probe`, הודעה `The credential "Gmail ERP" needs to be reconnected. (item 0)`. תזמון הוקצר זמנית לדקה כדי להפעיל הרצת production; הוחזר לשעה ואומת `active=true`. הרצה ידנית אינה מפעילה WF-Error.
+- [x] **התראה:** WF-Error הרצה **4319**, `mode=error`, `status=success`, צומת אחרון `Telegram Owner`, מקור `4318`. תשובת Telegram: `ok=true`, `message_id=155`; הטקסט כולל `🔑 טוקן Google פג. n8n → Credentials → Gmail ERP / Google Drive ERP → Reconnect.` (אישור מסירה מה-API, לא אישור שהבעלים קרא).
+- [ ] **בדיקה חיובית ממתינה לבעלים:** Reconnect ל-Gmail ERP ול-Google Drive ERP, ואז להריץ ולתעד מזהה הצלחה שבו Every Hour → Gmail Probe → Drive Probe → Healthy. Gmail עדיין פג בבדיקה; Drive טרם הגיע לביצוע.
+- [x] `cd n8n/code && node --test`: `tests 30; pass 30; fail 0`.
+- [x] `cd app && pnpm test && pnpm typecheck && pnpm lint`: `Test Files 26 passed; Tests 130 passed`, `tsc --noEmit` ו-`eslint` exit 0.
+- [x] `bash scripts/export-workflows.sh`: יוצאו כל 16 ה-workflows; קובצי exported נוצרו רק בסקריפט.
+- [x] תיעוד ומפה: 16 תבניות בריפו, 14 במניפסט (ORDER ו-HANDOFF לא היו במפה); מסמכי תכנון היסטוריים נשארו כפי שנכתבו.
+- [ ] בעלים: מעבר OAuth ל-In production וחיבור מחדש; פריסת אפליקציית הניהול אחרי מיזוג ו-pull.
+
+## סקירת תיקונים — 15.9.2026
+
+דוח ופקודות המשך לקלוד: [claude-project-audit-2026-09-15.md](claude-project-audit-2026-09-15.md).
+
+- [x] אימות בכל פעולות הניהול, תיקון הפניה ב-login ומגבלת ניסיונות.
+- [x] חוזי n8n, משכי המתנה, תוצאת הזמנה לא ודאית, WF3 בלי לידים וניטור עם דפדוף.
+- [x] מק״ט מוצר, שחזור סל, רוחב חשבונית, ולידציית WF10 וביטול retry מסוכן.
+- [x] ייצוא שלא דורס גיבוי כש-API נכשל; ששת ה-workflows המתוקנים יובאו.
+- [x] ניהול 168, חנות 127, n8n 34, בדיקת ייצוא 1; שתי בניות Webpack; 12 בדיקות דפדפן; Airtable schema OK.
+- [x] בדיקת קלט פסול חיה: WF10 הרצה **4333**, הסתיימה ב-Result Error בלי כתיבות.
+- [ ] Google/WF4 חי, אטומיות הזמנות ו-RAG מדורג — הוראות וקריטריוני קבלה בדוח.
+- המשך הסקירה, לפי הנחיית המשתמש: **workflows בלבד**. אין משימות המשך לסרט או לאתרים בסקירה הזו.

@@ -100,16 +100,46 @@ async function fetchRaw(): Promise<Raw> {
   const a = api();
   if (!a) return { reason: 'unconfigured' };
   try {
+    // תקציב אחד לכל הדפדוף: 100 הרצות בלבד עשויות לייצג פחות משעתיים של WF8.
+    const signal = AbortSignal.timeout(8000);
+    const options = { headers: a.headers, cache: 'no-store' as const, signal };
     const [execRes, wfRes] = await Promise.all([
-      fetch(`${a.base}/executions?limit=100`, { headers: a.headers, cache: 'no-store', signal: AbortSignal.timeout(4000) }),
-      fetch(`${a.base}/workflows?limit=100`, { headers: a.headers, cache: 'no-store', signal: AbortSignal.timeout(4000) }),
+      fetch(`${a.base}/executions?limit=250`, options),
+      fetch(`${a.base}/workflows?limit=250`, options),
     ]);
-    if (!execRes.ok) {
-      logError('n8n api', `${execRes.status} on executions`);
-      return { reason: execRes.status === 401 || execRes.status === 403 ? 'unauthorized' : 'unreachable' };
+    const failed = [execRes, wfRes].find(res => !res.ok);
+    if (failed) {
+      logError('n8n api', `${failed.status} on executions/workflows`);
+      return { reason: failed.status === 401 || failed.status === 403 ? 'unauthorized' : 'unreachable' };
     }
-    const execs = ((await execRes.json()) as { data: Execution[] }).data;
-    const workflows = wfRes.ok ? ((await wfRes.json()) as { data: WorkflowInfo[] }).data : [];
+    type Page<T> = { data: T[]; nextCursor?: string | null };
+    const workflowPage = await wfRes.json() as Page<WorkflowInfo>;
+    const workflows = workflowPage.data;
+    let workflowCursor = workflowPage.nextCursor;
+    const seenWorkflows = new Set<string>();
+    while (workflowCursor) {
+      if (seenWorkflows.has(workflowCursor)) throw new Error('Repeated workflow cursor');
+      seenWorkflows.add(workflowCursor);
+      const res = await fetch(`${a.base}/workflows?limit=250&cursor=${encodeURIComponent(workflowCursor)}`, options);
+      if (!res.ok) return { reason: res.status === 401 || res.status === 403 ? 'unauthorized' : 'unreachable' };
+      const page = await res.json() as Page<WorkflowInfo>;
+      workflows.push(...page.data);
+      workflowCursor = page.nextCursor;
+    }
+    let page = await execRes.json() as Page<Execution>;
+    const execs: Execution[] = [];
+    const seen = new Set<string>();
+    while (true) {
+      execs.push(...page.data);
+      // ה-API ממיין לפי מזהה, לא לפי זמן התחלה: הרצה שהמתינה בתור עשויה להתחיל מאוחר.
+      // משלימים את כל העמודים בתקציב הכולל; timeout מדווח כניתוק ולא כסיכום חלקי.
+      if (!page.nextCursor) break;
+      if (seen.has(page.nextCursor)) throw new Error('Repeated execution cursor');
+      seen.add(page.nextCursor);
+      const res = await fetch(`${a.base}/executions?limit=250&cursor=${encodeURIComponent(page.nextCursor)}`, options);
+      if (!res.ok) return { reason: res.status === 401 || res.status === 403 ? 'unauthorized' : 'unreachable' };
+      page = await res.json() as Page<Execution>;
+    }
     return { execs, workflows };
   } catch (e) {
     logError('n8n api unreachable', e);
