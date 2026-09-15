@@ -14,7 +14,7 @@
         -340
       ],
       "parameters": {
-        "content": "## WF3 — סוכן מכירות (מיילים קרים)\nכל 3 שעות, או POST /run-sales. בוחר ליד New אחד, סוכן LLM כותב מייל קר בעברית (prompts/sales.md), שולח ב-Gmail ורק אז מסמן Contacted.\n\n**צריך:** Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret",
+        "content": "## WF3 — סוכן מכירות\nשני מצבים. **מייל קר אישי**: כל 3 שעות או POST /run-sales — ליד New אחד בלבד (מגבלת בטיחות מהמסמך), הסוכן כותב לפי prompts/sales.md, שולח ורק אז מסמן Contacted. **קמפיין מוצרים**: POST /campaign בלבד — שלושה מוצרים במלאי עם תמונה, קופי לפי prompts/campaign.md, ומייל HTML ממותג לעד 20 לידים בסיבוב אחד. מי שהשיב \"הסר\" (Dead) מסונן החוצה.\n\n**צריך:** Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret",
         "height": 240,
         "width": 460,
         "color": 4
@@ -142,12 +142,13 @@
       ],
       "parameters": {
         "promptType": "define",
-        "text": "=כתוב מייל קר ראשון לליד הבא.\nשם: {{ $('Next New Lead').first().json.fields.Name }}\nחברה: {{ $('Next New Lead').first().json.fields.Company || 'לא ידוע' }}\nמייל: {{ $('Next New Lead').first().json.fields.Email }}",
+        "text": "=כתוב מייל קר ראשון לליד הבא.\nשם: {{ $('Next New Lead').first().json.fields.Name }}\nחברה: {{ $('Next New Lead').first().json.fields.Company || 'לא ידוע' }}\nמייל: {{ $('Next New Lead').first().json.fields.Email }}\nתחום עניין: {{ $('Next New Lead').first().json.fields.Note || 'לא ידוע' }}",
         "options": {
           "systemMessage": "__PROMPT_SALES__",
           "maxIterations": 3
         }
-      }
+      },
+      "notes": "מקבל גם את Leads.Note — ההקשר שבוט הטלגרם כותב (\"מתעניין ב{מוצר} ({SKU})\"). בלעדיו הסוכן כותב מייל גנרי גם כשידוע בדיוק במה הליד התעניין."
     },
     {
       "name": "OpenAI Chat Model",
@@ -322,6 +323,183 @@
         },
         "options": {}
       }
+    },
+    {
+      "name": "Campaign Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        320
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "campaign",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "__CRED_WEBHOOK__",
+          "name": "ERP Webhook Secret"
+        }
+      },
+      "notes": "המצב השני של סוכן המכירות: קמפיין מוצרים לכל רשימת הלידים, בסיבוב אחד, רק על פי דרישה. המסלול המתוזמן שלמעלה נשאר ליד אחד בכל הרצה, כפי שמסמך הקורס דורש."
+    },
+    {
+      "name": "Featured Products",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        260,
+        320
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_PRODUCTS__"
+        },
+        "filterByFormula": "AND({Stock}>5, {ImageUrl}!='', {Price}>0)",
+        "returnAll": false,
+        "limit": 3,
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "שלושה מוצרים במלאי שיש להם תמונה ומחיר. אלה הכרטיסים שייבנו במייל."
+    },
+    {
+      "name": "Campaign Copy",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        520,
+        320
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=כתוב את גוף ההודעה לקמפיין. שלושת המוצרים שיופיעו במייל:\n{{ $('Featured Products').all().map((i) => '- ' + i.json.fields.Name + ' — ' + i.json.fields.Price + ' ₪').join('\\n') }}",
+        "options": {
+          "systemMessage": "__PROMPT_CAMPAIGN__",
+          "maxIterations": 2
+        }
+      },
+      "notes": "כותב רק את שלוש-חמש שורות הפתיחה. הכרטיסים, המחירים, הכפתורים והחתימה נבנים בתבנית."
+    },
+    {
+      "name": "Target Leads",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        780,
+        320
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "filterByFormula": "AND({Email}!='', {Status}!='Dead')",
+        "returnAll": false,
+        "limit": 20,
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "עד 20 נמענים בסיבוב אחד — תקרה מכוונת, כדי שטעות לא תשלח מאות מיילים. סטטוס Dead מסונן החוצה: זה מי שהשיב \"הסר\", והבטחנו לו שלא נשלח יותר. executeOnce: הצומת שלפניו מחזיר שלושה מוצרים, ובלי זה רשימת הנמענים נבנית שלוש פעמים וכל ליד מקבל שלושה עותקים.",
+      "executeOnce": true
+    },
+    {
+      "name": "Send Campaign",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        320
+      ],
+      "parameters": {
+        "sendTo": "={{ $json.fields.Email }}",
+        "subject": "שלושה פריטים שכדאי להחזיק במלאי | איי.איי אלקטרוניקה",
+        "emailType": "html",
+        "message": "={{ (() => { const esc = (s) => String(s ?? '').replace(/[&<>\"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c])); const name = String($json.fields && $json.fields.Name || '').trim(); const hello = name ? 'היי ' + esc(name) + ',' : 'היי,'; const intro = String($('Campaign Copy').first().json.output || '').trim().split(/\\n{2,}|\\n/).filter((l) => l.trim()).map((l) => '<p style=\"margin:0 0 10px;\">' + esc(l) + '</p>').join(''); const cards = $('Featured Products').all().map((it) => { const f = it.json.fields || {}; const hl = String(f.Highlights || '').split('\\n')[0]; const url = 'https://ai-electronics-one.vercel.app/products/' + encodeURIComponent(String(f.Sku || '')); const price = f.Price != null ? Number(f.Price).toLocaleString('he-IL') + ' \\u20aa' : ''; return '<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;margin:0 0 14px;background:#ffffff;\"><tr><td style=\"padding:0;\"><a href=\"' + url + '\" style=\"display:block;\"><img src=\"' + esc(f.ImageUrl) + '\" alt=\"' + esc(f.Name) + '\" width=\"512\" style=\"display:block;width:100%;max-width:512px;height:auto;border:0;background:#f4f6f8;\"></a></td></tr><tr><td style=\"padding:14px 16px 16px;text-align:right;\"><div style=\"color:#111827;font-size:17px;font-weight:700;line-height:1.35;\">' + esc(f.Name) + '</div><div style=\"color:#6b7280;font-size:13px;line-height:1.6;margin-top:6px;\">' + esc(hl) + '</div><div style=\"margin-top:12px;\"><span style=\"color:#0f766e;font-size:20px;font-weight:800;\">' + price + '</span><span style=\"color:#9ca3af;font-size:12px;margin-right:6px;\">כולל מע\\u05f4מ</span></div><div style=\"margin-top:14px;\"><a href=\"' + url + '\" style=\"display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;padding:10px 22px;border-radius:8px;\">לפרטים ולהזמנה</a></div><div style=\"color:#9ca3af;font-size:11px;margin-top:10px;\" dir=\"ltr\">' + esc(f.Sku) + '</div></td></tr></table>'; }).join(''); return '<!doctype html><html lang=\"he\" dir=\"rtl\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"></head><body style=\"margin:0;padding:0;background:#eef1f4;\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#eef1f4;padding:24px 12px;font-family:Heebo,Arial,Helvetica,sans-serif;\"><tr><td align=\"center\"><table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:560px;background:#ffffff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden;\"><tr><td style=\"background:#0f766e;padding:18px 22px;text-align:right;\"><img src=\"https://ai-erp-rho.vercel.app/brand/logo-mark.png\" alt=\"\" width=\"34\" height=\"34\" style=\"display:inline-block;vertical-align:middle;border:0;\"><span style=\"color:#ffffff;font-size:17px;font-weight:700;vertical-align:middle;margin-right:10px;\">איי.איי אלקטרוניקה</span></td></tr><tr><td style=\"padding:22px 22px 4px;color:#111827;font-size:15px;line-height:1.75;text-align:right;\"><p style=\"margin:0 0 10px;font-weight:700;\">' + hello + '</p>' + intro + '</td></tr><tr><td style=\"padding:8px 22px 0;\">' + cards + '</td></tr><tr><td style=\"padding:4px 22px 24px;text-align:center;\"><a href=\"https://ai-electronics-one.vercel.app/products\" style=\"display:inline-block;border:1px solid #0f766e;color:#0f766e;text-decoration:none;font-size:14px;font-weight:700;padding:11px 26px;border-radius:8px;\">לקטלוג המלא</a></td></tr><tr><td style=\"background:#f9fafb;border-top:1px solid #e5e7eb;padding:16px 22px;color:#6b7280;font-size:12px;line-height:1.7;text-align:right;\">צוות המכירות, איי.איי אלקטרוניקה \\u00b7 AI Electronics<br>מוצרים מקוריים בלבד, עם אחריות יבואן רשמי. המחירים כוללים מע\\u05f4מ.<br>להסרה מרשימת התפוצה, השיבו למייל זה עם המילה <strong>הסר</strong>.</td></tr></table></td></tr></table></body></html>'; })() }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "__CRED_GMAIL__",
+          "name": "Gmail ERP"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "רץ פעם אחת לכל ליד, עם פנייה בשם. בלי retryOnFail — שליחת מייל אינה אידמפוטנטית. onError=continue כדי שכתובת אחת פסולה לא תעצור את כל הקמפיין."
+    },
+    {
+      "name": "Campaign Result",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1300,
+        320
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ok",
+              "name": "ok",
+              "value": "={{ true }}",
+              "type": "boolean"
+            },
+            {
+              "id": "n",
+              "name": "sent",
+              "value": "={{ $('Target Leads').all().length }}",
+              "type": "number"
+            },
+            {
+              "id": "p",
+              "name": "products",
+              "value": "={{ $('Featured Products').all().map((i) => i.json.fields.Sku).join(', ') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "executeOnce": true
     }
   ],
   "connections": {
@@ -398,6 +576,11 @@
             "node": "Sales Agent",
             "type": "ai_languageModel",
             "index": 0
+          },
+          {
+            "node": "Campaign Copy",
+            "type": "ai_languageModel",
+            "index": 0
           }
         ]
       ]
@@ -414,6 +597,61 @@
         [
           {
             "node": "No Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Campaign Webhook": {
+      "main": [
+        [
+          {
+            "node": "Featured Products",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Featured Products": {
+      "main": [
+        [
+          {
+            "node": "Campaign Copy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Campaign Copy": {
+      "main": [
+        [
+          {
+            "node": "Target Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Target Leads": {
+      "main": [
+        [
+          {
+            "node": "Send Campaign",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Campaign": {
+      "main": [
+        [
+          {
+            "node": "Campaign Result",
             "type": "main",
             "index": 0
           }

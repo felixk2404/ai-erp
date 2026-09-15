@@ -11,7 +11,7 @@ NOTES = {
     '00-error': ('WF-Error — התראות שגיאה', 'כל כשל בכל workflow מגיע לכאן (settings.errorWorkflow). רעש רשת חולף (socket hang up כשהמק נרדם) מסונן; תקלה אמיתית → טלגרם לבעלים; אם גם הטלגרם נכשל → משימה ב-Airtable.', 'Telegram Manager, Airtable ERP'),
     '01-invoices-validate': ('WF1 — אימות חשבוניות', 'טריגר Airtable (Created, כל דקה). בודק סכום ולקוח, מקצה INV-000N, מחשב מע"מ לפי תאריך המסמך (17%/18%) וסה"כ, מסמן validated או error + משימת תיקון.', 'Airtable ERP'),
     '02-leads-dedupe': ('WF2 — קליטת לידים וכפילויות', 'טריגר Airtable (Created, כל דקה). ליד עם אותו מייל, או אותו טלפון (ספרות בלבד), מסומן Duplicate; אחרת New.', 'Airtable ERP'),
-    '03-sales-cold-email': ('WF3 — סוכן מכירות (מיילים קרים)', 'כל 3 שעות, או POST /run-sales. בוחר ליד New אחד, סוכן LLM כותב מייל קר בעברית (prompts/sales.md), שולח ב-Gmail ורק אז מסמן Contacted.', 'Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret'),
+    '03-sales-cold-email': ('WF3 — סוכן מכירות', 'שני מצבים. **מייל קר אישי**: כל 3 שעות או POST /run-sales — ליד New אחד בלבד (מגבלת בטיחות מהמסמך), הסוכן כותב לפי prompts/sales.md, שולח ורק אז מסמן Contacted. **קמפיין מוצרים**: POST /campaign בלבד — שלושה מוצרים במלאי עם תמונה, קופי לפי prompts/campaign.md, ומייל HTML ממותג לעד 20 לידים בסיבוב אחד. מי שהשיב "הסר" (Dead) מסונן החוצה.', 'Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret'),
     '04-sales-replies': ('WF4 — סוכן מכירות (תשובות)', 'Gmail כל 30 דקות. תשובה מליד Contacted מסווגת: מעוניין → Qualified + משימת שיחה; לא מעוניין או "הסר" → Dead; תשובה אוטומטית → מתעלמים.', 'Gmail ERP, Airtable ERP, OpenAI ERP'),
     '05-customer-service': ('WF5 — סוכן שירות לקוחות (טלגרם)', 'בוט הלקוחות. תפריט קטלוג בכפתורים, לכידת ליד ("מעוניין"), שיתוף טלפון, וכל טקסט חופשי → WF5-core.', 'Telegram Customer, Airtable ERP'),
     '05b-support-core': ('WF5-core — סוכן שירות לקוחות', 'הליבה המשותפת לטלגרם, לאתר ולחנות. RAG משני כלים (מדיניות, מוצרים) ב-pgvector, check_stock חי מ-Airtable, ו-handoff לנציג. הפלט עובר שער דטרמיניסטי (code/finalize-reply.js).', 'OpenAI ERP, Supabase ERP, Airtable ERP'),
@@ -22,6 +22,7 @@ NOTES = {
     '09-manager-telegram': ('WF9 — סוכן המנהל (טלגרם)', 'בוט הבעלים. תנאי Is Owner על Chat ID (מסמך הקורס, נספח) — כל אחד אחר מקבל סירוב. שאלות → WF9-core.', 'Telegram Manager'),
     '09b-manager-core': ('WF9-core — סוכן המנהל', 'הליבה המשותפת לטלגרם ולאפליקציה. Invoices/Leads/Tasks/Orders מסוכמים בצמתי Summarize + Aggregate, והסוכן (בלי כלים) רק מנסח בעברית.', 'Airtable ERP, OpenAI ERP'),
     '10-order': ('WF10 — הזמנה', 'תת-workflow של WF13, מהחנות או מטופס "הזמנה חדשה" בניהול. מאמת, מתמחר מהקטלוג (לא מהדפדפן), מספר ORD/INV, יוצר לקוח/הזמנה/חשבונית, מוריד מלאי, שולח מייל אישור ומודיע לבעלים.', 'Airtable ERP, Gmail ERP, Telegram Manager'),
+    '11-google-health': ('WF-Health — בריאות Google', 'כל שעה קורא תווית Gmail וקובץ בתיקיית Drive בצמתים רגילים. כשל אימות עוצר ומפעיל WF-Error → טלגרם עם הוראת Reconnect; אין שליחה או שינוי נתונים.', 'Gmail ERP, Google Drive ERP, WF-Error'),
     '13-api': ('WF13 — API לאפליקציה ולחנות', 'POST /erp עם x-erp-secret. מנתב create/update (טבלאות ושדות ברשימת היתר), chat (מנהל), support (שירות), order (→ WF10), order_status. הגבול היחיד שחשוף החוצה.', 'ERP Webhook Secret, Airtable ERP'),
 }
 
