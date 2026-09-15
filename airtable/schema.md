@@ -9,9 +9,9 @@
 | Invoices | Amount | Number (2) | לפני מע"מ |
 | Invoices | VatAmount | Number (2) | מחושב ב-WF1 |
 | Invoices | Total | Number (2) | מחושב ב-WF1 |
-| Invoices | Status | Single line text | new / validated / generated / error |
+| Invoices | Status | Single line text | new / validated / generated / paid / error |
 | Invoices | PdfUrl | URL | מתמלא ב-WF8 |
-| Items | Long text | JSON של שורות החשבונית: `[{sku,name,qty,price}]`. Amount = סכום השורות (מחושב באפליקציה). |
+| Invoices | Items | Long text | JSON של שורות החשבונית: `[{sku,name,qty,price}]`. Amount = סכום השורות (מחושב באפליקציה). |
 | Invoices | PdfLockedAt | Date & time (ISO, 24h) | WF8 תופס חשבונית לפני הפקת PDF; משתחרר אחרי 15 דקות |
 | Invoices | Created | Created time | טריגר WF1 |
 | Leads | Name | Single line text | ראשי |

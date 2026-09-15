@@ -42,7 +42,7 @@ create Customers "$(text CustomerId),$(text Name),$(email Email),$(phone Phone)"
 create Orders    "$(text OrderNumber),$(text CustomerId),$(text Name),$(email Email),$(phone Phone),$(text Address),$(text City),$(longtext Items),$(num Subtotal),$(num Shipping),$(num Vat),$(num Total),$(text Status),$(text InvoiceNumber),$(longtext Note)"
 # Metadata API אינו תומך ביצירת createdTime (UNSUPPORTED_FIELD_TYPE_FOR_CREATE), גם לא כשדה נפרד.
 # אבל שינוי שם כן נתמך: אם נוצר ידנית בשם אחר (created / Created Time), מתקנים ל-Created.
-for t in Invoices Leads Orders; do
+for t in Invoices Leads Orders Tasks; do
   if has_field "$t" Created; then echo "$t.Created exists"; continue; fi
   fid=$(echo "$SCHEMA" | jq -r --arg t "$t" '.tables[] | select(.name==$t) | .fields[] | select(.type=="createdTime") | .id' | head -1)
   if [ -n "$fid" ]; then
