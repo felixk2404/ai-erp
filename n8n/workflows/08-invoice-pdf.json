@@ -6,7 +6,7 @@
   },
   "nodes": [
     {
-      "name": "Every 5 Minutes",
+      "name": "Every Minute",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -18,12 +18,12 @@
           "interval": [
             {
               "field": "minutes",
-              "minutesInterval": 5
+              "minutesInterval": 1
             }
           ]
         }
       },
-      "notes": "הרצה מלאה של חשבונית אחת נמדדה ב-64–312 שניות (הרצות 860/863/882/884/885/468). דקה אחת הייתה קצרה מהעבודה עצמה."
+      "notes": "כל דקה, כמו במסמך הקורס §7. ה-lease של 15 דקות ב-PdfLockedAt מונע הפקה כפולה גם בקצב הזה."
     },
     {
       "name": "Validated Invoices",
@@ -498,7 +498,7 @@
         ]
       ]
     },
-    "Every 5 Minutes": {
+    "Every Minute": {
       "main": [
         [
           {

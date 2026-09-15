@@ -52,7 +52,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF5-handoff מסירה לנציג | Execute Workflow (כלי `handoff` של WF5-core) | "תתקשרו אליי לגבי 3 מסכים" → שם+טלפון → ליד (Source web/telegram) + משימת "לחזור ל…" + הודעה לבעלים; `api-test.sh` support |
 | WF6 מדיניות → RAG | `webhook.sh reindex-policies` | `rag-count.sh` → policy: ~79 |
 | WF7 מוצרים → RAG | `webhook.sh reindex-products` | `rag-count.sh` → product: 34 |
-| WF8 PDF | כל 5 דקות, Invoices.Status=validated ולא תפוסה | PdfUrl בדרייב, Status generated |
+| WF8 PDF | כל דקה, Invoices.Status=validated ולא תפוסה | PdfUrl בדרייב, Status generated |
 | WF9 מנהל (טלגרם) | Telegram @aielc_manager_bot, רק Chat ID של הבעלים | "מה ההכנסות?" |
 | WF9-core | Execute Workflow (מ-WF9 ו-WF13) | דרך WF13 chat |
 | WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N`; הזמנה פיזית → משימת "לשלוח ORD-…", מלאי נמוך → משימת "להזמין מלאי" |
@@ -105,7 +105,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
   "subtotal": 439, "shipping": 0, "total": 439, "created": "2026-09-02T14:37:30.000Z",
   "invoiceNumber": "INV-0003", "pdfUrl": "https://drive.google.com/...", "invoiceStatus": "generated" } }
 ```
-לא נמצא: `{ "ok": false, "error": "ההזמנה לא נמצאה" }`. `pdfUrl`/`invoiceStatus` הם `null` עד ש-WF8 מייצר את ה-PDF (עד כ-7 דקות אחרי ההזמנה — פולינג של 5 דקות ועוד כדקה-שתיים של הפקה).
+לא נמצא: `{ "ok": false, "error": "ההזמנה לא נמצאה" }`. `pdfUrl`/`invoiceStatus` הם `null` עד ש-WF8 מייצר את ה-PDF (עד כ-3 דקות אחרי ההזמנה — פולינג של דקה ועוד כדקה-שתיים של הפקה).
 
 **`support`** — צ'אט שירות לקוחות. הזיכרון בצד השרת לפי `sessionId` (WF13 מוסיף קידומת `web-`), ולכן **אין** לשלוח היסטוריית שיחה מהדפדפן:
 ```json
