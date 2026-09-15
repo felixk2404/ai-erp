@@ -24,10 +24,16 @@ n8n מקומי: http://localhost:5678 · ציבורי: https://goofy-glamour-syr
 בדיקת סביבה: `n8n/scripts/verify-env.sh` · סכימת Airtable: `airtable/verify-schema.sh` · Supabase: `n8n/scripts/diagnose-supabase.sh`
 
 ## 3. Google OAuth
-Google Cloud project: `Default Gemini Project` (gen-lang-client-0155888723). OAuth client `n8n-erp`, Web application,
-redirect URI `https://goofy-glamour-syrup.ngrok-free.dev/rest/oauth2-credential/callback`.
+Google Cloud project: `Default Gemini Project` (gen-lang-client-0155888723). OAuth client `n8n-erp`, Web application
+(Client ID מסתיים ב-`98252vbo03jruiiq5qvsd6hj75609k7n`; מסך ההסכמה של הפרויקט נקרא **G-Studio**, ולכן זה השם שגוגל מציג בחלון — לא אפליקציה אחרת).
+שתי כתובות חזרה רשומות אצל גוגל, ושתיהן נחוצות:
+`https://goofy-glamour-syrup.ngrok-free.dev/rest/oauth2-credential/callback` ו-`http://localhost:5678/rest/oauth2-credential/callback`.
 Audience: External, Testing, test user = המייל של הסטודנט. במצב Testing ה-refresh token פג אחרי 7 ימים:
 אם Gmail/Drive אדומים ב-n8n → Credentials → פותחים → Reconnect. עושים זאת ביום הדמו.
+
+- **את ה-Reconnect עושים דרך `http://localhost:5678`, לא דרך ngrok (אומת 15.9.2026).** ngrok בגרסה החינמית מגיש מסך אזהרה משלו (`ERR_NGROK_6024`) לכל בקשה שמגיעה מדפדפן — כולל ההפניה החוזרת של גוגל. התוצאה: הקוד של גוגל לא מגיע ל-n8n, החיבור נכשל **בשקט**, ובלוג אין שום שגיאה. אומת בשני הכיוונים: בקשה עם User-Agent של דפדפן מקבלת דף אזהרה של 2.8KB ולא מופיעה כלל ב-inspector של הטאנל, ואילו אותה בקשה עם הכותרת `ngrok-skip-browser-warning` מועברת ו-n8n רושם `OAuth2 callback failed`. ngrok גם לא שומר עוגייה, ולכן "ללחוץ Visit Site פעם אחת" לא פותר את זה.
+  לכן `N8N_EDITOR_BASE_URL` ב-`n8n/docker-compose.yml` מצביע ל-`http://localhost:5678/` — n8n גוזר ממנו את כתובת החזרה. `WEBHOOK_URL` נשאר על ngrok, ולכן הבוטים, החנות והאפליקציה לא הושפעו (אומת אחרי ה-restart: שני הבוטים עדיין רשומים על הדומיין של ngrok, `pending: 0`). המחיר היחיד: קישור ההרצה בהתראות של WF-Error הוא כתובת localhost — שמיש לבעלים, חסר משמעות למי שלא על המחשב.
+- **אם Reconnect "נשמר" אבל הטוקן לא התחלף:** בודקים את חותמת השמירה במסד — `docker cp` של `database.sqlite` **יחד עם** `database.sqlite-wal`, אחרת קוראים מצב ישן. ואז `deactivate`+`activate` ל-WF4 ומחפשים `Access could not be refreshed` בלוג; אפס שורות = הטוקן תקין.
 
 ## 4. credentials ב-n8n (שמות מדויקים, תוכנית 2 מפנה אליהם)
 Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase ERP · ERP Webhook Secret · Gmail ERP · Google Drive ERP
