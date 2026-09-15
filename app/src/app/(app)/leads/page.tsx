@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { list, escapeFormula } from '@/lib/airtable';
+import { searchFormula } from '@/lib/search-formula';
 import { dateIL } from '@/lib/format';
 import { LEAD_STATUSES, type LeadFields } from '@/lib/types';
 import { statusMeta } from '@/lib/status';
@@ -12,18 +13,29 @@ import { ActionButton } from '@/components/forms/action-button';
 import { FieldError } from '@/components/forms/field-error';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { createLead, runSalesNow } from './actions';
 import { LeadStatusSelect } from './status-select';
 
 export const dynamic = 'force-dynamic';
 
-export default async function LeadsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const { status = '' } = await searchParams;
+type SP = { status?: string; q?: string };
+
+export default async function LeadsPage({ searchParams }: { searchParams: Promise<SP> }) {
+  const { status: requested = '', q = '' } = await searchParams;
+  const status = (LEAD_STATUSES as readonly string[]).includes(requested) ? requested : '';
+
+  const filters: string[] = [];
+  if (status) filters.push(`{Status}='${escapeFormula(status)}'`);
+  const search = searchFormula(['Name', 'Email', 'Company', 'Phone'], q);
+  if (search) filters.push(search);
   const leads = await list<LeadFields>('Leads', {
-    filter: status ? `{Status}='${escapeFormula(status)}'` : undefined,
+    filter: filters.length ? `AND(${filters.join(',')})` : undefined,
     sort: [{ field: 'Created', direction: 'desc' }],
   });
+
+  const href = (s: string) => `/leads?${new URLSearchParams({ ...(s ? { status: s } : {}), ...(q ? { q } : {}) })}`.replace(/\?$/, '');
 
   return (
     <>
@@ -68,9 +80,22 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         }
       />
 
+      <form className="flex flex-wrap items-center gap-2 mb-3" role="search">
+        <input type="hidden" name="status" value={status} />
+        <Input name="q" defaultValue={q} placeholder="חיפוש לפי שם, אימייל, חברה או טלפון" className="max-w-xs" aria-label="חיפוש" />
+        <Button type="submit" variant="secondary">
+          חיפוש
+        </Button>
+        {q && (
+          <Link href={href(status)} className="text-ink-2 hover:text-ink text-sm">
+            נקה
+          </Link>
+        )}
+      </form>
+
       <nav aria-label="סינון לפי סטטוס" className="flex flex-wrap gap-1 mb-4">
         <Link
-          href="/leads"
+          href={href('')}
           className={`h-9 px-3 inline-flex items-center rounded-md text-sm ${!status ? 'bg-inkblue-soft text-inkblue font-medium' : 'text-ink-2 hover:bg-paper-3'}`}
         >
           הכל
@@ -78,7 +103,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         {LEAD_STATUSES.map((s) => (
           <Link
             key={s}
-            href={`/leads?status=${s}`}
+            href={href(s)}
             className={`h-9 px-3 inline-flex items-center rounded-md text-sm ${status === s ? 'bg-inkblue-soft text-inkblue font-medium' : 'text-ink-2 hover:bg-paper-3'}`}
           >
             {statusMeta('Leads', s).label}
@@ -88,7 +113,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
 
       <div className="panel overflow-hidden">
         {leads.length === 0 ? (
-          <EmptyState title="אין לידים" hint={status ? 'אין לידים בסטטוס הזה' : 'הוסף ליד ראשון'} />
+          <EmptyState title="אין לידים" hint={status || q ? 'נסה סינון או חיפוש אחר' : 'הוסף ליד ראשון'} />
         ) : (
           <Table label="לידים">
             <TableHeader>

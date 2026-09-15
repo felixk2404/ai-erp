@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { list, escapeFormula } from '@/lib/airtable';
+import { searchFormula } from '@/lib/search-formula';
 import { dateIL } from '@/lib/format';
 import { ORDER_STATUSES, type OrderFields } from '@/lib/types';
 import { statusMeta } from '@/lib/status';
@@ -31,10 +32,8 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
 
   const filters: string[] = [];
   if (status) filters.push(`{Status}='${escapeFormula(status)}'`);
-  if (q.trim()) {
-    const needle = escapeFormula(q.trim().toLowerCase());
-    filters.push(`OR(FIND('${needle}', LOWER({OrderNumber})), FIND('${needle}', LOWER({Name})), FIND('${needle}', LOWER({Email})))`);
-  }
+  const search = searchFormula(['OrderNumber', 'Name', 'Email'], q);
+  if (search) filters.push(search);
   const orders = await list<OrderFields>('Orders', {
     filter: filters.length ? `AND(${filters.join(',')})` : undefined,
     sort: [{ field: 'Created', direction: 'desc' }],

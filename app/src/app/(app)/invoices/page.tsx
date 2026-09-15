@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { list, escapeFormula } from '@/lib/airtable';
+import { searchFormula } from '@/lib/search-formula';
 import { dateIL } from '@/lib/format';
 import { INVOICE_STATUSES, type CustomerFields, type InvoiceFields, type ProductFields } from '@/lib/types';
 import { statusMeta } from '@/lib/status';
@@ -25,10 +26,8 @@ export default async function InvoicesPage({ searchParams }: { searchParams: Pro
 
   const filters: string[] = [];
   if (status) filters.push(`{Status}='${escapeFormula(status)}'`);
-  if (q) {
-    const needle = escapeFormula(q.toLowerCase());
-    filters.push(`OR(FIND('${needle}', LOWER({InvoiceNumber})), FIND('${needle}', LOWER({CustomerId})))`);
-  }
+  const search = searchFormula(['InvoiceNumber', 'CustomerId'], q);
+  if (search) filters.push(search);
 
   const [invoices, customers, products] = await Promise.all([
     list<InvoiceFields>('Invoices', {
