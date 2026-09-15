@@ -149,8 +149,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1040,
-        -100
+        1360,
+        0
       ],
       "parameters": {
         "authentication": "airtableTokenApi",
@@ -168,7 +168,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": "={{ $json.records[0].id }}",
+            "id": "={{ $('Contacted Lead').first().json.records[0].id }}",
             "Status": "Qualified"
           },
           "matchingColumns": [
@@ -217,8 +217,8 @@
       "type": "n8n-nodes-base.airtable",
       "typeVersion": 2.2,
       "position": [
-        1300,
-        -100
+        1600,
+        0
       ],
       "parameters": {
         "authentication": "airtableTokenApi",
@@ -296,6 +296,182 @@
         }
       },
       "onError": "continueRegularOutput"
+    },
+    {
+      "name": "Reply Text",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        0
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "t",
+              "name": "text",
+              "value": "={{ ($('Gmail Trigger').first().json.Subject || '') + '\\n' + ($('Gmail Trigger').first().json.snippet || '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notes": "הנושא והתקציר של המייל — זה מה שהמסווג קורא. מספיק לכוונה, בלי לטעון את הגוף המלא."
+    },
+    {
+      "name": "Classify Reply",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        1100,
+        0
+      ],
+      "parameters": {
+        "inputText": "={{ $json.text }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "interested",
+              "description": "הליד מביע עניין, שואל על מחיר, כמות, זמינות, או מבקש שיחה, פגישה או הצעת מחיר."
+            },
+            {
+              "category": "not_interested",
+              "description": "הליד מסרב, בנימוס או בלי: לא רלוונטי, אין צורך, לא עכשיו, תודה אבל לא."
+            },
+            {
+              "category": "unsubscribe",
+              "description": "הליד מבקש להפסיק לקבל מיילים: המילה \"הסר\", unsubscribe, remove me, תפסיקו לשלוח."
+            },
+            {
+              "category": "auto_reply",
+              "description": "תשובה אוטומטית: מחוץ למשרד, בחופשה, out of office, auto-reply, delivery failure, mailer-daemon, bounce."
+            }
+          ]
+        },
+        "options": {
+          "fallback": "other",
+          "systemPromptTemplate": "סווג את תשובת המייל של הליד לאחת מהקטגוריות: {categories}. השתמש בהוראות הפורמט שלמטה. אל תסביר, החזר רק JSON."
+        }
+      },
+      "notes": "מסמך הקורס קורא לזה \"סוכן מכירות — בדיקת תשובות\": כאן הסוכן באמת קורא את התשובה במקום להניח שכל מייל = עניין. סדר הקטגוריות קובע את הפלטים: 0 מעוניין, 1 לא, 2 הסר, 3 אוטומטי, 4 אחר (fallback)."
+    },
+    {
+      "name": "Classifier Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1100,
+        220
+      ],
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "__MODEL__"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "openAiApi": {
+          "id": "__CRED_OPENAI__",
+          "name": "OpenAI ERP"
+        }
+      }
+    },
+    {
+      "name": "Mark Dead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        1360,
+        160
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Contacted Lead').first().json.records[0].id }}",
+            "Status": "Dead",
+            "Note": "={{ (($('Contacted Lead').first().json.records[0].fields.Note || '') + ' ' + ($('Classify Reply').first().json.category === 'unsubscribe' ? 'ביקש הסרה מהתפוצה' : 'השיב שלא מעוניין') + ' (' + $now.toFormat('dd/MM/yyyy') + ')').trim() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "notes": "Dead = לא נשלח לו יותר (WF3 בוחר רק New). \"הסר\" מכבד את ההבטחה שבשורה האחרונה של המייל הקר."
+    },
+    {
+      "name": "Ignored — אוטומטי",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        320
+      ],
+      "parameters": {},
+      "notes": "אוטו-רספונדר או bounce. הליד נשאר Contacted כדי שתשובה אמיתית מאוחר יותר עדיין תיתפס."
     }
   ],
   "connections": {
@@ -336,7 +512,7 @@
       "main": [
         [
           {
-            "node": "Mark Qualified",
+            "node": "Reply Text",
             "type": "main",
             "index": 0
           }
@@ -350,6 +526,67 @@
           {
             "node": "Create Call Task",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply Text": {
+      "main": [
+        [
+          {
+            "node": "Classify Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Reply": {
+      "main": [
+        [
+          {
+            "node": "Mark Qualified",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Dead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark Dead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ignored — אוטומטי",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ignored — אוטומטי",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classifier Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classify Reply",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]
