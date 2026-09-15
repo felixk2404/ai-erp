@@ -4,6 +4,7 @@
 // למה זה קיים: n8n מקומי על מק חי מאחורי ngrok. כשהמחשב נרדם, מתעורר, או מחליף רשת,
 // הסוקט אל api.airtable.com נסגר באמצע וכל טריגר פולינג נכשל. ב-24 שעות נמדדו 12 כשלים
 // כאלה מתוך ~2,880 קריאות — 0.4%. כל אחד מהם ירה התראה לטלגרם, וכולן היו רעש.
+// 'No bridge acquired' הוא שיהוק פנימי של ה-task runner של n8n בזמן יקיצה — נעלם בהרצה הבאה.
 // שכבת הרשת בלבד: 4xx/5xx מהשרת, credentials פגים ושגיאות עסקיות *לא* נחשבים חולפים,
 // כי הם לא מתקנים את עצמם והם בדיוק מה שההתראה נועדה לתפוס.
 //
@@ -12,6 +13,9 @@ const TRANSIENT_RE = new RegExp(
   [
     'socket hang up',
     'closed unexpectedly',
+    'connection cannot be established',
+    'DNS server returned an error',
+    'No bridge acquired',
     'network socket disconnected',
     'fetch failed',
     'getaddrinfo',

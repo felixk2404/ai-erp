@@ -13,6 +13,16 @@ test('כשל פולינג של טריגר בזמן שהמחשב נרדם — ח�
   assert.equal(isTransient({ execution: { error: { message: 'getaddrinfo EAI_AGAIN api.airtable.com' } } }), true);
 });
 
+test('שלוש הודעות שהגיעו לטלגרם ב-14–15.9.2026 ולא היו צריכות — רשת ו-task runner, לא תקלה', () => {
+  assert.equal(isTransient({ trigger: { error: { message: 'The connection cannot be established, this usually occurs due to an incorrect host (domain) value' } } }), true);
+  assert.equal(isTransient({ trigger: { error: { message: 'The DNS server returned an error, perhaps the server is offline' } } }), true);
+  assert.equal(isTransient({ trigger: { error: { message: 'No bridge acquired for this context. Call acquire() first.' } } }), true);
+});
+
+test('כשל אימות אינו חולף — הוא לא מתקן את עצמו ומחייב Reconnect ידני', () => {
+  assert.equal(isTransient({ trigger: { error: { message: 'Access could not be refreshed because the connected account has revoked access, the refresh token expired, or the account password or permissions changed.' } } }), false);
+});
+
 test('ההודעה נקראת גם מ-description, כשאין message', () => {
   assert.equal(isTransient({ trigger: { error: { description: CLOSED } } }), true);
   assert.equal(errorMessage({ trigger: { error: { description: 'x' } } }), 'x');
