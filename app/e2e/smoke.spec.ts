@@ -138,3 +138,57 @@ test('dashboard shows charts and attention panel', async ({ page }) => {
   await expect(page.getByText('דורש טיפול')).toBeVisible();
   await expect(page.getByText('תקציר בוקר · סוכן המנהל').first()).toBeVisible();
 });
+
+// --- תאימות למסמך הקורס §8: חיפוש וסינון בכל מסך טבלה, וטופס הזמנה בניהול (2026-09-15) ---
+
+test('leads: search narrows the table and composes with the status filter @compliance', async ({ page }) => {
+  await page.goto('/leads?status=New');
+  const search = page.getByRole('search').getByLabel('חיפוש');
+  await search.fill('zz-no-such-lead-zz');
+  await page.getByRole('search').getByRole('button', { name: 'חיפוש' }).click();
+  await expect(page).toHaveURL(/q=zz-no-such-lead-zz/);
+  await expect(page).toHaveURL(/status=New/);
+  await expect(page.getByText('אין לידים')).toBeVisible();
+  await page.getByRole('link', { name: 'נקה' }).click();
+  await expect(page).not.toHaveURL(/q=/);
+});
+
+test('customers: search form and invoice filter exist and filter the table @compliance', async ({ page }) => {
+  await page.goto('/customers');
+  await expect(page.getByRole('search').getByLabel('חיפוש')).toBeVisible();
+  const nav = page.getByRole('navigation', { name: 'סינון לפי חשבוניות' });
+  await expect(nav.getByRole('link', { name: 'הכל' })).toBeVisible();
+  await nav.getByRole('link', { name: 'בלי חשבוניות' }).click();
+  await expect(page).toHaveURL(/has=none/);
+  // לקוח הדמו יוסי לוי יש לו חשבוניות — הוא לא אמור להופיע כאן
+  await expect(page.getByRole('table', { name: 'לקוחות' }).getByText('יוסי לוי')).toHaveCount(0);
+  await nav.getByRole('link', { name: 'עם חשבוניות' }).click();
+  await expect(page.getByRole('table', { name: 'לקוחות' }).getByText('יוסי לוי')).toBeVisible();
+});
+
+test('tasks: status filter and search @compliance', async ({ page }) => {
+  await page.goto('/tasks');
+  await page.getByRole('navigation', { name: 'סינון לפי סטטוס' }).getByRole('link', { name: 'בוצעה' }).click();
+  await expect(page).toHaveURL(/status=done/);
+  await page.getByRole('search').getByLabel('חיפוש').fill('zz-no-such-task-zz');
+  await page.getByRole('search').getByRole('button', { name: 'חיפוש' }).click();
+  await expect(page).toHaveURL(/q=zz-no-such-task-zz/);
+  await expect(page).toHaveURL(/status=done/);
+});
+
+test('orders: "הזמנה חדשה" opens and validates before anything is sent @compliance', async ({ page }) => {
+  await page.goto('/orders');
+  await page.getByRole('button', { name: 'הזמנה חדשה' }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.getByRole('heading', { name: 'הזמנה חדשה' })).toBeVisible();
+  await dialog.getByLabel('שם הלקוח').fill('ב');
+  await dialog.getByLabel('אימייל').fill('not-an-email');
+  await dialog.getByLabel('טלפון').fill('12');
+  // הדפדפן חוסם type=email לא תקין — עוקפים כדי להגיע לוולידציה של השרת
+  await dialog.locator('form').evaluate((f) => (f as HTMLFormElement).setAttribute('novalidate', ''));
+  await dialog.getByRole('button', { name: 'יצירה' }).click();
+  await expect(dialog.getByText('צריך שם מלא')).toBeVisible();
+  await expect(dialog.getByText('כתובת אימייל לא תקינה')).toBeVisible();
+  await expect(dialog.getByText('מספר טלפון לא תקין')).toBeVisible();
+  await expect(dialog.getByText('יש להוסיף לפחות מוצר אחד')).toBeVisible();
+});

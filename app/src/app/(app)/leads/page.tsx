@@ -87,7 +87,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
           חיפוש
         </Button>
         {q && (
-          <Link href={href(status)} className="text-ink-2 hover:text-ink text-sm">
+          <Link href={status ? `/leads?status=${status}` : '/leads'} className="text-ink-2 hover:text-ink text-sm">
             נקה
           </Link>
         )}
