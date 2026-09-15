@@ -50,7 +50,7 @@ export type ProductFields = {
   /** שורות מפרט מופרדות ב-newline; החנות מציגה מהן שתיים. */
   Highlights?: string;
 };
-/** הזמנה מהחנות. נכתבת על ידי WF10; האפליקציה קוראת אותה ומעדכנת רק את Status. */
+/** הזמנה. נכתבת על ידי WF10 — מהחנות או מטופס "הזמנה חדשה" בניהול; האפליקציה קוראת אותה ומעדכנת רק את Status. */
 export type OrderFields = {
   OrderNumber: string;
   CustomerId?: string;

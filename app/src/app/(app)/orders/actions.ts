@@ -2,12 +2,37 @@
 
 import { revalidatePath } from 'next/cache';
 import { list, escapeFormula } from '@/lib/airtable';
-import { erpUpdate, ErpError } from '@/lib/n8n';
+import { erpOrder, erpUpdate, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
 import { ORDER_STATUSES, type OrderFields, type OrderStatus, type TaskFields } from '@/lib/types';
 import type { ActionResult } from '@/components/forms/action-button';
+import type { FormState } from '@/components/forms/entity-dialog';
+import { parseOrderForm } from './parse';
 
 const msg = (e: unknown, fallback: string) => (e instanceof ErpError ? e.message : fallback);
+
+/**
+ * הזמנה שהמנהל מקליד (טלפון, דלפק). עוברת את אותו WF10 כמו הזמנה מהחנות — תמחור מהקטלוג,
+ * מלאי, חשבונית, מייל אישור ללקוח והתראה לבעלים. שגיאה עסקית מ-WF13 (מלאי, ולידציה) חוזרת כמו שהיא.
+ */
+export async function createOrder(_prev: FormState, fd: FormData): Promise<FormState> {
+  const parsed = parseOrderForm(fd);
+  if (!parsed.ok) return { errors: parsed.errors };
+  try {
+    await erpOrder(parsed.data);
+  } catch (e) {
+    logError('orders.create', e);
+    return { error: msg(e, 'שגיאה ביצירת ההזמנה') };
+  }
+  // WF10 כותב הזמנה, חשבונית, לקוח (אם חדש), מלאי ומשימות — כל המסכים האלה מתרעננים
+  revalidatePath('/orders');
+  revalidatePath('/invoices');
+  revalidatePath('/customers');
+  revalidatePath('/products');
+  revalidatePath('/tasks');
+  revalidatePath('/');
+  return { ok: true };
+}
 
 /** סוגר את משימת "לשלוח ORD-…" ש-WF10 פתח להזמנה. אין משימה פתוחה = אין מה לסגור. */
 async function closeShipTask(orderNumber: string) {

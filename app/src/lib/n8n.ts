@@ -62,6 +62,26 @@ export async function erpUpdate<F>(table: TableName, id: string, payload: Partia
   return postRecord<F>({ action: 'update', table, id, payload });
 }
 
+export type OrderRequest = {
+  customer: { name: string; email: string; phone: string; address?: string; city?: string };
+  items: { sku: string; qty: number }[];
+  note?: string;
+};
+export type OrderResponse = { orderNumber: string; invoiceNumber?: string; total: number };
+
+/**
+ * הזמנה מהניהול — אותו חוזה WF13 `order` כמו בחנות (runbook §7.1), ולכן אותו WF10:
+ * תמחור מהקטלוג, מספור, מלאי, חשבונית ומייל אישור ללקוח. המחיר לא נשלח מכאן לעולם.
+ */
+export async function erpOrder(order: OrderRequest): Promise<OrderResponse> {
+  const r = await post<Partial<OrderResponse>>('erp', { action: 'order', order });
+  if (!r.orderNumber) {
+    logError('n8n order no orderNumber', r);
+    throw new ErpError('ההזמנה כנראה לא נוצרה — n8n לא החזיר מספר הזמנה. בדקו את ההרצה ב-n8n.');
+  }
+  return { orderNumber: r.orderNumber, invoiceNumber: r.invoiceNumber, total: r.total ?? 0 };
+}
+
 export async function erpChat(message: string, sessionId: string): Promise<string> {
   return (await post<{ reply: string }>('erp', { action: 'chat', message, sessionId })).reply;
 }

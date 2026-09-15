@@ -2,7 +2,8 @@ import Link from 'next/link';
 import { list, escapeFormula } from '@/lib/airtable';
 import { searchFormula } from '@/lib/search-formula';
 import { dateIL } from '@/lib/format';
-import { ORDER_STATUSES, type OrderFields } from '@/lib/types';
+import { ORDER_STATUSES, type OrderFields, type ProductFields } from '@/lib/types';
+import { toProductOptions } from '@/lib/invoice-items';
 import { statusMeta } from '@/lib/status';
 import { parseItems, itemCount } from '@/lib/order-items';
 import { Header } from '@/components/shell/header';
@@ -14,6 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { setOrderStatus } from './actions';
+import { NewOrderDialog } from './new-order-dialog';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,16 +36,19 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
   if (status) filters.push(`{Status}='${escapeFormula(status)}'`);
   const search = searchFormula(['OrderNumber', 'Name', 'Email'], q);
   if (search) filters.push(search);
-  const orders = await list<OrderFields>('Orders', {
-    filter: filters.length ? `AND(${filters.join(',')})` : undefined,
-    sort: [{ field: 'Created', direction: 'desc' }],
-  });
+  const [orders, products] = await Promise.all([
+    list<OrderFields>('Orders', {
+      filter: filters.length ? `AND(${filters.join(',')})` : undefined,
+      sort: [{ field: 'Created', direction: 'desc' }],
+    }),
+    list<ProductFields>('Products', { filter: "{Sku}!=''", sort: [{ field: 'Name' }] }),
+  ]);
 
   const href = (s: string) => `/orders?${new URLSearchParams({ ...(s ? { status: s } : {}), ...(q ? { q } : {}) })}`.replace(/\?$/, '');
 
   return (
     <>
-      <Header title="הזמנות" />
+      <Header title="הזמנות" actions={<NewOrderDialog products={toProductOptions(products)} />} />
 
       <form className="flex flex-wrap items-center gap-2 mb-3" role="search">
         <input type="hidden" name="status" value={status} />
@@ -52,7 +57,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
           חיפוש
         </Button>
         {q && (
-          <Link href={href(status)} className={CROSS_LINK + ' text-sm'}>
+          <Link href={status ? `/orders?status=${status}` : '/orders'} className={CROSS_LINK + ' text-sm'}>
             נקה
           </Link>
         )}
@@ -75,7 +80,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
 
       <div className="panel overflow-hidden">
         {orders.length === 0 ? (
-          <EmptyState title="אין הזמנות" hint={status || q ? 'נסה סינון אחר' : 'הזמנות מהחנות יופיעו כאן'} />
+          <EmptyState title="אין הזמנות" hint={status || q ? 'נסה סינון אחר' : 'הזמנות מהחנות ומהטופס כאן יופיעו ברשימה'} />
         ) : (
           <Table label="הזמנות">
             <TableHeader>
@@ -136,7 +141,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         )}
       </div>
       {orders.length > 0 && (
-        <p className="text-xs text-readout-3 mt-3">ההזמנות נוצרות בחנות יחד עם החשבונית. סימון הזמנה כ״נשלחה״ סוגר גם את משימת המשלוח שלה.</p>
+        <p className="text-xs text-readout-3 mt-3">הזמנה — מהחנות או מהטופס כאן — נוצרת יחד עם החשבונית והמייל ללקוח. סימון הזמנה כ״נשלחה״ סוגר גם את משימת המשלוח שלה.</p>
       )}
     </>
   );

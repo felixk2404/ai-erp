@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('server-only', () => ({}));
 vi.mock('./env', () => ({ env: () => ({ N8N_WEBHOOK_URL: 'https://n8n.test/webhook', N8N_WEBHOOK_SECRET: 'shh' }) }));
 
-import { erpCreate, erpUpdate, erpChat, runWebhook, ErpError } from './n8n';
+import { erpCreate, erpUpdate, erpChat, erpOrder, runWebhook, ErpError } from './n8n';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -81,5 +81,27 @@ describe('n8n client', () => {
   it('rejects when the returned record has no id', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(json({ ok: true, record: { fields: { Title: 'x' } } }));
     await expect(erpCreate('Tasks', { Title: 'x' })).rejects.toBeInstanceOf(ErpError);
+  });
+});
+
+describe('erpOrder', () => {
+  beforeEach(() => vi.restoreAllMocks());
+  const order = { customer: { name: 'דוד לוי', email: 'd@example.com', phone: '0500000000', address: 'הרצל 1', city: 'תל אביב' }, items: [{ sku: 'TY-PB-20', qty: 1 }] };
+
+  it('posts the WF13 order envelope and returns the order number', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(json({ ok: true, orderNumber: 'ORD-0042', invoiceNumber: 'INV-0050', total: 218 }));
+    const r = await erpOrder(order);
+    expect(r).toEqual({ orderNumber: 'ORD-0042', invoiceNumber: 'INV-0050', total: 218 });
+    expect(JSON.parse(fetchMock.mock.calls[0][1]!.body as string)).toEqual({ action: 'order', order });
+  });
+
+  it('surfaces the Hebrew business error from WF13 as an ErpError', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(json({ ok: false, error: 'חלק מהפריטים אינם במלאי בכמות המבוקשת' }));
+    await expect(erpOrder(order)).rejects.toThrow('חלק מהפריטים אינם במלאי');
+  });
+
+  it('rejects a 200 without an orderNumber — "saved" is never a guess', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(json({ ok: true }));
+    await expect(erpOrder(order)).rejects.toThrow(ErpError);
   });
 });
