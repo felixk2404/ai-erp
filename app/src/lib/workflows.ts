@@ -1,5 +1,5 @@
 /**
- * מניפסט 13 ה-workflows של n8n — שמות בעברית ותפקיד, למפת המערכת ולפיד החי.
+ * מניפסט 14 ה-workflows של n8n — שמות בעברית ותפקיד, למפת המערכת ולפיד החי.
  * ה-id הוא מזהה ה-workflow במופע ה-n8n (n8n/config.json). לא סוד.
  */
 export type WorkflowRole = 'hub' | 'agent' | 'channel' | 'auto' | 'index' | 'guard';
@@ -18,6 +18,7 @@ export const WORKFLOWS: readonly WorkflowMeta[] = [
   { key: 'SALES_REPLIES', id: '5cQhVanCfhxM16ru', name: 'זיהוי תשובות', role: 'auto', hint: 'WF4 · Gmail → Qualified' },
   { key: 'POLICIES_EMBED', id: 'q168BxqKDgaLwbJP', name: 'אינדוקס מדיניות', role: 'index', hint: 'WF6 · pgvector' },
   { key: 'PRODUCTS_EMBED', id: 'Y0XgEK34Zdctslcm', name: 'אינדוקס מוצרים', role: 'index', hint: 'WF7 · pgvector' },
+  { key: 'GOOGLE_HEALTH', id: 'xLVghmOle8B4SWuo', name: 'בריאות Google', role: 'auto', hint: 'WF-Health · בדיקה כל שעה; כשל → Reconnect' },
   { key: 'ERROR', id: 'WeWGjptjpf66sA7T', name: 'ניטור שגיאות', role: 'guard', hint: 'WF-Error → טלגרם' },
 ] as const;
 

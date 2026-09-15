@@ -126,3 +126,17 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 ### נשאר בכוונה (מתועד ב-README, טבלת הסטיות)
 סוג מסמך יחיד (אין `DocType` בסכימת הקורס) · "משימות להיום" (אין תאריך יעד) · זיכרון שיחה ב-`memoryBufferWindow` · `returnAll` אצל המנהל.
 
+
+## Google watchdog — WF-Health (2026-09-15)
+
+- [x] תבנית `11-google-health.json`: כל שעה, שתי קריאות עם retry פעמיים, עצירה בכשל ו-`alwaysOutputData` לתוצאות ריקות; פתק דביק אחד.
+- [x] WF-Error: הוראת Reconnect מותנית; יובא לפני הפעלת הבדיקה.
+- [x] ייבוא חי: `WF-Health — בריאות Google  id=xLVghmOle8B4SWuo  active=true`; WF-Error `id=WeWGjptjpf66sA7T active=true`.
+- [x] **בדיקה שלילית אמיתית:** הרצה **4318**, `mode=trigger`, `status=error`, צומת `Gmail Probe`, הודעה `The credential "Gmail ERP" needs to be reconnected. (item 0)`. תזמון הוקצר זמנית לדקה כדי להפעיל הרצת production; הוחזר לשעה ואומת `active=true`. הרצה ידנית אינה מפעילה WF-Error.
+- [x] **התראה:** WF-Error הרצה **4319**, `mode=error`, `status=success`, צומת אחרון `Telegram Owner`, מקור `4318`. תשובת Telegram: `ok=true`, `message_id=155`; הטקסט כולל `🔑 טוקן Google פג. n8n → Credentials → Gmail ERP / Google Drive ERP → Reconnect.` (אישור מסירה מה-API, לא אישור שהבעלים קרא).
+- [ ] **בדיקה חיובית ממתינה לבעלים:** Reconnect ל-Gmail ERP ול-Google Drive ERP, ואז להריץ ולתעד מזהה הצלחה שבו Every Hour → Gmail Probe → Drive Probe → Healthy. Gmail עדיין פג בבדיקה; Drive טרם הגיע לביצוע.
+- [x] `cd n8n/code && node --test`: `tests 30; pass 30; fail 0`.
+- [x] `cd app && pnpm test && pnpm typecheck && pnpm lint`: `Test Files 26 passed; Tests 130 passed`, `tsc --noEmit` ו-`eslint` exit 0.
+- [x] `bash scripts/export-workflows.sh`: יוצאו כל 16 ה-workflows; קובצי exported נוצרו רק בסקריפט.
+- [x] תיעוד ומפה: 16 תבניות בריפו, 14 במניפסט (ORDER ו-HANDOFF לא היו במפה); מסמכי תכנון היסטוריים נשארו כפי שנכתבו.
+- [ ] בעלים: מעבר OAuth ל-In production וחיבור מחדש; פריסת אפליקציית הניהול אחרי מיזוג ו-pull.

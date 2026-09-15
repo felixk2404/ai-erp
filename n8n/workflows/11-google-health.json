@@ -1,0 +1,173 @@
+{
+  "name": "WF-Health — בריאות Google",
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "__WF_ERROR_ID__"
+  },
+  "nodes": [
+    {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF-Health — בריאות Google\nכל שעה קורא תווית Gmail וקובץ בתיקיית Drive בצמתים רגילים. כשל אימות עוצר ומפעיל WF-Error → טלגרם עם הוראת Reconnect; אין שליחה או שינוי נתונים.\n\n**צריך:** Gmail ERP, Google Drive ERP, WF-Error",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Gmail Probe",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        260,
+        0
+      ],
+      "parameters": {
+        "resource": "label",
+        "operation": "getAll",
+        "returnAll": false,
+        "limit": 1
+      },
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "__CRED_GMAIL__",
+          "name": "Gmail ERP"
+        }
+      },
+      "notes": "קריאת תווית אחת בודקת את טוקן Gmail בצומת רגיל: כשל אימות עוצר את ההרצה ומפעיל WF-Error, בניגוד לכשל בטריגר פולינג. תוצאה ריקה ממשיכה לבדיקת Drive.",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true
+    },
+    {
+      "name": "Drive Probe",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        520,
+        0
+      ],
+      "parameters": {
+        "resource": "fileFolder",
+        "operation": "search",
+        "searchMethod": "query",
+        "queryString": "",
+        "returnAll": false,
+        "limit": 1,
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "__DRIVE_FOLDER_ID__"
+          },
+          "whatToSearch": "files"
+        },
+        "options": {
+          "fields": [
+            "id"
+          ]
+        }
+      },
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "__CRED_DRIVE__",
+          "name": "Google Drive ERP"
+        }
+      },
+      "notes": "קריאת קובץ אחד בתיקיית החשבוניות בודקת את טוקן Drive בלי לשנות נתונים. כשל עוצר ומפעיל WF-Error; תיקייה ריקה תקינה וממשיכה ל-Healthy.",
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true
+    },
+    {
+      "name": "Healthy",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        780,
+        0
+      ],
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ok",
+              "name": "ok",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "checked-at",
+              "name": "checkedAt",
+              "value": "={{ $now.toISO() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      }
+    }
+  ],
+  "connections": {
+    "Every Hour": {
+      "main": [
+        [
+          {
+            "node": "Gmail Probe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Probe": {
+      "main": [
+        [
+          {
+            "node": "Drive Probe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive Probe": {
+      "main": [
+        [
+          {
+            "node": "Healthy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

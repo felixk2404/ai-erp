@@ -60,7 +60,7 @@ describe('summarizePulse', () => {
     expect(byKey.INVOICE_PDF).toMatchObject({ runs24h: 2, errors24h: 1, led: 'amber', lastRunAt: '2026-09-02T10:00:00Z' });
     expect(byKey.API).toMatchObject({ active: true, led: 'green', runs24h: 1 });
     expect(byKey.ERROR).toMatchObject({ led: 'off', runs24h: 0 });
-    expect(p.nodes).toHaveLength(13);
+    expect(p.nodes).toHaveLength(14);
     expect(p.health?.led).toBe('amber');
   });
 });
@@ -85,7 +85,7 @@ describe('fetchPulse', () => {
     const p = await fetchPulse();
     expect(p.reason).toBe('unreachable');
     expect(p.connected).toBe(false);
-    expect(p.nodes).toHaveLength(13); // המפה עדיין מוצגת
+    expect(p.nodes).toHaveLength(14); // המפה עדיין מוצגת
   });
 
   it('carries no reason when n8n answers', async () => {

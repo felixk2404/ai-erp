@@ -22,6 +22,7 @@ NOTES = {
     '09-manager-telegram': ('WF9 — סוכן המנהל (טלגרם)', 'בוט הבעלים. תנאי Is Owner על Chat ID (מסמך הקורס, נספח) — כל אחד אחר מקבל סירוב. שאלות → WF9-core.', 'Telegram Manager'),
     '09b-manager-core': ('WF9-core — סוכן המנהל', 'הליבה המשותפת לטלגרם ולאפליקציה. Invoices/Leads/Tasks/Orders מסוכמים בצמתי Summarize + Aggregate, והסוכן (בלי כלים) רק מנסח בעברית.', 'Airtable ERP, OpenAI ERP'),
     '10-order': ('WF10 — הזמנה', 'תת-workflow של WF13, מהחנות או מטופס "הזמנה חדשה" בניהול. מאמת, מתמחר מהקטלוג (לא מהדפדפן), מספר ORD/INV, יוצר לקוח/הזמנה/חשבונית, מוריד מלאי, שולח מייל אישור ומודיע לבעלים.', 'Airtable ERP, Gmail ERP, Telegram Manager'),
+    '11-google-health': ('WF-Health — בריאות Google', 'כל שעה קורא תווית Gmail וקובץ בתיקיית Drive בצמתים רגילים. כשל אימות עוצר ומפעיל WF-Error → טלגרם עם הוראת Reconnect; אין שליחה או שינוי נתונים.', 'Gmail ERP, Google Drive ERP, WF-Error'),
     '13-api': ('WF13 — API לאפליקציה ולחנות', 'POST /erp עם x-erp-secret. מנתב create/update (טבלאות ושדות ברשימת היתר), chat (מנהל), support (שירות), order (→ WF10), order_status. הגבול היחיד שחשוף החוצה.', 'ERP Webhook Secret, Airtable ERP'),
 }
 

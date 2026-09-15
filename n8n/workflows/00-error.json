@@ -97,7 +97,7 @@
       ],
       "parameters": {
         "chatId": "__OWNER_CHAT_ID__",
-        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution?.lastNodeExecuted || ($json.trigger ? 'טריגר (polling)' : '—') }}\nשגיאה: {{ (($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || JSON.stringify($json.trigger?.error || {}).slice(0, 300)) + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution?.url || '' }}",
+        "text": "=⚠️ שגיאה ב-n8n\nworkflow: {{ $json.workflow.name }}\nצומת: {{ $json.execution?.lastNodeExecuted || ($json.trigger ? 'טריגר (polling)' : '—') }}\nשגיאה: {{ (($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || JSON.stringify($json.trigger?.error || {}).slice(0, 300)) + '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }}\n{{ $json.execution?.url || '' }}{{ /Access could not be refreshed|reconnect/i.test($json.execution?.error?.message || $json.trigger?.error?.message || $json.trigger?.error?.description || '') ? '\\n🔑 טוקן Google פג. n8n → Credentials → Gmail ERP / Google Drive ERP → Reconnect.' : '' }}",
         "additionalFields": {
           "appendAttribution": false,
           "parse_mode": "HTML"
