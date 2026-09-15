@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF1 — אימות חשבוניות\nטריגר Airtable (Created, כל דקה). בודק סכום ולקוח, מקצה INV-000N, מחשב מע\"מ לפי תאריך המסמך (17%/18%) וסה\"כ, מסמן validated או error + משימת תיקון.\n\n**צריך:** Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Airtable Trigger",
       "type": "n8n-nodes-base.airtableTrigger",
       "typeVersion": 1,

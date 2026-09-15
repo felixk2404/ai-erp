@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF8 — הפקת PDF חשבונית\nכל דקה. תופס חשבונית validated אחת (lease של 15 דקות ב-PdfLockedAt), בונה HTML עברי RTL, ממיר ל-PDF ב-Gotenberg, מעלה לדרייב, משתף בקישור, מסמן generated + PdfUrl.\n\n**צריך:** Airtable ERP, Google Drive ERP, Gotenberg (docker)",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Every Minute",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,

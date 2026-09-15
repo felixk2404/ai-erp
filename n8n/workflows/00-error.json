@@ -5,6 +5,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF-Error — התראות שגיאה\nכל כשל בכל workflow מגיע לכאן (settings.errorWorkflow). רעש רשת חולף (socket hang up כשהמק נרדם) מסונן; תקלה אמיתית → טלגרם לבעלים; אם גם הטלגרם נכשל → משימה ב-Airtable.\n\n**צריך:** Telegram Manager, Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,

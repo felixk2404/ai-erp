@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF6 — מדיניות → מאגר וקטורי\nPOST /reindex-policies. קורא את docs/course/policies/*.md, מוחק את הגרסה הקודמת ומטמיע מחדש (text-embedding-3-small). להריץ אחרי כל שינוי מדיניות.\n\n**צריך:** OpenAI ERP, Supabase ERP, ERP Webhook Secret",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Reindex Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,

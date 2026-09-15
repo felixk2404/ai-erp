@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF7 — מוצרים → מאגר וקטורי\nPOST /reindex-products. קורא את Products מ-Airtable ומטמיע מחדש. להריץ אחרי שינוי בקטלוג.\n\n**צריך:** Airtable ERP, OpenAI ERP, Supabase ERP, ERP Webhook Secret",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Reindex Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,

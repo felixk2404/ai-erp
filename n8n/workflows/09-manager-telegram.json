@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF9 — סוכן המנהל (טלגרם)\nבוט הבעלים. תנאי Is Owner על Chat ID (מסמך הקורס, נספח) — כל אחד אחר מקבל סירוב. שאלות → WF9-core.\n\n**צריך:** Telegram Manager",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,

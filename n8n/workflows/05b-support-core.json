@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF5-core — סוכן שירות לקוחות\nהליבה המשותפת לטלגרם, לאתר ולחנות. RAG משני כלים (מדיניות, מוצרים) ב-pgvector, check_stock חי מ-Airtable, ו-handoff לנציג. הפלט עובר שער דטרמיניסטי (code/finalize-reply.js).\n\n**צריך:** OpenAI ERP, Supabase ERP, Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "When Executed by Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,

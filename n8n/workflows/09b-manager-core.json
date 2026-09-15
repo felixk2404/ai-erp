@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF9-core — סוכן המנהל\nהליבה המשותפת לטלגרם ולאפליקציה. Invoices/Leads/Tasks/Orders מסוכמים בצמתי Summarize + Aggregate, והסוכן (בלי כלים) רק מנסח בעברית.\n\n**צריך:** Airtable ERP, OpenAI ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "When Executed by Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,

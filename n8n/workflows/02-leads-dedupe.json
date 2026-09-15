@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF2 — קליטת לידים וכפילויות\nטריגר Airtable (Created, כל דקה). ליד עם אותו מייל, או אותו טלפון (ספרות בלבד), מסומן Duplicate; אחרת New.\n\n**צריך:** Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Airtable Trigger",
       "type": "n8n-nodes-base.airtableTrigger",
       "typeVersion": 1,

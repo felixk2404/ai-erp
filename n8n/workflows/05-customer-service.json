@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF5 — סוכן שירות לקוחות (טלגרם)\nבוט הלקוחות. תפריט קטלוג בכפתורים, לכידת ליד (\"מעוניין\"), שיתוף טלפון, וכל טקסט חופשי → WF5-core.\n\n**צריך:** Telegram Customer, Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,

@@ -6,6 +6,21 @@
   },
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF13 — API לאפליקציה ולחנות\nPOST /erp עם x-erp-secret. מנתב create/update (טבלאות ושדות ברשימת היתר), chat (מנהל), support (שירות), order (→ WF10), order_status. הגבול היחיד שחשוף החוצה.\n\n**צריך:** ERP Webhook Secret, Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      }
+    },
+    {
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
