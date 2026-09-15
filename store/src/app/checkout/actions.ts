@@ -90,8 +90,9 @@ export async function placeOrder(_prev: PlaceOrderState, fd: FormData): Promise<
     return { ok: true, orderNumber: res.orderNumber, email: parsed.data.email };
   } catch (e) {
     // timeout, 5xx או תשובה שלא תואמת את החוזה: ייתכן ש-WF10 כבר כתב את ההזמנה.
-    // כל שאר התקלות — ניסיון חוזר בטוח.
+    // גם ניתוק רשת אינו מוכיח שהשרת לא שמר את ההזמנה.
     const maybeSaved =
+      (e instanceof TypeError) ||
       (e instanceof Error && (e.name === 'TimeoutError' || e.name === 'AbortError')) ||
       e instanceof ErpShapeError ||
       (e instanceof ErpError && /^n8n 5\d\d$/.test(e.message));

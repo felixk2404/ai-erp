@@ -55,3 +55,9 @@ describe('parseStoredCart', () => {
     expect(parseStoredCart(JSON.stringify([good]))).toEqual([]);
   });
 });
+
+it('אחסון עם מחיר שלילי, כמות חלקית או דגל שירות לא תקין אינו משוחזר לקופה', () => {
+  const good = { sku: 'A', name: 'A', price: 10, qty: 1, service: false };
+  const invalid = [{ ...good, price: -1 }, { ...good, qty: 1.5 }, { ...good, service: 'false' }, { ...good, qty: 0 }];
+  expect(parseStoredCart(JSON.stringify({ lines: invalid }))).toEqual([]);
+});

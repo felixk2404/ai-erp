@@ -69,7 +69,7 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [ ] Store support timeout: one call in 18 waited ~2 min for the sub-workflow to start (Mac load); `erpCall` budget is 60 s. Consider a "still thinking" retry in the widget or raising the budget.
 - [x] Plan 7 (2026-09-03): admin Orders tab + order page (timeline, next-step button, ship-task close), stock editing in products (WF13 field allow-list gained Stock), dashboard to-ship items gated on WF10's ship task. Commits ef719f2..24742bf.
 - [ ] Deploy admin app (orders tab, stock, lead source "אתר"): `cd app && vercel --prod --yes` — Felix runs it.
-- [ ] invoices/[id] has the same min-width grid overflow at 390 that the order page had (add `min-w-0` on the items section).
+- [x] invoices/[id]: נוסף `min-w-0` לעמודת הפריטים בסקירת 15.9; בדיקת פרטי החשבונית בדפדפן עברה.
 
 ## סקירת פרויקט מלאה (2026-09-08)
 
@@ -140,3 +140,17 @@ Spec: docs/superpowers/specs/2026-09-02-company-logo-design.md
 - [x] `bash scripts/export-workflows.sh`: יוצאו כל 16 ה-workflows; קובצי exported נוצרו רק בסקריפט.
 - [x] תיעוד ומפה: 16 תבניות בריפו, 14 במניפסט (ORDER ו-HANDOFF לא היו במפה); מסמכי תכנון היסטוריים נשארו כפי שנכתבו.
 - [ ] בעלים: מעבר OAuth ל-In production וחיבור מחדש; פריסת אפליקציית הניהול אחרי מיזוג ו-pull.
+
+## סקירת תיקונים — 15.9.2026
+
+דוח ופקודות המשך לקלוד: [claude-project-audit-2026-09-15.md](claude-project-audit-2026-09-15.md).
+
+- [x] אימות בכל פעולות הניהול, תיקון הפניה ב-login ומגבלת ניסיונות.
+- [x] חוזי n8n, משכי המתנה, תוצאת הזמנה לא ודאית, WF3 בלי לידים וניטור עם דפדוף.
+- [x] מק״ט מוצר, שחזור סל, רוחב חשבונית, ולידציית WF10 וביטול retry מסוכן.
+- [x] ייצוא שלא דורס גיבוי כש-API נכשל; ששת ה-workflows המתוקנים יובאו.
+- [x] ניהול 168, חנות 127, n8n 34, בדיקת ייצוא 1; שתי בניות Webpack; 12 בדיקות דפדפן; Airtable schema OK.
+- [x] בדיקת קלט פסול חיה: WF10 הרצה **4333**, הסתיימה ב-Result Error בלי כתיבות.
+- [ ] סרט: מקור `film/captures/admin-dashboard.mp4` חסר — הוראות שחזור לקלוד בדוח.
+- [ ] Google/WF4 חי, אטומיות הזמנות ו-RAG מדורג — הוראות וקריטריוני קבלה בדוח.
+- [ ] למזג ולפרוס את שני האתרים; שינויי האתרים טרם נפרסו.

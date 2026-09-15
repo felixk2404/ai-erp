@@ -12,34 +12,37 @@ const UNAVAILABLE = 'השירות לא זמין כרגע. נסו שוב בעוד
 type Envelope<T> = { ok?: boolean; error?: string } & T;
 
 /** הרצת סוכן ב-n8n לוקחת 10–60 שניות לגיטימיות, אבל טאנל מת לא עונה לעולם — זו התקרה. */
-const TIMEOUT_MS = 20_000;
+const TIMEOUT_MS = 60_000;
+const ORDER_UNCERTAIN = 'ייתכן שההזמנה נשמרה. בדקו ברשימת ההזמנות לפני שליחה נוספת.';
 
-async function post<T>(path: string, body: unknown): Promise<Envelope<T>> {
+async function post<T>(path: string, body: unknown, timeoutMs = TIMEOUT_MS, unavailable = UNAVAILABLE): Promise<Envelope<T>> {
   const { N8N_WEBHOOK_URL, N8N_WEBHOOK_SECRET } = env();
   let res: Response;
+  let text: string;
   try {
     res = await fetch(`${N8N_WEBHOOK_URL}/${path}`, {
       method: 'POST',
       cache: 'no-store',
       headers: { 'content-type': 'application/json', 'x-erp-secret': N8N_WEBHOOK_SECRET },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      signal: AbortSignal.timeout(timeoutMs),
     });
+    text = await res.text();
   } catch (e) {
     logError(`n8n ${path} unreachable`, e);
-    throw new ErpError(UNAVAILABLE);
+    throw new ErpError(unavailable);
   }
-  const text = await res.text();
   let data: Envelope<T>;
   try {
     data = JSON.parse(text) as Envelope<T>;
   } catch {
     logError(`n8n ${path} non-JSON`, `${res.status} ${text.slice(0, 500)}`);
-    throw new ErpError(UNAVAILABLE);
+    throw new ErpError(unavailable);
   }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) throw new ErpError(unavailable);
   if (!res.ok || data.ok === false) {
     logError(`n8n ${path} failed`, `${res.status} ${data.error ?? text.slice(0, 500)}`);
-    throw new ErpError(data.error ?? UNAVAILABLE);
+    throw new ErpError(res.status < 500 && typeof data.error === 'string' && data.error ? data.error : unavailable);
   }
   return data;
 }
@@ -74,21 +77,26 @@ export type OrderResponse = { orderNumber: string; invoiceNumber?: string; total
  * תמחור מהקטלוג, מספור, מלאי, חשבונית ומייל אישור ללקוח. המחיר לא נשלח מכאן לעולם.
  */
 export async function erpOrder(order: OrderRequest): Promise<OrderResponse> {
-  const r = await post<Partial<OrderResponse>>('erp', { action: 'order', order });
-  if (!r.orderNumber) {
+  const r = await post<Partial<OrderResponse>>('erp', { action: 'order', order }, 90_000, ORDER_UNCERTAIN);
+  if (typeof r.orderNumber !== 'string' || !r.orderNumber || typeof r.total !== 'number' || !Number.isFinite(r.total)) {
     logError('n8n order no orderNumber', r);
-    throw new ErpError('ההזמנה כנראה לא נוצרה — n8n לא החזיר מספר הזמנה. בדקו את ההרצה ב-n8n.');
+    throw new ErpError(ORDER_UNCERTAIN);
   }
   return { orderNumber: r.orderNumber, invoiceNumber: r.invoiceNumber, total: r.total ?? 0 };
 }
 
+function readReply(data: { reply?: unknown }): string {
+  if (typeof data.reply !== 'string' || !data.reply.trim()) throw new ErpError(UNAVAILABLE);
+  return data.reply;
+}
+
 export async function erpChat(message: string, sessionId: string): Promise<string> {
-  return (await post<{ reply: string }>('erp', { action: 'chat', message, sessionId })).reply;
+  return readReply(await post<{ reply?: unknown }>('erp', { action: 'chat', message, sessionId }));
 }
 
 /** סוכן שירות הלקוחות (RAG) — אותו סוכן כמו בטלגרם, דרך WF13. */
 export async function erpSupport(message: string, sessionId: string): Promise<string> {
-  return (await post<{ reply: string }>('erp', { action: 'support', message, sessionId })).reply;
+  return readReply(await post<{ reply?: unknown }>('erp', { action: 'support', message, sessionId }));
 }
 
 export type WebhookPath = 'reindex-products' | 'reindex-policies' | 'run-sales';

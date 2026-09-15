@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { cookies } from 'next/headers';
 import { erpChat, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
@@ -18,6 +20,7 @@ async function sessionId(): Promise<string> {
 export type ChatResult = { reply?: string; error?: string };
 
 export async function sendChat(message: string): Promise<ChatResult> {
+  await requireSession();
   const text = message.trim();
   if (!text) return { error: 'כתוב שאלה' };
   // חיתוך שקט שלח לסוכן חצי שאלה והוא ענה על משהו אחר

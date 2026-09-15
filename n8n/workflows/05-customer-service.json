@@ -446,9 +446,7 @@
           "name": "Telegram Customer"
         }
       },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000
+      "notes": "ללא ניסיון חוזר אוטומטי: הפעולה עשויה כבר ליצור רשומה או לשלוח הודעה לפני כשל בתשובה."
     },
     {
       "name": "Lead Exists?",

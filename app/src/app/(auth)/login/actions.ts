@@ -1,16 +1,22 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { env } from '@/lib/env';
 import { SESSION_COOKIE, SESSION_TTL_SECONDS, signSession } from '@/lib/auth';
 
+import { createRateLimiter } from '@/lib/rate-limit';
+
+const loginLimiter = createRateLimiter({ limit: 10, windowMs: 60_000 });
+
 export type LoginState = { error?: string } | undefined;
 
 export async function login(_prev: LoginState, formData: FormData): Promise<LoginState> {
+  const ip = (await headers()).get('x-forwarded-for')?.split(',')[0]?.trim() || 'local';
+  if (!loginLimiter.allow(ip)) return { error: 'יותר מדי ניסיונות כניסה. נסו שוב בעוד דקה.' };
   const password = String(formData.get('password') ?? '');
   const nextRaw = String(formData.get('next') ?? '/');
-  const next = nextRaw.startsWith('/') && !nextRaw.startsWith('//') ? nextRaw : '/';
+  const next = nextRaw.startsWith('/') && !nextRaw.startsWith('//') && !/[\\\x00-\x1f\x7f]/.test(nextRaw) ? nextRaw : '/';
 
   if (password !== env().APP_PASSWORD) return { error: 'סיסמה שגויה' };
 

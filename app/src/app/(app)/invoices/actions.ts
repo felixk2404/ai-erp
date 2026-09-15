@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { revalidatePath } from 'next/cache';
 import { erpCreate, erpUpdate, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
@@ -10,6 +12,7 @@ import { parseInvoiceForm } from './parse';
 export type FormState = { ok?: boolean; error?: string; errors?: Record<string, string> } | undefined;
 
 export async function createInvoice(_prev: FormState, fd: FormData): Promise<FormState> {
+  await requireSession();
   const parsed = parseInvoiceForm(fd);
   if (!parsed.ok) return { errors: parsed.errors };
   try {
@@ -24,6 +27,7 @@ export async function createInvoice(_prev: FormState, fd: FormData): Promise<For
 }
 
 export async function markPaid(id: string): Promise<ActionResult> {
+  await requireSession();
   try {
     await erpUpdate<InvoiceFields>('Invoices', id, { Status: 'paid' });
   } catch (e) {

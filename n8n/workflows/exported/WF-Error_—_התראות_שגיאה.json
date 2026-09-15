@@ -111,13 +111,10 @@
           "name": "Telegram Manager"
         }
       },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000,
       "onError": "continueErrorOutput",
-      "notes": "התראה היא הדבר האחרון שנשאר כשהכול נופל — לכן retry, ולכן ענף שגיאה שמנציח את הכישלון במשימה.",
+      "notes": "ניסיון שליחה אחד בלבד כדי לא להכפיל הודעה אחרי ניתוק. כשל עובר לענף המשימה ב-Airtable כדי שלא ייעלם.",
       "id": "00000000-0000-4000-8000-000000000005",
-      "webhookId": "d456f3f2-ef8e-40df-8a09-f4d7d6e8989c"
+      "webhookId": "7008c0f8-34dd-4d51-9bd3-df63423145df"
     },
     {
       "name": "Log Undelivered",
@@ -127,10 +124,7 @@
         520,
         160
       ],
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000,
-      "notes": "טלגרם לא ענה גם אחרי 3 ניסיונות. הכישלון נרשם כמשימה כדי שלא ייעלם בשקט; אם גם Airtable נופל, ההרצה נשארת error ב-n8n.",
+      "notes": "טלגרם נכשל. יוצרים משימה פעם אחת בלבד כדי להימנע מכפילות; כשל ב-Airtable משאיר את ההרצה במצב error.",
       "parameters": {
         "authentication": "airtableTokenApi",
         "operation": "create",

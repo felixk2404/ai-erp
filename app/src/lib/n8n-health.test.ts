@@ -96,3 +96,29 @@ describe('fetchPulse', () => {
     expect(p.reason).toBeUndefined();
   });
 });
+
+describe('ניטור מכסה יותר מעמוד הרצות אחד', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+    vi.stubEnv('N8N_API_URL', 'https://n8n.test/api/v1');
+    vi.stubEnv('N8N_API_KEY', 'key');
+  });
+  it('כולל שגיאה בעמוד השני במקום להציג יום ירוק חלקי', async () => {
+    const at = new Date().toISOString();
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+      const u = new URL(String(url));
+      const body = u.pathname.endsWith('/workflows') ? { data: [] } : u.searchParams.has('cursor')
+        ? { data: [{ id: 'older', workflowId: 'wNxCRwm0N2F6Z8TS', status: 'error', startedAt: at }], nextCursor: null }
+        : { data: [{ id: 'new', workflowId: 'kn53i73OcuCaz3SZ', status: 'success', startedAt: at }], nextCursor: 'page+2=' };
+      return new Response(JSON.stringify(body));
+    });
+    const p = await fetchPulse();
+    expect(p.health).toMatchObject({ total: 2, error: 1, led: 'amber' });
+    expect(p.nodes.find(n => n.key === 'INVOICE_PDF')).toMatchObject({ errors24h: 1, led: 'red' });
+  });
+  it('כשל בהרשאת workflows לא מוצג כמפה מחוברת', async () => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => String(url).includes('/workflows')
+      ? new Response('forbidden', { status: 403 }) : new Response(JSON.stringify({ data: [] })));
+    expect(await fetchPulse()).toMatchObject({ connected: false, reason: 'unauthorized' });
+  });
+});

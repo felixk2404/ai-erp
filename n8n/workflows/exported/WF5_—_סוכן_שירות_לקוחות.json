@@ -39,7 +39,7 @@
         }
       },
       "id": "00000000-0000-4000-8000-000000000001",
-      "webhookId": "df642714-53b5-4d3f-99a8-dc54c6262990"
+      "webhookId": "41c1b9b0-94bd-4f58-8857-6af0468fa908"
     },
     {
       "name": "Classify",
@@ -194,7 +194,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000004",
-      "webhookId": "fdbc7564-9186-451f-821f-c4003f77364b"
+      "webhookId": "59cdc385-e65e-4fd6-a371-ad5a4d209a00"
     },
     {
       "name": "Products",
@@ -457,11 +457,9 @@
           "name": "Telegram Customer"
         }
       },
-      "retryOnFail": true,
-      "maxTries": 3,
-      "waitBetweenTries": 5000,
+      "notes": "ללא ניסיון חוזר אוטומטי: הפעולה עשויה כבר ליצור רשומה או לשלוח הודעה לפני כשל בתשובה.",
       "id": "00000000-0000-4000-8000-000000000013",
-      "webhookId": "09ee0271-efb2-49bb-953d-0c20cbd39dac"
+      "webhookId": "02ab8791-1ee8-43e7-ac84-843a91edabc4"
     },
     {
       "name": "Lead Exists?",
@@ -742,7 +740,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000018",
-      "webhookId": "6b66c646-4230-4a20-bd8b-0a2a7d72277e"
+      "webhookId": "6488ae0f-c448-4e72-b046-47ff47719928"
     },
     {
       "name": "Confirm Lead",
@@ -821,7 +819,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000020",
-      "webhookId": "2102771b-f009-41bc-a12a-40191e3e84e4"
+      "webhookId": "b1f3941b-7644-41af-b248-092d9c5bdd20"
     },
     {
       "name": "Find Lead",
@@ -993,7 +991,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000024",
-      "webhookId": "fcdad024-39a5-4221-a7a8-de0292ada11f"
+      "webhookId": "a18048b8-25ac-4a1a-b966-7bcff472e55e"
     },
     {
       "name": "Thanks",
@@ -1024,7 +1022,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000025",
-      "webhookId": "8b3fd86a-906c-47d6-b42b-893529132a89"
+      "webhookId": "8d5d9c5d-d617-4111-8122-77773ad3996a"
     },
     {
       "name": "Skip Ack",
@@ -1055,7 +1053,7 @@
       },
       "onError": "continueRegularOutput",
       "id": "00000000-0000-4000-8000-000000000026",
-      "webhookId": "68243e42-c5c8-4033-9404-d19bb3cbf5bd"
+      "webhookId": "83cbf104-dd73-49f0-a9c6-887053e8796d"
     }
   ],
   "connections": {

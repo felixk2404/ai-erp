@@ -1,5 +1,7 @@
 'use server';
 
+import { requireSession } from '@/lib/require-session';
+
 import { revalidateTag, unstable_cache } from 'next/cache';
 import { erpChat, ErpError } from '@/lib/n8n';
 import { logError } from '@/lib/log';
@@ -19,6 +21,7 @@ export type Brief = { text: string; error?: string; at: string };
 
 /** התפיסה נמצאת מחוץ ל-cache בכוונה: תקלה של 30 שניות ב-08:00 לא תיתקע כתקציר היום עד 14:00. */
 export async function getDailyBrief(): Promise<Brief> {
+  await requireSession();
   try {
     return await cachedBrief(todayKey());
   } catch (e) {
@@ -28,6 +31,7 @@ export async function getDailyBrief(): Promise<Brief> {
 }
 
 export async function refreshBrief(): Promise<{ ok: true }> {
+  await requireSession();
   revalidateTag('daily-brief', 'max');
   return { ok: true };
 }
