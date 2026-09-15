@@ -49,7 +49,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF-Health | כל שעה, קריאות Gmail ו-Drive | להריץ ידנית לבדיקת הצמתים; עם טוקן פג — בהרצה מתוזמנת התראה בטלגרם תוך דקה |
 | WF1 אימות חשבוניות | Airtable Trigger, Invoices.Created, כל דקה | `api-test.sh` create Invoice → validated + INV-000N + מע"מ, או error; חשבונית שגויה → משימת "לתקן INV-…" |
 | WF2 לידים | Airtable Trigger, Leads.Created | כפילות לפי אימייל, ואם אין — לפי טלפון (digits-only compare); ליד → New; מייל קיים → Duplicate |
-| WF3 מכירות (מייל קר) | כל 3 שעות + `webhook.sh run-sales` | ליד New → מייל נשלח → Contacted |
+| WF3 מכירות (מייל קר) | `webhook.sh run-sales` בלבד — אין תזמון אוטומטי | ליד New → מייל נשלח → Contacted |
 | WF4 מכירות (תשובות) | Gmail Trigger כל 30 דק' | תשובה מליד Contacted מסווגת (Text Classifier): מעוניין → Qualified + משימת "להתקשר ל…"; לא מעוניין / "הסר" → Dead + הערה; אוטומטי → נשאר Contacted |
 | WF5 שירות לקוחות | Telegram @aielec_support_bot | תפריט קטלוג בכפתורים (/menu), "מעוניין" יוצר ליד + משימה + הודעה לבעלים; טקסט חופשי → סוכן; שאלה על מדיניות/מוצר → תשובה מ-RAG |
 | WF5-handoff מסירה לנציג | Execute Workflow (כלי `handoff` של WF5-core) | "תתקשרו אליי לגבי 3 מסכים" → שם+טלפון → ליד (Source web/telegram) + משימת "לחזור ל…" + הודעה לבעלים; `api-test.sh` support |

@@ -14,29 +14,10 @@
         -340
       ],
       "parameters": {
-        "content": "## WF3 — סוכן מכירות\nשני מצבים. **מייל קר אישי**: כל 3 שעות או POST /run-sales — ליד New אחד בלבד (מגבלת בטיחות מהמסמך), הסוכן כותב לפי prompts/sales.md, שולח ורק אז מסמן Contacted. **קמפיין מוצרים**: POST /campaign בלבד — שלושה מוצרים במלאי עם תמונה, קופי לפי prompts/campaign.md, ומייל HTML ממותג לעד 20 לידים בסיבוב אחד. מי שהשיב \"הסר\" (Dead) מסונן החוצה.\n\n**צריך:** Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret",
+        "content": "## WF3 — סוכן מכירות\nשני מצבים. **מייל קר אישי**: POST /run-sales בלבד, על פי דרישה — ליד New אחד בלבד (מגבלת בטיחות מהמסמך), הסוכן כותב לפי prompts/sales.md, שולח ורק אז מסמן Contacted. **קמפיין מוצרים**: POST /campaign בלבד — שלושה מוצרים במלאי עם תמונה, קופי לפי prompts/campaign.md, ומייל HTML ממותג לעד 20 לידים בסיבוב אחד. מי שהשיב \"הסר\" (Dead) מסונן החוצה.\n\n**צריך:** Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret",
         "height": 240,
         "width": 460,
         "color": 4
-      }
-    },
-    {
-      "name": "Every 3 Hours",
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        0,
-        -100
-      ],
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "field": "hours",
-              "hoursInterval": 3
-            }
-          ]
-        }
       }
     },
     {
@@ -503,17 +484,6 @@
     }
   ],
   "connections": {
-    "Every 3 Hours": {
-      "main": [
-        [
-          {
-            "node": "Next New Lead",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Run Now Webhook": {
       "main": [
         [
