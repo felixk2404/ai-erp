@@ -2,6 +2,22 @@
   "name": "WF13 — API לאפליקציה",
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF13 — API לאפליקציה ולחנות\nPOST /erp עם x-erp-secret. מנתב create/update (טבלאות ושדות ברשימת היתר), chat (מנהל), support (שירות), order (→ WF10), order_status. הגבול היחיד שחשוף החוצה.\n\n**צריך:** ERP Webhook Secret, Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
@@ -22,8 +38,8 @@
           "name": "ERP Webhook Secret"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "6ee9348d-f380-4924-a195-d52eb4b44361"
+      "id": "00000000-0000-4000-8000-000000000001",
+      "webhookId": "12f23007-5a35-4c73-bb15-22fa7819d745"
     },
     {
       "name": "Route",
@@ -219,7 +235,7 @@
         }
       },
       "notes": "הטבלאות והשדות שהאפליקציה באמת כותבת אליהם, ותו לא — בלי זה הטאנל הציבורי הוא proxy כתיבה לכל הבסיס.",
-      "id": "00000000-0000-4000-8000-000000000001"
+      "id": "00000000-0000-4000-8000-000000000002"
     },
     {
       "name": "Support Input",
@@ -248,7 +264,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Support Core",
@@ -297,7 +313,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Respond Support",
@@ -312,7 +328,7 @@
         "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "Update Record",
@@ -343,7 +359,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Respond Updated",
@@ -358,7 +374,7 @@
         "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Payload",
@@ -373,7 +389,7 @@
         "jsonOutput": "={{ $json.body.payload }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Create Record",
@@ -416,7 +432,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "Respond Created",
@@ -431,7 +447,7 @@
         "responseBody": "={{ JSON.stringify({ ok: true, record: $json }) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000009"
+      "id": "00000000-0000-4000-8000-000000000010"
     },
     {
       "name": "Chat Input",
@@ -453,14 +469,14 @@
             {
               "id": "s",
               "name": "sessionId",
-              "value": "={{ $json.body.sessionId || 'app' }}",
+              "value": "=app-{{ $json.body.sessionId || 'anon' }}",
               "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000010"
+      "id": "00000000-0000-4000-8000-000000000011"
     },
     {
       "name": "Manager Core",
@@ -509,7 +525,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "id": "00000000-0000-4000-8000-000000000011"
+      "id": "00000000-0000-4000-8000-000000000012"
     },
     {
       "name": "Respond Chat",
@@ -524,7 +540,7 @@
         "responseBody": "={{ JSON.stringify({ ok: true, reply: $json.reply }) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000012"
+      "id": "00000000-0000-4000-8000-000000000013"
     },
     {
       "name": "Order Input",
@@ -547,7 +563,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000013"
+      "id": "00000000-0000-4000-8000-000000000014"
     },
     {
       "name": "Place Order",
@@ -586,7 +602,7 @@
         }
       },
       "onError": "continueErrorOutput",
-      "id": "00000000-0000-4000-8000-000000000014"
+      "id": "00000000-0000-4000-8000-000000000015"
     },
     {
       "name": "Respond Order Error",
@@ -603,7 +619,7 @@
           "responseCode": 502
         }
       },
-      "id": "00000000-0000-4000-8000-000000000015"
+      "id": "00000000-0000-4000-8000-000000000016"
     },
     {
       "name": "Respond Order",
@@ -618,7 +634,7 @@
         "responseBody": "={{ JSON.stringify($json) }}",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000016"
+      "id": "00000000-0000-4000-8000-000000000017"
     },
     {
       "name": "Find Order",
@@ -660,7 +676,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000017"
+      "id": "00000000-0000-4000-8000-000000000018"
     },
     {
       "name": "Find Invoice",
@@ -702,7 +718,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000018"
+      "id": "00000000-0000-4000-8000-000000000019"
     },
     {
       "name": "Respond Status",
@@ -719,7 +735,7 @@
           "responseCode": "={{ ({ down: 502, missing: 404, ok: 200 })[(() => { const fo = $('Find Order').first().json; if (fo.error || !fo.records) return 'down'; return fo.records[0] ? 'ok' : 'missing'; })()] }}"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000019"
+      "id": "00000000-0000-4000-8000-000000000020"
     },
     {
       "name": "Respond Bad Request",
@@ -736,7 +752,7 @@
           "responseCode": 400
         }
       },
-      "id": "00000000-0000-4000-8000-000000000020"
+      "id": "00000000-0000-4000-8000-000000000021"
     },
     {
       "name": "Respond Server Error",
@@ -754,7 +770,7 @@
           "responseCode": 502
         }
       },
-      "id": "00000000-0000-4000-8000-000000000021"
+      "id": "00000000-0000-4000-8000-000000000022"
     }
   ],
   "connections": {

@@ -2,7 +2,23 @@
   "name": "WF8 — הפקת PDF חשבונית",
   "nodes": [
     {
-      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF8 — הפקת PDF חשבונית\nכל דקה. תופס חשבונית validated אחת (lease של 15 דקות ב-PdfLockedAt), בונה HTML עברי RTL, ממיר ל-PDF ב-Gotenberg, מעלה לדרייב, משתף בקישור, מסמן generated + PdfUrl.\n\n**צריך:** Airtable ERP, Google Drive ERP, Gotenberg (docker)",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
+      "name": "Every Minute",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
@@ -14,13 +30,13 @@
           "interval": [
             {
               "field": "minutes",
-              "minutesInterval": 5
+              "minutesInterval": 1
             }
           ]
         }
       },
-      "notes": "הרצה מלאה של חשבונית אחת נמדדה ב-64–312 שניות (הרצות 860/863/882/884/885/468). דקה אחת הייתה קצרה מהעבודה עצמה.",
-      "id": "00000000-0000-4000-8000-000000000000"
+      "notes": "כל דקה, כמו במסמך הקורס §7. ה-lease של 15 דקות ב-PdfLockedAt מונע הפקה כפולה גם בקצב הזה.",
+      "id": "00000000-0000-4000-8000-000000000001"
     },
     {
       "name": "Validated Invoices",
@@ -58,7 +74,7 @@
       "maxTries": 3,
       "waitBetweenTries": 5000,
       "notes": "חשבונית שנתפסה על ידי הרצה אחרת לא נבחרת שוב, עד שהתפיסה פגה אחרי 15 דקות.",
-      "id": "00000000-0000-4000-8000-000000000001"
+      "id": "00000000-0000-4000-8000-000000000002"
     },
     {
       "name": "Claim Invoice",
@@ -128,7 +144,7 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Customer",
@@ -167,7 +183,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Build HTML",
@@ -202,7 +218,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "HTML File",
@@ -220,7 +236,7 @@
           "fileName": "index.html"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Gotenberg PDF",
@@ -262,7 +278,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Upload to Drive",
@@ -295,7 +311,7 @@
           "name": "Google Drive ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Mark Generated",
@@ -373,7 +389,10 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000008"
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "Share Public",
@@ -406,7 +425,10 @@
           "name": "Google Drive ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000009"
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "id": "00000000-0000-4000-8000-000000000010"
     }
   ],
   "connections": {
@@ -498,7 +520,7 @@
         ]
       ]
     },
-    "Every 5 Minutes": {
+    "Every Minute": {
       "main": [
         [
           {

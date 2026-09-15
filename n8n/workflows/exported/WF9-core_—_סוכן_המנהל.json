@@ -2,6 +2,22 @@
   "name": "WF9-core — סוכן המנהל",
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF9-core — סוכן המנהל\nהליבה המשותפת לטלגרם ולאפליקציה. Invoices/Leads/Tasks/Orders מסוכמים בצמתי Summarize + Aggregate, והסוכן (בלי כלים) רק מנסח בעברית.\n\n**צריך:** Airtable ERP, OpenAI ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
       "name": "When Executed by Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -24,7 +40,7 @@
           ]
         }
       },
-      "id": "00000000-0000-4000-8000-000000000000"
+      "id": "00000000-0000-4000-8000-000000000001"
     },
     {
       "name": "Search Invoices",
@@ -61,7 +77,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000001"
+      "id": "00000000-0000-4000-8000-000000000002"
     },
     {
       "name": "Summarize Invoices",
@@ -88,7 +104,7 @@
         "options": {}
       },
       "notes": "בלי continueIfFieldNotFound: שינוי שם עמודה ב-Airtable ייפול ברעש, ולא יגיע לסוכן כ-0 ₪ הכנסות.",
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Aggregate Invoices",
@@ -103,7 +119,7 @@
         "destinationFieldName": "invoices",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Search Leads",
@@ -140,7 +156,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "Summarize Leads",
@@ -164,7 +180,7 @@
           "continueIfFieldNotFound": true
         }
       },
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Aggregate Leads",
@@ -179,7 +195,7 @@
         "destinationFieldName": "leads",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Search Tasks",
@@ -216,7 +232,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Summarize Tasks",
@@ -240,7 +256,7 @@
           "continueIfFieldNotFound": true
         }
       },
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "Aggregate Tasks",
@@ -255,7 +271,7 @@
         "destinationFieldName": "tasks",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000009"
+      "id": "00000000-0000-4000-8000-000000000010"
     },
     {
       "name": "Search Orders",
@@ -292,7 +308,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000010"
+      "id": "00000000-0000-4000-8000-000000000011"
     },
     {
       "name": "Summarize Orders",
@@ -319,7 +335,7 @@
         "options": {}
       },
       "notes": "בלי continueIfFieldNotFound: שינוי שם עמודה ב-Airtable ייפול ברעש, ולא יגיע לסוכן כ-0 ₪ הכנסות.",
-      "id": "00000000-0000-4000-8000-000000000011"
+      "id": "00000000-0000-4000-8000-000000000012"
     },
     {
       "name": "Aggregate Orders",
@@ -334,7 +350,7 @@
         "destinationFieldName": "orders",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000012"
+      "id": "00000000-0000-4000-8000-000000000013"
     },
     {
       "name": "Build Context",
@@ -369,7 +385,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000013"
+      "id": "00000000-0000-4000-8000-000000000014"
     },
     {
       "name": "Manager Agent",
@@ -387,7 +403,7 @@
           "maxIterations": 5
         }
       },
-      "id": "00000000-0000-4000-8000-000000000014"
+      "id": "00000000-0000-4000-8000-000000000015"
     },
     {
       "name": "OpenAI Chat Model",
@@ -411,7 +427,7 @@
           "name": "OpenAI ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000015"
+      "id": "00000000-0000-4000-8000-000000000016"
     },
     {
       "name": "Memory",
@@ -426,7 +442,7 @@
         "sessionKey": "=manager-{{ $('Build Context').item.json.sessionId }}",
         "contextWindowLength": 6
       },
-      "id": "00000000-0000-4000-8000-000000000016"
+      "id": "00000000-0000-4000-8000-000000000017"
     },
     {
       "name": "Reply",
@@ -449,7 +465,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000017"
+      "id": "00000000-0000-4000-8000-000000000018"
     }
   ],
   "connections": {

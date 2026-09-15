@@ -36,7 +36,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 מנהל: @aielc_manager_bot (Chat ID של הבעלים: 43590648) · לקוחות: @aielec_support_bot
 
 ### 5.1 חנות — מלאי התחלתי
-מלאי התחלתי: `airtable/seed-stock.sh` (דטרמיניסטי, בטוח להרצה חוזרת; משאיר לפחות שני מוצרים ב-Stock=0 להדגמת "אזל מהמלאי" — כרגע `TY-CB-HD21` ו-`TY-MN-34U`).
+מלאי התחלתי: `airtable/seed-stock.sh` (דטרמיניסטי, בטוח להרצה חוזרת — ממלא רק מוצרים שאין להם `Stock`, לא מאפס מלאי קיים; משאיר לפחות שני מוצרים ב-Stock=0 להדגמת "אזל מהמלאי" — כרגע `TY-CB-HD21` ו-`TY-MN-34U`).
 
 ## 7. workflows (n8n)
 מקור: `n8n/workflows/*.json` (תבניות עם placeholders). ייבוא/עדכון: `n8n/scripts/import-workflow.sh n8n/workflows/<file> --activate`. ייצוא מהשרת: `n8n/scripts/export-workflows.sh` → `n8n/workflows/exported/`. הרצות: `n8n/scripts/executions.sh "<שם>" [n]` — צריך את השם המלא של ה-workflow (למשל `"WF5-core — סוכן שירות לקוחות"`), לא רק את המספר.

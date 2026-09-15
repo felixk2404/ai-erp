@@ -2,6 +2,22 @@
   "name": "WF9 — סוכן המנהל (טלגרם)",
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF9 — סוכן המנהל (טלגרם)\nבוט הבעלים. תנאי Is Owner על Chat ID (מסמך הקורס, נספח) — כל אחד אחר מקבל סירוב. שאלות → WF9-core.\n\n**צריך:** Telegram Manager",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
@@ -21,8 +37,8 @@
           "name": "Telegram Manager"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000000",
-      "webhookId": "7a2e95d6-7e4d-415d-8193-2b61486670c4"
+      "id": "00000000-0000-4000-8000-000000000001",
+      "webhookId": "0769175a-76c7-4dad-afb8-a23be80785f9"
     },
     {
       "name": "Is Owner",
@@ -56,7 +72,7 @@
         "looseTypeValidation": true,
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000001"
+      "id": "00000000-0000-4000-8000-000000000002"
     },
     {
       "name": "Chat Input",
@@ -85,7 +101,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Manager Core",
@@ -135,7 +151,7 @@
       },
       "onError": "continueErrorOutput",
       "notes": "ענף השגיאה חוזר ל-Send Reply, ששולח את הנוסח החלופי במקום שתיקה.",
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Send Reply",
@@ -162,8 +178,8 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000004",
-      "webhookId": "e54a0f1b-931f-4a3f-94eb-4b6ddc18b732"
+      "id": "00000000-0000-4000-8000-000000000005",
+      "webhookId": "87817373-320f-4d43-b427-3fa5c6dde6ca"
     },
     {
       "name": "Deny",
@@ -187,8 +203,8 @@
           "name": "Telegram Manager"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000005",
-      "webhookId": "961da72f-13df-4fff-a820-1c1387d33dc9"
+      "id": "00000000-0000-4000-8000-000000000006",
+      "webhookId": "10f3ae4e-68fe-4a94-88fb-2af212bd48f1"
     }
   ],
   "connections": {

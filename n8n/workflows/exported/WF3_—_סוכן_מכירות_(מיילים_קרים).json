@@ -2,6 +2,22 @@
   "name": "WF3 — סוכן מכירות (מיילים קרים)",
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF3 — סוכן מכירות (מיילים קרים)\nכל 3 שעות, או POST /run-sales. בוחר ליד New אחד, סוכן LLM כותב מייל קר בעברית (prompts/sales.md), שולח ב-Gmail ורק אז מסמן Contacted.\n\n**צריך:** Airtable ERP, OpenAI ERP, Gmail ERP, ERP Webhook Secret",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
       "name": "Every 3 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
@@ -19,7 +35,7 @@
           ]
         }
       },
-      "id": "00000000-0000-4000-8000-000000000000"
+      "id": "00000000-0000-4000-8000-000000000001"
     },
     {
       "name": "Run Now Webhook",
@@ -42,8 +58,8 @@
           "name": "ERP Webhook Secret"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000001",
-      "webhookId": "f7b618d9-ede6-4c55-9435-6ceb1f7c45ae"
+      "id": "00000000-0000-4000-8000-000000000002",
+      "webhookId": "f59681ca-a16d-4c94-bc05-5004ab6e8c78"
     },
     {
       "name": "Next New Lead",
@@ -81,7 +97,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Has Lead?",
@@ -116,7 +132,7 @@
         "looseTypeValidation": true,
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Sales Agent",
@@ -134,7 +150,7 @@
           "maxIterations": 3
         }
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "OpenAI Chat Model",
@@ -158,10 +174,11 @@
           "name": "OpenAI ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Send Email",
+      "notes": "שולח לפני Mark Contacted בכוונה: כשל ב-Gmail משאיר את הליד New והוא ייבחר שוב בהרצה הבאה. הסדר ההפוך היה מאבד אותו לצמיתות. בלי retryOnFail במכוון — שליחת מייל אינה אידמפוטנטית, וניסיון חוזר אחרי כשל שקרה אחרי השליחה היה שולח מייל שני לאותו ליד.",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
@@ -183,8 +200,8 @@
           "name": "Gmail ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000006",
-      "webhookId": "05d398a1-26bf-438a-a39a-59a093c75e56"
+      "id": "00000000-0000-4000-8000-000000000007",
+      "webhookId": "5736a521-1684-4836-839d-565dd83e0fc8"
     },
     {
       "name": "Mark Contacted",
@@ -253,8 +270,8 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "notes": "מסמן לפני השליחה: לבטל סימון זול יותר מלבטל מייל שכבר יצא ללקוח.",
-      "id": "00000000-0000-4000-8000-000000000007"
+      "notes": "רץ אחרי השליחה. אם דווקא הוא נכשל, הליד נשאר New וייבחר שוב — כלומר מייל שני לאותו נמען. לכן retryOnFail כאן, ולא על השליחה עצמה.",
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Result",
@@ -283,7 +300,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "No Lead",
@@ -313,7 +330,7 @@
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000009"
+      "id": "00000000-0000-4000-8000-000000000010"
     }
   ],
   "connections": {
@@ -354,7 +371,7 @@
       "main": [
         [
           {
-            "node": "Mark Contacted",
+            "node": "Send Email",
             "type": "main",
             "index": 0
           }
@@ -365,7 +382,7 @@
       "main": [
         [
           {
-            "node": "Result",
+            "node": "Mark Contacted",
             "type": "main",
             "index": 0
           }
@@ -376,7 +393,7 @@
       "main": [
         [
           {
-            "node": "Send Email",
+            "node": "Result",
             "type": "main",
             "index": 0
           }

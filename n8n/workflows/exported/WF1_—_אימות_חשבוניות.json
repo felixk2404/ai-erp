@@ -2,6 +2,22 @@
   "name": "WF1 — אימות חשבוניות",
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF1 — אימות חשבוניות\nטריגר Airtable (Created, כל דקה). בודק סכום ולקוח, מקצה INV-000N, מחשב מע\"מ לפי תאריך המסמך (17%/18%) וסה\"כ, מסמן validated או error + משימת תיקון.\n\n**צריך:** Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
       "name": "Airtable Trigger",
       "type": "n8n-nodes-base.airtableTrigger",
       "typeVersion": 1,
@@ -37,7 +53,7 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000000"
+      "id": "00000000-0000-4000-8000-000000000001"
     },
     {
       "name": "Is New",
@@ -71,7 +87,7 @@
         "looseTypeValidation": true,
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000001"
+      "id": "00000000-0000-4000-8000-000000000002"
     },
     {
       "name": "Loop Over Items",
@@ -85,7 +101,7 @@
         "batchSize": 1,
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Find Customer",
@@ -125,7 +141,7 @@
       "maxTries": 3,
       "waitBetweenTries": 5000,
       "notes": "פולינג שנופל מזיז את lastTimeChecked בלי לראות את השורה — retry בולע ריצוד רשת במקום לאבד חשבונית.",
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "Is Valid",
@@ -168,7 +184,7 @@
         "looseTypeValidation": true,
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "Numbered Invoices",
@@ -209,7 +225,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Aggregate",
@@ -224,7 +240,7 @@
         "destinationFieldName": "data",
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "Compute",
@@ -252,26 +268,27 @@
             {
               "id": "c",
               "name": "VatRate",
-              "value": "={{ 0.18 }}",
+              "value": "={{ ((String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10) < '2025-01-01' && /^\\d{4}-\\d{2}-\\d{2}$/.test(String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10))) ? 0.17 : 0.18) }}",
               "type": "number"
             },
             {
               "id": "d",
               "name": "VatAmount",
-              "value": "={{ $('Loop Over Items').first().json.fields.VatAmount || Math.round($('Loop Over Items').first().json.fields.Amount * 0.18 * 100) / 100 }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.VatAmount || Math.round($('Loop Over Items').first().json.fields.Amount * ((String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10) < '2025-01-01' && /^\\d{4}-\\d{2}-\\d{2}$/.test(String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10))) ? 0.17 : 0.18) * 100) / 100 }}",
               "type": "number"
             },
             {
               "id": "e",
               "name": "Total",
-              "value": "={{ $('Loop Over Items').first().json.fields.Total || Math.round($('Loop Over Items').first().json.fields.Amount * 1.18 * 100) / 100 }}",
+              "value": "={{ $('Loop Over Items').first().json.fields.Total || Math.round($('Loop Over Items').first().json.fields.Amount * (1 + ((String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10) < '2025-01-01' && /^\\d{4}-\\d{2}-\\d{2}$/.test(String($('Loop Over Items').first().json.fields.Created || '').slice(0, 10))) ? 0.17 : 0.18)) * 100) / 100 }}",
               "type": "number"
             }
           ]
         },
         "options": {}
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "notes": "מע\"מ לפי תאריך המסמך (מסמך הקורס §10): 17% לפני 1.1.2025, 18% אחריו. ההגדרה הנבדקת ב-n8n/code/vat-rate.js.",
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Mark Validated",
@@ -376,7 +393,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "Mark Error",
@@ -445,7 +462,7 @@
       "retryOnFail": true,
       "maxTries": 3,
       "waitBetweenTries": 5000,
-      "id": "00000000-0000-4000-8000-000000000009"
+      "id": "00000000-0000-4000-8000-000000000010"
     },
     {
       "name": "Create Fix Task",
@@ -531,7 +548,7 @@
         }
       },
       "onError": "continueRegularOutput",
-      "id": "00000000-0000-4000-8000-000000000010"
+      "id": "00000000-0000-4000-8000-000000000011"
     }
   ],
   "connections": {

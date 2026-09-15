@@ -2,6 +2,22 @@
   "name": "WF5-core — סוכן שירות לקוחות",
   "nodes": [
     {
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "name": "מה זה",
+      "position": [
+        -620,
+        -340
+      ],
+      "parameters": {
+        "content": "## WF5-core — סוכן שירות לקוחות\nהליבה המשותפת לטלגרם, לאתר ולחנות. RAG משני כלים (מדיניות, מוצרים) ב-pgvector, check_stock חי מ-Airtable, ו-handoff לנציג. הפלט עובר שער דטרמיניסטי (code/finalize-reply.js).\n\n**צריך:** OpenAI ERP, Supabase ERP, Airtable ERP",
+        "height": 240,
+        "width": 460,
+        "color": 4
+      },
+      "id": "00000000-0000-4000-8000-000000000000"
+    },
+    {
       "name": "When Executed by Another Workflow",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
@@ -24,7 +40,7 @@
           ]
         }
       },
-      "id": "00000000-0000-4000-8000-000000000000"
+      "id": "00000000-0000-4000-8000-000000000001"
     },
     {
       "name": "Support Agent",
@@ -46,7 +62,7 @@
       "maxTries": 3,
       "waitBetweenTries": 5000,
       "notes": "שגיאת 429/5xx מ-OpenAI היא הכישלון הנפוץ ביותר כאן; 3 ניסיונות לפני שהלקוח מקבל התנצלות.",
-      "id": "00000000-0000-4000-8000-000000000001"
+      "id": "00000000-0000-4000-8000-000000000002"
     },
     {
       "name": "OpenAI Chat Model",
@@ -70,7 +86,7 @@
           "name": "OpenAI ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000002"
+      "id": "00000000-0000-4000-8000-000000000003"
     },
     {
       "name": "Memory",
@@ -85,7 +101,7 @@
         "sessionKey": "=support-{{ $('When Executed by Another Workflow').first().json.sessionId }}",
         "contextWindowLength": 8
       },
-      "id": "00000000-0000-4000-8000-000000000003"
+      "id": "00000000-0000-4000-8000-000000000004"
     },
     {
       "name": "knowledge_base",
@@ -124,7 +140,7 @@
           "name": "Supabase ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000004"
+      "id": "00000000-0000-4000-8000-000000000005"
     },
     {
       "name": "Embeddings",
@@ -144,7 +160,7 @@
           "name": "OpenAI ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000005"
+      "id": "00000000-0000-4000-8000-000000000006"
     },
     {
       "name": "Reply",
@@ -159,7 +175,7 @@
         "jsCode": "// finalize-reply.js — גוף צומת Code ב-WF5-core (מוזרק דרך placeholder CODE_FINALIZE_REPLY). הצומת האחרון לפני שהתשובה יוצאת ללקוח.\n// שני שערים דטרמיניסטיים על פלט המודל, כי הפרומפט לבדו לא החזיק (בדיקת קבלה 2026-09-03):\n// 1. שורה שחוזרת פעמיים באותה תשובה (המודל הכפיל את משפט המסירה ב-55% מהמקרים) — נשארת פעם אחת.\n// 2. תיאור סכנה פיזית בהודעת הלקוח (סוללה תפוחה, מכשיר מתחמם/מעשן) חייב לקבל הוראת ניתוק בראש התשובה.\n// 3. שורת \"מחשבה\" שדלפה (המודל מדבר על \"המשתמש\", מזכיר כלי בשמו, או כותב שורה באנגלית בתוך תשובה עברית) — נמחקת.\nconst SAFETY_LINE = 'נתקו את המכשיר מהחשמל והפסיקו להשתמש בו עכשיו.';\nconst SAFETY_RE = /התנפח|תפוח|מתחמם|התחמם|חם מאוד|מעשן|עשן|ריח שריפה|ריח של שרוף|נשרף|ניצוצ|התפוצץ/;\nconst LEAK_RE = /handoff|check_stock|knowledge_base|products_catalog|המשתמש|הלקוח מבקש|ההנחיות/;\nconst HEBREW_RE = /[\\u05D0-\\u05EA]/;\n\n// שורה באנגלית בלבד (בלי אות עברית, לפחות 4 מילים) בתוך תשובה שיש בה עברית = הרהור שדלף, לא תשובה.\nfunction isLeak(line, replyHasHebrew) {\n  if (LEAK_RE.test(line)) return true;\n  return replyHasHebrew && !HEBREW_RE.test(line) && line.split(/\\s+/).length >= 4;\n}\n\nfunction dedupeLines(text) {\n  const seen = new Set();\n  const out = [];\n  for (const raw of String(text || '').split('\\n')) {\n    const line = raw.trim();\n    if (!line) { if (out.length && out[out.length - 1] !== '') out.push(''); continue; }\n    if (seen.has(line)) continue;\n    seen.add(line);\n    out.push(line);\n  }\n  return out.join('\\n').trim();\n}\n\nfunction finalizeReply(output, userMessage) {\n  const hasHebrew = HEBREW_RE.test(String(output || ''));\n  let reply = dedupeLines(String(output || '').split('\\n').filter((l) => !isLeak(l.trim(), hasHebrew)).join('\\n'));\n  if (SAFETY_RE.test(String(userMessage || '')) && !/נתקו|הפסיקו להשתמש/.test(reply)) {\n    reply = reply ? `${SAFETY_LINE}\\n${reply}` : SAFETY_LINE;\n  }\n  return reply;\n}\n\nif (typeof $input !== 'undefined') {\n  const msg = $('When Executed by Another Workflow').first().json.message;\n  return [{ json: { reply: finalizeReply($input.first().json.output, msg) } }];\n}\nmodule.exports = { finalizeReply, dedupeLines, isLeak, SAFETY_LINE };"
       },
       "notes": "שערים על פלט המודל: שורה כפולה נמחקת, תלונת בטיחות מקבלת הוראת ניתוק. גוף הקוד: n8n/code/finalize-reply.js",
-      "id": "00000000-0000-4000-8000-000000000006"
+      "id": "00000000-0000-4000-8000-000000000007"
     },
     {
       "name": "products_catalog",
@@ -198,7 +214,7 @@
           "name": "Supabase ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000007"
+      "id": "00000000-0000-4000-8000-000000000008"
     },
     {
       "name": "Embeddings 2",
@@ -218,7 +234,7 @@
           "name": "OpenAI ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000008"
+      "id": "00000000-0000-4000-8000-000000000009"
     },
     {
       "name": "check_stock",
@@ -253,7 +269,10 @@
           "name": "Airtable ERP"
         }
       },
-      "id": "00000000-0000-4000-8000-000000000009"
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "id": "00000000-0000-4000-8000-000000000010"
     },
     {
       "name": "handoff",
@@ -319,7 +338,7 @@
           ]
         }
       },
-      "id": "00000000-0000-4000-8000-000000000010"
+      "id": "00000000-0000-4000-8000-000000000011"
     }
   ],
   "connections": {
