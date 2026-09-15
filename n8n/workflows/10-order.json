@@ -14,7 +14,7 @@
         -340
       ],
       "parameters": {
-        "content": "## WF10 — הזמנה\nתת-workflow של WF13, מהחנות או מטופס \"הזמנה חדשה\" בניהול. מאמת, מתמחר מהקטלוג (לא מהדפדפן), מספר ORD/INV, יוצר לקוח/הזמנה/חשבונית, מוריד מלאי, שולח מייל אישור ומודיע לבעלים.\n\n**צריך:** Airtable ERP, Gmail ERP, Telegram Manager",
+        "content": "## WF10 — הזמנה\nתת-workflow של WF13, מהחנות או מטופס \"הזמנה חדשה\" בניהול. מאמת, מתמחר מהקטלוג (לא מהדפדפן), מספר ORD/INV, יוצר לקוח/הזמנה/חשבונית, מוריד מלאי, **רושם את הקונה גם בטבלת הלידים** (Qualified, לא New — כדי שלא יקבל מייל קר), שולח מייל אישור ומודיע לבעלים.\n\n**צריך:** Airtable ERP, Gmail ERP, Telegram Manager",
         "height": 240,
         "width": 460,
         "color": 4
@@ -50,7 +50,7 @@
       ],
       "parameters": {
         "mode": "runOnceForAllItems",
-        "jsCode": "// Validate — קלט אחד, פלט אחד. לא זורק שגיאות: מחזיר ok:false עם הודעה בעברית.\nconst o = $input.first().json.order || {};\nconst c = o.customer || {};\nconst errs = [];\nconst name = String(c.name || '').trim();\nconst email = String(c.email || '').trim().toLowerCase();\nconst phone = String(c.phone || '').trim();\nconst address = String(c.address || '').trim();\nconst city = String(c.city || '').trim();\nconst note = String(o.note || '').trim().slice(0, 500);\nif (name.length < 2) errs.push('שם חסר');\nif (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) errs.push('אימייל לא תקין');\nif (!/^0\\d{1,2}-?\\d{7}$/.test(phone.replace(/\\s/g, ''))) errs.push('טלפון לא תקין');\nconst rawItems = Array.isArray(o.items) ? o.items : [];\nif (rawItems.length === 0) errs.push('העגלה ריקה');\nif (rawItems.length > 10) return [{ json: { ok: false, result: { ok: false, error: 'עד 10 שורות בהזמנה' } } }];\nconst items = [];\nfor (const it of rawItems) {\n  const sku = String(it.sku || '').trim().toUpperCase();\n  const qty = Math.floor(Number(it.qty));\n  if (!/^[A-Z0-9-]{3,20}$/.test(sku)) { errs.push('מק\"ט לא תקין: ' + sku); continue; }\n  if (!(qty >= 1 && qty <= 99)) { errs.push('כמות לא תקינה עבור ' + sku); continue; }\n  const dup = items.find((x) => x.sku === sku);\n  if (dup) { dup.qty += qty; if (dup.qty > 99) errs.push('כמות מעל 99 עבור ' + sku); } else items.push({ sku, qty });\n}\nif (items.length > 10) errs.push('עד 10 שורות בהזמנה');\nif (errs.length) return [{ json: { ok: false, result: { ok: false, error: errs.join(', ') } } }];\nconst formula = 'OR(' + items.map((i) => \"{Sku}='\" + i.sku.replace(/'/g, \"\\\\'\") + \"'\").join(',') + ')';\nreturn [{ json: { ok: true, customer: { name, email, phone, address, city }, note, items, formula, emailLower: email.replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") } }];"
+        "jsCode": "// Validate — קלט אחד, פלט אחד. לא זורק שגיאות: מחזיר ok:false עם הודעה בעברית.\nconst o = $input.first().json.order || {};\nconst c = o.customer || {};\nconst errs = [];\nconst name = String(c.name || '').trim();\nconst email = String(c.email || '').trim().toLowerCase();\nconst phone = String(c.phone || '').trim();\nconst address = String(c.address || '').trim();\nconst city = String(c.city || '').trim();\nconst note = String(o.note || '').trim().slice(0, 500);\nif (name.length < 2) errs.push('שם חסר');\nif (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(email)) errs.push('אימייל לא תקין');\nif (!/^0\\d{1,2}-?\\d{7}$/.test(phone.replace(/\\s/g, ''))) errs.push('טלפון לא תקין');\nconst rawItems = Array.isArray(o.items) ? o.items : [];\nif (rawItems.length === 0) errs.push('העגלה ריקה');\nif (rawItems.length > 10) return [{ json: { ok: false, result: { ok: false, error: 'עד 10 שורות בהזמנה' } } }];\nconst items = [];\nfor (const it of rawItems) {\n  if (!it || typeof it !== 'object' || Array.isArray(it)) { errs.push('שורת הזמנה לא תקינה'); continue; }\n  const sku = String(it.sku || '').trim().toUpperCase();\n  const qty = Number(it.qty);\n  if (!/^[A-Z0-9-]{3,20}$/.test(sku)) { errs.push('מק\"ט לא תקין: ' + sku); continue; }\n  if (!(Number.isInteger(qty) && qty >= 1 && qty <= 99)) { errs.push('כמות לא תקינה עבור ' + sku); continue; }\n  const dup = items.find((x) => x.sku === sku);\n  if (dup) { dup.qty += qty; if (dup.qty > 99) errs.push('כמות מעל 99 עבור ' + sku); } else items.push({ sku, qty });\n}\nif (items.length > 10) errs.push('עד 10 שורות בהזמנה');\nif (errs.length) return [{ json: { ok: false, result: { ok: false, error: errs.join(', ') } } }];\nconst formula = 'OR(' + items.map((i) => \"{Sku}='\" + i.sku.replace(/'/g, \"\\\\'\") + \"'\").join(',') + ')';\nreturn [{ json: { ok: true, customer: { name, email, phone, address, city }, note, items, formula, emailLower: email.replace(/\\\\/g, '\\\\\\\\').replace(/'/g, \"\\\\'\") } }];"
       }
     },
     {
@@ -689,6 +689,312 @@
         "jsonOutput": "={{ $json.result }}",
         "options": {}
       }
+    },
+    {
+      "name": "Find Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2180,
+        -160
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "filterByFormula": "=LOWER({Email})='{{ $('Validate').first().json.emailLower }}'",
+        "returnAll": false,
+        "limit": 1,
+        "options": {}
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "חיפוש לפי LOWER({Email}) ולא upsert: בבסיס כבר קיימות שתי שורות לאותו אדם שנבדלות באותיות גדולות/קטנות, ו-Airtable משווה מחרוזת מדויקת. alwaysOutputData כדי שה-IF יקבל פריט גם כשלא נמצא כלום."
+    },
+    {
+      "name": "Lead Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        -160
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "l1",
+              "leftValue": "={{ !!$json.id }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "name": "Update Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2620,
+        -260
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $json.id }}",
+            "Name": "={{ $('Compute').first().json.customer.name }}",
+            "Phone": "={{ $('Compute').first().json.customer.phone }}",
+            "Status": "={{ $json.fields.Status === 'Dead' ? 'Dead' : 'Qualified' }}",
+            "Source": "={{ $json.fields.Source || 'web' }}",
+            "Note": "={{ (($json.fields.Note || '') + ' · קנה {{ $('Compute').first().json.orderNumber }}').trim() }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput",
+      "notes": "ליד קיים שקנה: מתעדכן ל-Qualified ומקבל הערה עם מספר ההזמנה. Dead נשאר Dead — זה מי שביקש \"הסר\", וקנייה אחת לא מבטלת בקשת הסרה. onError=continue כדי שכשל ברישום הליד לא יעצור את מייל האישור ללקוח."
+    },
+    {
+      "name": "Create Lead",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.2,
+      "position": [
+        2620,
+        -60
+      ],
+      "parameters": {
+        "authentication": "airtableTokenApi",
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__AIRTABLE_BASE_ID__"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "id",
+          "value": "__TBL_LEADS__"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Compute').first().json.customer.name }}",
+            "Email": "={{ $('Compute').first().json.customer.email }}",
+            "Phone": "={{ $('Compute').first().json.customer.phone }}",
+            "Status": "Qualified",
+            "Source": "web",
+            "Note": "=קנה {{ $('Compute').first().json.orderNumber }} בחנות"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Source",
+              "displayName": "Source",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Note",
+              "displayName": "Note",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ]
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "__CRED_AIRTABLE__",
+          "name": "Airtable ERP"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "notes": "קונה חדש נכנס כ-Qualified ולא כ-New: המסלול המתוזמן ב-WF3 בוחר New ושולח מייל קר ראשון, ולקוח משלם לא אמור לקבל \"נעים להכיר\". בלי retryOnFail — יצירה אינה אידמפוטנטית."
     }
   ],
   "connections": {
@@ -933,7 +1239,7 @@
       "main": [
         [
           {
-            "node": "Email Customer",
+            "node": "Find Lead",
             "type": "main",
             "index": 0
           }
@@ -985,6 +1291,57 @@
         [
           {
             "node": "Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Lead": {
+      "main": [
+        [
+          {
+            "node": "Lead Exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Exists?": {
+      "main": [
+        [
+          {
+            "node": "Update Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Lead": {
+      "main": [
+        [
+          {
+            "node": "Email Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Lead": {
+      "main": [
+        [
+          {
+            "node": "Email Customer",
             "type": "main",
             "index": 0
           }

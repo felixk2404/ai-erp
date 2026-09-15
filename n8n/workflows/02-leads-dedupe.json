@@ -121,7 +121,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "id": "={{ $('Airtable Trigger').item.json.id }}",
-            "Status": "={{ ($json.records || []).filter(r => r.id !== $('Airtable Trigger').item.json.id).length > 0 ? 'Duplicate' : 'New' }}"
+            "Status": "={{ (() => { const cur = String($('Airtable Trigger').item.json.fields.Status || '').trim(); if (cur && cur !== 'New') return cur; return ($json.records || []).filter((r) => r.id !== $('Airtable Trigger').item.json.id).length > 0 ? 'Duplicate' : 'New'; })() }}"
           },
           "matchingColumns": [
             "id"
@@ -162,7 +162,8 @@
       },
       "retryOnFail": true,
       "maxTries": 3,
-      "waitBetweenTries": 5000
+      "waitBetweenTries": 5000,
+      "notes": "כותב סטטוס רק כשהליד עדיין New. ליד שנוצר עם סטטוס משלו — קונה מהחנות שנרשם כ-Qualified ב-WF10, או מי שביקש \"הסר\" ומסומן Dead — נשאר כפי שהוא. בלי השמירה הזו WF2 היה דורס קונה משלם חזרה ל-New, והמסלול המתוזמן ב-WF3 היה שולח לו מייל קר."
     }
   ],
   "connections": {
