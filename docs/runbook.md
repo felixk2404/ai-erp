@@ -28,8 +28,20 @@ Google Cloud project: `Default Gemini Project` (gen-lang-client-0155888723). OAu
 (Client ID מסתיים ב-`98252vbo03jruiiq5qvsd6hj75609k7n`; מסך ההסכמה של הפרויקט נקרא **G-Studio**, ולכן זה השם שגוגל מציג בחלון — לא אפליקציה אחרת).
 שתי כתובות חזרה רשומות אצל גוגל, ושתיהן נחוצות:
 `https://goofy-glamour-syrup.ngrok-free.dev/rest/oauth2-credential/callback` ו-`http://localhost:5678/rest/oauth2-credential/callback`.
-Audience: External, Testing, test user = המייל של הסטודנט. במצב Testing ה-refresh token פג אחרי 7 ימים:
-אם Gmail/Drive אדומים ב-n8n → Credentials → פותחים → Reconnect. עושים זאת ביום הדמו.
+Audience: External, **In production** (פורסם 15.9.2026). קודם לכן המצב היה Testing, ושם refresh token פג אחרי 7 ימים —
+זה מה שהשתיק את WF4 בין 8.9 ל-15.9 בלי שום התראה. שני ה-credentials הונפקו מחדש **אחרי** הפרסום (18:11 ו-18:12 UTC),
+ולכן הטוקנים הנוכחיים אינם פגים. שימו לב: טוקן שהונפק *לפני* הפרסום ממשיך לשאת את שעון שבעת הימים, ולכן אחרי פרסום
+חייבים Reconnect אחד לכל credential — אחרת שום דבר לא השתנה בפועל.
+
+אם Gmail/Drive בכל זאת אדומים ב-n8n → Credentials → פותחים → Reconnect (דרך localhost, ראו למטה).
+
+- **מה חסם את הפרסום:** הכפתור `Publish app` ב-**Google Auth Platform → Audience** היה אפור עם ההודעה
+  "complete your configuration on the Branding page". בדף Branding נדרש שכל דומיין שמופיע בקישורי דף הבית, מדיניות
+  הפרטיות ותנאי השימוש יופיע גם ב-**Authorised domains**. `vercel.app` הוא סיומת ציבורית, ולכן הערך הנדרש הוא
+  המחרוזת המלאה `ai-electronics-one.vercel.app` ולא `vercel.app`.
+- **אזהרת "Google hasn't verified this app" נשארת לתמיד ואינה תקלה.** האפליקציה לא עברה אימות של גוגל, וזה מקובל בהיקף הזה.
+  לפני הפרסום הנוסח היה "an app that's currently being tested", אחרי הפרסום הוא "requesting access to sensitive info".
+  בשני המקרים ממשיכים דרך **Advanced → Go to G-Studio (unsafe)**.
 
 - **את ה-Reconnect עושים דרך `http://localhost:5678`, לא דרך ngrok (אומת 15.9.2026).** ngrok בגרסה החינמית מגיש מסך אזהרה משלו (`ERR_NGROK_6024`) לכל בקשה שמגיעה מדפדפן — כולל ההפניה החוזרת של גוגל. התוצאה: הקוד של גוגל לא מגיע ל-n8n, החיבור נכשל **בשקט**, ובלוג אין שום שגיאה. אומת בשני הכיוונים: בקשה עם User-Agent של דפדפן מקבלת דף אזהרה של 2.8KB ולא מופיעה כלל ב-inspector של הטאנל, ואילו אותה בקשה עם הכותרת `ngrok-skip-browser-warning` מועברת ו-n8n רושם `OAuth2 callback failed`. ngrok גם לא שומר עוגייה, ולכן "ללחוץ Visit Site פעם אחת" לא פותר את זה.
   לכן `N8N_EDITOR_BASE_URL` ב-`n8n/docker-compose.yml` מצביע ל-`http://localhost:5678/` — n8n גוזר ממנו את כתובת החזרה. `WEBHOOK_URL` נשאר על ngrok, ולכן הבוטים, החנות והאפליקציה לא הושפעו (אומת אחרי ה-restart: שני הבוטים עדיין רשומים על הדומיין של ngrok, `pending: 0`). המחיר היחיד: קישור ההרצה בהתראות של WF-Error הוא כתובת localhost — שמיש לבעלים, חסר משמעות למי שלא על המחשב.
