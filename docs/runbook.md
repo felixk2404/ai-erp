@@ -24,28 +24,12 @@ n8n מקומי: http://localhost:5678 · ציבורי: https://goofy-glamour-syr
 בדיקת סביבה: `n8n/scripts/verify-env.sh` · סכימת Airtable: `airtable/verify-schema.sh` · Supabase: `n8n/scripts/diagnose-supabase.sh`
 
 ## 3. Google OAuth
-Google Cloud project: `Default Gemini Project` (gen-lang-client-0155888723). OAuth client `n8n-erp`, Web application
-(Client ID מסתיים ב-`98252vbo03jruiiq5qvsd6hj75609k7n`; מסך ההסכמה של הפרויקט נקרא **G-Studio**, ולכן זה השם שגוגל מציג בחלון — לא אפליקציה אחרת).
-שתי כתובות חזרה רשומות אצל גוגל, ושתיהן נחוצות:
-`https://goofy-glamour-syrup.ngrok-free.dev/rest/oauth2-credential/callback` ו-`http://localhost:5678/rest/oauth2-credential/callback`.
-Audience: External, **In production** (פורסם 15.9.2026). קודם לכן המצב היה Testing, ושם refresh token פג אחרי 7 ימים —
-זה מה שהשתיק את WF4 בין 8.9 ל-15.9 בלי שום התראה. שני ה-credentials הונפקו מחדש **אחרי** הפרסום (18:11 ו-18:12 UTC),
-ולכן הטוקנים הנוכחיים אינם פגים. שימו לב: טוקן שהונפק *לפני* הפרסום ממשיך לשאת את שעון שבעת הימים, ולכן אחרי פרסום
-חייבים Reconnect אחד לכל credential — אחרת שום דבר לא השתנה בפועל.
+Google Cloud project: `Default Gemini Project` (gen-lang-client-0155888723). OAuth client `n8n-erp`, Web application,
+redirect URI `https://goofy-glamour-syrup.ngrok-free.dev/rest/oauth2-credential/callback`.
+Audience: External, Testing, test user = המייל של הסטודנט. במצב Testing ה-refresh token פג אחרי 7 ימים:
+אם Gmail/Drive אדומים ב-n8n → Credentials → פותחים → Reconnect. עושים זאת ביום הדמו.
 
-אם Gmail/Drive בכל זאת אדומים ב-n8n → Credentials → פותחים → Reconnect (דרך localhost, ראו למטה).
-
-- **מה חסם את הפרסום:** הכפתור `Publish app` ב-**Google Auth Platform → Audience** היה אפור עם ההודעה
-  "complete your configuration on the Branding page". בדף Branding נדרש שכל דומיין שמופיע בקישורי דף הבית, מדיניות
-  הפרטיות ותנאי השימוש יופיע גם ב-**Authorised domains**. `vercel.app` הוא סיומת ציבורית, ולכן הערך הנדרש הוא
-  המחרוזת המלאה `ai-electronics-one.vercel.app` ולא `vercel.app`.
-- **אזהרת "Google hasn't verified this app" נשארת לתמיד ואינה תקלה.** האפליקציה לא עברה אימות של גוגל, וזה מקובל בהיקף הזה.
-  לפני הפרסום הנוסח היה "an app that's currently being tested", אחרי הפרסום הוא "requesting access to sensitive info".
-  בשני המקרים ממשיכים דרך **Advanced → Go to G-Studio (unsafe)**.
-
-- **את ה-Reconnect עושים דרך `http://localhost:5678`, לא דרך ngrok (אומת 15.9.2026).** ngrok בגרסה החינמית מגיש מסך אזהרה משלו (`ERR_NGROK_6024`) לכל בקשה שמגיעה מדפדפן — כולל ההפניה החוזרת של גוגל. התוצאה: הקוד של גוגל לא מגיע ל-n8n, החיבור נכשל **בשקט**, ובלוג אין שום שגיאה. אומת בשני הכיוונים: בקשה עם User-Agent של דפדפן מקבלת דף אזהרה של 2.8KB ולא מופיעה כלל ב-inspector של הטאנל, ואילו אותה בקשה עם הכותרת `ngrok-skip-browser-warning` מועברת ו-n8n רושם `OAuth2 callback failed`. ngrok גם לא שומר עוגייה, ולכן "ללחוץ Visit Site פעם אחת" לא פותר את זה.
-  לכן `N8N_EDITOR_BASE_URL` ב-`n8n/docker-compose.yml` מצביע ל-`http://localhost:5678/` — n8n גוזר ממנו את כתובת החזרה. `WEBHOOK_URL` נשאר על ngrok, ולכן הבוטים, החנות והאפליקציה לא הושפעו (אומת אחרי ה-restart: שני הבוטים עדיין רשומים על הדומיין של ngrok, `pending: 0`). המחיר היחיד: קישור ההרצה בהתראות של WF-Error הוא כתובת localhost — שמיש לבעלים, חסר משמעות למי שלא על המחשב.
-- **אם Reconnect "נשמר" אבל הטוקן לא התחלף:** בודקים את חותמת השמירה במסד — `docker cp` של `database.sqlite` **יחד עם** `database.sqlite-wal`, אחרת קוראים מצב ישן. ואז `deactivate`+`activate` ל-WF4 ומחפשים `Access could not be refreshed` בלוג; אפס שורות = הטוקן תקין.
+- **תיקון קבוע — פעולה של הבעלים, לא שינוי קוד:** ב-Google Cloud, פרויקט `gen-lang-client-0155888723`, לקוח `n8n-erp`, להעביר את מסך הסכמת OAuth מ-**Testing** ל-**In production**, ואז לחבר מחדש את שני ה-credentials. ב-Testing טוקן הרענון של ההרשאות האלה פג כל 7 ימים בתכנון ([תיעוד Google](https://developers.google.com/identity/protocols/oauth2#expiration)).
 
 ## 4. credentials ב-n8n (שמות מדויקים, תוכנית 2 מפנה אליהם)
 Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase ERP · ERP Webhook Secret · Gmail ERP · Google Drive ERP
@@ -62,6 +46,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | workflow | טריגר | איך בודקים |
 |---|---|---|
 | WF-Error | Error Trigger (מוגדר בכל workflow) | שגיאה בכל workflow → טלגרם למנהל |
+| WF-Health | כל שעה, קריאות Gmail ו-Drive | להריץ ידנית לבדיקת הצמתים; עם טוקן פג — בהרצה מתוזמנת התראה בטלגרם תוך דקה |
 | WF1 אימות חשבוניות | Airtable Trigger, Invoices.Created, כל דקה | `api-test.sh` create Invoice → validated + INV-000N + מע"מ, או error; חשבונית שגויה → משימת "לתקן INV-…" |
 | WF2 לידים | Airtable Trigger, Leads.Created | כפילות לפי אימייל, ואם אין — לפי טלפון (digits-only compare); ליד → New; מייל קיים → Duplicate |
 | WF3 מכירות (מייל קר) | כל 3 שעות + `webhook.sh run-sales` | ליד New → מייל נשלח → Contacted |
@@ -75,6 +60,8 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 | WF9-core | Execute Workflow (מ-WF9 ו-WF13) | דרך WF13 chat |
 | WF10 הזמנה מהחנות | Execute Workflow (מ-WF13 order) | `n8n/scripts/order-test.sh happy\|oos\|bad\|service\|status ORD-000N`; הזמנה פיזית → משימת "לשלוח ORD-…", מלאי נמוך → משימת "להזמין מלאי" |
 | WF13 API | `POST /webhook/erp` + header `x-erp-secret` | `n8n/scripts/api-test.sh '{"action":"chat","message":"..."}'` |
+
+**בדיקת התראת WF-Health:** כשל בהרצה ידנית אינו מפעיל Error Workflow ב-n8n; להוכחת המסלול המלא יש להמתין להרצה המתוזמנת ולתעד את מזהי WF-Health ו-WF-Error ([מקור n8n](https://github.com/n8n-io/n8n/blob/master/packages/cli/src/execution-lifecycle/execute-error-workflow.ts)). `alwaysOutputData` מאפשר גם לתיבה או תיקייה ריקה להגיע ל-Healthy בלי להסתיר כשל. הבדיקות סדרתיות: כשל Gmail עוצר לפני Drive.
 
 - **משימות (Tasks)**: תור פעולות אנושיות. WF10 יוצר "לשלוח ORD-…" לכל הזמנה פיזית ו"להזמין מלאי" כשמלאי יורד מתחת ל-3 (בלי כפילות לאותו מק"ט). WF4 יוצר "להתקשר ל…" לליד שענה. סוכן השירות יוצר "לחזור ל…" כשלקוח משאיר שם וטלפון (WF5-handoff). WF1 יוצר "לתקן INV-…" לחשבונית שגויה. `Source` + `RefId` מקשרים למסך היעד באפליקציה. סוכן המנהל מקבל `open_tasks`.
 
@@ -163,7 +150,7 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 
 ## 10. Night Console (תוכנית 5)
 - **עיצוב**: עולם "חדר בקרה" כהה — טוקנים ב-`app/src/app/globals.css` (`--void/--chassis/--readout/--signal`, LED), פונטים Heebo + IBM Plex Sans Hebrew + IBM Plex Mono. הכללים ב-`app/.interface-design/system.md`; ההחלטות ב-`docs/superpowers/specs/2026-09-02-night-console-design.md`.
-- **פיד חי + מפת מערכת** (`/api/pulse`, polling 10s): דורשים `N8N_API_URL` + `N8N_API_KEY` (כמו בריאות n8n, סעיף 9). בלי env — המפה מוצגת מהמניפסט (`app/src/lib/workflows.ts`, 13 workflows עם id-ים מ-`n8n/config.json`) במצב OFFLINE. אם מייבאים את ה-workflows למופע n8n אחר — לעדכן את ה-id-ים במניפסט.
+- **פיד חי + מפת מערכת** (`/api/pulse`, polling 10s): דורשים `N8N_API_URL` + `N8N_API_KEY` (כמו בריאות n8n, סעיף 9). בלי env — המפה מוצגת מהמניפסט (`app/src/lib/workflows.ts`, 14 workflows עם id-ים מ-`n8n/config.json`) במצב OFFLINE. אם מייבאים את ה-workflows למופע n8n אחר — לעדכן את ה-id-ים במניפסט.
 - **⌘K עם AI**: הקלדה של 3 תווים ומעלה בפלטה מציעה "שאל את המנהל"; Enter שולח ל-`sendChat` (WF13 chat) והתשובה מוזרמת בפלטה.
 - **קיצורי מקלדת**: `?` עזרה · `g` ואז `d/i/l/c/p/t` ניווט · `n` פריט חדש בעמוד · ⌘K חיפוש.
 - **תקציר בוקר**: נחשף מילה-מילה (StreamText); בזמן הטעינה פאנל "הסוכן קורא נתונים" עם טיימר.
@@ -193,7 +180,13 @@ Airtable ERP · OpenAI ERP · Telegram Manager · Telegram Customer · Supabase 
 - Aggregate/Summarize אחרי טריגר מרובה-פריטים שובר את השיוך של `$('Trigger').item` → עוטפים את הגוף ב-Loop Over Items (תיקון WF1, 2026-09-02).
 - מספור רץ (ORD/INV) מחושב מהמקסימום הקיים ולא מנעילה. WF10 `Compute` מזהה שליחה חוזרת (אותו אימייל, אותה עגלה, פחות מ-5 דקות) ומחזיר את ההזמנה הקיימת בלי לכתוב — זה מכסה לחיצה כפולה וניסיון חוזר של הדפדפן. **מגבלה ידועה שנשארה: שתי הזמנות שונות באותה שנייה עלולות עדיין לקבל אותו ORD/INV; מקובל לפרויקט.** זיהוי: `airtable/show-records.sh Invoices` וחיפוש כפילויות ב-InvoiceNumber; תיקון ידני של המספר.
 - WF10: כשל של `Email Customer` או `Notify Manager` כבר לא מפיל את ההזמנה (`onError: continueRegularOutput`) — ההזמנה מסומנת `confirmed` והחנות מקבלת תשובה תקינה. במצב הזה **ה-Error Workflow לא נורה**, ולכן מייל שנכשל נראה רק ברשימת ההרצות של WF10: `n8n/scripts/executions.sh "WF10 — הזמנה מהחנות"` → פותחים את ההרצה ובודקים את הצומת `Email Customer`.
-- **WF4 שקט ימים, בלי שום התראה:** כשל אימות בטריגר פולינג (Gmail Trigger עם טוקן שפג) נרשם רק בלוג של n8n — `There was a problem in 'Gmail Trigger' node… reconnect it` — ולא מגיע ל-WF-Error, כי n8n לא מפעיל את error workflow על כשל של הטריגר עצמו. הסימן: `n8n/scripts/executions.sh "WF4 — סוכן מכירות (תשובות)"` בלי הרצות חדשות. הפתרון: Credentials → Gmail ERP → Reconnect. אותו טוקן משמש גם את WF3 (שליחה) ו-WF8 (Drive) — הם ייכשלו רק כשיגיעו לצומת של Google, ואז כן תגיע התראה.
+- **WF4 שקט ימים, בלי שום התראה:** כשל אימות בטריגר פולינג (Gmail Trigger עם טוקן שפג) נרשם רק בלוג של n8n — `There was a problem in 'Gmail Trigger' node… reconnect it` — ולא מגיע ל-WF-Error, כי n8n לא מפעיל את error workflow על כשל של הטריגר עצמו. הסימן: `n8n/scripts/executions.sh "WF4 — סוכן מכירות (תשובות)"` בלי הרצות חדשות. הפתרון: Credentials → Gmail ERP → Reconnect. אותו טוקן משמש גם את WF3 (שליחה) ו-WF8 (Drive) — הם ייכשלו רק כשיגיעו לצומת של Google, ואז כן תגיע התראה. WF-Health בודק כעת בצמתים רגילים ומזהה כשל כזה בתוך שעה כשהשרת פעיל.
 - **חשבונית תקועה ב-`validated` ולא מקבלת PDF:** WF8 תופס חשבונית בשדה `Invoices.PdfLockedAt` לפני ההפקה, כדי ששתי הרצות לא ייצרו שתי חשבוניות מס לאותה שורה. אם הרצה נפלה באמצע, התפיסה פגה לבד אחרי 15 דקות והחשבונית נבחרת שוב; לזירוז — מוחקים את הערך ב-`PdfLockedAt`. ההרצה הכושלת עצמה מופיעה ב-`n8n/scripts/executions.sh` ומפעילה את WF-Error.
 - **קובצי ה-PDF של החשבוניות משותפים כ"כל מי שיש לו את הקישור" (WF8 `Share Public`) — החלטה מודעת:** עמוד ההזמנה של הלקוח מקשר ישירות לחשבונית שלו ואין בפרויקט התחברות לקוחות, והנתונים הם דמו סינתטי. עם נתוני לקוחות אמיתיים זה היה חייב signed URL קצר-מועד (למשל bucket פרטי ב-Supabase Storage) במקום קישור נצחי ובלתי הפיך.
 - **התפריט בטלגרם לא מגיב לכפתורים**: `TELEGRAM_CUSTOMER_TOKEN` חסר בסביבת הקונטיינר (docker-compose מעביר אותו מקובץ ה-env). `n8n/scripts/verify-env.sh` בודק; אחרי הוספה — `docker compose up -d` בתיקיית n8n.
+- **`public.documents` בלי RLS — נמצא ב-15.9.2026 ותוקן ב-`n8n/supabase.sql`:** Supabase שלח התראה ברמת ERROR (`rls_disabled_in_public`) על המאגר הווקטורי (112 שורות). הטבלה מוגשת דרך PostgREST, והדבר היחיד שחוסם אותה הוא מפתח ה-anon של הפרויקט — מפתח שנועד להיות ציבורי ומוטמע בדפדפן. אומת: `GET /rest/v1/documents` בלי מפתח מחזיר `401 No API key found`, כלומר הנתיב חי. התיקון בטוח כי n8n מתחבר עם `service_role` (`scripts/create-credentials.sh`), ו-service_role עוקף RLS — WF5-core, WF6 ו-WF7 לא מושפעים. **בפרויקט קיים צריך להריץ את שורות האבטחה מתוך `n8n/supabase.sql` פעם אחת ב-SQL Editor**; הקובץ לבדו מתקן רק בנייה מאפס. אימות אחרי ההרצה: `n8n/scripts/webhook.sh reindex-policies` ואז `rag-count.sh` → policy ~78, product 34.
+  - **שתי אזהרות שהושארו במכוון:** ה-bucket‏ `assets` נשאר ציבורי — תמונות המוצרים מוטמעות במייל הקמפיין, ומייל לא יכול לשאת מפתח; והרחבת `vector` נשארת בסכימת `public`, כי העברתה תשבור כל הפניה ל-`vector(1536)` בטבלה ובפונקציה, וזו אזהרה ברמת WARN בלבד.
+
+## 12. סקירת אמינות ואבטחה (15.9.2026)
+
+דוח התיקונים והבדיקות: `tasks/claude-project-audit-2026-09-15.md`. פעולות ניהול בודקות סשן בעצמן; login מוגבל ל-10 ניסיונות בדקה ל-IP באותו instance. הזמנה שתשובתה אבדה מחייבת בדיקה ברשימת ההזמנות/מעקב לפני שליחה נוספת. יצירות, שליחות וסוכן עם כלי כתיבה אינם מקבלים retry אוטומטי; ענפי הטיפול בשגיאות נשארים פעילים. ייצוא workflows מוריד ומאמת את כל הרשימה לפני החלפת הגיבוי, ונכשל אם הרשימה חלקית.
